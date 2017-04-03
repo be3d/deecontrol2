@@ -1,0 +1,34 @@
+group 'com.ysoft.be3d'
+version '1.0.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.springframework', name: 'spring-beans', version: '4.3.7.RELEASE'
+    compile group: 'org.springframework', name: 'spring-core', version: '4.3.7.RELEASE'
+    compile group: 'org.springframework', name: 'spring-context', version: '4.3.7.RELEASE'
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+task zip(dependsOn: jar, type: Zip) {
+    from configurations.compile.allArtifacts.files
+    from configurations.compile
+    into(project.name + "_" + project.version)
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.ysoft.dctrl.DeeControl'
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

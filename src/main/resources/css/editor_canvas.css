@@ -1,0 +1,4 @@
+.editor-canvas {
+    -fx-background-color: yellow;
+    -fx-min-height: 200px;
+}

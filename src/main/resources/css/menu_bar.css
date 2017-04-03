@@ -1,0 +1,5 @@
+.menu-item {
+    -fx-min-width: 120px;
+    -fx-pref-width: 120px;
+    -fx-wrap-text: true;
+}

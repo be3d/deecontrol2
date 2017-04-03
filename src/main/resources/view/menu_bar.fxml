@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+
+<?import java.net.URL?>
+<MenuBar xmlns:fx="http://javafx.com/fxml" fx:id="menuBar" fx:controller="com.ysoft.dctrl.ui.controller.MenuBarController" useSystemMenuBar="true">
+  <Menu text="?_menu_bar_file">
+    <items>
+      <MenuItem text="?_menu_bar_new_project" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_open_model" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_import_gcode" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_save_project" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_export_gcode" styleClass="menu-item"/>
+    </items>
+  </Menu>
+  <Menu text="?_menu_bar_edit">
+    <items>
+      <MenuItem text="?_menu_bar_undo" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_redo" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_copy" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_paste" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_select_all" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_delete" styleClass="menu-item"/>
+    </items>
+  </Menu>
+  <Menu text="?_menu_bar_view">
+    <items>
+      <MenuItem text="?_menu_bar_zoom_in" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_zoom_out" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_reset_camera_view" styleClass="menu-item"/>
+    </items>
+  </Menu>
+  <Menu text="?_menu_bar_account">
+    <items>
+      <MenuItem text="?_menu_bar_log_in" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_log_out" styleClass="menu-item"/>
+    </items>
+  </Menu>
+  <Menu text="?_menu_bar_help">
+    <items>
+      <MenuItem text="?_menu_bar_getting_started" styleClass="menu-item"/>
+      <Menu fx:id="language" text="?_menu_bar_language">
+      </Menu>
+    </items>
+  </Menu>
+
+  <stylesheets>
+    <URL value="@/css/menu_bar.css" />
+  </stylesheets>
+</MenuBar>
