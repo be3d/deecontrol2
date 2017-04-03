@@ -1,0 +1,34 @@
+# IDEA project files
+.idea
+*.iml
+*.ipr
+*.iws
+
+out
+
+# Eclipse project files
+.classpath
+.project
+.settings
+
+# maven & gradle
+.gradle
+build
+target
+
+# temp and OS files
+.tmp
+.merge_file*
+.sass-cache
+.DS_Store
+
+
+# nodejs npm files
+node
+node_modules
+
+#src/main/webapp/dist
+.nb-gradle*
+
+#Git message
+.gittemplate
