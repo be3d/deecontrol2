@@ -27,7 +27,7 @@ public class SlicerTest {
 
         slicerManager.setParam(SlicerParams.EXTRUSION_WIDTH.name(), "0.05"); // float
 
-        // SLICE
+        // SLICE.
         slicerManager.slice();
     }
 }
