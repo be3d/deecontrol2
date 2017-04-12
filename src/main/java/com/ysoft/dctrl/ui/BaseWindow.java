@@ -3,9 +3,11 @@ package com.ysoft.dctrl.ui;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ysoft.dctrl.ui.factory.BottomPanelWrapperFactory;
 import com.ysoft.dctrl.ui.factory.ControlMenuFactory;
 import com.ysoft.dctrl.ui.factory.EditorCanvasFactory;
 import com.ysoft.dctrl.ui.factory.MenuBarFactory;
+import com.ysoft.dctrl.utils.KeyEventPropagator;
 
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -20,12 +22,19 @@ import javafx.stage.Stage;
  */
 @Component
 public class BaseWindow {
+    private KeyEventPropagator keyEventPropagator;
+
     private Region menuBar;
     private Region controlMenu;
     private Region editorCanvas;
 
     @Autowired
-    public BaseWindow(MenuBarFactory menuBarFactory, ControlMenuFactory controlMenuFactory, EditorCanvasFactory editorCanvasFactory) {
+    public BaseWindow(KeyEventPropagator keyEventPropagator,
+                      MenuBarFactory menuBarFactory,
+                      ControlMenuFactory controlMenuFactory,
+                      EditorCanvasFactory editorCanvasFactory
+    ) {
+        this.keyEventPropagator = keyEventPropagator;
         menuBar = menuBarFactory.buildMenuBar();
         controlMenu = controlMenuFactory.buildControlMenu();
         editorCanvas = editorCanvasFactory.buildEditorCanvas();
@@ -38,6 +47,8 @@ public class BaseWindow {
         // TODO add config to application - get default values from config
         //
         Scene scene = new Scene(root, 800, 600);
+        scene.setOnKeyPressed(keyEventPropagator::keyPressed);
+
         root.prefHeightProperty().bind(scene.heightProperty());
         root.prefWidthProperty().bind(scene.widthProperty());
 
@@ -55,10 +66,6 @@ public class BaseWindow {
 
         root.getChildren().addAll(menuBar, underMenuBar);
         stage.setScene(scene);
-    }
-
-    public void doSMWithMenuBar() {
-        System.err.println("ahoj" + (menuBar == null ? "null" : "not null"));
     }
 
     private static void setAnchors(Node el, Double top, Double left, Double bottom, Double right) {

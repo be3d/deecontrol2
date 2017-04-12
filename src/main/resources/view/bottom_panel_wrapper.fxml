@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import java.net.URL?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:id="wrapper" fx:controller="com.ysoft.dctrl.ui.controller.BottomPanelWrapperController" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" styleClass="bottom-panel-wrapper">
+  <stylesheets>
+    <URL value="@/css/bottom_menu_wrapper.css" />
+  </stylesheets>
+</StackPane>

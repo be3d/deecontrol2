@@ -5,7 +5,7 @@
 <?import javafx.scene.control.MenuItem?>
 
 <?import java.net.URL?>
-<MenuBar xmlns:fx="http://javafx.com/fxml" fx:id="menuBar" fx:controller="com.ysoft.dctrl.ui.controller.MenuBarController" useSystemMenuBar="true">
+<MenuBar xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.MenuBarController" useSystemMenuBar="true">
   <Menu text="?_menu_bar_file">
     <items>
       <MenuItem text="?_menu_bar_new_project" styleClass="menu-item"/>

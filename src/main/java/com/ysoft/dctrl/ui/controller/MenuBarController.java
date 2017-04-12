@@ -26,8 +26,6 @@ import javafx.scene.control.MenuItem;
 
 @Controller
 public class MenuBarController extends LocalizableController implements Initializable {
-    @FXML MenuBar menuBar;
-
     @FXML Menu language;
 
     @Autowired
@@ -47,7 +45,7 @@ public class MenuBarController extends LocalizableController implements Initiali
 
         language.getItems().addAll(english, czech);
 
-        addTranslation(menuBar);
+        //addTranslation(menuBar);
         super.initialize(location, resources);
     }
 

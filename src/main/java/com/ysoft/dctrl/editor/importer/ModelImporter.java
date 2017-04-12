@@ -1,9 +1,9 @@
 package com.ysoft.dctrl.editor.importer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
+
+import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
 
 import javafx.scene.shape.TriangleMesh;
 
