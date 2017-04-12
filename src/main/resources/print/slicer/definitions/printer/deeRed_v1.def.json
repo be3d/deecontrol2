@@ -1,0 +1,64 @@
+{
+  "ID":"red",
+  "VERSION":"1",
+  "METADATA": {
+    "MACHINE_LONG_NAME": "red",
+    "MACHINE_IMAGE_FILE": "dummy.jpg",
+    "MACHINE_INFO": "Dummy text."
+  },
+  "SLICER_PARAMS_CONST":{
+    "MACHINE_WIDTH":"800",
+    "MACHINE_HEIGHT":"800"
+  },
+  "SLICER_PARAMS":{
+    "PRINT_SPEED_SUPPORT": {
+      "default": 20,
+      "min": 5,
+      "max": 90,
+      "type": "float"
+    },
+    "PRINT_SPEED_INFILL":{
+      "type":"float",
+      "default":30,
+      "min": 6,
+      "max": 50
+    },
+    "ADHESION_TYPE":{
+      "type": "enum",
+      "options":
+      {
+        "skirt": "Skirt",
+        "brim": "Brim",
+        "raft": "Raft",
+        "none": "None"
+      },
+      "default": "brim"
+    },
+    "START_GCODE": {
+      "type": "text",
+      "value": "Blabla"
+    }
+  },
+  "SPEED_PROFILES":{
+    "SLOW":{
+      "PRINT_SPEED_INFILL":100
+    },
+    "NORMAL":{
+      "PRINT_SPEED_INFILL":120
+    },
+    "FAST": {
+      "PRINT_SPEED_INFILL":150
+    }
+  },
+  "PRINT_QUALITY_PROFILES":{
+    "DRAFT":{
+      "LAYER_HEIGHT": 0.2
+    },
+    "NORMAL":{
+      "LAYER_HEIGHT": 0.15
+    },
+    "FINE":{
+      "LAYER_HEIGHT": 0.1
+    }
+  }
+}
