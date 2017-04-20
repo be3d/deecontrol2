@@ -8,6 +8,9 @@ import com.ysoft.dctrl.slicer.SlicerParam;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -15,11 +18,35 @@ import java.util.*;
  */
 public class PrinterManager {
     protected String PRINTER_DEF = "";
-    protected final ObjectMapper objectMapper;
-    protected final String DEFINITIONS_PATH = "src/main/resources/print/slicer/definitions/printer";
+    private static ObjectMapper objectMapper;
+    private static final String DEFINITIONS_PATH = "/print/slicer/definitions/printer";
 
     public PrinterManager(ObjectMapper om){
         this.objectMapper = om;
+    }
+
+    public List<String> getAllTypes(){
+        try {
+            URL printerDefinitions = PrinterManager.class.getResource(DEFINITIONS_PATH);
+
+            if (printerDefinitions == null) throw new IOException("Printer definitions folder not found.");
+
+            File printerDefinitionsFolder = Paths.get(printerDefinitions.toURI()).toFile();
+            File [] printers = printerDefinitionsFolder.listFiles();
+
+            if (printers == null) throw new IOException("No printers found.");
+
+            for(File f : printers){
+                if(f.isFile()){
+                    // read printer definition, construct printer object
+                    // new Printer
+
+                }
+            }
+
+        } catch (URISyntaxException | IOException e) {
+            System.out.println( e.getMessage());
+        }
     }
 
     public List<SlicerParam> collectParameters(Printers printer){
