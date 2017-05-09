@@ -3,9 +3,9 @@ package com.ysoft.dctrl.ui;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.ysoft.dctrl.ui.factory.BottomPanelWrapperFactory;
-import com.ysoft.dctrl.ui.factory.ControlMenuFactory;
+import com.ysoft.dctrl.ui.factory.ControlPanelFactory;
 import com.ysoft.dctrl.ui.factory.EditorCanvasFactory;
+import com.ysoft.dctrl.ui.factory.MainPanelFactory;
 import com.ysoft.dctrl.ui.factory.MenuBarFactory;
 import com.ysoft.dctrl.utils.KeyEventPropagator;
 
@@ -25,18 +25,18 @@ public class BaseWindow {
     private KeyEventPropagator keyEventPropagator;
 
     private Region menuBar;
-    private Region controlMenu;
     private Region editorCanvas;
+    private Region mainPanel;
 
     @Autowired
     public BaseWindow(KeyEventPropagator keyEventPropagator,
                       MenuBarFactory menuBarFactory,
-                      ControlMenuFactory controlMenuFactory,
+                      MainPanelFactory mainPanelFactory,
                       EditorCanvasFactory editorCanvasFactory
     ) {
         this.keyEventPropagator = keyEventPropagator;
         menuBar = menuBarFactory.buildMenuBar();
-        controlMenu = controlMenuFactory.buildControlMenu();
+        mainPanel = mainPanelFactory.buildMainPanel();
         editorCanvas = editorCanvasFactory.buildEditorCanvas();
     }
 
@@ -46,25 +46,25 @@ public class BaseWindow {
 
         // TODO add config to application - get default values from config
         //
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 1366, 768);
         scene.setOnKeyPressed(keyEventPropagator::keyPressed);
 
         root.prefHeightProperty().bind(scene.heightProperty());
         root.prefWidthProperty().bind(scene.widthProperty());
 
-        AnchorPane underMenuBar = new AnchorPane();
-        underMenuBar.maxHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()));
-        underMenuBar.prefHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()));
+        AnchorPane canvasPane = new AnchorPane();
+        canvasPane.maxHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
+        canvasPane.prefHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
 
-        setAnchors(controlMenu, 0.0, 0.0, 0.0, null);
-        setAnchors(editorCanvas, 0.0, null, 0.0, 0.0);
+        setAnchors(editorCanvas, 0.0, 0.0, 0.0, 0.0);
+        setAnchors(mainPanel, 0.0, 0.0, 0.0, 0.0);
 
-        editorCanvas.prefWidthProperty().bind(underMenuBar.widthProperty().subtract(controlMenu.widthProperty()));
-        editorCanvas.prefHeightProperty().bind(underMenuBar.prefHeightProperty());
+        editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
+        editorCanvas.prefWidthProperty().bind(root.widthProperty());
 
-        underMenuBar.getChildren().addAll(controlMenu, editorCanvas);
+        canvasPane.getChildren().addAll(editorCanvas);
 
-        root.getChildren().addAll(menuBar, underMenuBar);
+        root.getChildren().addAll(menuBar, mainPanel, canvasPane);
         stage.setScene(scene);
     }
 

@@ -28,6 +28,8 @@ import javafx.scene.control.MenuItem;
 public class MenuBarController extends LocalizableController implements Initializable {
     @FXML Menu language;
 
+    @FXML MenuItem settings;
+
     @Autowired
     public MenuBarController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext deeControlContext) {
         super(localizationResource, eventBus, deeControlContext);

@@ -1,0 +1,59 @@
+.edit-panel {
+    -fx-padding: 12px 20px 12px 20px;
+    -fx-spacing: 20px;
+    -fx-font-size: 14px;
+    -fx-pref-height: 60px;
+    -fx-max-height: 60px;
+}
+
+.edit-panel-group {
+    -fx-spacing: 10px;
+}
+
+.edit-panel Label {
+    -fx-pref-height: 36px;
+    -fx-alignment: center;
+}
+
+.edit-panel TextField {
+    -fx-pref-width: 65px;
+    -fx-pref-height: 36px;
+    -fx-border-color: #bfbfbf;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-radius: 3px;
+    -fx-alignment: center-left;
+}
+
+.edit-panel Button {
+    -fx-pref-height: 36px;
+    -fx-pref-width: 50px;
+    -fx-padding: 0;
+    -fx-text-fill: #337ab7;
+}
+
+.edit-panel Button:pressed {
+    -fx-background-color: transparent;
+}
+
+.edit-panel CheckBox {
+    -fx-pref-width: 20px;
+    -fx-pref-height: 20px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+    -fx-border-color: #bfbfbf;
+}
+
+.move-panel {
+    -fx-max-width: 311px;
+}
+
+.scale-panel {
+    -fx-max-width: 557px;
+}
+
+.rotation-panel {
+    -fx-max-width: 415px;
+}

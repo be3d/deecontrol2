@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 
 import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.control.TrackBallControls;
+import com.ysoft.dctrl.editor.importer.ImportRunner;
 import com.ysoft.dctrl.editor.importer.StlImporter;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
@@ -69,6 +70,9 @@ public class CanvasController extends AbstractController implements Initializabl
 
         keyEventPropagator.onKeyPressed(this::keyDown);
         eventBus.subscribe(EventType.ADD_MODEL.name(), this::addModel);
+        eventBus.subscribe(EventType.MODEL_LOAD_PROGRESS.name(), (e) -> {
+            System.err.println("p: " + (double) e.getData());
+        });
     }
 
     public void addModel(Event event) {
@@ -80,14 +84,11 @@ public class CanvasController extends AbstractController implements Initializabl
         //mesh = importer.getImport();
 
         StlImporter stlImporter = new StlImporter();
-        try {
-            mesh = stlImporter.load(modelPath);
-        } catch (IOException e) {
-            System.err.println("fuck");
-            return;
-        }
-
-       sceneGraph.addMesh(mesh);
+        ImportRunner importRunner = new ImportRunner(eventBus, stlImporter, modelPath);
+        importRunner.setOnSucceeded(e -> {
+            eventBus.publish(new Event(EventType.MODEL_LOADED.name(), importRunner.getValue()));
+        });
+        new Thread(importRunner).start();
     }
 
     public void keyDown(KeyEvent keyEvent) {
@@ -100,6 +101,9 @@ public class CanvasController extends AbstractController implements Initializabl
                         sceneGraph.selectNext();
                     }
                 }
+                break;
+            case DELETE:
+                sceneGraph.deleteSelected();
                 break;
         }
     }

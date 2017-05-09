@@ -14,6 +14,7 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Point3D;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 
 /**
@@ -26,23 +27,18 @@ public class ScalePanelController extends AbstractEditPanelController {
     @FXML TextField y;
     @FXML TextField z;
 
+    @FXML CheckBox uniform;
+
     public ScalePanelController(SceneGraph sceneGraph, LocalizationResource localizationResource, EventBus eventBus, DeeControlContext context) {
         super(sceneGraph, localizationResource, eventBus, context);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        root.visibleProperty().addListener(this::onVisibleChange);
-
-        x.textProperty().addListener((observable, oldValue, newValue) -> onXChange(newValue));
-        y.textProperty().addListener((observable, oldValue, newValue) -> onYChange(newValue));
-        z.textProperty().addListener((observable, oldValue, newValue) -> onZChange(newValue));
-
         super.initialize(location, resources);
     }
 
-    public void onVisibleChange(ObservableValue<? extends Boolean> observable, final boolean oldValue, final boolean newValue) {
-        if(!newValue) { return; }
+    public void refresh() {
         SceneMesh mesh = sceneGraph.getSelected();
         if(mesh == null) { return; }
         Point3D scale = mesh.getScale();
@@ -51,21 +47,45 @@ public class ScalePanelController extends AbstractEditPanelController {
         z.setText(String.valueOf(scale.getZ()));
     }
 
-    public void onXChange(String newValue) {
-        SceneMesh mesh = sceneGraph.getSelected();
-        if(mesh == null) { return; }
-        mesh.setScaleX(Double.valueOf(newValue));
+    public void onXChange(SceneMesh mesh, String newValue) {
+        double val = Double.valueOf(newValue);
+        if(uniform.isSelected()) {
+            scaleByRatio(mesh, val/mesh.getScaleX());
+        } else {
+            mesh.setScaleX(val);
+        }
     }
 
-    public void onYChange(String newValue) {
-        SceneMesh mesh = sceneGraph.getSelected();
-        if(mesh == null) { return; }
-        mesh.setScaleY(Double.valueOf(newValue));
+    public void onYChange(SceneMesh mesh, String newValue) {
+        double val = Double.valueOf(newValue);
+        if(uniform.isSelected()) {
+            scaleByRatio(mesh, val/mesh.getScaleY());
+        } else {
+            mesh.setScaleY(val);
+        }
     }
 
-    public void onZChange(String newValue) {
+    public void onZChange(SceneMesh mesh, String newValue) {
+        double val = Double.valueOf(newValue);
+        if(uniform.isSelected()) {
+            scaleByRatio(mesh, val/mesh.getScaleZ());
+        } else {
+            mesh.setScaleZ(val);
+        }
+    }
+
+    public void scaleByRatio(SceneMesh mesh, double ratio) {
+        mesh.setScaleX(ratio*mesh.getScaleX());
+        mesh.setScaleY(ratio*mesh.getScaleY());
+        mesh.setScaleZ(ratio*mesh.getScaleZ());
+        refresh();
+    }
+
+    public void onReset() {
         SceneMesh mesh = sceneGraph.getSelected();
         if(mesh == null) { return; }
-        mesh.setScaleZ(Double.valueOf(newValue));
+
+        mesh.setScale(new Point3D(1,1,1));
+        refresh();
     }
 }

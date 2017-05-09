@@ -11,6 +11,9 @@ import com.ysoft.dctrl.editor.control.ExtendedPerspectiveCamera;
 import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
 import com.ysoft.dctrl.editor.mesh.MeshUtils;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
+import com.ysoft.dctrl.event.Event;
+import com.ysoft.dctrl.event.EventBus;
+import com.ysoft.dctrl.event.EventType;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -36,7 +39,10 @@ public class SceneGraph {
 
     private SceneMesh selected;
 
-    public SceneGraph() {
+    private final EventBus eventBus;
+
+    public SceneGraph(EventBus eventBus) {
+        this.eventBus = eventBus;
         sceneGroup = new Group();
         sceneMeshes = new LinkedList<>();
         material = new PhongMaterial(Color.LIGHTBLUE);
@@ -46,6 +52,8 @@ public class SceneGraph {
         box.setMaterial(new PhongMaterial(Color.RED));
         sceneGroup.getChildren().addAll(camera, createPrintBed(), box);
         selected = null;
+
+        eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> addMesh((TriangleMesh) e.getData()));
     }
 
     private ExtendedPerspectiveCamera createCamera() {
@@ -57,7 +65,7 @@ public class SceneGraph {
 
     private Box createPrintBed() {
         Box bed = new Box(150, 150, 4);
-        bed.setMaterial(new PhongMaterial(Color.DARKGRAY));
+        bed.setMaterial(new PhongMaterial(Color.GRAY));
         bed.getTransforms().addAll(new Translate(0,0,-bed.getDepth()/2));
         return bed;
     }
@@ -89,6 +97,16 @@ public class SceneGraph {
         }));
     }
 
+    public void deleteSelected() {
+        if(selected == null) { return; }
+
+        sceneMeshes.remove(selected);
+        sceneGroup.getChildren().remove(selected.getNode());
+
+        selected = null;
+        selectNext();
+    }
+
     public void selectNext() {
         if(selected == null) {
             selectNew(sceneMeshes.getFirst());
@@ -113,6 +131,7 @@ public class SceneGraph {
         if(selected != null) { selected.setMaterial(material); }
         selected = mesh;
         selected.setMaterial(selectedMaterial);
+        eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), selected));
     }
 
     public SceneMesh getSelected() {

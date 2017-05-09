@@ -59,6 +59,10 @@ public class BottomPanelWrapperController extends AbstractController implements 
         eventBus.subscribe(EventType.CONTROL_MOVE_MODEL_CLICK.name(), (e) -> showPanel(movePanel));
         eventBus.subscribe(EventType.CONTROL_ROTATE_MODEL_CLICK.name(), (e) -> showPanel(rotationPanel));
         eventBus.subscribe(EventType.CONTROL_SCALE_MODEL_CLICK.name(), (e) -> showPanel(scalePanel));
+
+        eventBus.subscribe(EventType.MODEL_SELECTED.name(), (e) -> {
+            if(e.getData() == null) { hidePanel(); }
+        });
     }
 
     public void hidePanel() {

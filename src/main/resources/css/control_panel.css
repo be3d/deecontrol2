@@ -1,0 +1,59 @@
+.control-panel-wrapper {
+    -fx-background-color: transparent;
+    -fx-pref-width: 100px;
+    -fx-max-width: 100px;
+    -fx-min-width: 100px;
+}
+
+.control-panel {
+    -fx-pref-width: 50px;
+    -fx-pref-height: 160px;
+    -fx-padding: 22px 13px;
+    -fx-spacing: 22px;
+}
+
+.control-button {
+    -fx-border-style: none;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-pref-width: 24px;
+    -fx-min-width: 24px;
+    -fx-max-width: 24px;
+    -fx-pref-height: 24px;
+    -fx-min-height: 24px;
+    -fx-max-height: 24px;
+    -fx-background-insets: 0;
+}
+
+.control-button:pressed {
+
+}
+
+.control-button:focused {
+    -fx-border-style: none;
+    -fx-background-insets: 0;
+}
+
+.move-button {
+    -fx-background-image: url("../img/control/move-normal.png");
+}
+
+.move-button:selected {
+    -fx-background-image: url("../img/control/move-selected.png");
+}
+
+.scale-button {
+    -fx-background-image: url("../img/control/scale-normal.png");
+}
+
+.scale-button:selected {
+    -fx-background-image: url("../img/control/scale-selected.png");
+}
+
+.rotate-button {
+    -fx-background-image: url("../img/control/rotate-normal.png");
+}
+
+.rotate-button:selected {
+    -fx-background-image: url("../img/control/rotate-selected.png");
+}

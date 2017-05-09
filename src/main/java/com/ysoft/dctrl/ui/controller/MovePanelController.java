@@ -23,59 +23,40 @@ import javafx.scene.control.TextField;
 
 @Controller
 public class MovePanelController extends AbstractEditPanelController {
-    @FXML TextField x;
-    @FXML TextField y;
-    @FXML TextField z;
-    @FXML Button centerModel;
-
     public MovePanelController(SceneGraph sceneGraph, LocalizationResource localizationResource, EventBus eventBus, DeeControlContext context) {
         super(sceneGraph, localizationResource, eventBus, context);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        root.visibleProperty().addListener(this::onVisibleChange);
-
-        x.textProperty().addListener((observable, oldValue, newValue) -> onXChange(newValue));
-        y.textProperty().addListener((observable, oldValue, newValue) -> onYChange(newValue));
-        z.textProperty().addListener((observable, oldValue, newValue) -> onZChange(newValue));
-
-        centerModel.setOnMouseClicked((e) -> onCenterModel());
-
         super.initialize(location, resources);
     }
 
-    public void onVisibleChange(ObservableValue<? extends Boolean> observable, final boolean oldValue, final boolean newValue) {
-        if(!newValue) { return; }
+    public void refresh() {
         SceneMesh mesh = sceneGraph.getSelected();
         if(mesh == null) { return; }
         Point3D position = mesh.getPosition();
         x.setText(String.valueOf(position.getX()));
         y.setText(String.valueOf(position.getY()));
-        z.setText(String.valueOf(position.getZ()));
     }
 
-    public void onXChange(String newValue) {
-        SceneMesh mesh = sceneGraph.getSelected();
-        if(mesh == null) { return; }
+    public void onXChange(SceneMesh mesh, String newValue) {
         mesh.setPositionX(Double.valueOf(newValue));
     }
 
-    public void onYChange(String newValue) {
-        SceneMesh mesh = sceneGraph.getSelected();
-        if(mesh == null) { return; }
+    public void onYChange(SceneMesh mesh, String newValue) {
         mesh.setPositionY(Double.valueOf(newValue));
     }
 
-    public void onZChange(String newValue) {
-        SceneMesh mesh = sceneGraph.getSelected();
-        if(mesh == null) { return; }
+    public void onZChange(SceneMesh mesh, String newValue) {
         mesh.setPositionZ(Double.valueOf(newValue));
     }
 
-    public void onCenterModel() {
+    public void onReset() {
         SceneMesh mesh = sceneGraph.getSelected();
         if(mesh == null) { return; }
-        mesh.setPosition(new Point3D(0,0, mesh.getPositionZ()));
+
+        mesh.setPosition(new Point3D(0,0,0));
+        refresh();
     }
 }

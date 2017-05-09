@@ -1,3 +1,21 @@
-.edit-panel-input {
-    -fx-pref-width: 50px;
+.panel {
+    -fx-padding: 5px;
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.0, 0, 0);
+}
+
+Tool, Button {
+    -fx-background-color: transparent;
+    -fx-border-style: none;
+    -fx-background-insets: 0;
+}
+
+Tool:focused, Button:focused {
+    -fx-background-insets: 0;
+}
+
+Tool:pressed, Button:pressed {
+    -fx-background-color: #e5e5e5;
 }

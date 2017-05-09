@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Button?>
@@ -9,24 +8,28 @@
 <?import javafx.scene.control.Separator?>
 <?import java.net.URL?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.MovePanelController" StackPane.alignment="TOP_CENTER" styleClass="move-panel">
-  <Label text="?_move_panel_label" />
-  <HBox>
+<HBox  xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.MovePanelController" StackPane.alignment="TOP_CENTER" styleClass="panel, edit-panel, move-panel">
+  <HBox styleClass="edit-panel-group">
     <Label text="X" labelFor="$x" mnemonicParsing="true" />
-    <TextField fx:id="x" styleClass="edit-panel-input" />
+    <TextField fx:id="x" styleClass="" />
+  </HBox>
+  <HBox styleClass="edit-panel-group">
     <Label text="Y" labelFor="$y" mnemonicParsing="true" />
-    <TextField fx:id="y" styleClass="edit-panel-input" />
+    <TextField fx:id="y" styleClass="" />
+  </HBox>
+  <HBox styleClass="edit-panel-group" visible="false" managed="false">
     <Label text="Z" labelFor="$z" mnemonicParsing="true" />
-    <TextField fx:id="z" styleClass="edit-panel-input" />
-
-    <Separator orientation="VERTICAL" />
-
-    <Button fx:id="centerModel" text="?_move_panel_center_model" />
+    <TextField fx:id="z" styleClass="" />
   </HBox>
 
+  <Separator orientation="VERTICAL" />
+
+  <Button fx:id="reset" text="?_edit_panel_reset" />
+
   <stylesheets>
-    <URL value="@/css/move_panel.css" />
+    <URL value="@/css/edit_panel.css" />
     <URL value="@/css/master.css" />
   </stylesheets>
-</VBox>
+</HBox>
+
 

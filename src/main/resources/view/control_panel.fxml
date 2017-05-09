@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import com.ysoft.dctrl.ui.control.Tool?>
+
+<?import java.net.URL?>
+
+<AnchorPane fx:controller="com.ysoft.dctrl.ui.controller.ControlPanelController" xmlns:fx="http://javafx.com/fxml" styleClass="control-panel-wrapper">
+  <VBox AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" styleClass="panel, control-panel">
+    <Tool fx:id="move" styleClass="control-button, move-button" />
+    <Tool fx:id="scale" styleClass="control-button, scale-button" />
+    <Tool fx:id="rotate" styleClass="control-button, rotate-button" />
+  </VBox>
+
+  <stylesheets>
+    <URL value="@/css/master.css" />
+    <URL value="@/css/control_panel.css" />
+  </stylesheets>
+</AnchorPane>

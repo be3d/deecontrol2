@@ -1,26 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import java.net.URL?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.ScalePanelController" StackPane.alignment="TOP_CENTER" styleClass="scale-panel">
-  <Label text="?_scale_panel_label" />
-  <HBox>
-    <Label text="X" labelFor="$x" mnemonicParsing="true" />
-    <TextField fx:id="x" styleClass="edit-panel-input" />
+<HBox  xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.ScalePanelController" StackPane.alignment="TOP_CENTER" styleClass="panel, edit-panel, scale-panel">
+  <HBox styleClass="edit-panel-group">
+  <Label text="X" labelFor="$x" mnemonicParsing="true" />
+    <TextField fx:id="x" styleClass="" />
+  </HBox>
+  <HBox styleClass="edit-panel-group">
     <Label text="Y" labelFor="$y" mnemonicParsing="true" />
-    <TextField fx:id="y" styleClass="edit-panel-input" />
+    <TextField fx:id="y" styleClass="" />
+  </HBox>
+  <HBox styleClass="edit-panel-group">
     <Label text="Z" labelFor="$z" mnemonicParsing="true" />
-    <TextField fx:id="z" styleClass="edit-panel-input" />
+    <TextField fx:id="z" styleClass="" />
   </HBox>
 
+  <HBox styleClass="edit-panel-group">
+    <CheckBox fx:id="uniform" />
+    <Label text="Uniform scaling" labelFor="$uniform" mnemonicParsing="true" />
+  </HBox>
+
+  <Separator orientation="VERTICAL" />
+
+  <Button fx:id="reset" text="?_edit_panel_reset" />
+
   <stylesheets>
-    <URL value="@/css/scale_panel.css" />
+    <URL value="@/css/edit_panel.css" />
     <URL value="@/css/master.css" />
   </stylesheets>
-</VBox>
+</HBox>
+
 

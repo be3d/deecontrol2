@@ -34,17 +34,10 @@ public class RotationPanelController extends AbstractEditPanelController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        root.visibleProperty().addListener(this::onVisibleChange);
-
-        x.textProperty().addListener((observable, oldValue, newValue) -> onXChange(newValue));
-        y.textProperty().addListener((observable, oldValue, newValue) -> onYChange(newValue));
-        z.textProperty().addListener((observable, oldValue, newValue) -> onZChange(newValue));
-
         super.initialize(location, resources);
     }
 
-    public void onVisibleChange(ObservableValue<? extends Boolean> observable, final boolean oldValue, final boolean newValue) {
-        if(!newValue) { return; }
+    public void refresh() {
         SceneMesh mesh = sceneGraph.getSelected();
         if(mesh == null) { return; }
         Point3D rotation = mesh.getRotation();
@@ -53,21 +46,23 @@ public class RotationPanelController extends AbstractEditPanelController {
         z.setText(String.valueOf(rotation.getZ()));
     }
 
-    public void onXChange(String newValue) {
-        SceneMesh mesh = sceneGraph.getSelected();
-        if(mesh == null) { return; }
+    public void onXChange(SceneMesh mesh, String newValue) {
         mesh.setRotationX(Double.valueOf(newValue));
     }
 
-    public void onYChange(String newValue) {
-        SceneMesh mesh = sceneGraph.getSelected();
-        if(mesh == null) { return; }
+    public void onYChange(SceneMesh mesh, String newValue) {
         mesh.setRotationY(Double.valueOf(newValue));
     }
 
-    public void onZChange(String newValue) {
+    public void onZChange(SceneMesh mesh, String newValue) {
+        mesh.setRotationZ(Double.valueOf(newValue));
+    }
+
+    public void onReset() {
         SceneMesh mesh = sceneGraph.getSelected();
         if(mesh == null) { return; }
-        mesh.setRotationZ(Double.valueOf(newValue));
+
+        mesh.setRotation(new Point3D(0,0,0));
+        refresh();
     }
 }

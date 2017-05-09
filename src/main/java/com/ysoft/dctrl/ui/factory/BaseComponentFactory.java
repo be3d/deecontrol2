@@ -7,6 +7,7 @@ import com.ysoft.dctrl.utils.SpringFXMLLoader;
 
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -18,12 +19,13 @@ import javafx.scene.layout.VBox;
 @Component
 public class BaseComponentFactory implements
         MenuBarFactory,
-        ControlMenuFactory,
+        ControlPanelFactory,
         EditorCanvasFactory,
         RotationPanelFactory,
         MovePanelFactory,
         ScalePanelFactory,
-        BottomPanelWrapperFactory
+        BottomPanelWrapperFactory,
+        MainPanelFactory
 {
     private final SpringFXMLLoader loader;
 
@@ -38,32 +40,37 @@ public class BaseComponentFactory implements
     }
 
     @Override
-    public AnchorPane buildControlMenu() {
-        return (AnchorPane) loader.load("/view/control_menu.fxml");
+    public AnchorPane buildControlPanel() {
+        return (AnchorPane) loader.load("/view/control_panel.fxml");
     }
 
     @Override
     public AnchorPane buildEditorCanvas() {
         AnchorPane canvas = (AnchorPane) loader.load("/view/editor_canvas.fxml");
-        canvas.getChildren().addAll(buildBottomPanelWrapper());
+        canvas.getChildren().addAll(buildBottomPanelWrapper(), buildControlPanel());
         return canvas;
     }
 
     @Override
-    public VBox buildRotationPanel() {
-        return (VBox) loader.load("/view/rotation_panel.fxml");
+    public HBox buildRotationPanel() {
+        return (HBox) loader.load("/view/rotation_panel.fxml");
     }
 
     @Override
-    public VBox buildMovePanel() {
-        return (VBox) loader.load("/view/move_panel.fxml");
+    public HBox buildMovePanel() {
+        return (HBox) loader.load("/view/move_panel.fxml");
     }
 
     @Override
-    public VBox buildScalePanel() { return (VBox) loader.load("/view/scale_panel.fxml"); }
+    public HBox buildScalePanel() { return (HBox) loader.load("/view/scale_panel.fxml"); }
 
     @Override
     public StackPane buildBottomPanelWrapper() {
         return (StackPane) loader.load("/view/bottom_panel_wrapper.fxml");
+    }
+
+    @Override
+    public AnchorPane buildMainPanel() {
+        return (AnchorPane) loader.load("/view/main_panel.fxml");
     }
 }
