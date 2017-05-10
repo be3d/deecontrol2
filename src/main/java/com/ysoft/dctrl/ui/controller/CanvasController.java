@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.interactivemesh.jfx.importer.stl.StlMeshImporter;
+//import com.interactivemesh.jfx.importer.stl.StlMeshImporter;
 import com.ysoft.dctrl.editor.control.ExtendedPerspectiveCamera;
 import com.ysoft.dctrl.editor.control.TrackBallControls;
 import com.ysoft.dctrl.editor.importer.StlImporter;

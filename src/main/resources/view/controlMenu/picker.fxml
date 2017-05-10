@@ -1,0 +1,28 @@
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="">
+    <Label fx:id="label" text="Top solid layers" styleClass="control-label"></Label>
+    <HBox>
+        <children>
+            <Region prefWidth="20"></Region>
+            <ComboBox fx:id="comboBox" value="Default print profile" styleClass="control-comboBox">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Default print profile" />
+                        <String fx:value="Fast print speed" />
+                        <String fx:value="Fine quality profile" />
+                        <Separator />
+                        <String fx:value="User Profile 1" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </children>
+
+    </HBox>
+</fx:root>

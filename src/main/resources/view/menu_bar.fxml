@@ -9,7 +9,7 @@
   <Menu text="?_menu_bar_file">
     <items>
       <MenuItem text="?_menu_bar_new_project" styleClass="menu-item"/>
-      <MenuItem text="?_menu_bar_open_model" styleClass="menu-item"/>
+      <MenuItem fx:id="add" text="?_menu_bar_open_model" styleClass="menu-item"/>
       <MenuItem text="?_menu_bar_import_gcode" styleClass="menu-item"/>
       <MenuItem text="?_menu_bar_save_project" styleClass="menu-item"/>
       <MenuItem text="?_menu_bar_export_gcode" styleClass="menu-item"/>

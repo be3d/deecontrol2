@@ -37,7 +37,7 @@ public class BaseWindow {
 
         // TODO add config to application - get default values from config
         //
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 1024, 800);
         root.prefHeightProperty().bind(scene.heightProperty());
         root.prefWidthProperty().bind(scene.widthProperty());
 
@@ -45,8 +45,8 @@ public class BaseWindow {
         underMenuBar.maxHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()));
         underMenuBar.prefHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()));
 
-        setAnchors(controlMenu, 0.0, 0.0, 0.0, null);
-        setAnchors(editorCanvas, 0.0, null, 0.0, 0.0);
+        setAnchors(controlMenu, 0.0, null, 0.0, 0.0);
+        setAnchors(editorCanvas, 0.0, 0.0, 0.0, null);
 
         editorCanvas.prefWidthProperty().bind(underMenuBar.widthProperty().subtract(controlMenu.widthProperty()));
         editorCanvas.prefHeightProperty().bind(underMenuBar.prefHeightProperty());
@@ -67,4 +67,5 @@ public class BaseWindow {
         if(bottom != null) { AnchorPane.setBottomAnchor(el, bottom); }
         if(right  != null) { AnchorPane.setRightAnchor( el, right); }
     }
+
 }

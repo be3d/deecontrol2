@@ -1,9 +1,12 @@
 package com.ysoft.dctrl.ui.controller;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javafx.scene.control.Button;
+import javafx.stage.FileChooser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -30,6 +33,7 @@ public class MenuBarController extends LocalizableController implements Initiali
 
     @FXML Menu language;
 
+
     @Autowired
     public MenuBarController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext deeControlContext) {
         super(localizationResource, eventBus, deeControlContext);
@@ -46,7 +50,6 @@ public class MenuBarController extends LocalizableController implements Initiali
         czech.setOnAction(this::languageChange);
 
         language.getItems().addAll(english, czech);
-
         addTranslation(menuBar);
         super.initialize(location, resources);
     }

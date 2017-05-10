@@ -1,0 +1,14 @@
+{
+  "ID": "PLA",
+  "LABEL": "PLA",
+  "METADATA": {},
+  "SLICER_PARAMS": [
+  	{
+  		"id":"MATERIAL_PRINT_TEMPERATURE",
+  		"value":205
+  	},{
+  		"id":"SPEED_PRINT",
+  		"value":30
+  	}
+  ]   
+}

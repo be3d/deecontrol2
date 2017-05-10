@@ -1,0 +1,17 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="">
+    <Label fx:id="label" styleClass="control-label"></Label>
+    <HBox spacing="0"  alignment="TOP_LEFT">
+    <children>
+        <Region prefWidth="30"></Region>
+        <Slider fx:id="slider"
+                showTickMarks="true"  majorTickUnit="0.05" showTickLabels="false" minorTickCount="0" styleClass="control-slider" snapToTicks="true"
+                max="0.2" min="0.1" value="0.15"></Slider>
+        <Region prefWidth="26"></Region>
+        <Label fx:id="valueLabel" text="0.15" styleClass="control-value"></Label>
+    </children>
+    </HBox>
+</fx:root>

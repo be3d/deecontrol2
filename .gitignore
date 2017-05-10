@@ -32,3 +32,6 @@ node_modules
 
 #Git message
 .gittemplate
+classes/
+bin/
+src/main/resources/print/slicer/definitions/printer/ignore/

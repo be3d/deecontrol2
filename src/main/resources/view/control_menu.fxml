@@ -5,16 +5,70 @@
 
 <?import java.net.URL?>
 
-<AnchorPane fx:controller="com.ysoft.dctrl.ui.controller.ControlMenuController" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu">
-  <VBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" styleClass="menubox">
-    <Button fx:id="add" styleClass="control-button" text="Add" />
-    <Button text="Move" styleClass="control-button" />
-    <Button text="Scale" styleClass="control-button" />
-    <Button text="Rotate" styleClass="control-button" />
-    <Button text="Group" styleClass="control-button" />
-  </VBox>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Label?>
 
-  <Button fx:id="collapse" styleClass="collapse-button" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="60" AnchorPane.rightAnchor="10" text="col" />
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.ScrollPane?>
+
+<?import com.ysoft.dctrl.ui.controller.controlMenu.Picker?>
+<?import com.ysoft.dctrl.ui.controller.controlMenu.TextInput?>
+<?import com.ysoft.dctrl.ui.controller.controlMenu.CheckBoxLabelled?>
+<?import com.ysoft.dctrl.ui.controller.controlMenu.SliderDiscrete?>
+<?import com.ysoft.dctrl.ui.controller.controlMenu.SliderContinuous?>
+
+<AnchorPane fx:id="anchorPane" fx:controller="com.ysoft.dctrl.ui.controller.ControlMenuController" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu">
+
+  <ScrollPane styleClass="control-menu-scrollBar" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+    <content>
+      <VBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+          <HBox spacing="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" minHeight="50" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
+          <children>
+            <Region prefWidth="14"></Region>
+            <ImageView  fitHeight="32" fitWidth="32" >
+              <image>
+                <Image url="@/img/print_settings-full.png"></Image>
+              </image>
+            </ImageView>
+
+            <Label text="Print settings" styleClass="control-menu-section-header-text"></Label>
+            <Region prefWidth="150"></Region>
+            <!--<Button fx:id="add" styleClass="add-control-button" text="." visible="true" AnchorPane.rightAnchor="0"/>-->
+          </children>
+        </HBox>
+
+        <Picker label="Print profile" boundParamID="test" fx:id="profilePicker" ></Picker>
+        <TextInput fx:id="printJobNameInput" label="Print job name" textPlaceHolder="Type this print job's name"></TextInput>
+        <Picker label="Initial platform" boundParamID="test" fx:id="raftStructurePicker" ></Picker>
+        <CheckBoxLabelled fx:id="supportsCheckBox" text="Print Supports" label="Model supports"></CheckBoxLabelled>
+
+        <VBox fx:id="advSettingsBox" visible="false" managed="false">
+          <SliderDiscrete fx:id="layerHeightSlider" label="Layer height (mm)" min="0.0" max="0.15" step="0.05"></SliderDiscrete>
+          <SliderContinuous fx:id="infillDensitySlider" label="Infill density (%)" min="0.0" max="50"></SliderContinuous>
+          <SliderContinuous fx:id="supportDensitySlider" label="Support density (%)" min="0.0" max="50"></SliderContinuous>
+        </VBox>
+
+        <Label fx:id="advSettingsToggle" AnchorPane.leftAnchor="20" styleClass="control-advSettingsToggle"  text="Show advanced settings..."></Label>
+
+        <Region prefHeight="30"></Region>
+        <ProgressBar fx:id="progress"  styleClass="control-progress" translateX="20" visible="false"></ProgressBar>
+      </VBox>
+
+    </content>
+  </ScrollPane>
+
+
+  <HBox alignment="CENTER" AnchorPane.bottomAnchor="10"  AnchorPane.leftAnchor="10"  AnchorPane.rightAnchor="10"  >
+    <Button fx:id="slice" styleClass="control-button" text="PREPARE FOR PRINT" />
+  </HBox>
+
+  <!--Testing-->
+  <Button fx:id="cancelSlice" text="Cancel Slice" styleClass="control-button" visible="false"/>
+  <Button fx:id="prepareSlice" text="Prepare slice" styleClass="control-button" visible="false"/>
+  <Button fx:id="loadProfile" text="Load profile" styleClass="control-button" visible="false" />
+  <Button fx:id="saveProfile" text="Save profile" styleClass="control-button" visible="false"/>
+
 
   <stylesheets>
     <URL value="@/css/control_menu.css" />
