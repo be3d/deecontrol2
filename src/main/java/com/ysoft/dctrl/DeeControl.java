@@ -1,5 +1,6 @@
 package com.ysoft.dctrl;
 
+import javafx.concurrent.Task;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -23,11 +24,12 @@ public class DeeControl extends Application {
     public void start(Stage primaryStage) throws Exception {
         applicationContext = new AnnotationConfigApplicationContext(DeeControlConfig.class);
 
-        //DeeControlContext deeControlContext = applicationContext.getBean(DeeControlContext.class);
+        DeeControlContext deeControlContext = applicationContext.getBean(DeeControlContext.class);
 
         BaseWindow baseWindow = applicationContext.getBean(BaseWindow.class);
         baseWindow.composeWindow(primaryStage);
         primaryStage.setTitle("DeeControl2");
         primaryStage.show();
+
     }
 }

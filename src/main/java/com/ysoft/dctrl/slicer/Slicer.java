@@ -1,7 +1,8 @@
 package com.ysoft.dctrl.slicer;
 
-import java.io.BufferedReader;
-import java.io.File;
+import com.ysoft.dctrl.slicer.param.SlicerParam;
+import javafx.scene.control.ProgressBar;
+
 import java.util.Map;
 
 /**
@@ -9,8 +10,14 @@ import java.util.Map;
  */
 public interface Slicer {
 
-    void run(Map<String,Object> slicerParams) throws Exception;
+    void run(Map<String, SlicerParam> slicerParams, String modelSTL, ProgressBar progressBar) throws Exception;
 
-    void progressHandler(BufferedReader stdInput) throws Exception;
+    void stopTask();
+
+    Map<String,SlicerParam> filterSupportedParams(Map<String, SlicerParam> allParams);
+
+    boolean supportsParam(String paramName);
+
+
 
 }

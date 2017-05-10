@@ -1,8 +1,13 @@
 package com.ysoft.dctrl.slicer;
 
-import com.ysoft.dctrl.slicer.filament.Filaments;
-import com.ysoft.dctrl.slicer.printer.Printers;
+import com.ysoft.dctrl.event.*;
+import com.ysoft.dctrl.slicer.cura.Cura;
+import com.ysoft.dctrl.slicer.param.SlicerParam;
+import com.ysoft.dctrl.slicer.param.SlicerParamType;
+import com.ysoft.dctrl.slicer.printer.Printer;
+import com.ysoft.dctrl.slicer.printer.PrinterResource;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -12,22 +17,41 @@ import java.util.Map;
 public class SlicerTest {
     public static void main(String[] args) throws Exception{
 
-        SlicerManager slicerManager = new SlicerManager(null, null);
-
+        EventBus eventBus = new DefaultEventBus();
         // PRINTER
-        Map<Printers,List<SlicerParam>> printers =  slicerManager.getPrinterList();
-        slicerManager.setPrinter(Printers.EDEE_V1.name());
+        PrinterResource printerResource = new PrinterResource(eventBus);
+     //   SlicerManager slicerManager = new SlicerManager(eventBus, null, printerResource, new Cura());
+
+
+        //select printer
+        List<Printer> printerList = printerResource.getAllPrinters();
+        printerResource.setPrinter(printerList.get(0)); // set eDee
+
+
+       // Map<Printers,List<SlicerParam>> printers =  slicerManager.getPrinterList();
+        //slicerManager.setPrinter(Printers.EDEE_V1.name());
 
         // FILAMENT
-        Map<Filaments,List<SlicerParam>> filaments = slicerManager.getFilamentList();
-        slicerManager.setFilament(Filaments.PLA.name());
+        //Map<Filaments,List<SlicerParam>> filaments = slicerManager.getFilamentList();
+        //slicerManager.setFilament(Filaments.PLA.name());
 
         // PARAMETERS
-        List<SlicerParam> parameters = slicerManager.getParameterList(); // with ranges
+//        Map<String, SlicerParam> params =  slicerManager.collectParameters();
+//        boolean b = slicerManager.slicer.supportsParam("asdf");
+//        boolean b2 = slicerManager.slicer.supportsParam("MACHINE_WIDTH");
 
-        slicerManager.setParam(SlicerParams.EXTRUSION_WIDTH.name(), "0.05"); // float
+        //List<SlicerParam> parameters = slicerManager.getParameterList(); // with ranges
 
-        // SLICE.
-        slicerManager.slice();
+//        params.get(SlicerParamType.LAYER_HEIGHT.name()).setValue(0.11);
+       // slicerManager.setParam(SlicerParamType.LAYER_HEIGHT.name(), 0.21); // float
+
+    // eventbus
+        //eventBus.subscribe(EventType.PRINTER_CHANGE.name(), (SlicerManager) -> System.out.println("Hahaha"));
+
+        // SLICE
+        String modelSTL = System.getProperty("user.home") + File.separator + ".dctrl" + File.separator + ".slicer" + File.separator + "dctrl_scene.stl";;
+      //  slicerManager.slice(modelSTL);
+
+
     }
 }

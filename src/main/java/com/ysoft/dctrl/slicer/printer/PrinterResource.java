@@ -1,95 +1,104 @@
 package com.ysoft.dctrl.slicer.printer;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import com.ysoft.dctrl.slicer.SlicerParam;
+import com.ysoft.dctrl.event.Event;
+import com.ysoft.dctrl.event.EventBus;
+import com.ysoft.dctrl.event.EventType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.security.CodeSource;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created by kuhn on 4/5/2017.
  */
-public class PrinterManager {
-    protected String PRINTER_DEF = "";
+
+@Component
+public class PrinterResource {
+
     private static ObjectMapper objectMapper;
+    private static EventBus eventBus;
+
     private static final String DEFINITIONS_PATH = "/print/slicer/definitions/printer";
 
-    public PrinterManager(ObjectMapper om){
-        this.objectMapper = om;
+    List<Printer> printers;
+    Printer selectedPrinter;
+
+    @Autowired
+    public PrinterResource(EventBus eventBus){
+        System.err.println("Printer resource init");
+        objectMapper = new ObjectMapper();
+
+        this.eventBus = eventBus;
+        this.printers = loadPrinters();
     }
 
-    public List<String> getAllTypes(){
+    private List<Printer> loadPrinters(){
+        List<Printer> printers = new ArrayList<>();
+        File [] printerFiles = new File[0];
+
         try {
-            URL printerDefinitions = PrinterManager.class.getResource(DEFINITIONS_PATH);
+            URL printerDefinitions = PrinterResource.class.getResource(DEFINITIONS_PATH);
 
             if (printerDefinitions == null) throw new IOException("Printer definitions folder not found.");
 
+            System.out.println(printerDefinitions.toURI());
+            System.out.println(Paths.get(printerDefinitions.toURI()));
             File printerDefinitionsFolder = Paths.get(printerDefinitions.toURI()).toFile();
-            File [] printers = printerDefinitionsFolder.listFiles();
+            printerFiles = printerDefinitionsFolder.listFiles();
 
             if (printers == null) throw new IOException("No printers found.");
 
-            for(File f : printers){
-                if(f.isFile()){
-                    // read printer definition, construct printer object
-                    // new Printer
-
-                }
-            }
-
-        } catch (URISyntaxException | IOException e) {
+        } catch ( IOException e) {
             System.out.println( e.getMessage());
-        }
-    }
-
-    public List<SlicerParam> collectParameters(Printers printer){
-        switch(printer){
-            case EDEE_V1:
-                this.PRINTER_DEF = "eDee_v1";
-                break;
-            case DEERED_V1:
-                this.PRINTER_DEF = "deeRed_v1";
-                break;
-        }
-        return this.readPrinterDefinition();
-    }
-
-    protected List<SlicerParam> readPrinterDefinition() {
-        List<SlicerParam> printerParameters = new ArrayList<>();
-
-        JsonNode rootNode = null;
-        try {
-            rootNode = this.objectMapper.readTree(new File(DEFINITIONS_PATH + File.separator + this.PRINTER_DEF + ".def.json"));
-        }
-        catch (IOException e){
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
 
-        Iterator<Map.Entry<String,JsonNode>> fieldsIterator = rootNode.get("SLICER_PARAMS").fields();
-        while (fieldsIterator.hasNext()) {
-            Map.Entry<String,JsonNode> field = fieldsIterator.next();
-            printerParameters.add(new SlicerParam(field.getKey(), field.getValue()));
+        for(File f : printerFiles){
+            if(f.isFile()){
+                try{
+                    Printer p = this.objectMapper.readValue(f, Printer.class);
+                    if (p.id != null){
+                        printers.add(p);
+                    }
+                }catch ( IOException e){
+                    System.out.println("Printer definition error." + f.toString() + " " + e.getMessage());
+               }
+            }
         }
-
-        return printerParameters;
+        return printers;
     }
 
-    public Map<Printers, List<SlicerParam>> getPrinters(){
-        Map<Printers, List<SlicerParam>> printerList = new EnumMap<Printers, List<SlicerParam>>(Printers.class);
-        for (Printers printer : Printers.values())
-            printerList.put(Printers.valueOf(printer.name()),this.collectParameters(Printers.valueOf(printer.name())));
-        return printerList;
+    public List<Printer> getAllPrinters(){
+        return this.printers;
     }
 
-    //get speed profiles
+    public void setPrinter(Printer printer){
+        this.selectedPrinter = printer;
+        this.eventBus.publish(new Event(EventType.PRINTER_CHANGED.name()));
+    }
 
-    //get quality profiles
+    public void setPrinter(String printerID){
+        for (Printer p : printers){
+            if(p.id.equals(printerID)) {
+                this.setPrinter(p);
+                return;
+            }
+        }
+        System.out.println("PrinterResource: Printer " + printerID + "could not be set.");
+    }
+
+    public Printer getPrinter() {
+        return this.selectedPrinter;
+    }
 
 }
