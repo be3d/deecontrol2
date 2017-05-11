@@ -30,4 +30,6 @@ public class DeeControlContext {
     public Locale getStartUpLocale() {
         return settings.getStartUpLocale();
     }
+
+    public String getLastOpenPwd() { return settings.getLastOpenPwd(); }
 }

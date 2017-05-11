@@ -26,6 +26,7 @@ public class TrackBallControls {
     private static final Point2D DEFAULT_LOOK_AXIS = new Point2D(0, 1);
 
     private final ExtendedPerspectiveCamera camera;
+    private final Point3D initialCameraPosition;
     private boolean enabled;
     private Point3D target;
     private Point3D position;
@@ -44,6 +45,7 @@ public class TrackBallControls {
 
     public TrackBallControls(ExtendedPerspectiveCamera camera, Point3D initialPosition) {
         this.camera = camera;
+        this.initialCameraPosition = initialPosition;
         target = new Point3D(0,0,0);
         position = new Point3D(0,0,0);
         alpha = Math.PI;
@@ -53,8 +55,8 @@ public class TrackBallControls {
         previousState = State.NONE;
 
         setCameraPosition(new Point3D(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ()));
-        camera.setRotationX(theta);
-        camera.setRotationY(alpha);
+        camera.setRotationX(Math.toDegrees(-theta));
+        camera.setRotationY(Math.toDegrees(alpha) + 180);
     }
 
     private enum State {
@@ -75,6 +77,14 @@ public class TrackBallControls {
 
         camera.setRotationX(xAngle);
         camera.setRotationY(yAngle);
+    }
+
+    public void resetCamera() {
+        alpha = Math.PI;
+        theta = 0;
+        camera.setRotationX(Math.toDegrees(-theta));
+        camera.setRotationY(Math.toDegrees(alpha) + 180);
+        setCameraPosition(Point3DUtils.copy(initialCameraPosition));
     }
 
     private void updatePosition() {

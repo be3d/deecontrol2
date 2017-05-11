@@ -25,7 +25,8 @@ public class BaseComponentFactory implements
         MovePanelFactory,
         ScalePanelFactory,
         BottomPanelWrapperFactory,
-        MainPanelFactory
+        MainPanelFactory,
+        NoModelPanelFactory
 {
     private final SpringFXMLLoader loader;
 
@@ -47,7 +48,7 @@ public class BaseComponentFactory implements
     @Override
     public AnchorPane buildEditorCanvas() {
         AnchorPane canvas = (AnchorPane) loader.load("/view/editor_canvas.fxml");
-        canvas.getChildren().addAll(buildBottomPanelWrapper(), buildControlPanel());
+        canvas.getChildren().addAll(buildBottomPanelWrapper(), buildControlPanel(), buildNoModelPanel());
         return canvas;
     }
 
@@ -73,4 +74,7 @@ public class BaseComponentFactory implements
     public AnchorPane buildMainPanel() {
         return (AnchorPane) loader.load("/view/main_panel.fxml");
     }
+
+    @Override
+    public StackPane buildNoModelPanel() { return (StackPane) loader.load("/view/no_model_panel.fxml"); }
 }

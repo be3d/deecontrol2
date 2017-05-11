@@ -15,6 +15,8 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -54,6 +56,7 @@ public class SceneGraph {
         selected = null;
 
         eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> addMesh((TriangleMesh) e.getData()));
+        eventBus.subscribe(EventType.CENTER_SELECTED_MODEL.name(), (e) -> centerSelected());
     }
 
     private ExtendedPerspectiveCamera createCamera() {
@@ -83,6 +86,11 @@ public class SceneGraph {
     }
 
     public LinkedList<SceneMesh> getSceneMeshes() { return sceneMeshes; }
+
+    public void centerSelected() {
+        if(selected == null) { return; }
+        selected.setPosition(new Point2D(0,0));
+    }
 
     public void addMesh(TriangleMesh mesh) {
         ExtendedMesh extendedMesh = new ExtendedMesh(mesh);

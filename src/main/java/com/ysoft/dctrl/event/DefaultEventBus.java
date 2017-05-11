@@ -2,6 +2,7 @@ package com.ysoft.dctrl.event;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class DefaultEventBus implements EventBus{
     private Integer handlerCounter;
 
     public DefaultEventBus() {
-        handlerMap = new HashMap<>();
+        handlerMap = new ConcurrentHashMap<>();
         handlerCounter = 0;
     }
 
@@ -31,7 +32,7 @@ public class DefaultEventBus implements EventBus{
     public String subscribe(String type, EventHandler handler) {
         Map<Integer, EventHandler> handlers = handlerMap.get(type);
         if(handlers == null) {
-            handlers = new HashMap<>();
+            handlers = new ConcurrentHashMap<>();
             handlerMap.put(type, handlers);
         }
 

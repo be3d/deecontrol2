@@ -1,5 +1,6 @@
 package com.ysoft.dctrl.editor.mesh;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 
 /**
@@ -39,11 +40,13 @@ public interface Controllable {
     double getRotationZ();
 
     void move(Point3D diff);
+    void move(Point2D diff);
     void moveX(double diff);
     void moveY(double diff);
     void moveZ(double diff);
 
     void setPosition(Point3D position);
+    void setPosition(Point2D position);
     void setPositionX(double position);
     void setPositionY(double position);
     void setPositionZ(double position);

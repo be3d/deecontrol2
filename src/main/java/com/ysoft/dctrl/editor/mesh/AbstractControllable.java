@@ -1,5 +1,6 @@
 package com.ysoft.dctrl.editor.mesh;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 
 /**
@@ -123,6 +124,9 @@ public abstract class AbstractControllable implements Controllable {
     }
 
     @Override
+    public void move(Point2D diff) { move(new Point3D(diff.getX(), diff.getY(), 0)); }
+
+    @Override
     public void moveX(double diff) {
         setPositionX(getPositionX() + diff);
     }
@@ -136,6 +140,9 @@ public abstract class AbstractControllable implements Controllable {
     public void moveZ(double diff) {
         setPositionZ(getPositionZ() + diff);
     }
+
+    @Override
+    public void setPosition(Point2D position) { setPosition(new Point3D(position.getX(), position.getY(), getPositionZ()));}
 
     @Override
     public void setPositionX(double position) {

@@ -1,7 +1,9 @@
 package com.ysoft.dctrl.ui.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,10 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Point3D;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -67,22 +72,37 @@ public class CanvasController extends AbstractController implements Initializabl
         canvas.setOnMouseDragged(controls::onMouseDragged);
         canvas.setOnMouseReleased(controls::onMouseReleased);
         canvas.setOnScroll(controls::onScroll);
+        canvas.setOnDragDropped(this::onDragDrop);
+        canvas.setOnDragOver(this::onDragOver);
 
         keyEventPropagator.onKeyPressed(this::keyDown);
         eventBus.subscribe(EventType.ADD_MODEL.name(), this::addModel);
         eventBus.subscribe(EventType.MODEL_LOAD_PROGRESS.name(), (e) -> {
             System.err.println("p: " + (double) e.getData());
         });
+        eventBus.subscribe(EventType.RESET_VIEW.name(), (e) -> controls.resetCamera());
+    }
+
+    private void onDragOver(DragEvent dragEvent) {
+        if(dragEvent.getGestureSource() != canvas && dragEvent.getDragboard().hasFiles()) {
+            dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+        dragEvent.consume();
+    }
+
+    private void onDragDrop(DragEvent dragEvent) {
+        Dragboard db = dragEvent.getDragboard();
+        if(db.hasFiles()) {
+            db.getFiles().forEach((f) -> addModel(f.getAbsolutePath()));
+        }
     }
 
     public void addModel(Event event) {
         String modelPath = (String) event.getData();
-        TriangleMesh mesh;
+        addModel(modelPath);
+    }
 
-        //StlMeshImporter importer = new StlMeshImporter();
-        //importer.read(modelPath);
-        //mesh = importer.getImport();
-
+    public void addModel(String modelPath) {
         StlImporter stlImporter = new StlImporter();
         ImportRunner importRunner = new ImportRunner(eventBus, stlImporter, modelPath);
         importRunner.setOnSucceeded(e -> {
