@@ -40,7 +40,7 @@ public class ProfileResource {
         List<Profile> profiles = new ArrayList<>();
 
         File profilesFolder = Paths.get(PROFILE_FOLDER).toFile();
-        profilesFolder.mkdir();
+        profilesFolder.mkdirs();
 
         File [] profileFiles = profilesFolder.listFiles();
         for(File f : profileFiles){

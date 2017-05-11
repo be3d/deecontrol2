@@ -3,16 +3,20 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 
 <?import java.net.URL?>
-<MenuBar xmlns:fx="http://javafx.com/fxml" fx:id="menuBar" fx:controller="com.ysoft.dctrl.ui.controller.MenuBarController" useSystemMenuBar="true">
+<MenuBar xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.MenuBarController" useSystemMenuBar="true">
   <Menu text="?_menu_bar_file">
     <items>
       <MenuItem text="?_menu_bar_new_project" styleClass="menu-item"/>
       <MenuItem fx:id="add" text="?_menu_bar_open_model" styleClass="menu-item"/>
       <MenuItem text="?_menu_bar_import_gcode" styleClass="menu-item"/>
+      <!--<SeparatorMenuItem />-->
       <MenuItem text="?_menu_bar_save_project" styleClass="menu-item"/>
       <MenuItem text="?_menu_bar_export_gcode" styleClass="menu-item"/>
+      <!--<SeparatorMenuItem />-->
+      <MenuItem fx:id="settings" text="Settings" styleClass="menu-item" />
     </items>
   </Menu>
   <Menu text="?_menu_bar_edit">
@@ -48,5 +52,6 @@
 
   <stylesheets>
     <URL value="@/css/menu_bar.css" />
+    <URL value="@/css/master.css" />
   </stylesheets>
 </MenuBar>

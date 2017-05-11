@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 public class Settings {
     private Locale startUpLocale;
     private Consumer<Settings> onChangeHandler;
+    private String lastOpenPwd;
 
     public Settings() {
         onChangeHandler = null;
@@ -21,6 +22,15 @@ public class Settings {
 
     public void setStartUpLocale(Locale startUpLocale) {
         this.startUpLocale = startUpLocale;
+        handleChange();
+    }
+
+    public String getLastOpenPwd() {
+        return lastOpenPwd;
+    }
+
+    public void setLastOpenPwd(String lastOpenPwd) {
+        this.lastOpenPwd = lastOpenPwd;
         handleChange();
     }
 

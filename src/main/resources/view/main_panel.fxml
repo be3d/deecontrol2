@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+
+<?import java.net.URL?>
+
+<AnchorPane fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.MainPanelController" xmlns:fx="http://javafx.com/fxml">
+  <HBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" styleClass="panel, main-panel">
+    <HBox styleClass="main-panel-group">
+      <Button fx:id="add" text="Add" styleClass="main-panel-button, add-button" />
+    </HBox>
+    <HBox styleClass="main-panel-group">
+      <Button fx:id="undo" text="Undo" styleClass="main-panel-button, undo-button" />
+      <Button fx:id="redo" text="Redo" styleClass="main-panel-button, redo-button" />
+    </HBox>
+    <HBox styleClass="main-panel-group">
+      <Button fx:id="group" text="Group" styleClass="main-panel-button, group-button" />
+      <Button fx:id="ungroup" text="Ungroup" styleClass="main-panel-button, ungourp-button" />
+    </HBox>
+    <HBox styleClass="main-panel-group">
+      <Button fx:id="center" text="Center" styleClass="main-panel-button, center-button" />
+      <Button fx:id="left" text="Left" styleClass="main-panel-button, left-button" />
+      <Button fx:id="right" text="Right" styleClass="main-panel-button, right-button" />
+      <Button fx:id="front" text="Front" styleClass="main-panel-button, front-button" />
+      <Button fx:id="back" text="Back" styleClass="main-panel-button, back-button" />
+    </HBox>
+    <HBox styleClass="main-panel-group">
+      <Button fx:id="resetView" text="Reset view" styleClass="main-panel-button, reset-view-button" />
+    </HBox>
+  </HBox>
+
+  <stylesheets>
+    <URL value="@/css/master.css" />
+    <URL value="@/css/main_panel.css" />
+  </stylesheets>
+</AnchorPane>

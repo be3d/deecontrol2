@@ -20,6 +20,7 @@ import com.ysoft.dctrl.utils.settings.contract.Settings;
 @Component
 public class SettingsStore {
     private static final String LOCALE = "locale";
+    private static final String LAST_OPEN_PWD = "lastOpenPwd";
 
     private final String settingsFilePath;
 
@@ -28,6 +29,7 @@ public class SettingsStore {
     public SettingsStore() {
         settingsFilePath = System.getProperty("user.home") + File.separator + ".dctrl" + File.separator + "settings.properties";
         settings = new Settings();
+        settings.onChange(this::saveSettings);
     }
 
     public void saveSettings() {
@@ -37,6 +39,7 @@ public class SettingsStore {
     private void saveSettings(Settings settings) {
         Properties properties = new Properties();
         properties.put(LOCALE, getLocaleString(settings.getStartUpLocale()));
+        properties.put(LAST_OPEN_PWD, settings.getLastOpenPwd());
 
         try {
             properties.store(new FileWriter(settingsFilePath), "DeeControl settings");
@@ -65,6 +68,7 @@ public class SettingsStore {
             properties.load(new FileReader(settingsFilePath));
 
             settings.setStartUpLocale(parseLocale(properties.getProperty(LOCALE)));
+            settings.setLastOpenPwd(properties.getProperty(LAST_OPEN_PWD));
         } catch (IOException e) {
             System.err.println("hups :D");
         }

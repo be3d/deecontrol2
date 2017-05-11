@@ -2,6 +2,8 @@ package com.ysoft.dctrl.editor.control;
 
 import com.sun.javafx.geom.Matrix3f;
 import com.ysoft.dctrl.math.AxisAngleRotation;
+import com.ysoft.dctrl.math.Matrix3D;
+import com.ysoft.dctrl.math.Matrix3DFactory;
 import com.ysoft.dctrl.math.Point3DUtils;
 
 import javafx.geometry.Point2D;
@@ -14,8 +16,8 @@ import javafx.scene.input.ScrollEvent;
  */
 public class TrackBallControls {
     private static final double ROTATE_SPEED = 0.01;
-    private static final double ZOOM_SPEED = 1.2;
-    private static final double PAN_SPEED = 0.05;
+    private static final double ZOOM_SPEED = 5;
+    private static final double PAN_SPEED = 0.1;
 
     private static final double MAX_ZOOM = 20;
     private static final double MIN_ZOOM = 800;
@@ -24,6 +26,7 @@ public class TrackBallControls {
     private static final Point2D DEFAULT_LOOK_AXIS = new Point2D(0, 1);
 
     private final ExtendedPerspectiveCamera camera;
+    private final Point3D initialCameraPosition;
     private boolean enabled;
     private Point3D target;
     private Point3D position;
@@ -37,7 +40,12 @@ public class TrackBallControls {
     private State previousState;
 
     public TrackBallControls(ExtendedPerspectiveCamera camera) {
+        this(camera, new Point3D(0, -100, 0));
+    }
+
+    public TrackBallControls(ExtendedPerspectiveCamera camera, Point3D initialPosition) {
         this.camera = camera;
+        this.initialCameraPosition = initialPosition;
         target = new Point3D(0,0,0);
         position = new Point3D(0,0,0);
         alpha = Math.PI;
@@ -46,10 +54,9 @@ public class TrackBallControls {
         currentState = State.NONE;
         previousState = State.NONE;
 
-        setCameraPosition(new Point3D(0, -60, 0));
-        camera.setRotationX(theta);
-        camera.setRotationY(alpha);
-        //lookAtTarget();
+        setCameraPosition(new Point3D(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ()));
+        camera.setRotationX(Math.toDegrees(-theta));
+        camera.setRotationY(Math.toDegrees(alpha) + 180);
     }
 
     private enum State {
@@ -72,13 +79,16 @@ public class TrackBallControls {
         camera.setRotationY(yAngle);
     }
 
+    public void resetCamera() {
+        alpha = Math.PI;
+        theta = 0;
+        camera.setRotationX(Math.toDegrees(-theta));
+        camera.setRotationY(Math.toDegrees(alpha) + 180);
+        setCameraPosition(Point3DUtils.copy(initialCameraPosition));
+    }
+
     private void updatePosition() {
         camera.setPosition(position);
-        //lookAtTarget();
-
-        //System.err.println("pos: " + position.toString());
-        //System.err.println("tar: " + target.toString());
-        //System.err.println("rot: " + camera.getRotation().toString());
     }
 
     public void onMousePressed(MouseEvent event) {
@@ -136,11 +146,13 @@ public class TrackBallControls {
         Point3D diff = getDiff3D(targetPosition, previousMousePosition);
         diff = diff.multiply(PAN_SPEED);
 
-        AxisAngleRotation rotation = new AxisAngleRotation(DEFAULT_LOOK_AT, getLookAtVector());
-        Point3D rotated = rotation.rotate(diff);
+        Matrix3D zRotation = Matrix3DFactory.getZRotationMatrix(-alpha);
+        Matrix3D xRotation = Matrix3DFactory.getXRotationMatrix(theta);
 
-        position = position.add(rotated);
-        target = target.add(rotated);
+        diff = Point3DUtils.applyMatrix(diff, zRotation.multiply(xRotation));
+
+        position = position.add(diff);
+        target = target.add(diff);
 
         updatePosition();
         previousMousePosition = targetPosition;

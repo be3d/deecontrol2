@@ -1,0 +1,64 @@
+.main-panel {
+    -fx-padding: 7px 10px 7px 10px;
+    -fx-spacing: 60px;
+}
+
+.main-panel-group {
+    -fx-spacing: 0px;
+}
+
+.main-panel-button {
+    -fx-padding: 5px 5px 0px 5px;
+    -fx-min-width: 60px;
+    -fx-pref-height: 40px;
+    -fx-font-size: 12px;
+    -fx-alignment: bottom-center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center 3px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.add-button {
+    -fx-background-image: url("../img/main_panel/add-normal.png");
+}
+
+.undo-button {
+    -fx-background-image: url("../img/main_panel/undo-normal.png");
+}
+
+.redo-button {
+    -fx-background-image: url("../img/main_panel/redo-normal.png");
+}
+
+.group-button {
+    -fx-background-image: url("../img/main_panel/group-normal.png");
+}
+
+.ungourp-button {
+    -fx-background-image: url("../img/main_panel/ungroup-normal.png");
+}
+
+.center-button {
+    -fx-background-image: url("../img/main_panel/center-normal.png");
+}
+
+.left-button {
+    -fx-background-image: url("../img/main_panel/left-normal.png");
+}
+
+.right-button {
+    -fx-background-image: url("../img/main_panel/right-normal.png");
+}
+
+.front-button {
+    -fx-background-image: url("../img/main_panel/front-normal.png");
+}
+
+.back-button {
+    -fx-background-image: url("../img/main_panel/back-normal.png");
+}
+
+.reset-view-button {
+    -fx-background-image: url("../img/main_panel/reset-view-normal.png");
+}

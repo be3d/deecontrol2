@@ -44,6 +44,6 @@ public abstract class AbstractModelImporter implements ModelImporter {
 
     @Override
     public double getProgress() {
-        return bytesRead*100/size;
+        return size != 0 ? bytesRead*100/size : 0;
     }
 }

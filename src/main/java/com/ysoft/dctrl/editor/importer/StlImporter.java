@@ -22,11 +22,11 @@ import javafx.scene.shape.VertexFormat;
 public class StlImporter extends AbstractModelImporter {
     private static final String ASCII_START = "solid ";
 
-    private static final String FLOAT_FORMAT = "([+-]?[0-9]*\\.[0-9]+([eE][+-]?[0-9]+)?)";
-    private static final String VERTEX_FORMAT = FLOAT_FORMAT + " " + FLOAT_FORMAT + " " + FLOAT_FORMAT;
+    private static final String FLOAT_FORMAT = "([+-]?[0-9]+\\.?[0-9]*([eE][+-]?[0-9]+)?)";
+    private static final String VERTEX_FORMAT = FLOAT_FORMAT + "\\s+" + FLOAT_FORMAT + "\\s+" + FLOAT_FORMAT;
     private static final Matcher FACET_MATCHER = Pattern.compile("facet([\\s\\S]*?)endface", Pattern.MULTILINE).matcher("");
-    private static final Matcher NORMAL_MATCHER = Pattern.compile("normal " + VERTEX_FORMAT, Pattern.MULTILINE).matcher("");
-    private static final Matcher VERTEX_MATCHER = Pattern.compile("vertex " + VERTEX_FORMAT, Pattern.MULTILINE).matcher("");
+    private static final Matcher NORMAL_MATCHER = Pattern.compile("normal\\s+" + VERTEX_FORMAT, Pattern.MULTILINE).matcher("");
+    private static final Matcher VERTEX_MATCHER = Pattern.compile("vertex\\s+" + VERTEX_FORMAT, Pattern.MULTILINE).matcher("");
 
     private TriangleMesh mesh;
     private Map<String, Integer> vertexMap;
@@ -51,11 +51,14 @@ public class StlImporter extends AbstractModelImporter {
             bis.read(data, 0, data.length);
             bis.mark(data.length);
             bis.reset();
+            TriangleMesh mesh;
             if(ASCII_START.equals(new String(data, StandardCharsets.UTF_8))) {
-                return loadAscii(bis);
+                mesh = loadAscii(bis);
             } else {
-                return loadBinary(bis);
+                mesh = loadBinary(bis);
             }
+            mesh.getTexCoords().addAll(0.0f, 0.0f);
+            return mesh;
         }
     }
 
@@ -89,9 +92,10 @@ public class StlImporter extends AbstractModelImporter {
             addBytesRead(read);
             builder.append(buffer, 0, read);
             FACET_MATCHER.reset(builder);
-            if(FACET_MATCHER.find()) {
+            while(FACET_MATCHER.find()) {
                 loadFace(FACET_MATCHER.group());
                 builder.delete(0, FACET_MATCHER.end());
+                FACET_MATCHER.reset(builder);
             }
         }
         return mesh;

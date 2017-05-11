@@ -18,6 +18,7 @@ import com.ysoft.dctrl.ui.i18n.LocalizationResource;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -34,6 +35,8 @@ public abstract class LocalizableController extends AbstractController implement
     private Map<MenuItem, String> menuTranslations;
     private LocalizationResource localizationResource;
 
+    @FXML protected Node root;
+
     public LocalizableController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext context) {
         super(eventBus, context);
         this.localizationResource = localizationResource;
@@ -42,11 +45,12 @@ public abstract class LocalizableController extends AbstractController implement
     }
 
     @PostConstruct
-    public void registerEvent() {
+    private void registerEvent() {
         eventBus.subscribe(EventType.CHANGE_LANGUAGE.name(), this::onTranslate);
     }
 
     public void initialize(URL location, ResourceBundle resources) {
+        addTranslation(root);
         translate(deeControlContext.getStartUpLocale());
     }
 

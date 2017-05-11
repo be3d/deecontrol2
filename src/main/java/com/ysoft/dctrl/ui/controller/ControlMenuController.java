@@ -85,13 +85,13 @@ public class ControlMenuController extends LocalizableController implements Init
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-//        add.setOnAction(event -> {
-//            System.err.println(event.toString());
-//            final FileChooser dialog = new FileChooser();
-//            File f = dialog.showOpenDialog(null);
-//            if(f == null) return;
-//            eventBus.publish(new Event(EventType.ADD_MODEL.name(), f.getAbsolutePath()));
-//        });
+        //        add.setOnAction(event -> {
+        //            System.err.println(event.toString());
+        //            final FileChooser dialog = new FileChooser();
+        //            File f = dialog.showOpenDialog(null);
+        //            if(f == null) return;
+        //            eventBus.publish(new Event(EventType.ADD_MODEL.name(), f.getAbsolutePath()));
+        //        });
 
         List<Profile> list = profileResource.getProfiles();
         ObservableList obList = FXCollections.observableList(list);
@@ -148,12 +148,12 @@ public class ControlMenuController extends LocalizableController implements Init
         });
 
         // Adv settings
-//        layerHeightSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-//            Double value = (Math.round(newValue.doubleValue()*100)/100.0);
-//            layerHeightValue.setText(value.toString());
-//            slicerParams.updateParam(SlicerParamType.LAYER_HEIGHT.name(), value);
-//        });
-//
+        //        layerHeightSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+        //            Double value = (Math.round(newValue.doubleValue()*100)/100.0);
+        //            layerHeightValue.setText(value.toString());
+        //            slicerParams.updateParam(SlicerParamType.LAYER_HEIGHT.name(), value);
+        //        });
+        //
         layerHeightSlider.addChangeListener((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.LAYER_HEIGHT.name(), newValue));
 
         super.initialize(location, resources);
