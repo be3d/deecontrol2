@@ -21,6 +21,8 @@ public class CuraParamMap<T> extends EnumMap<SlicerParamType, String>{
         this.put(SlicerParamType.SPEED_PRINT,"speed_print");
         this.put(SlicerParamType.SPEED_OUTER_WALL,"speed_wall_0");
         this.put(SlicerParamType.SPEED_INNER_WALL,"speed_wall_x");
+        this.put(SlicerParamType.SPEED_WALL,"speed_wall");
+        this.put(SlicerParamType.SPEED_SOLID_LAYERS,"speed_topbottom");
 
         this.put(SlicerParamType.LAYER_HEIGHT,"layer_height");
         this.put(SlicerParamType.LAYER_HEIGHT_0,"layer_height_0");
@@ -33,6 +35,8 @@ public class CuraParamMap<T> extends EnumMap<SlicerParamType, String>{
 
         this.put(SlicerParamType.INFILL_OVERLAP_PERCENTAGE,"infill_overlap");
         this.put(SlicerParamType.INFILL_LAYER_THICKNESS,"infill_sparse_thickness");
+        this.put(SlicerParamType.INFILL_PATTERN,"infill_pattern");
+        this.put(SlicerParamType.INFILL_DENSITY,"infill_sparse_density");
 
         this.put(SlicerParamType.MATERIAL_PRINT_TEMPERATURE_DEFAULT,"default_material_print_temperature");
         this.put(SlicerParamType.MATERIAL_PRINT_TEMPERATURE,"material_print_temperature");
@@ -50,6 +54,9 @@ public class CuraParamMap<T> extends EnumMap<SlicerParamType, String>{
 
         this.put(SlicerParamType.SUPPORT_ENABLED,"support_enable");
         this.put(SlicerParamType.SUPPORT_BUILDPLATE_TYPE,"adhesion_type");
+        this.put(SlicerParamType.SUPPORT_DENSITY,"support_infill_rate");
+        this.put(SlicerParamType.SUPPORT_PATTERN,"support_pattern");
+        this.put(SlicerParamType.SUPPORT_ANGLE,"support_angle");
 
     }
 

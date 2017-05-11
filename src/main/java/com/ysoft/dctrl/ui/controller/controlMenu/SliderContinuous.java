@@ -1,5 +1,8 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
+import com.ysoft.dctrl.slicer.param.SlicerParam;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -55,8 +58,33 @@ public class SliderContinuous extends BaseCustomControl{
         valueText.setText(new Double((Math.round(value * 10D) / 10D)).toString());
     }
 
-    @Override
-    public void addChangeListener(javafx.beans.value.ChangeListener listener){
+    public void setStep(Double value){ slider.setMajorTickUnit(value);}
+    public Double getStep(){ return slider.getMajorTickUnit();}
+
+
+    public SliderContinuous load(SlicerParam param){
+        // todo perform the type conversion directly in param object
+        this.boundParam = param;
+        try{
+            this.setMax(new Double(param.getMax().toString()));
+            this.setMin(new Double(param.getMin().toString()));
+            this.setStep(new Double(param.getStep().toString()));
+            this.setValue(new Double(param.getValue().toString()));
+
+        }catch(Exception e){
+            System.out.println("Error loading " + param.id);
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public SliderContinuous bindParamChanged(javafx.beans.value.ChangeListener listener){
+        boundParam.valuePropertyProperty().addListener(listener);
+        //slider.valueProperty().addListener(listener);
+        return this;
+    }
+
+    public void bindControlChanged(javafx.beans.value.ChangeListener listener){
         slider.valueProperty().addListener(listener);
     }
 }

@@ -59,9 +59,16 @@ public class ControlMenuController extends LocalizableController implements Init
 
     // Adv settings
     @FXML SliderDiscrete layerHeightSlider;
+    @FXML SliderDiscrete roofThicknessSlider;
+    @FXML SliderDiscrete bottomThicknessSlider;
+    @FXML SliderContinuous printSpeedSolidSlider;
+    @FXML SliderDiscrete shellThicknessSlider;
+    @FXML SliderContinuous printSpeedShellSlider;
+    @FXML Picker infillPatternPicker;
     @FXML SliderContinuous infillDensitySlider;
     @FXML SliderContinuous supportDensitySlider;
-
+    @FXML Picker supportPatternPicker;
+    @FXML SliderContinuous supportAngleSlider;
 
     @FXML Button slice;
 
@@ -97,12 +104,27 @@ public class ControlMenuController extends LocalizableController implements Init
         ObservableList obList = FXCollections.observableList(list);
 
         profilePicker.setItems(obList);
-        profilePicker.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
+        profilePicker.addChangeListener((observable, oldValue, newValue) -> profileResource.applyProfile(newValue));
 
-        raftStructurePicker.loadFromSlicerParam(slicerParams.getAllParams().get(SlicerParamType.SUPPORT_BUILDPLATE_TYPE.name()));
+        raftStructurePicker.load(slicerParams.get(SlicerParamType.SUPPORT_BUILDPLATE_TYPE.name()));
         raftStructurePicker.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
 
         supportsCheckBox.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
+
+        printSpeedSolidSlider
+                .load(slicerParams.get(SlicerParamType.SPEED_SOLID_LAYERS.name()))
+                .bindParamChanged((observable, oldValue, newValue) -> printSpeedSolidSlider.setValue((Double)newValue))
+                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SPEED_SOLID_LAYERS.name(), newValue)));
+
+
+
+        shellThicknessSlider.load(slicerParams.get(SlicerParamType.SHELL_THICKNESS.name()));
+        printSpeedShellSlider.load(slicerParams.get(SlicerParamType.SPEED_OUTER_WALL.name()));
+        infillPatternPicker.load(slicerParams.get(SlicerParamType.INFILL_PATTERN.name()));
+        infillDensitySlider.load(slicerParams.get(SlicerParamType.INFILL_DENSITY.name()));
+        supportDensitySlider.load(slicerParams.get(SlicerParamType.SUPPORT_DENSITY.name()));
+        supportPatternPicker.load(slicerParams.get(SlicerParamType.SUPPORT_PATTERN.name()));
+        supportAngleSlider.load(slicerParams.get(SlicerParamType.SUPPORT_ANGLE.name()));
 
         infillDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
         supportDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
@@ -154,7 +176,9 @@ public class ControlMenuController extends LocalizableController implements Init
         //            slicerParams.updateParam(SlicerParamType.LAYER_HEIGHT.name(), value);
         //        });
         //
+
         layerHeightSlider.addChangeListener((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.LAYER_HEIGHT.name(), newValue));
+
 
         super.initialize(location, resources);
     }

@@ -59,11 +59,11 @@ public class Picker extends BaseCustomControl{
         comboBox.getSelectionModel().selectedItemProperty().addListener(listener);
     }
 
-    public void loadFromSlicerParam(SlicerParam param){
+    public void load(SlicerParam param){
         if (param != null){
             items = param.getOptions();
             setItems(FXCollections.observableList(new ArrayList<>(items.values())));
-            selectItem(items.get(param.defaultValue));
+            selectItem(items.get(param.getDefaultValue()));
         }
     }
 

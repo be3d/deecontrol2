@@ -111,5 +111,14 @@ public class SlicerParams {
         return this.slicerParameters;
     }
 
+    /**
+     *
+     * @param name ID of the parameter <- (SlicerParamType)
+     * @return
+     */
+    public SlicerParam get(String name){
+        return this.slicerParameters.get(name);
+    }
+
 
 }

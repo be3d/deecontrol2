@@ -33,7 +33,7 @@
             </ImageView>
 
             <Label text="Print settings" styleClass="control-menu-section-header-text"></Label>
-            <Region prefWidth="150"></Region>
+            <Region prefWidth="80"></Region>
             <!--<Button fx:id="add" styleClass="add-control-button" text="." visible="true" AnchorPane.rightAnchor="0"/>-->
           </children>
         </HBox>
@@ -45,8 +45,19 @@
 
         <VBox fx:id="advSettingsBox" visible="false" managed="false">
           <SliderDiscrete fx:id="layerHeightSlider" label="Layer height (mm)" min="0.0" max="0.15" step="0.05"></SliderDiscrete>
-          <SliderContinuous fx:id="infillDensitySlider" label="Infill density (%)" min="0.0" max="50"></SliderContinuous>
-          <SliderContinuous fx:id="supportDensitySlider" label="Support density (%)" min="0.0" max="50"></SliderContinuous>
+          <SliderDiscrete fx:id="roofThicknessSlider" label="Roof thickness (mm)" min="0.0" max="20.0" step="1"></SliderDiscrete>
+          <SliderDiscrete fx:id="bottomThicknessSlider" label="Bottom thickness (mm)" min="0.0" max="20.0" step="1"></SliderDiscrete>
+
+          <SliderContinuous fx:id="printSpeedSolidSlider" label="Print speed - Solid layers (%)" min="0.0" max="90.00" step="5"></SliderContinuous>
+          <SliderDiscrete fx:id="shellThicknessSlider" label="Shell thickness (mm)" min="0.4" max="4.0" step="0.4"></SliderDiscrete>
+          <SliderContinuous fx:id="printSpeedShellSlider" label="Print speed - Shell" min="10.0" max="90.00" step="5"></SliderContinuous>
+
+          <Picker fx:id="infillPatternPicker"  label="Infill internal pattern" boundParamID="test" ></Picker>
+          <SliderContinuous fx:id="infillDensitySlider" label="Infill density (%)" min="0.0" max="100.0"></SliderContinuous>
+          <SliderContinuous fx:id="supportDensitySlider" label="Support density (%)" min="5.0" max="50.0" step="1"></SliderContinuous>
+
+          <Picker fx:id="supportPatternPicker"  label="Support internal pattern" boundParamID="test" ></Picker>
+          <SliderContinuous fx:id="supportAngleSlider" label="Support starting angle" min="0.0" max="90.0" step="1"></SliderContinuous>
         </VBox>
 
         <Label fx:id="advSettingsToggle" AnchorPane.leftAnchor="20" styleClass="control-advSettingsToggle"  text="Show advanced settings..."></Label>

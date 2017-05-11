@@ -94,7 +94,7 @@ public class ProfileResource {
             System.out.println("No profile selected");
         }
 
-        this.saveProfile();
+        //this.saveProfile();
     }
 
     public void saveNewProfile(String name){
