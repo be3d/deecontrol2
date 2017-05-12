@@ -4,16 +4,19 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ysoft.dctrl.editor.control.ExtendedPerspectiveCamera;
+import com.ysoft.dctrl.editor.exporter.SceneExporter;
 import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
 import com.ysoft.dctrl.editor.mesh.MeshUtils;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.slicer.SlicerController;
+import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -42,9 +45,12 @@ public class SceneGraph {
     private SceneMesh selected;
 
     private final EventBus eventBus;
+    private final DeeControlContext deeControlContext;
 
-    public SceneGraph(EventBus eventBus) {
+    @Autowired
+    public SceneGraph(EventBus eventBus, DeeControlContext deeControlContext) {
         this.eventBus = eventBus;
+        this.deeControlContext = deeControlContext;
         sceneGroup = new Group();
         sceneMeshes = new LinkedList<>();
         material = new PhongMaterial(Color.LIGHTBLUE);
@@ -57,6 +63,7 @@ public class SceneGraph {
 
         eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> addMesh((TriangleMesh) e.getData()));
         eventBus.subscribe(EventType.CENTER_SELECTED_MODEL.name(), (e) -> centerSelected());
+        eventBus.subscribe(EventType.EXPORT_SCENE.name(), (e) -> exportScene());
     }
 
     private ExtendedPerspectiveCamera createCamera() {
@@ -144,5 +151,10 @@ public class SceneGraph {
 
     public SceneMesh getSelected() {
         return selected;
+    }
+
+    public void exportScene() {
+        SceneExporter sceneExporter = new SceneExporter(eventBus, deeControlContext);
+        sceneExporter.exportScene(this, SlicerController.sceneSTL);
     }
 }

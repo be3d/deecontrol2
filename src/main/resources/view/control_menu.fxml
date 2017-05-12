@@ -18,44 +18,40 @@
 <?import com.ysoft.dctrl.ui.controller.controlMenu.SliderDiscrete?>
 <?import com.ysoft.dctrl.ui.controller.controlMenu.SliderContinuous?>
 
-<AnchorPane fx:id="anchorPane" fx:controller="com.ysoft.dctrl.ui.controller.ControlMenuController" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu">
+<AnchorPane fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.ControlMenuController" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu">
 
   <ScrollPane styleClass="control-menu-scrollBar" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-    <content>
       <VBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-          <HBox spacing="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" minHeight="50" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
-          <children>
-            <Region prefWidth="14"></Region>
+          <HBox AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" minHeight="50" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
+            <Region prefWidth="14" />
             <ImageView  fitHeight="32" fitWidth="32" >
               <image>
-                <Image url="@/img/print_settings-full.png"></Image>
+                <Image url="@/img/print_settings-full.png" />
               </image>
             </ImageView>
 
-            <Label text="Print settings" styleClass="control-menu-section-header-text"></Label>
-            <Region prefWidth="150"></Region>
+            <Label text="Print settings" styleClass="control-menu-section-header-text" />
+            <Region prefWidth="150" />
             <!--<Button fx:id="add" styleClass="add-control-button" text="." visible="true" AnchorPane.rightAnchor="0"/>-->
-          </children>
         </HBox>
 
-        <Picker label="Print profile" boundParamID="test" fx:id="profilePicker" ></Picker>
-        <TextInput fx:id="printJobNameInput" label="Print job name" textPlaceHolder="Type this print job's name"></TextInput>
-        <Picker label="Initial platform" boundParamID="test" fx:id="raftStructurePicker" ></Picker>
-        <CheckBoxLabelled fx:id="supportsCheckBox" text="Print Supports" label="Model supports"></CheckBoxLabelled>
+        <Picker label="Print profile" boundParamID="test" fx:id="profilePicker" />
+        <TextInput fx:id="printJobNameInput" label="Print job name" textPlaceHolder="Type this print job's name" />
+        <Picker label="Initial platform" boundParamID="test" fx:id="raftStructurePicker" />
+        <CheckBoxLabelled fx:id="supportsCheckBox" text="Print Supports" label="Model supports" />
 
         <VBox fx:id="advSettingsBox" visible="false" managed="false">
-          <SliderDiscrete fx:id="layerHeightSlider" label="Layer height (mm)" min="0.0" max="0.15" step="0.05"></SliderDiscrete>
-          <SliderContinuous fx:id="infillDensitySlider" label="Infill density (%)" min="0.0" max="50"></SliderContinuous>
-          <SliderContinuous fx:id="supportDensitySlider" label="Support density (%)" min="0.0" max="50"></SliderContinuous>
+          <SliderDiscrete fx:id="layerHeightSlider" label="Layer height (mm)" min="0.0" max="0.15" step="0.05" />
+          <SliderContinuous fx:id="infillDensitySlider" label="Infill density (%)" min="0.0" max="50" />
+          <SliderContinuous fx:id="supportDensitySlider" label="Support density (%)" min="0.0" max="50" />
         </VBox>
 
-        <Label fx:id="advSettingsToggle" AnchorPane.leftAnchor="20" styleClass="control-advSettingsToggle"  text="Show advanced settings..."></Label>
+        <Label fx:id="advSettingsToggle" AnchorPane.leftAnchor="20" styleClass="control-advSettingsToggle"  text="Show advanced settings..." />
 
-        <Region prefHeight="30"></Region>
-        <ProgressBar fx:id="progress"  styleClass="control-progress" translateX="20" visible="false"></ProgressBar>
+        <Region prefHeight="30" />
+        <ProgressBar fx:id="progress"  styleClass="control-progress" translateX="20" visible="false" />
       </VBox>
 
-    </content>
   </ScrollPane>
 
 

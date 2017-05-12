@@ -1,23 +1,31 @@
 package com.ysoft.dctrl.ui.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.ysoft.dctrl.editor.exporter.SceneExporter;
 import com.ysoft.dctrl.slicer.SlicerController;
+import com.ysoft.dctrl.slicer.cura.Cura;
 import com.ysoft.dctrl.slicer.param.SlicerParamType;
 import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.slicer.printer.PrinterResource;
 import com.ysoft.dctrl.slicer.profile.Profile;
 import com.ysoft.dctrl.slicer.profile.ProfileResource;
 import com.ysoft.dctrl.ui.controller.controlMenu.*;
+
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
@@ -45,7 +53,7 @@ import javafx.stage.FileChooser;
 public class ControlMenuController extends LocalizableController implements Initializable {
 
     // Layout
-    @FXML AnchorPane anchorPane;
+    @FXML AnchorPane root;
     @FXML ScrollPane scrollPane;
     @FXML Label advSettingsToggle;
     @FXML VBox advSettingsBox;
@@ -107,17 +115,29 @@ public class ControlMenuController extends LocalizableController implements Init
         infillDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
         supportDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
 
-        progress.setProgress(0);
+        eventBus.subscribe(EventType.SLICE_STARTED.name(), (e) -> {
+            ReadOnlyDoubleProperty progressProperty = (ReadOnlyDoubleProperty) e.getData();
+            progress.progressProperty().bind(progressProperty);
+        });
+
+        eventBus.subscribe(EventType.SLICE_DONE.name(), (e) -> {
+            progress.setVisible(false);
+            progress.progressProperty().unbind();
+            FileChooser fileChooser = new FileChooser();
+            File out = fileChooser.showSaveDialog(root.getScene().getWindow());
+            if(out == null) return;
+            try {
+                Files.copy(Paths.get(Cura.GCODE_FILE), out.toPath());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
 
         slice.setOnAction(event -> {
             System.err.println(event.toString());
-            try{
-                slicerController.slice(progress);
-                progress.setVisible(true);
-            }catch (Exception e ){
-                System.err.println("Slicing error.");
-            }
-
+            progress.setProgress(0);
+            progress.setVisible(true);
+            eventBus.publish(new Event(EventType.EXPORT_SCENE.name()));
         });
 
         cancelSlice.setOnAction(event -> {

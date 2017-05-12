@@ -1,6 +1,8 @@
 package com.ysoft.dctrl.slicer.cura;
 
+import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
+import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.slicer.AbstractSlicer;
 
 import com.ysoft.dctrl.slicer.param.SlicerParam;
@@ -23,32 +25,33 @@ import java.util.*;
 /**
  * Created by kuhn on 4/4/2017.
  */
-@Component
+@Component("Cura")
 public class Cura extends AbstractSlicer {
 
-    @Autowired
-    protected EventBus eventBus;
-    @Autowired
-    protected DeeControlContext deeControlContext;
+    private EventBus eventBus;
+    private DeeControlContext deeControlContext;
 
     private static final String CURA_RESOURCES_PATH = "/print/slicer/cura";
-    private static final String CURA_BIN = "C:\\Projects\\deecontrol\\bin\\cura";
+    private static final String CURA_BIN = "./bin/cura";
     private static final String CURA_EXE_PATH = CURA_BIN + (System.getProperty("os.name").startsWith("Win") ? "/CuraEngine.exe" : "maccosi");
     private static final String PARAM_SAMPLE_FILE = CURA_BIN + (System.getProperty("os.name").startsWith("Win") ? "/def/fdmprinter.def.json" : "maccosi");;
     private static final String TEMP_PATH = System.getProperty("user.home") + File.separator + ".dctrl" + File.separator + ".slicer";
     private static final String LOG_FILE = TEMP_PATH + File.separator + "slicer.log";
-    private static final String GCODE_FILE = TEMP_PATH + File.separator + "sliced.gcode";
+    public static final String GCODE_FILE = TEMP_PATH + File.separator + "sliced.gcode";
 
     private static final CuraParamMap curaParamMap =  new CuraParamMap(SlicerParamType.class);
     private Task task;
     private Process process = null;
 
-    public Cura() throws IOException {
+    @Autowired
+    public Cura(EventBus eventBus, DeeControlContext deeControlContext) throws IOException {
         super();
+        this.eventBus = eventBus;
+        this.deeControlContext = deeControlContext;
     }
 
     public boolean supportsParam(String paramName) {
-        for (Object s : this.curaParamMap.keySet()){
+        for (Object s : Cura.curaParamMap.keySet()){
             try {
                 if (s == SlicerParamType.valueOf(paramName)) {
                     return true;
@@ -96,7 +99,7 @@ public class Cura extends AbstractSlicer {
     }
 
     //@Override
-    public void run(Map<String, SlicerParam> slicerParams, String modelSTL, ProgressBar progress) throws Exception {
+    public void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws Exception {
     // todo autowire parameters
         List<String> cmdParams = new ArrayList<>(
                 Arrays.asList(CURA_EXE_PATH,"slice","-v","-p","-j", PARAM_SAMPLE_FILE,"-o", GCODE_FILE,"-e0")
@@ -127,20 +130,22 @@ public class Cura extends AbstractSlicer {
         cmdParams.add(modelSTL);
         String[] cmd = cmdParams.toArray(new String[cmdParams.size()]);
 
-        this.startTask(cmd, progress);
+        this.startTask(cmd);
     }
 
-    private void startTask(String[] cmd, ProgressBar progressBar){
+    private void startTask(String[] cmd){
         this.task = new Task<Void>() {
             @Override public Void call() {
 
                 ProcessBuilder pb = new ProcessBuilder(cmd);
                 pb.redirectErrorStream(true);
+                System.err.println("1");
                 try{
                     process = pb.start();
                 }catch (IOException e){
                     updateMessage("Cura IO Exception");
                     cancel();
+                    e.printStackTrace();
                     return null;
                 }
                 System.out.println("Cura process started. \n Parameters:" + Arrays.toString(cmd));
@@ -174,6 +179,7 @@ public class Cura extends AbstractSlicer {
                                     //this.eventBus.publish(new Event(EventType.SLICER_PROGRESS.name(), new ProgressMsg(text, progress)));
                                 }
                             } catch(Exception e){
+                                e.printStackTrace();
                                 // Not parsable line
                             }
                         }
@@ -196,7 +202,11 @@ public class Cura extends AbstractSlicer {
             }
         };
 
-        progressBar.progressProperty().bind(task.progressProperty());
+        task.setOnSucceeded((event -> {
+            eventBus.publish(new Event(EventType.SLICE_DONE.name()));
+        }));
+
+        eventBus.publish(new Event(EventType.SLICE_STARTED.name(), task.progressProperty()));
         (new Thread(task)).start();
 
     }

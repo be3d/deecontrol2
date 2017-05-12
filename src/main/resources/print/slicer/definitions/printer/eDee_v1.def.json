@@ -150,12 +150,12 @@
       {
          "id":"START_GCODE",
          "type":"text",
-         "value":"start gcode"
+         "value":"\\\"start gcode\\\""
       },
       {
          "id":"END_GCODE",
          "type":"text",
-         "value":"gcode footer"
+         "value":"\\\"gcode footer\\\""
       }
    ],
    "SPEED_PROFILES":{
