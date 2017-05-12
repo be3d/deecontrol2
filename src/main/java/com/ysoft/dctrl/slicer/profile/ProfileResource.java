@@ -2,6 +2,7 @@ package com.ysoft.dctrl.slicer.profile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ysoft.dctrl.slicer.SlicerController;
+import com.ysoft.dctrl.slicer.param.SlicerParam;
 import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.slicer.printer.PrinterResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,8 @@ public class ProfileResource {
 
     private static final String PROFILE_FOLDER = System.getProperty("user.home") + File.separator + ".dctrl" +
             File.separator + ".slicer" + File.separator + ".userProfiles";
+    private static final String FACTORY_PROFILE_FOLDER = "/print/slicer/definitions/factory_profiles";
+
 
     private static ObjectMapper objectMapper;
     protected List<Profile> profiles;
@@ -39,6 +44,39 @@ public class ProfileResource {
     public List<Profile> loadProfiles(){
         List<Profile> profiles = new ArrayList<>();
 
+        // Factory profiles
+        File[] factoryProfiles= new File[0];
+        try{
+            URL factoryProfileDefinitions = ProfileResource.class.getResource(FACTORY_PROFILE_FOLDER);
+            if (factoryProfileDefinitions == null) throw new IOException("Printer definitions folder not found.");
+
+            File factoryProfilesFolder = Paths.get(factoryProfileDefinitions.toURI()).toFile();
+            factoryProfiles = factoryProfilesFolder.listFiles();
+            if (factoryProfiles == null) throw new IOException("No factory profiles found.");
+
+        }catch (IOException e){
+            System.out.println( e.getMessage());
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        if (factoryProfiles != null){
+            for(File f : factoryProfiles){
+                if(f.isFile()){
+                    try{
+                        Profile p = this.objectMapper.readValue(f, Profile.class);
+                        if (p.id != null)
+                            profiles.add(p);
+                    }catch ( IOException e){
+                        System.out.println("Profile definition error." + f.toString() + " " + e.getMessage());
+                    }
+                }
+            }
+        }
+
+
+        // User profiles
         File profilesFolder = Paths.get(PROFILE_FOLDER).toFile();
         profilesFolder.mkdirs();
 
@@ -67,6 +105,7 @@ public class ProfileResource {
 
     public void applyProfile(Profile profile){
         // update printer, slicer, params
+        this.slicerParams.resetToDefault();
         this.slicerParams.updateParams(profile.params);
         this.selectedProfile = profile;
     }
@@ -97,15 +136,24 @@ public class ProfileResource {
         //this.saveProfile();
     }
 
-    public void saveNewProfile(String name){
+    public Profile saveNewProfile(String name){
+
+        // Copy the parameters from context
+        ArrayList<SlicerParam> slicerParamsCopy = new ArrayList<SlicerParam>();
+        for (SlicerParam param : this.slicerParams.getAllParams().values()){
+            slicerParamsCopy.add( new SlicerParam(param) );
+        }
+
         Profile profile = new Profile("usernameid", name, "",
                 this.slicerController.selectedSlicerID,
                 //(this.printerResource.getPrinter()).printerGroup,
                 "",
                 (this.printerResource.getPrinter()).id,
-                this.slicerParams.getAllParams());
+                slicerParamsCopy);
+
 
         this.saveProfile(profile);
+        return profile;
     }
 
     private void saveProfile(Profile profile){

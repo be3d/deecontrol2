@@ -44,16 +44,29 @@ public class SliderDiscrete extends BaseCustomControl{
     public void setValue(Double value){ slider.setValue(value);}
     public Double getValue(){ return slider.getValue();}
 
-    public void load(SlicerParam param){
+
+    public SliderDiscrete load(SlicerParam param){
         // todo perform the type conversion directly in param object
-        this.setMax(new Double(param.getMax().toString()));
-        this.setMin(new Double(param.getMin().toString()));
-        this.setStep(new Double(param.getStep().toString()));
-        this.setValue(new Double(param.getValue().toString()));
+        this.boundParam = param;
+        try{
+            this.setMax(new Double(param.getMax().toString()));
+            this.setMin(new Double(param.getMin().toString()));
+            this.setStep(new Double(param.getStep().toString()));
+            this.setValue(new Double(param.getValue().toString()));
+        }catch(Exception e){
+            System.out.println("Error loading " + param.id);
+            e.printStackTrace();
+        }
+        return this;
     }
 
-    @Override
-    public void addChangeListener(javafx.beans.value.ChangeListener listener){
+    public SliderDiscrete bindParamChanged(javafx.beans.value.ChangeListener listener){
+        boundParam.valuePropertyProperty().addListener(listener);
+        //slider.valueProperty().addListener(listener);
+        return this;
+    }
+
+    public void bindControlChanged(javafx.beans.value.ChangeListener listener){
         slider.valueProperty().addListener(listener);
     }
 

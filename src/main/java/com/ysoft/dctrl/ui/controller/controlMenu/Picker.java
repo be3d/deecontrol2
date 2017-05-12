@@ -45,7 +45,7 @@ public class Picker extends BaseCustomControl{
         label.textProperty().set(value);
     }
 
-
+    public void addItem(Object item){comboBox.getItems().add(item);}
     public void addItems(ObservableList list) {getItems().addAll(list);}
     public void setItems(ObservableList list) {comboBox.setItems(list);}
     public ObservableList getItems() {return comboBox.getItems();}

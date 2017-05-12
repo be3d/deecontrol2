@@ -23,17 +23,23 @@
   <ScrollPane styleClass="control-menu-scrollBar" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
     <content>
       <VBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-          <HBox spacing="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" minHeight="50" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
+          <HBox spacing="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0"  AnchorPane.rightAnchor="0" minHeight="50" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
           <children>
             <Region prefWidth="14"></Region>
             <ImageView  fitHeight="32" fitWidth="32" >
               <image>
-                <Image url="@/img/print_settings-full.png"></Image>
+                <Image url="@/img/control_menu/print_settings-full.png"></Image>
               </image>
             </ImageView>
 
             <Label text="Print settings" styleClass="control-menu-section-header-text"></Label>
-            <Region prefWidth="80"></Region>
+            <Region prefWidth="115"></Region>
+
+            <ImageView fx:id="saveProfile"  fitHeight="14" fitWidth="14" visible="false" AnchorPane.rightAnchor="5" >
+              <image>
+                <Image url="@/img/control_menu/save-mock.png"></Image>
+              </image>
+            </ImageView>
             <!--<Button fx:id="add" styleClass="add-control-button" text="." visible="true" AnchorPane.rightAnchor="0"/>-->
           </children>
         </HBox>
@@ -45,8 +51,8 @@
 
         <VBox fx:id="advSettingsBox" visible="false" managed="false">
           <SliderDiscrete fx:id="layerHeightSlider" label="Layer height (mm)" min="0.0" max="0.15" step="0.05"></SliderDiscrete>
-          <SliderDiscrete fx:id="roofThicknessSlider" label="Roof thickness (mm)" min="0.0" max="20.0" step="1"></SliderDiscrete>
-          <SliderDiscrete fx:id="bottomThicknessSlider" label="Bottom thickness (mm)" min="0.0" max="20.0" step="1"></SliderDiscrete>
+          <SliderDiscrete fx:id="roofThicknessSlider" label="Top solid layers" min="0.0" max="20.0" step="1" value="9"></SliderDiscrete>
+          <SliderDiscrete fx:id="bottomThicknessSlider" label="Bottom solid layers" min="0.0" max="20.0" step="1" value="9"></SliderDiscrete>
 
           <SliderContinuous fx:id="printSpeedSolidSlider" label="Print speed - Solid layers (%)" min="0.0" max="90.00" step="5"></SliderContinuous>
           <SliderDiscrete fx:id="shellThicknessSlider" label="Shell thickness (mm)" min="0.4" max="4.0" step="0.4"></SliderDiscrete>
@@ -78,7 +84,7 @@
   <Button fx:id="cancelSlice" text="Cancel Slice" styleClass="control-button" visible="false"/>
   <Button fx:id="prepareSlice" text="Prepare slice" styleClass="control-button" visible="false"/>
   <Button fx:id="loadProfile" text="Load profile" styleClass="control-button" visible="false" />
-  <Button fx:id="saveProfile" text="Save profile" styleClass="control-button" visible="false"/>
+  <!--<Button fx:id="saveProfile" text="Save profile" styleClass="control-button" visible="false"/>-->
 
 
   <stylesheets>

@@ -99,9 +99,13 @@ public class SlicerParams {
         this.eventBus.publish(new Event(EventType.SLICER_PARAM_CHANGED.name(), paramID));
     }
 
-    //public void updateParams(List<SlicerParam> params){}
+    public void updateParams(List<SlicerParam> params){
+        for (SlicerParam p : params){
+            this.updateParam(p.id, p.getValue());
+        }
+    }
 
-    public void updateParams(Map<String, Object> params){
+    public void updateParams(Map<String, SlicerParam> params){
         for (String key : params.keySet()){
             this.updateParam(key, params.get(key));
         }
@@ -120,5 +124,9 @@ public class SlicerParams {
         return this.slicerParameters.get(name);
     }
 
-
+    public void resetToDefault(){
+        for (SlicerParam p : this.slicerParameters.values()){
+            p.resetToDefault();
+        }
+    }
 }

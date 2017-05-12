@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SlicerParam {
+public class SlicerParam implements Cloneable {
 
     @Autowired EventBus eventBus;
 
@@ -42,6 +42,11 @@ public class SlicerParam {
     public SlicerParam(@JsonProperty("default") Object defaultValue){
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+    }
+
+    public SlicerParam(SlicerParam original){
+        this.id = original.id;
+        this.value = original.value;
     }
 
     public void setVal(Object value){
@@ -123,6 +128,15 @@ public class SlicerParam {
         this.valueProperty.set(valueProperty);
     }
 
+    public void resetToDefault(){
+        if (this.defaultValue != null){
+            try{
+                this.setValueProperty((double)this.defaultValue);
+            }catch(ClassCastException e){
+                System.out.println("Value cannot be cast to double.");
+            }
+        }
+    }
 
     @Override
     public String toString() {

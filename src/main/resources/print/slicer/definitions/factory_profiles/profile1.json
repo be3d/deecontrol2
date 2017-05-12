@@ -1,0 +1,9 @@
+{
+	"id":"default",
+	"name":"Default",
+	"description":"",
+	"slicerID":"CURA",
+	"printerID":"edee",
+	"printerGroup":"edee",
+	"params":[]
+}

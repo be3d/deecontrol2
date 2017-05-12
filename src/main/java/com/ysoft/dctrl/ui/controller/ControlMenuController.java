@@ -21,6 +21,8 @@ import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -43,6 +45,8 @@ import javafx.stage.FileChooser;
 
 @Controller
 public class ControlMenuController extends LocalizableController implements Initializable {
+
+    private boolean edited = false;
 
     // Layout
     @FXML AnchorPane anchorPane;
@@ -71,18 +75,19 @@ public class ControlMenuController extends LocalizableController implements Init
     @FXML SliderContinuous supportAngleSlider;
 
     @FXML Button slice;
+    @FXML ImageView saveProfile;
 
     //test
     //@FXML Button add;
     @FXML ProgressBar progress;
     @FXML Button cancelSlice;
     @FXML Button loadProfile;
-    @FXML Button saveProfile;
 
     @Autowired    PrinterResource printerResource;
     @Autowired    SlicerController slicerController;
     @Autowired    SlicerParams slicerParams;
     @Autowired    ProfileResource profileResource;
+
 
     @Autowired
     public ControlMenuController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext deeControlContext) {
@@ -104,30 +109,79 @@ public class ControlMenuController extends LocalizableController implements Init
         ObservableList obList = FXCollections.observableList(list);
 
         profilePicker.setItems(obList);
-        profilePicker.addChangeListener((observable, oldValue, newValue) -> profileResource.applyProfile(newValue));
+        profilePicker.addChangeListener((observable, oldValue, newValue) -> {
+            profileResource.applyProfile(newValue);
+            this.setEdited(false);
+        });
+        profilePicker.selectItem(obList.get(0));
 
         raftStructurePicker.load(slicerParams.get(SlicerParamType.SUPPORT_BUILDPLATE_TYPE.name()));
         raftStructurePicker.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
 
         supportsCheckBox.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
 
+        // todo use default handle for this OMG, no time !!!
+
+        layerHeightSlider
+                .load(slicerParams.get(SlicerParamType.LAYER_HEIGHT.name()))
+                .bindParamChanged((observable, oldValue, newValue) -> layerHeightSlider.setValue((Double)newValue))
+                .bindControlChanged(((observable, oldValue, newValue) -> {
+                    slicerParams.updateParam(SlicerParamType.LAYER_HEIGHT.name(), newValue);
+                    this.setEdited(true);
+                }));
+
+        roofThicknessSlider
+                .load(slicerParams.get(SlicerParamType.SHELL_TOP_LAYERS.name()))
+                .bindParamChanged((observable, oldValue, newValue) -> roofThicknessSlider.setValue((Double)newValue))
+                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SHELL_TOP_LAYERS.name(), newValue)));
+
+
+        bottomThicknessSlider
+                .load(slicerParams.get(SlicerParamType.SHELL_BOTTOM_LAYERS.name()))
+                .bindParamChanged((observable, oldValue, newValue) -> bottomThicknessSlider.setValue((Double)newValue))
+                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SHELL_BOTTOM_LAYERS.name(), newValue)));
+
+
         printSpeedSolidSlider
                 .load(slicerParams.get(SlicerParamType.SPEED_SOLID_LAYERS.name()))
                 .bindParamChanged((observable, oldValue, newValue) -> printSpeedSolidSlider.setValue((Double)newValue))
                 .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SPEED_SOLID_LAYERS.name(), newValue)));
 
+        shellThicknessSlider
+                .load(slicerParams.get(SlicerParamType.SHELL_THICKNESS.name()))
+                .bindParamChanged((observable, oldValue, newValue) -> shellThicknessSlider.setValue((Double)newValue))
+                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SHELL_THICKNESS.name(), newValue)));
+
+        printSpeedShellSlider
+                .load(slicerParams.get(SlicerParamType.SPEED_OUTER_WALL.name()))
+                .bindParamChanged((observable, oldValue, newValue) -> printSpeedShellSlider.setValue((Double)newValue))
+                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SPEED_OUTER_WALL.name(), newValue)));
 
 
-        shellThicknessSlider.load(slicerParams.get(SlicerParamType.SHELL_THICKNESS.name()));
-        printSpeedShellSlider.load(slicerParams.get(SlicerParamType.SPEED_OUTER_WALL.name()));
         infillPatternPicker.load(slicerParams.get(SlicerParamType.INFILL_PATTERN.name()));
-        infillDensitySlider.load(slicerParams.get(SlicerParamType.INFILL_DENSITY.name()));
-        supportDensitySlider.load(slicerParams.get(SlicerParamType.SUPPORT_DENSITY.name()));
-        supportPatternPicker.load(slicerParams.get(SlicerParamType.SUPPORT_PATTERN.name()));
-        supportAngleSlider.load(slicerParams.get(SlicerParamType.SUPPORT_ANGLE.name()));
 
-        infillDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
-        supportDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
+        infillDensitySlider
+                .load(slicerParams.get(SlicerParamType.INFILL_DENSITY.name()))
+                .bindParamChanged((observable, oldValue, newValue) -> infillDensitySlider.setValue((Double)newValue))
+                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.INFILL_DENSITY.name(), newValue)));
+
+
+        supportDensitySlider
+                .load(slicerParams.get(SlicerParamType.SUPPORT_DENSITY.name()))
+                .bindParamChanged((observable, oldValue, newValue) -> supportDensitySlider.setValue((Double)newValue))
+                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SUPPORT_DENSITY.name(), newValue)));
+
+
+        supportPatternPicker.load(slicerParams.get(SlicerParamType.SUPPORT_PATTERN.name()));
+
+
+        supportAngleSlider
+                .load(slicerParams.get(SlicerParamType.SUPPORT_ANGLE.name()))
+                .bindParamChanged((observable, oldValue, newValue) -> supportAngleSlider.setValue((Double)newValue))
+                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SUPPORT_ANGLE.name(), newValue)));
+
+        //infillDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
+        //supportDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
 
         progress.setProgress(0);
 
@@ -142,6 +196,7 @@ public class ControlMenuController extends LocalizableController implements Init
 
         });
 
+
         cancelSlice.setOnAction(event -> {
             slicerController.slicer.stopTask();
         });
@@ -152,10 +207,25 @@ public class ControlMenuController extends LocalizableController implements Init
                 System.out.println(p.id);
             }
         });
-        saveProfile.setOnAction(event -> {
-            profileResource.saveNewProfile("newProfile01");
-        });
+//        saveProfile.setOnAction(event -> {
+//            profileResource.saveNewProfile("newProfile01");
+//        });
+        saveProfile.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Profile savedProfile = profileResource.saveNewProfile("SAVED_USER_PROFILE");
 
+                List<Profile> list = profileResource.getProfiles();
+                ObservableList obList = FXCollections.observableList(list);
+                profilePicker.setItems(obList);
+
+
+                profilePicker.addItem(savedProfile);
+                profilePicker.selectItem(savedProfile);
+                profileResource.applyProfile(savedProfile);
+                event.consume();
+            }
+        });
 
         advSettingsToggle.setOnMouseClicked(event -> {
             if (advSettingsBox.isVisible()){
@@ -177,9 +247,10 @@ public class ControlMenuController extends LocalizableController implements Init
         //        });
         //
 
-        layerHeightSlider.addChangeListener((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.LAYER_HEIGHT.name(), newValue));
-
-
         super.initialize(location, resources);
+    }
+
+    private void setEdited(boolean value){
+        saveProfile.setVisible(value);
     }
 }
