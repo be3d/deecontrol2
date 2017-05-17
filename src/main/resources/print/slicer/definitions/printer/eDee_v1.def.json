@@ -55,6 +55,21 @@
          "default":9.0
       },
       {
+         "id":"SHELL_OUTER_WALL_INSET",
+         "type":"float",
+         "value":0.1
+      },
+      {
+         "id":"SHELL_Z_SEAM_X",
+         "type":"float",
+         "value":"0"
+      },
+      {
+         "id":"SHELL_Z_SEAM_Y",
+         "type":"float",
+         "value":"0"
+      },
+      {
          "id":"INFILL_OVERLAP_PERCENTAGE",
          "type":"float",
          "value":8
@@ -95,7 +110,7 @@
       {
          "id":"MATERIAL_FLOW",
          "type":"float",
-         "value":94
+         "value":95
       },
       {
          "id":"MATERIAL_RETRACT_AT_LAYER_CHANGE",
@@ -110,7 +125,7 @@
       {
          "id":"MATERIAL_RETRACTION_SPEED",
          "type":"float",
-         "value":70
+         "value":60
       },
       {
          "id":"MATERIAL_RETRACTION_PRIME_SPEED",
@@ -125,7 +140,7 @@
       {
          "id":"SPEED_OUTER_WALL",
          "type":"float",
-         "value":25,
+         "value":35,
          "min":10,
          "max":90,
          "step":5
@@ -133,7 +148,7 @@
       {
          "id":"SPEED_INNER_WALL",
          "type":"float",
-         "value":60
+         "value":70
       },
       {
          "id":"SPEED_WALL",
@@ -143,10 +158,30 @@
       {
          "id":"SPEED_SOLID_LAYERS",
          "type":"float",
-         "value":25,
+         "value":35,
          "min":10,
          "max":90,
          "step":5
+      },
+      {
+         "id":"SPEED_SUPPORT",
+         "type":"float",
+         "value":70
+      },
+      {
+         "id":"SPEED_ACCELERATION_CONTROL_ENABLED",
+         "type":"bool",
+         "value":true
+      },
+      {
+         "id":"SPEED_JERK_CONTROL_ENABLED",
+         "type":"bool",
+         "value":false
+      },
+      {
+         "id":"SPEED_JERK_OUTER_WALL",
+         "type":"float",
+         "value":8.0
       },
       {
          "id":"COOL_FAN_REGMAX_SPEED_THRESHOLD",
@@ -159,9 +194,24 @@
          "value":0.15
       },
       {
+         "id":"COOL_MIN_LAYER_TIME",
+         "type":"float",
+         "value":10.0
+      },
+      {
+         "id":"COOL_LIFT_HEAD",
+         "type":"bool",
+         "value":true
+      },
+      {
          "id":"SUPPORT_ENABLED",
          "type":"bool",
-         "value":false
+         "value":true
+      },
+      {
+         "id":"SUPPORT_PLACEMENT",
+         "type":"enum",
+         "value":"everywhere"
       },
       {
          "id":"SUPPORT_BUILDPLATE_TYPE",
@@ -177,7 +227,7 @@
       {
          "id":"SUPPORT_DENSITY",
          "type":"float",
-         "default":15,
+         "default":12,
          "min":0,
          "max":100,
          "step":1
@@ -194,12 +244,72 @@
          "default":"zigzag"
       },
       {
+         "id":"SUPPORT_BUILDPLATE_BRIM_WIDTH",
+         "type":"float",
+         "value":6
+      },
+      {
          "id":"SUPPORT_ANGLE",
          "type":"float",
          "min":0,
          "max":90,
          "step":1,
-         "default":45
+         "default":55
+      },
+      {
+         "id":"SUPPORT_Z_DISTANCE",
+         "type":"float",
+         "value":0.15
+      },
+      {
+         "id":"SUPPORT_XY_DISTANCE",
+         "type":"float",
+         "value":0.5
+      },
+      {
+         "id":"SUPPORT_STAIR_STEP_HEIGHT",
+         "type":"float",
+         "value":0.2
+      },
+      {
+         "id":"SUPPORT_HORIZONTAL_EXPANSION",
+         "type":"float",
+         "value":0.4
+      },
+      {
+         "id":"SUPPORT_INTERFACE_ENABLE",
+         "type":"bool",
+         "value":true
+      },
+      {
+         "id":"SUPPORT_INTERFACE_THICKNESS",
+         "type":"float",
+         "value":0.85
+      },
+      {
+         "id":"SUPPORT_INTERFACE_RESOLUTION",
+         "type":"float",
+         "value":0.1
+      },
+      {
+         "id":"SUPPORT_INTERFACE_DENSITY",
+         "type":"float",
+         "value":85
+      },
+      {
+         "id":"SUPPORT_TOWER_DIAMETER",
+         "type":"float",
+         "value":4
+      },
+      {
+         "id":"SUPPORT_MINIMUM_DIAMETER",
+         "type":"float",
+         "value":3
+      },
+      {
+         "id":"SUPPORT_CONNECT_ZIGZAGS",
+         "type":"bool",
+         "value":true
       },
       {
          "id":"INFILL_PATTERN",
