@@ -1,7 +1,7 @@
 {
-	"id":"edeeFine",
-	"name":"Fine quality",
-	"description":"eDee fine quality profile",
+	"id":"edeeFast",
+	"name":"Speed print",
+	"description":"eDee profile optimized for speed",
 	"slicerID":"CURA",
 	"printerID":"edee",
 	"printerGroup":"edee",

@@ -1,15 +1,15 @@
 {
-	"id":"edeeFast",
-	"name":"Speed print",
-	"description":"Optimized for fast print time",
+	"id":"edeeFine",
+	"name":"Fine quality print",
+	"description":"Optimized for the best quality",
 	"slicerID":"CURA",
 	"printerID":"edee",
 	"printerGroup":"edee",
 	"params":[
  	  {
-         "id":"LAYER_HEIGHT",
+         "id":"RESOLUTION_LAYER_HEIGHT",
          "type":"float",
-         "value":0.2
+         "value":0.1
       },
       {
          "id":"SHELL_TOP_LAYERS",
