@@ -44,6 +44,9 @@ public class ProfileResource {
     public List<Profile> loadProfiles(){
         List<Profile> profiles = new ArrayList<>();
 
+        // Add default parameter-less profile
+        profiles.add(new Profile());
+
         // Factory profiles
         File[] factoryProfiles= new File[0];
         try{
@@ -66,7 +69,7 @@ public class ProfileResource {
                 if(f.isFile()){
                     try{
                         Profile p = this.objectMapper.readValue(f, Profile.class);
-                        if (p.id != null)
+                        if (p.getId() != null)
                             profiles.add(p);
                     }catch ( IOException e){
                         System.out.println("Profile definition error." + f.toString() + " " + e.getMessage());
@@ -85,7 +88,7 @@ public class ProfileResource {
             if(f.isFile()){
                 try{
                     Profile p = this.objectMapper.readValue(f, Profile.class);
-                    if (p.id != null)
+                    if (p.getId() != null)
                         profiles.add(p);
                 }catch ( IOException e){
                     System.out.println("Profile definition error." + f.toString() + " " + e.getMessage());
@@ -112,7 +115,7 @@ public class ProfileResource {
 
     public void applyProfile(String profileID){
         for (Profile p : profiles){
-            if(p.id.equals(profileID)) {
+            if(p.getId().equals(profileID)) {
                 this.applyProfile(p);
                 return;
             }
@@ -128,14 +131,22 @@ public class ProfileResource {
 
     public void resetToDefault(){}
 
+    /**
+     * Saves the currently selected profile
+     */
     public void saveProfile(){
         if (this.selectedProfile == null){
             System.out.println("No profile selected");
         }
 
-        //this.saveProfile();
+        this.saveProfile(this.selectedProfile);
     }
 
+    /**
+     * Saves a new profile
+     * @param name of the profile
+     * @return
+     */
     public Profile saveNewProfile(String name){
 
         // Copy the parameters from context
@@ -156,9 +167,13 @@ public class ProfileResource {
         return profile;
     }
 
+    /**
+     * Dumps the profile into file
+     * @param profile
+     */
     private void saveProfile(Profile profile){
         try {
-            this.objectMapper.writeValue(new File(PROFILE_FOLDER + File.separator + profile.id + ".json"), profile);
+            this.objectMapper.writeValue(new File(PROFILE_FOLDER + File.separator + profile.getId() + ".json"), profile);
         } catch(IOException e){
             e.printStackTrace();
         }

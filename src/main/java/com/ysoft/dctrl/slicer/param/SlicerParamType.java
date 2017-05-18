@@ -26,8 +26,9 @@ public enum SlicerParamType {
     SPEED_JERK_OUTER_WALL,
 
     //resolution
-    LAYER_HEIGHT,
-    LAYER_HEIGHT_0,
+    RESOLUTION_LAYER_HEIGHT,
+    RESOLUTION_LAYER_HEIGHT_0,
+    RESOLUTION_LINE_WIDTH_0,
 
     //shell
     SHELL_THICKNESS,

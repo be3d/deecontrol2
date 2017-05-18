@@ -30,8 +30,9 @@ public class CuraParamMap<T> extends EnumMap<SlicerParamType, String>{
         this.put(SlicerParamType.SPEED_JERK_OUTER_WALL,"jerk_wall_0");
 
 
-        this.put(SlicerParamType.LAYER_HEIGHT,"layer_height");
-        this.put(SlicerParamType.LAYER_HEIGHT_0,"layer_height_0");
+        this.put(SlicerParamType.RESOLUTION_LAYER_HEIGHT,"layer_height");
+        this.put(SlicerParamType.RESOLUTION_LAYER_HEIGHT_0,"layer_height_0");
+        this.put(SlicerParamType.RESOLUTION_LINE_WIDTH_0,"wall_line_width_0");
 
         this.put(SlicerParamType.SHELL_THICKNESS, "wall_thickness");
         this.put(SlicerParamType.SHELL_TOP_BOTTOM_THICKNESS,"top_bottom_thickness");

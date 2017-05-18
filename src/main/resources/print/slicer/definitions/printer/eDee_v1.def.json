@@ -13,7 +13,7 @@
          "value":150
       },
       {
-         "id":"LAYER_HEIGHT",
+         "id":"RESOLUTION_LAYER_HEIGHT",
          "type":"float",
          "min":0.1,
          "max":0.25,
@@ -21,9 +21,14 @@
          "default":0.15
       },
       {
-         "id":"LAYER_HEIGHT_0",
+         "id":"RESOLUTION_LAYER_HEIGHT_0",
          "type":"float",
          "value":0.15
+      },
+      {
+         "id":"RESOLUTION_LINE_WIDTH_0",
+         "type":"float",
+         "value":0.4
       },
       {
          "id":"SHELL_TOP_BOTTOM_THICKNESS",
@@ -172,6 +177,11 @@
          "id":"SPEED_ACCELERATION_CONTROL_ENABLED",
          "type":"bool",
          "value":true
+      },
+      {
+         "id":"SPEED_ACCELERATION_OUTER_WALL",
+         "type":"float",
+         "value":1000
       },
       {
          "id":"SPEED_JERK_CONTROL_ENABLED",

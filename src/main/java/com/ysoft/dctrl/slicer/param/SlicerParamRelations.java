@@ -22,7 +22,7 @@ public class SlicerParamRelations {
     }
 
     public void init(Map<String,SlicerParam> params){
-        map.put(SlicerParamType.LAYER_HEIGHT, new ParamChangeHandle(SlicerParamType.LAYER_HEIGHT.name(), params){
+        map.put(SlicerParamType.RESOLUTION_LAYER_HEIGHT, new ParamChangeHandle(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name(), params){
                 @Override
                 public void run() {
                     super.run();

@@ -123,10 +123,10 @@ public class ControlMenuController extends LocalizableController implements Init
         // todo use default handle for this OMG, no time !!!
 
         layerHeightSlider
-                .load(slicerParams.get(SlicerParamType.LAYER_HEIGHT.name()))
+                .load(slicerParams.get(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name()))
                 .bindParamChanged((observable, oldValue, newValue) -> layerHeightSlider.setValue((Double)newValue))
                 .bindControlChanged(((observable, oldValue, newValue) -> {
-                    slicerParams.updateParam(SlicerParamType.LAYER_HEIGHT.name(), newValue);
+                    slicerParams.updateParam(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name(), newValue);
                     this.setEdited(true);
                 }));
 
@@ -204,7 +204,7 @@ public class ControlMenuController extends LocalizableController implements Init
         loadProfile.setOnAction(event -> {
             List<Profile> profiles = profileResource.loadProfiles();
             for(Profile p : profiles){
-                System.out.println(p.id);
+                System.out.println(p.getId());
             }
         });
 //        saveProfile.setOnAction(event -> {

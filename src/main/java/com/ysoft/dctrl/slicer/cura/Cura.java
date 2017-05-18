@@ -13,6 +13,7 @@ import javafx.scene.control.ProgressBar;
 import oracle.jrockit.jfr.StringConstantPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.misc.IOUtils;
 
 
 import java.io.*;
@@ -145,10 +146,10 @@ public class Cura extends AbstractSlicer {
                 }
                 System.out.println("Cura process started. \n Parameters:" + Arrays.toString(cmd));
 
-                BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                BufferedWriter bw = null;
-                try {
-                    bw = new BufferedWriter(new FileWriter(new File(LOG_FILE )));
+                try (
+                    BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(new File(LOG_FILE )))
+                ){
                     String s;
                     Double progress;
                     while ((s = stdInput.readLine()) != null) {

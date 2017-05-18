@@ -13,14 +13,14 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Profile {
 
-    public String id;
-    public String name;
-    public String description;
+    private String id;
+    private String name;
+    private String description;
 
     // Compatibility
-    public String slicerID;
-    public String printerID;
-    public String printerGroup;
+    private String slicerID;
+    private String printerID;
+    private String printerGroup;
 
     //public Map<String, SlicerParam> params;
     public  ArrayList<SlicerParam > params;
@@ -39,8 +39,61 @@ public class Profile {
 
     }
 
+    /**
+     * Creates default profile with no parameters (the params go from the printer.def)
+     */
     public Profile(){
-        this.id = "default";
+        this.setId("default");
+        this.setName("Default");
+        this.setDescription("Default printer profile");
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSlicerID() {
+        return slicerID;
+    }
+
+    public void setSlicerID(String slicerID) {
+        this.slicerID = slicerID;
+    }
+
+    public String getPrinterID() {
+        return printerID;
+    }
+
+    public void setPrinterID(String printerID) {
+        this.printerID = printerID;
+    }
+
+    public String getPrinterGroup() {
+        return printerGroup;
+    }
+
+    public void setPrinterGroup(String printerGroup) {
+        this.printerGroup = printerGroup;
     }
 
     @Override
