@@ -86,7 +86,7 @@ public class Cura extends AbstractSlicer {
         for (Iterator<SlicerParam> iter = params.iterator(); iter.hasNext();){
             SlicerParam param = iter.next();
             try {
-                if (!this.curaParamMap.containsKey(SlicerParamType.valueOf(param.id))){
+                if (!this.curaParamMap.containsKey(SlicerParamType.valueOf(param.getId()))){
                     throw new NoSuchElementException();
                 }
             }catch(IllegalArgumentException | NoSuchElementException e){

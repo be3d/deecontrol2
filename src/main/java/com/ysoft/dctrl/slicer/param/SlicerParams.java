@@ -70,7 +70,7 @@ public class SlicerParams {
 
             // todo reconsider not using Map but list
             for (SlicerParam p: params){
-                slicerParameters.put(p.id, p);
+                slicerParameters.put(p.getId(), p);
             }
             return slicerParameters;
 
@@ -100,8 +100,10 @@ public class SlicerParams {
     }
 
     public void updateParams(List<SlicerParam> params){
-        for (SlicerParam p : params){
-            this.updateParam(p.id, p.getValue());
+        if (params != null){
+            for (SlicerParam p : params){
+                this.updateParam(p.getId(), p.getValue());
+            }
         }
     }
 

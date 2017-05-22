@@ -109,22 +109,25 @@ public class ControlMenuController extends LocalizableController implements Init
         ObservableList obList = FXCollections.observableList(list);
 
         profilePicker.setItems(obList);
-        profilePicker.addChangeListener((observable, oldValue, newValue) -> {
+        profilePicker.bindControlChanged((observable, oldValue, newValue) -> {
             profileResource.applyProfile(newValue);
             this.setEdited(false);
         });
         profilePicker.selectItem(obList.get(0));
 
-        raftStructurePicker.load(slicerParams.get(SlicerParamType.SUPPORT_BUILDPLATE_TYPE.name()));
-        raftStructurePicker.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
+        raftStructurePicker
+                .load(slicerParams.get(SlicerParamType.SUPPORT_BUILDPLATE_TYPE.name()))
+                .bindParamChanged()
+                .bindControlChanged((observable, oldValue, newValue) -> {
+                    slicerParams.updateParam(SlicerParamType.SUPPORT_BUILDPLATE_TYPE.name(), newValue);
+                    this.setEdited(true);
+                });
 
         supportsCheckBox.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
 
-        // todo use default handle for this OMG, no time !!!
-
         layerHeightSlider
                 .load(slicerParams.get(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name()))
-                .bindParamChanged((observable, oldValue, newValue) -> layerHeightSlider.setValue((Double)newValue))
+                .bindParamChanged()
                 .bindControlChanged(((observable, oldValue, newValue) -> {
                     slicerParams.updateParam(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name(), newValue);
                     this.setEdited(true);
@@ -132,29 +135,29 @@ public class ControlMenuController extends LocalizableController implements Init
 
         roofThicknessSlider
                 .load(slicerParams.get(SlicerParamType.SHELL_TOP_LAYERS.name()))
-                .bindParamChanged((observable, oldValue, newValue) -> roofThicknessSlider.setValue((Double)newValue))
+                .bindParamChanged()
                 .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SHELL_TOP_LAYERS.name(), newValue)));
 
 
         bottomThicknessSlider
                 .load(slicerParams.get(SlicerParamType.SHELL_BOTTOM_LAYERS.name()))
-                .bindParamChanged((observable, oldValue, newValue) -> bottomThicknessSlider.setValue((Double)newValue))
+                .bindParamChanged()
                 .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SHELL_BOTTOM_LAYERS.name(), newValue)));
 
 
         printSpeedSolidSlider
                 .load(slicerParams.get(SlicerParamType.SPEED_SOLID_LAYERS.name()))
-                .bindParamChanged((observable, oldValue, newValue) -> printSpeedSolidSlider.setValue((Double)newValue))
+                .bindParamChanged()
                 .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SPEED_SOLID_LAYERS.name(), newValue)));
 
         shellThicknessSlider
                 .load(slicerParams.get(SlicerParamType.SHELL_THICKNESS.name()))
-                .bindParamChanged((observable, oldValue, newValue) -> shellThicknessSlider.setValue((Double)newValue))
+                .bindParamChanged()
                 .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SHELL_THICKNESS.name(), newValue)));
 
         printSpeedShellSlider
                 .load(slicerParams.get(SlicerParamType.SPEED_OUTER_WALL.name()))
-                .bindParamChanged((observable, oldValue, newValue) -> printSpeedShellSlider.setValue((Double)newValue))
+                .bindParamChanged()
                 .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SPEED_OUTER_WALL.name(), newValue)));
 
 
@@ -180,9 +183,6 @@ public class ControlMenuController extends LocalizableController implements Init
                 .bindParamChanged((observable, oldValue, newValue) -> supportAngleSlider.setValue((Double)newValue))
                 .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SUPPORT_ANGLE.name(), newValue)));
 
-        //infillDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
-        //supportDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
-
         progress.setProgress(0);
 
         slice.setOnAction(event -> {
@@ -207,9 +207,11 @@ public class ControlMenuController extends LocalizableController implements Init
                 System.out.println(p.getId());
             }
         });
+
 //        saveProfile.setOnAction(event -> {
 //            profileResource.saveNewProfile("newProfile01");
 //        });
+
         saveProfile.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -217,12 +219,12 @@ public class ControlMenuController extends LocalizableController implements Init
 
                 List<Profile> list = profileResource.getProfiles();
                 ObservableList obList = FXCollections.observableList(list);
+
                 profilePicker.setItems(obList);
-
-
                 profilePicker.addItem(savedProfile);
                 profilePicker.selectItem(savedProfile);
                 profileResource.applyProfile(savedProfile);
+
                 event.consume();
             }
         });

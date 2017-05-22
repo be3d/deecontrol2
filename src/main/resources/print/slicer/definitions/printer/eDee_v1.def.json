@@ -340,12 +340,12 @@
       },
       {
          "id":"START_GCODE",
-         "type":"text",
+         "type":"string",
          "value":"start gcode"
       },
       {
          "id":"END_GCODE",
-         "type":"text",
+         "type":"string",
          "value":"gcode footer"
       }
    ],

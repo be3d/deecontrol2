@@ -1,13 +1,16 @@
 package com.ysoft.dctrl.slicer.param;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.*;
+import javafx.beans.property.adapter.JavaBeanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.LinkedHashMap;
@@ -25,23 +28,80 @@ public class SlicerParam implements Cloneable {
 
     @Autowired EventBus eventBus;
 
-    public String id;   // id of SlicerParamType
-    private String type; // data type...
+    private final String id;
+    private String type;
     private Object value;
     private Double min;
     private Double max;
     private Object step;
-
-    private DoubleProperty valueProperty = new SimpleDoubleProperty();
-
-    private LinkedHashMap<String, String> options; // only for type enum
-    //private Object profile_default;
-
+    private Property valueProperty;
+    private LinkedHashMap<String, String> options;
     private Object defaultValue;
 
-    public SlicerParam(@JsonProperty("default") Object defaultValue){
+    private static enum ValueType {
+        FLOAT("float"),
+        STRING("string"),
+        ENUM("enum"),
+        INT("int"),
+        BOOL("bool");
+
+        private String v;
+        ValueType(String s) { v = s; }
+        public String get() {return v;}
+    }
+
+    @JsonCreator
+    public SlicerParam(
+            @JsonProperty("id") String id,
+            @JsonProperty("type") String type,
+            @JsonProperty("default") Object defaultValue,
+            @JsonProperty("value") Object value,
+            @JsonProperty("min") Double min,
+            @JsonProperty("max") Double max,
+            @JsonProperty("step") Double step,
+            @JsonProperty("options") LinkedHashMap<String, String> options) throws IllegalArgumentException
+    {
+        this.id = id;
+        this.type = type;
+        this.min = min;
+        this.max = max;
+        this.step = step;
+        this.options = options;
         this.defaultValue = defaultValue;
-        this.value = defaultValue;
+        if (value == null)
+            this.value = defaultValue;
+        else
+            this.value = value;
+
+        if(type != null){
+            switch(ValueType.valueOf(type.toUpperCase())) {
+                case FLOAT: {
+                    if (this.value instanceof Integer)
+                        this.value = new Double(((Integer) this.value).intValue());
+                    if (this.value instanceof String)
+                        this.value = new Double((String)this.value);
+
+                    this.valueProperty = new SimpleDoubleProperty((Double) this.value);
+                    break;
+                }
+
+                case STRING:
+                    this.valueProperty = new SimpleStringProperty((String) this.value);
+                    break;
+
+                case ENUM:
+                    this.valueProperty = new SimpleStringProperty((String) this.value);
+                    break;
+
+                case INT:
+                    this.valueProperty = new SimpleIntegerProperty((int) this.value);
+                    break;
+
+                case BOOL:
+                    this.valueProperty = new SimpleBooleanProperty((boolean) this.value);
+
+            }
+        }
     }
 
     public SlicerParam(SlicerParam original){
@@ -51,16 +111,8 @@ public class SlicerParam implements Cloneable {
 
     public void setVal(Object value){
         this.value = value;
+        this.setValueProperty(value);
         System.out.println("Setting " + this.id + " to " + value.toString());
-
-//        if (this.type.equals("float"))
-        try{
-            this.setValueProperty((double) value);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
-
     }
 
     private void publishChanged(){
@@ -77,6 +129,10 @@ public class SlicerParam implements Cloneable {
             return value;
         else
             return defaultValue;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public Object getDefaultValue() {
@@ -115,26 +171,34 @@ public class SlicerParam implements Cloneable {
         this.step = step;
     }
 
-
-    public double getValueProperty() {
-        return valueProperty.get();
+    public SimpleDoubleProperty getDoubleProperty(){
+        return (SimpleDoubleProperty) this.valueProperty;
     }
 
-    public DoubleProperty valuePropertyProperty() {
-        return valueProperty;
+    public SimpleIntegerProperty getIntegerProperty(){
+        return (SimpleIntegerProperty) this.valueProperty;
     }
 
-    public void setValueProperty(double valueProperty) {
-        this.valueProperty.set(valueProperty);
+    public SimpleStringProperty getStringProperty(){
+        return (SimpleStringProperty) this.valueProperty;
+    }
+
+    public SimpleBooleanProperty getBooleanProperty(){
+        return (SimpleBooleanProperty) this.valueProperty;
+    }
+
+    public void setValueProperty(Object value) {
+        this.valueProperty.setValue(value);
     }
 
     public void resetToDefault(){
         if (this.defaultValue != null){
-            try{
-                this.setValueProperty((double)this.defaultValue);
-            }catch(ClassCastException e){
-                System.out.println("Value cannot be cast to double.");
-            }
+            this.setVal(this.defaultValue);
+//            try{
+//                this.setValueProperty((double)this.defaultValue);
+//            }catch(ClassCastException e){
+//                System.out.println("Value cannot be cast to double.");
+//            }
         }
     }
 

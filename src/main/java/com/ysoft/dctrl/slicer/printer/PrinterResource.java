@@ -1,5 +1,6 @@
 package com.ysoft.dctrl.slicer.printer;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
@@ -70,9 +71,15 @@ public class PrinterResource {
                     if (p.id != null){
                         printers.add(p);
                     }
-                }catch ( IOException e){
+                } catch (JsonMappingException e){
+                    e.printStackTrace();
+                } catch ( IOException e){
                     System.out.println("Printer definition error." + f.toString() + " " + e.getMessage());
-               }
+                    e.printStackTrace();
+                }catch (IllegalArgumentException e){
+                    System.out.println("Printer parameter parsing error. " + f.toString() + " " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
         return printers;

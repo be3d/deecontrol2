@@ -106,6 +106,16 @@ public class ProfileResource {
 
     public Profile[] get(){return null;}
 
+    /**
+     * Cast profile object from Presenter to (Profile) and delegate
+     * @param profile
+     */
+    public void applyProfile(Object profile){
+        if (profile instanceof Profile){
+            this.applyProfile((Profile)profile);
+        }
+    }
+
     public void applyProfile(Profile profile){
         // update printer, slicer, params
         this.slicerParams.resetToDefault();
@@ -123,11 +133,7 @@ public class ProfileResource {
         System.out.println("PrinterResource: Printer " + profileID + "could not be set.");
     }
 
-    public void applyProfile(Object profile){
-        if (profile instanceof Profile){
-            this.applyProfile((Profile)profile);
-        }
-    }
+
 
     public void resetToDefault(){}
 
