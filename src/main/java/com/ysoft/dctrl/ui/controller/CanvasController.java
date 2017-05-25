@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.ysoft.dctrl.editor.importer.GCodeImporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -81,6 +82,16 @@ public class CanvasController extends AbstractController implements Initializabl
             System.err.println("p: " + (double) e.getData());
         });
         eventBus.subscribe(EventType.RESET_VIEW.name(), (e) -> controls.resetCamera());
+
+        // gcode testing
+        GCodeImporter gCodeImporter = new GCodeImporter();
+        ImportRunner importRunner = new ImportRunner(eventBus, gCodeImporter, System.getProperty("user.home")+File.separator + "test.gco");
+        importRunner.setOnSucceeded(e -> {
+            eventBus.publish(new Event(EventType.MODEL_LOADED.name(), importRunner.getValue()));
+        });
+        new Thread(importRunner).start();
+        // gcode testing
+
     }
 
     private void onDragOver(DragEvent dragEvent) {
