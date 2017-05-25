@@ -27,9 +27,5 @@
 .no-model-panel Button {
     -fx-pref-width: 130px;
     -fx-pref-height: 36px;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
-    -fx-background-color: #337ab7;
-    -fx-text-fill: white;
     -fx-font-weight: 900;
 }

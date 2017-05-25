@@ -16,6 +16,65 @@ Tool:focused, Button:focused {
     -fx-background-insets: 0;
 }
 
-Tool:pressed, Button:pressed {
+Tool:pressed {
     -fx-background-color: #e5e5e5;
+}
+
+Button {
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: #bfbfbf;
+    -fx-text-fill: #337ab7;
+    -fx-font-size: 14px;
+}
+
+Button:hover {
+    -fx-background-color: #e5e5e5;
+    -fx-text-fill: #102068;
+}
+
+Button.blue {
+    -fx-border-width: 0;
+    -fx-background-color: #337ab7;
+    -fx-text-fill: white;
+}
+
+Button.blue:hover {
+    -fx-background-color: #26567e;
+}
+
+DialogPane {
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.0, 0, 0);
+}
+
+DialogPane HeaderBox {
+    -fx-pref-height: 45px;
+    -fx-max-height: 45px;
+    -fx-background-color: #f9f9f9;
+    -fx-padding: 0 15 0 15;
+    -fx-spacing: 15px;
+    -fx-background-radius: 5px 5px 0 0;
+}
+
+DialogPane Label {
+    -fx-font-size: 16px;
+
+}
+
+DialogPane HeaderBox Button {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/close.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-border-width: 0;
+}
+
+DialogPane HeaderBox Button:pressed {
+    -fx-background-color: transparent;
 }

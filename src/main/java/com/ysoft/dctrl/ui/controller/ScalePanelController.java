@@ -9,6 +9,7 @@ import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.beans.value.ObservableValue;
@@ -29,8 +30,8 @@ public class ScalePanelController extends AbstractEditPanelController {
 
     @FXML CheckBox uniform;
 
-    public ScalePanelController(SceneGraph sceneGraph, LocalizationResource localizationResource, EventBus eventBus, DeeControlContext context) {
-        super(sceneGraph, localizationResource, eventBus, context);
+    public ScalePanelController(SceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
+        super(sceneGraph, localizationService, eventBus, context);
     }
 
     @Override

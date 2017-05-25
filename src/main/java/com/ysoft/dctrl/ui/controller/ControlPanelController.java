@@ -14,6 +14,7 @@ import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.control.Tool;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
@@ -39,8 +40,8 @@ public class ControlPanelController extends LocalizableController implements Ini
     private Tool selected;
 
     @Autowired
-    public ControlPanelController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext deeControlContext, SceneGraph sceneGraph) {
-        super(localizationResource, eventBus, deeControlContext);
+    public ControlPanelController(LocalizationService localizationService, EventBus eventBus, DeeControlContext deeControlContext, SceneGraph sceneGraph) {
+        super(localizationService, eventBus, deeControlContext);
         this.sceneGraph = sceneGraph;
         this.selected = null;
     }

@@ -3,14 +3,14 @@ package com.ysoft.dctrl.ui.factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ysoft.dctrl.ui.control.DialogPane;
+import com.ysoft.dctrl.ui.factory.dialog.PreferencesFactory;
 import com.ysoft.dctrl.utils.SpringFXMLLoader;
 
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
 /**
  * Created by pilar on 20.3.2017.

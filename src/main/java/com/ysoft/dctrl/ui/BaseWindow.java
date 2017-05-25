@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ysoft.dctrl.ui.factory.ControlMenuFactory;
-import com.ysoft.dctrl.ui.factory.ControlPanelFactory;
 import com.ysoft.dctrl.ui.factory.EditorCanvasFactory;
 import com.ysoft.dctrl.ui.factory.MainPanelFactory;
 import com.ysoft.dctrl.ui.factory.MenuBarFactory;
@@ -24,6 +23,7 @@ import javafx.stage.Stage;
 @Component
 public class BaseWindow {
     private KeyEventPropagator keyEventPropagator;
+    private DialogManager dialogManager;
 
     private Region menuBar;
     private Region editorCanvas;
@@ -32,12 +32,14 @@ public class BaseWindow {
 
     @Autowired
     public BaseWindow(KeyEventPropagator keyEventPropagator,
+                      DialogManager dialogManager,
                       MenuBarFactory menuBarFactory,
                       MainPanelFactory mainPanelFactory,
                       EditorCanvasFactory editorCanvasFactory,
                       ControlMenuFactory controlMenuFactory
     ) {
         this.keyEventPropagator = keyEventPropagator;
+        this.dialogManager = dialogManager;
         menuBar = menuBarFactory.buildMenuBar();
         mainPanel = mainPanelFactory.buildMainPanel();
         editorCanvas = editorCanvasFactory.buildEditorCanvas();
@@ -45,8 +47,16 @@ public class BaseWindow {
     }
 
     public void composeWindow(Stage stage) {
-        VBox root = new VBox();
-        root.setBackground(Background.EMPTY);
+        AnchorPane root = new AnchorPane();
+
+        VBox content = new VBox();
+
+        setAnchors(content, 0.0, 0.0, 0.0, 0.0);
+        setAnchors(dialogManager.getNode(), 0.0, 0.0, 0.0, 0.0);
+
+        root.getChildren().addAll(content, dialogManager.getNode());
+
+        content.setBackground(Background.EMPTY);
 
         // TODO add config to application - get default values from config
         //
@@ -56,19 +66,19 @@ public class BaseWindow {
         root.prefWidthProperty().bind(scene.widthProperty());
 
         AnchorPane canvasPane = new AnchorPane();
-        canvasPane.maxHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
-        canvasPane.prefHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
+        canvasPane.maxHeightProperty().bind(content.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
+        canvasPane.prefHeightProperty().bind(content.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
 
         setAnchors(controlMenu, 0.0, null, 0.0, 0.0);
         setAnchors(editorCanvas, 0.0, 0.0, 0.0, null);
         setAnchors(mainPanel, 0.0, 0.0, null, 0.0);
 ;
         editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
-        editorCanvas.prefWidthProperty().bind(root.widthProperty().subtract(controlMenu.widthProperty()));
+        editorCanvas.prefWidthProperty().bind(content.widthProperty().subtract(controlMenu.widthProperty()));
 
         canvasPane.getChildren().addAll(editorCanvas, controlMenu);
 
-        root.getChildren().addAll(menuBar, mainPanel, canvasPane);
+        content.getChildren().addAll(menuBar, mainPanel, canvasPane);
         stage.setScene(scene);
     }
 

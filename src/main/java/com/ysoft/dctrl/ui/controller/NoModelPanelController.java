@@ -12,6 +12,7 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
@@ -34,8 +35,8 @@ public class NoModelPanelController extends LocalizableController {
     private String eventDecriptor;
 
 
-    public NoModelPanelController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext context) {
-        super(localizationResource, eventBus, context);
+    public NoModelPanelController(LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
+        super(localizationService, eventBus, context);
     }
 
     @Override

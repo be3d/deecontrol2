@@ -7,14 +7,15 @@
 <?import javafx.scene.control.Button?>
 <?import java.net.URL?>
 
-<?import javafx.geometry.Insets?><StackPane xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.NoModelPanelController" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+<?import javafx.geometry.Insets?>
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.NoModelPanelController" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
   <VBox styleClass="no-model-panel" StackPane.alignment="CENTER">
     <Text styleClass="no-model-panel-text, no-model-panel-text-bold" text="Add some model to get started" >
       <VBox.margin><Insets><top>117</top></Insets></VBox.margin>
     </Text>
     <Text styleClass="no-model-panel-text" text="Drag and drop any .stl, .dctl or browse" />
 
-    <Button fx:id="browse" text="BROWSE" >
+    <Button fx:id="browse" text="BROWSE" styleClass="blue" >
       <VBox.margin><Insets><top>40</top></Insets></VBox.margin>
     </Button>
   </VBox>

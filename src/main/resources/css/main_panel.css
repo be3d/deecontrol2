@@ -17,6 +17,17 @@
     -fx-background-position: center 3px;
     -fx-background-radius: 0;
     -fx-border-radius: 0;
+    -fx-border-width: 0;
+    -fx-text-fill: black;
+}
+
+.main-panel-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+}
+
+.main-panel-button:pressed {
+    -fx-background-color: #e5e5e5;
 }
 
 .add-button {

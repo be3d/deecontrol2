@@ -13,7 +13,10 @@ import org.springframework.stereotype.Controller;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.ui.dialog.contract.DialogEventData;
+import com.ysoft.dctrl.ui.factory.dialog.DialogType;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.event.ActionEvent;
@@ -34,8 +37,8 @@ public class MenuBarController extends LocalizableController implements Initiali
     @FXML MenuItem settings;
 
     @Autowired
-    public MenuBarController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext deeControlContext) {
-        super(localizationResource, eventBus, deeControlContext);
+    public MenuBarController(LocalizationService localizationService, EventBus eventBus, DeeControlContext deeControlContext) {
+        super(localizationService, eventBus, deeControlContext);
     }
 
     @Override
@@ -48,11 +51,17 @@ public class MenuBarController extends LocalizableController implements Initiali
         english.setOnAction(this::languageChange);
         czech.setOnAction(this::languageChange);
 
+        settings.setOnAction(this::onSettings);
+
         language.getItems().addAll(english, czech);
         super.initialize(location, resources);
     }
 
     private void languageChange(ActionEvent event) {
         eventBus.publish(new Event(EventType.CHANGE_LANGUAGE.name(), ((MenuItem) event.getTarget()).getUserData()));
+    }
+
+    private void onSettings(ActionEvent event) {
+        eventBus.publish(new Event(EventType.SHOW_DIALOG.name(), new DialogEventData(DialogType.PREFERENCES)));
     }
 }

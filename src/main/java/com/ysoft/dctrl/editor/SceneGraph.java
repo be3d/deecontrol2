@@ -15,6 +15,7 @@ import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.math.BoundingBox;
 import com.ysoft.dctrl.slicer.SlicerController;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
@@ -63,6 +64,10 @@ public class SceneGraph {
 
         eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> addMesh((TriangleMesh) e.getData()));
         eventBus.subscribe(EventType.CENTER_SELECTED_MODEL.name(), (e) -> centerSelected());
+        eventBus.subscribe(EventType.ALIGN_LEFT_SELECTED_MODEL.name(), (e) -> alignSelectedToLeft());
+        eventBus.subscribe(EventType.ALIGN_RIGHT_SELECTED_MODEL.name(), (e) -> alignSelectedToRight());
+        eventBus.subscribe(EventType.ALIGN_FRONT_SELECTED_MODEL.name(), (e) -> alignSelectedToFront());
+        eventBus.subscribe(EventType.ALIGN_BACK_SELECTED_MODEL.name(), (e) -> alignSelectedToBack());
         eventBus.subscribe(EventType.EXPORT_SCENE.name(), (e) -> exportScene());
     }
 
@@ -97,6 +102,26 @@ public class SceneGraph {
     public void centerSelected() {
         if(selected == null) { return; }
         selected.setPosition(new Point2D(0,0));
+    }
+
+    public void alignSelectedToLeft() {
+        if(selected == null) { return; }
+        selected.setPosition(new Point2D(-75 + selected.getBoundingBox().getHalfSize().getX(), selected.getPositionY()));
+    }
+
+    public void alignSelectedToRight() {
+        if(selected == null) { return; }
+        selected.setPosition(new Point2D(75 - selected.getBoundingBox().getHalfSize().getX(), selected.getPositionY()));
+    }
+
+    public void alignSelectedToFront() {
+        if(selected == null) { return; }
+        selected.setPosition(new Point2D(selected.getPositionX(), -75 + selected.getBoundingBox().getHalfSize().getY()));
+    }
+
+    public void alignSelectedToBack() {
+        if(selected == null) { return; }
+        selected.setPosition(new Point2D(selected.getPositionX(), 75 - selected.getBoundingBox().getHalfSize().getY()));
     }
 
     public void addMesh(TriangleMesh mesh) {

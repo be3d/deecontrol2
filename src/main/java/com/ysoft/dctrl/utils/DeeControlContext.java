@@ -6,8 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ysoft.dctrl.utils.settings.SafeQSettings;
 import com.ysoft.dctrl.utils.settings.SettingsStore;
-import com.ysoft.dctrl.utils.settings.contract.Settings;
+import com.ysoft.dctrl.utils.settings.Settings;
 
 /**
  * Created by pilar on 21.3.2017.
@@ -30,9 +31,5 @@ public class DeeControlContext {
         return loader;
     }
 
-    public Locale getStartUpLocale() {
-        return settings.getStartUpLocale();
-    }
-
-    public String getLastOpenPwd() { return settings.getLastOpenPwd(); }
+    public Settings getSettings() { return settings; }
 }

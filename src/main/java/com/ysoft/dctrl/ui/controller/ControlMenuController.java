@@ -39,6 +39,7 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
@@ -86,8 +87,8 @@ public class ControlMenuController extends LocalizableController implements Init
     @Autowired    ProfileResource profileResource;
 
     @Autowired
-    public ControlMenuController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext deeControlContext) {
-        super(localizationResource, eventBus, deeControlContext);
+    public ControlMenuController(LocalizationService localizationService, EventBus eventBus, DeeControlContext deeControlContext) {
+        super(localizationService, eventBus, deeControlContext);
     }
 
     @Override
