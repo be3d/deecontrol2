@@ -1,0 +1,29 @@
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.layout.HBox?>
+
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" minHeight="50" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
+
+    <HBox alignment="CENTER_LEFT" spacing="0">
+        <children>
+        <Region prefWidth="14"></Region>
+        <ImageView fitHeight="32" fitWidth="32" >
+            <image>
+                <Image url="@/img/control_menu/print_settings-full.png"></Image>
+            </image>
+        </ImageView>
+        <Label fx:id="label" text="" styleClass="control-menu-section-header-text"></Label>
+
+        <!--<ImageView fx:id="saveProfile"  fitHeight="14" fitWidth="14" visible="false"  >-->
+            <!--<image>-->
+                <!--<Image url="@/img/control_menu/save-mock.png"></Image>-->
+            <!--</image>-->
+        <!--</ImageView>-->
+        <!--<Button fx:id="add" styleClass="add-control-button" text="." visible="true" AnchorPane.rightAnchor="0"/>-->
+    </children>
+    </HBox>
+
+</fx:root>

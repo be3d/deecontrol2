@@ -19,4 +19,12 @@ public class GCodeMove {
         this.finish = finish;
         this.type = moveType;
     }
+
+    public Point3D getPoint(){
+        return finish;
+    }
+
+    public GCodeMoveType getType() {
+        return type;
+    }
 }

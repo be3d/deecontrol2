@@ -20,29 +20,31 @@
 
 <AnchorPane fx:id="anchorPane" fx:controller="com.ysoft.dctrl.ui.controller.SlicerPanelController" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu">
 
-  <ScrollPane styleClass="control-menu-scrollBar" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+  <HBox spacing="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0"  AnchorPane.rightAnchor="0" minHeight="50" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
+    <children>
+      <Region prefWidth="14"></Region>
+      <ImageView  fitHeight="32" fitWidth="32" >
+        <image>
+          <Image url="@/img/control_menu/print_settings-full.png"></Image>
+        </image>
+      </ImageView>
+
+      <Label text="Print settings" styleClass="control-menu-section-header-text"></Label>
+      <Region prefWidth="115"></Region>
+
+      <ImageView fx:id="saveProfile"  fitHeight="14" fitWidth="14" visible="false" AnchorPane.rightAnchor="5" >
+        <image>
+          <Image url="@/img/control_menu/save-mock.png"></Image>
+        </image>
+      </ImageView>
+      <!--<Button fx:id="add" styleClass="add-control-button" text="." visible="true" AnchorPane.rightAnchor="0"/>-->
+    </children>
+  </HBox>
+
+  <ScrollPane styleClass="control-menu-scrollBar" AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
     <content>
       <VBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-          <HBox spacing="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0"  AnchorPane.rightAnchor="0" minHeight="50" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
-          <children>
-            <Region prefWidth="14"></Region>
-            <ImageView  fitHeight="32" fitWidth="32" >
-              <image>
-                <Image url="@/img/control_menu/print_settings-full.png"></Image>
-              </image>
-            </ImageView>
 
-            <Label text="Print settings" styleClass="control-menu-section-header-text"></Label>
-            <Region prefWidth="115"></Region>
-
-            <ImageView fx:id="saveProfile"  fitHeight="14" fitWidth="14" visible="false" AnchorPane.rightAnchor="5" >
-              <image>
-                <Image url="@/img/control_menu/save-mock.png"></Image>
-              </image>
-            </ImageView>
-            <!--<Button fx:id="add" styleClass="add-control-button" text="." visible="true" AnchorPane.rightAnchor="0"/>-->
-          </children>
-        </HBox>
 
         <Picker label="Print profile" boundParamID="test" fx:id="profilePicker" ></Picker>
         <TextInput fx:id="printJobNameInput" label="Print job name" textPlaceHolder="Type this print job's name"></TextInput>

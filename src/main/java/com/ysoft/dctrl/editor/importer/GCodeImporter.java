@@ -8,7 +8,6 @@ import javafx.geometry.Point3D;
 import javafx.scene.shape.TriangleMesh;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 
@@ -49,8 +48,6 @@ public class GCodeImporter extends AbstractModelImporter {
 
         public void setMoveType(GCodeMoveType moveType) {this.moveType = moveType;}
         public GCodeMoveType getMoveType() {return moveType;}
-
-
     }
 
     private GCodeContext gCodeContext = new GCodeContext();
@@ -105,38 +102,47 @@ public class GCodeImporter extends AbstractModelImporter {
                 }
              }
 
+             // Append last layer
+             if (gCodeLayer != null )
+                layers.add(gCodeLayer);
         }
 
+        GCodeLayer layer = layers.get(layers.size()-1);
+        TriangleMesh mesh = new TriangleMesh();
+        float d = 0.4f; // thickness
 
-        Point3D pointA = new Point3D(0,0,0);
-        Point3D pointB = new Point3D(10,0,0);
-        Point3D pointC = new Point3D(15,5,0);
-        Point3D pointD = new Point3D(20,-5,0);
-        Point3D pointE = new Point3D(20,-8,0);
-        Point3D pointF = new Point3D(25,-8,0);
-        int gCodeLines = 2;
-        float d = 2; // thickness
+        LineSegment[] segments = new LineSegment[layer.getMoves().size()-1];
+        float[] meshPoints = new float[3*4*layer.getMoves().size()];
+        int[] meshFaces = new int[8*6*(layer.getMoves().size()-1)];
 
-        TriangleMesh testMesh = new TriangleMesh();
+//        TEST
+//        Point3D pointA = new Point3D(0,0,0);
+//        Point3D pointB = new Point3D(10,0,0);
+//        Point3D pointC = new Point3D(15,5,0);
+//        Point3D pointD = new Point3D(20,-5,0);
+//        Point3D pointE = new Point3D(20,-8,0);
+//        Point3D pointF = new Point3D(25,-8,0);
+//        Point3D[] gCodePoints = new Point3D[6];
+//        gCodePoints[0] = pointA;
+//        gCodePoints[1] = pointB;
+//        gCodePoints[2] = pointC;
+//        gCodePoints[3] = pointD;
+//        gCodePoints[4] = pointE;
+//        gCodePoints[5] = pointF;
 
-        Point3D[] gCodePoints = new Point3D[6];
-        gCodePoints[0] = pointA;
-        gCodePoints[1] = pointB;
-        gCodePoints[2] = pointC;
-        gCodePoints[3] = pointD;
-        gCodePoints[4] = pointE;
-        gCodePoints[5] = pointF;
 
-        LineSegment[] segments = new LineSegment[gCodePoints.length-1];
-        float[] meshPoints = new float[3*4*gCodePoints.length];
-        int[] meshFaces = new int[8*6*(gCodePoints.length-1)];
+        // Do the initial element faces
 
-        // Do the initial
+        // ...
 
-        //
-        for (int i = 1; i<gCodePoints.length-2; i++){
+        for (int i = 1; i<layer.getMoves().size()-2; i++){
 
-            segments[i] = new LineSegment(gCodePoints[i], gCodePoints[i+1], gCodePoints[i+2]);
+//            // omit travel moves for now
+//            if (layer.getMoves().get(i).getType().equals(GCodeMoveType.TRAVEL))
+//                continue;
+
+//            segments[i] = new LineSegment(gCodePoints[i], gCodePoints[i+1], gCodePoints[i+2]);
+            segments[i] = new LineSegment(layer.getMoves().get(i).getPoint(), layer.getMoves().get(i+1).getPoint(), layer.getMoves().get(i+2).getPoint() );
 
             //x
             double xx = segments[i].getEndPoint().getX() + d*cos(segments[i].getAlfa() + segments[i].getBeta()/2);
@@ -147,7 +153,7 @@ public class GCodeImporter extends AbstractModelImporter {
             double yy = segments[i].getEndPoint().getY() - d*sin(segments[i].getAlfa() + segments[i].getBeta()/2);
 
 
-            // 12 o'clock
+            // 12 o'clock (perpendicular cut)
             int n = 0; // nth point of the cut
             meshPoints[12*i+3*n] = (float)segments[i].getEndPoint().getX();         //x
             meshPoints[12*i+3*n+1] = (float)segments[i].getEndPoint().getY();       //y
@@ -173,8 +179,8 @@ public class GCodeImporter extends AbstractModelImporter {
         }
 
 
-        // make the polygons
-        for (int i = 0; i<gCodePoints.length-3; i++) {
+        // TODO refactor to MeshGenerator
+        for (int i = 1; i<layer.getMoves().size()-3; i++) {
 
             int n = 0; // nth polygon
             int m = 8; // faces per element
@@ -271,10 +277,10 @@ public class GCodeImporter extends AbstractModelImporter {
                 0, 0
         };
 
-        testMesh.getPoints().addAll(meshPoints);
-        testMesh.getTexCoords().addAll(texCoords);
-        testMesh.getFaces().addAll(meshFaces);
-        return testMesh;
+        mesh.getPoints().addAll(meshPoints);
+        mesh.getTexCoords().addAll(texCoords);
+        mesh.getFaces().addAll(meshFaces);
+        return mesh;
     }
 
     private Double extractGCodeParam(String line, String paramTag) throws NumberFormatException {
@@ -288,4 +294,5 @@ public class GCodeImporter extends AbstractModelImporter {
         }
         return null;
     }
+
 }
