@@ -18,7 +18,7 @@
 <?import com.ysoft.dctrl.ui.controller.controlMenu.SliderDiscrete?>
 <?import com.ysoft.dctrl.ui.controller.controlMenu.SliderContinuous?>
 
-<AnchorPane fx:id="anchorPane" fx:controller="com.ysoft.dctrl.ui.controller.ControlMenuController" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu">
+<AnchorPane fx:id="anchorPane" fx:controller="com.ysoft.dctrl.ui.controller.SlicerPanelController" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu">
 
   <ScrollPane styleClass="control-menu-scrollBar" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
     <content>

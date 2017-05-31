@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.ysoft.dctrl.editor.exporter.SceneExporter;
 import com.ysoft.dctrl.slicer.SlicerController;
+import com.ysoft.dctrl.slicer.SlicerRunner;
 import com.ysoft.dctrl.slicer.param.SlicerParamType;
 import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.slicer.printer.PrinterResource;
@@ -44,7 +46,7 @@ import javafx.stage.FileChooser;
  */
 
 @Controller
-public class ControlMenuController extends LocalizableController implements Initializable {
+public class SlicerPanelController extends LocalizableController implements Initializable {
 
     private boolean edited = false;
 
@@ -53,7 +55,6 @@ public class ControlMenuController extends LocalizableController implements Init
     @FXML ScrollPane scrollPane;
     @FXML Label advSettingsToggle;
     @FXML VBox advSettingsBox;
-
 
     // Components
     @FXML Picker profilePicker;
@@ -90,12 +91,13 @@ public class ControlMenuController extends LocalizableController implements Init
 
 
     @Autowired
-    public ControlMenuController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext deeControlContext) {
+    public SlicerPanelController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext deeControlContext) {
         super(localizationResource, eventBus, deeControlContext);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
 
         //        add.setOnAction(event -> {
         //            System.err.println(event.toString());
@@ -186,19 +188,19 @@ public class ControlMenuController extends LocalizableController implements Init
         progress.setProgress(0);
 
         slice.setOnAction(event -> {
-            System.err.println(event.toString());
-            try{
-                slicerController.slice(progress);
-                progress.setVisible(true);
-            }catch (Exception e ){
-                System.err.println("Slicing error.");
-            }
-
+//            System.err.println(event.toString());
+//            try{
+//                slicerController.slice(progress);
+//                progress.setVisible(true);
+//            }catch (Exception e ){
+//                System.err.println("Slicing error.");
+//            }
+            eventBus.publish(new Event(EventType.SLICER_SCENE_EXPORT.name()));
         });
 
 
         cancelSlice.setOnAction(event -> {
-            slicerController.slicer.stopTask();
+            eventBus.publish(new Event(EventType.SLICER_STOP.name()));
         });
 
         loadProfile.setOnAction(event -> {
@@ -239,6 +241,9 @@ public class ControlMenuController extends LocalizableController implements Init
                 advSettingsBox.setVisible(true);
                 advSettingsToggle.setText("Hide advanced settings...");
             }
+
+            eventBus.publish(new Event(EventType.SLICER_STOP.name()));
+
         });
 
         // Adv settings
@@ -249,7 +254,34 @@ public class ControlMenuController extends LocalizableController implements Init
         //        });
         //
 
+        eventBus.subscribe(EventType.SLICER_SCENE_EXPORT.name(), this::exportScene);
+        eventBus.subscribe(EventType.SLICER_SCENE_EXPORTED.name(), this::startSlicer);
+        eventBus.subscribe(EventType.SLICER_PROGRESS.name(), this::slicerProgressHandle);
+        eventBus.subscribe(EventType.SLICER_FINISHED.name(), this::gCodeViewerStart);
+
         super.initialize(location, resources);
+    }
+
+    private void exportScene(Event e){
+        //SceneExporter sceneExporter = new SceneExporter();
+        eventBus.publish(new Event(EventType.SLICER_SCENE_EXPORTED.name()));
+    }
+
+    private void startSlicer(Event e){
+        // todo clean any previous instance of runner (now they are stacking after slicing multiple times)
+        SlicerRunner slicerRunner = new SlicerRunner(eventBus, slicerController.slicer,
+                slicerParams.getAllParams(), System.getProperty("user.home") +
+                    File.separator + ".dctrl" + File.separator + ".slicer" + File.separator +"dctrl_scene.stl");
+        new Thread(slicerRunner).start();
+
+    }
+
+    private void slicerProgressHandle(Event e){
+        System.out.println(( e.getData()));
+    }
+
+    private void gCodeViewerStart(Event e){
+        
     }
 
     private void setEdited(boolean value){

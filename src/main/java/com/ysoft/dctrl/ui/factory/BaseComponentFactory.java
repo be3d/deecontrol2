@@ -8,9 +8,7 @@ import com.ysoft.dctrl.utils.SpringFXMLLoader;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
 /**
  * Created by pilar on 20.3.2017.
@@ -27,7 +25,8 @@ public class BaseComponentFactory implements
         BottomPanelWrapperFactory,
         MainPanelFactory,
         NoModelPanelFactory,
-        ControlMenuFactory
+        SlicerPanelFactory,
+        GCodePanelFactory
 {
     private final SpringFXMLLoader loader;
 
@@ -80,7 +79,10 @@ public class BaseComponentFactory implements
     public StackPane buildNoModelPanel() { return (StackPane) loader.load("/view/no_model_panel.fxml"); }
 
     @Override
-    public AnchorPane buildControlMenu() {
-        return (AnchorPane) loader.load("/view/control_menu.fxml");
+    public AnchorPane buildSlicerPanel() {
+        return (AnchorPane) loader.load("/view/slicer_panel.fxml");
     }
+
+    @Override
+    public AnchorPane buildGCodePanel(){return (AnchorPane) loader.load("/view/gcode_panel.fxml"); }
 }
