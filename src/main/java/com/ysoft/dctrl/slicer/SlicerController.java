@@ -1,6 +1,8 @@
 package com.ysoft.dctrl.slicer;
 
+import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.slicer.param.SlicerParams;
+import com.ysoft.dctrl.utils.DeeControlContext;
 import javafx.scene.control.ProgressBar;
 import com.ysoft.dctrl.slicer.cura.Cura;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +24,18 @@ public class SlicerController {
     @Autowired
     SlicerParams slicerParams;
 
+    private final EventBus eventBus;
+    private final DeeControlContext deeControlContext;
+
     public String selectedSlicerID = "";
     private final String sceneSTL = System.getProperty("user.home") + File.separator + ".dctrl" + File.separator + ".slicer" + File.separator + "dctrl_scene.stl";
     public Slicer slicer;
 
-    public SlicerController() {
+    @Autowired
+    public SlicerController(EventBus eventBus, DeeControlContext deeControlContext)
+    {
+        this.eventBus = eventBus;
+        this.deeControlContext = deeControlContext;
         this.setSlicer("CURA");
     }
 
@@ -34,7 +43,7 @@ public class SlicerController {
         try {
             switch(id){
                 case "CURA":{
-                    this.slicer = new Cura();
+                    this.slicer = new Cura(eventBus, deeControlContext);
                     break;
                 }
             }
