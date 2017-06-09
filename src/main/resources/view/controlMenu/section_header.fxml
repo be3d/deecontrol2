@@ -9,15 +9,11 @@
 
     <HBox alignment="CENTER_LEFT" spacing="0">
         <children>
-        <Region prefWidth="14"></Region>
-        <ImageView fitHeight="32" fitWidth="32" >
-            <image>
-                <Image url=""></Image>
-            </image>
-        </ImageView>
-        <Label fx:id="label" text="" styleClass="control-menu-section-header-text"></Label>
-
-    </children>
+            <Region prefWidth="14"></Region>
+            <ImageView fx:id="icon" fitHeight="16" fitWidth="16" />
+            <Region prefWidth="14"></Region>
+            <Label fx:id="label" text="" styleClass="control-menu-section-header-text"></Label>
+        </children>
     </HBox>
 
 </fx:root>

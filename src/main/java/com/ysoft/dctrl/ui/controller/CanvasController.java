@@ -54,7 +54,7 @@ public class CanvasController extends AbstractController implements Initializabl
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        SubScene subScene = new SubScene(sceneGraph.getSceneGroup(), 10, 10, true, SceneAntialiasing.BALANCED);
+        SubScene subScene = new SubScene(sceneGraph.getSceneGroup(), 10, 10, true, SceneAntialiasing.DISABLED);
         subScene.setFill(Color.WHITESMOKE);
         subScene.setCamera(sceneGraph.getCamera());
 
@@ -79,19 +79,9 @@ public class CanvasController extends AbstractController implements Initializabl
         keyEventPropagator.onKeyPressed(this::keyDown);
         eventBus.subscribe(EventType.ADD_MODEL.name(), this::addModel);
         eventBus.subscribe(EventType.MODEL_LOAD_PROGRESS.name(), (e) -> {
-            System.err.println("p: " + (double) e.getData());
+            //System.err.println("p: " + (double) e.getData());
         });
         eventBus.subscribe(EventType.RESET_VIEW.name(), (e) -> controls.resetCamera());
-
-        // gcode testing
-        GCodeImporter gCodeImporter = new GCodeImporter();
-        ImportRunner importRunner = new ImportRunner(eventBus, gCodeImporter, System.getProperty("user.home")+File.separator + "test.gco");
-        importRunner.setOnSucceeded(e -> {
-            eventBus.publish(new Event(EventType.MODEL_LOADED.name(), importRunner.getValue()));
-        });
-        new Thread(importRunner).start();
-        // gcode testing
-
     }
 
     private void onDragOver(DragEvent dragEvent) {

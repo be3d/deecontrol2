@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.exporter.SceneExporter;
 import com.ysoft.dctrl.slicer.SlicerController;
 import com.ysoft.dctrl.slicer.SlicerRunner;
@@ -22,6 +23,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -48,7 +50,15 @@ import javafx.stage.FileChooser;
 @Controller
 public class SlicerPanelController extends LocalizableController implements Initializable {
 
+    private final String sceneSTL = System.getProperty("user.home") + File.separator + ".dctrl" + File.separator + ".slicer" + File.separator + "dctrl_scene.stl";
     private boolean edited = false;
+
+    protected final SceneExporter sceneExporter;
+    protected final SceneGraph sceneGraph;
+    protected final PrinterResource printerResource;
+    protected final SlicerController slicerController;
+    protected final SlicerParams slicerParams;
+    protected final ProfileResource profileResource;
 
     // Layout
     @FXML AnchorPane anchorPane;
@@ -84,28 +94,30 @@ public class SlicerPanelController extends LocalizableController implements Init
     @FXML Button cancelSlice;
     @FXML Button loadProfile;
 
-    @Autowired    PrinterResource printerResource;
-    @Autowired    SlicerController slicerController;
-    @Autowired    SlicerParams slicerParams;
-    @Autowired    ProfileResource profileResource;
-
-
     @Autowired
-    public SlicerPanelController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext deeControlContext) {
+    public SlicerPanelController(
+            LocalizationResource localizationResource,
+            EventBus eventBus,
+            DeeControlContext deeControlContext,
+            SceneExporter sceneExporter,
+            SceneGraph sceneGraph,
+            PrinterResource printerResource,
+            SlicerController slicerController,
+            SlicerParams slicerParams,
+            ProfileResource profileResource) {
+
         super(localizationResource, eventBus, deeControlContext);
+        this.sceneExporter = sceneExporter;
+        this.sceneGraph = sceneGraph;
+        this.printerResource = printerResource;
+        this.slicerController = slicerController;
+        this.slicerParams = slicerParams;
+        this.profileResource = profileResource;
+
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-
-        //        add.setOnAction(event -> {
-        //            System.err.println(event.toString());
-        //            final FileChooser dialog = new FileChooser();
-        //            File f = dialog.showOpenDialog(null);
-        //            if(f == null) return;
-        //            eventBus.publish(new Event(EventType.ADD_MODEL.name(), f.getAbsolutePath()));
-        //        });
 
         List<Profile> list = profileResource.getProfiles();
         ObservableList obList = FXCollections.observableList(list);
@@ -188,13 +200,6 @@ public class SlicerPanelController extends LocalizableController implements Init
         progress.setProgress(0);
 
         slice.setOnAction(event -> {
-//            System.err.println(event.toString());
-//            try{
-//                slicerController.slice(progress);
-//                progress.setVisible(true);
-//            }catch (Exception e ){
-//                System.err.println("Slicing error.");
-//            }
             eventBus.publish(new Event(EventType.SLICER_SCENE_EXPORT.name()));
         });
 
@@ -209,10 +214,6 @@ public class SlicerPanelController extends LocalizableController implements Init
                 System.out.println(p.getId());
             }
         });
-
-//        saveProfile.setOnAction(event -> {
-//            profileResource.saveNewProfile("newProfile01");
-//        });
 
         saveProfile.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -246,14 +247,6 @@ public class SlicerPanelController extends LocalizableController implements Init
 
         });
 
-        // Adv settings
-        //        layerHeightSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-        //            Double value = (Math.round(newValue.doubleValue()*100)/100.0);
-        //            layerHeightValue.setText(value.toString());
-        //            slicerParams.updateParam(SlicerParamType.LAYER_HEIGHT.name(), value);
-        //        });
-        //
-
         eventBus.subscribe(EventType.SLICER_SCENE_EXPORT.name(), this::exportScene);
         eventBus.subscribe(EventType.SLICER_SCENE_EXPORTED.name(), this::startSlicer);
         eventBus.subscribe(EventType.SLICER_PROGRESS.name(), this::slicerProgressHandle);
@@ -263,12 +256,12 @@ public class SlicerPanelController extends LocalizableController implements Init
     }
 
     private void exportScene(Event e){
-        //SceneExporter sceneExporter = new SceneExporter();
+        sceneExporter.exportScene(sceneGraph, sceneSTL);
         eventBus.publish(new Event(EventType.SLICER_SCENE_EXPORTED.name()));
     }
 
     private void startSlicer(Event e){
-        // todo clean any previous instance of runner (now they are stacking after slicing multiple times)
+        // todo clean any previous instance of runner (this way they are stacking after slicing multiple times)
         SlicerRunner slicerRunner = new SlicerRunner(eventBus, slicerController.slicer,
                 slicerParams.getAllParams(), System.getProperty("user.home") +
                     File.separator + ".dctrl" + File.separator + ".slicer" + File.separator +"dctrl_scene.stl");
@@ -280,9 +273,7 @@ public class SlicerPanelController extends LocalizableController implements Init
         System.out.println(( e.getData()));
     }
 
-    private void gCodeViewerStart(Event e){
-        
-    }
+    private void gCodeViewerStart(Event e){}
 
     private void setEdited(boolean value){
         saveProfile.setVisible(value);

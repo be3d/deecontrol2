@@ -12,7 +12,9 @@ public enum GCodeMoveType {
     WALL_OUTER("WALL-OUTER"),
     FILL("FILL"),
     SKIN("SKIN"),
-    TRAVEL("TRAVEL_MOVE");
+    TRAVEL("TRAVEL_MOVE"),
+    SUPPORT("SUPPORT"),
+    SKIRT("SKIRT");
 
     private final String text;
 

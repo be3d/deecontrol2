@@ -1,38 +1,39 @@
 package com.ysoft.dctrl.editor.mesh;
 
-import javafx.geometry.Point3D;
-import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Material;
+import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.MeshView;
+import javafx.scene.shape.TriangleMesh;
 
 /**
  * Created by kuhn on 5/24/2017.
  */
-public class GCodeMesh implements DrawableMesh {
-
-    Point3D[] path;
+public class GCodeMesh extends TriangleMesh {
+    private GCodeMoveType type;
     private MeshView view;
 
-    public GCodeMesh(){
-        view = new MeshView();
+    public GCodeMesh(TriangleMesh mesh, GCodeMoveType type, Material material){
+        view = new MeshView(mesh);
+        //view.setVisible(false);
+        view.setMaterial(material);
+
+        this.type = type;
     }
 
-    public GCodeMesh(Point3D[] points) {
-        path = points;
+    public GCodeMoveType getType() {
+        return type;
     }
 
-    @Override
-    public Node getNode() {
+    public void setType(GCodeMoveType type) {
+        this.type = type;
+    }
+
+    public MeshView getNode(){
         return view;
     }
 
-    @Override
-    public void setMaterial(Material material) {
-
+    public void setVisible(boolean value){
+        this.view.setVisible(value);
     }
-
-    // build Triangle mesh from section of points
-
-    // set material <- presenter
-
 }

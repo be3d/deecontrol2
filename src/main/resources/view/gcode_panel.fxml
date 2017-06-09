@@ -18,7 +18,7 @@
 
             <VBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
-                <Header label="PRINT JOB INFORMATION" />
+                <Header label="PRINT JOB INFORMATION" icon="@/img/control_menu/job_info_icon.png" />
                 <VBox AnchorPane.leftAnchor="10" AnchorPane.topAnchor="5">
                     <TextFlow>
                         <!--Todo generate in controller-->
@@ -33,13 +33,14 @@
                         <Text text="&#13;"></Text>
                     </TextFlow>
                 </VBox>
-                <Header label="OBJECT VISUALISATION"/>
+                <Header label="OBJECT VISUALISATION" icon="@/img/control_menu/gc_viewer_icon.png"/>
 
-                <CheckBoxInline text="Display shell"></CheckBoxInline>
-                <CheckBoxInline text="Display travel moves"></CheckBoxInline>
-                <CheckBoxInline text="Display infill"></CheckBoxInline>
-                <CheckBoxInline text="Display supports"></CheckBoxInline>
-                <CheckBoxInline text="View individual layer"></CheckBoxInline>
+                <CheckBoxInline fx:id="displayShell" text="Display shell"></CheckBoxInline>
+                <CheckBoxInline fx:id="displayTravelMoves" text="Display travel moves"></CheckBoxInline>
+                <CheckBoxInline fx:id="displayInfill" text="Display infill"></CheckBoxInline>
+                <CheckBoxInline fx:id="displaySupports" text="Display supports"></CheckBoxInline>
+                <CheckBoxInline fx:id="viewOneLayer" text="View individual layer"></CheckBoxInline>
+
             </VBox>
 
 
