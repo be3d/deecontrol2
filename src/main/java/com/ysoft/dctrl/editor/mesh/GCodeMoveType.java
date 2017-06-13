@@ -1,6 +1,5 @@
 package com.ysoft.dctrl.editor.mesh;
 
-import jdk.internal.org.objectweb.asm.tree.InnerClassNode;
 
 /**
  * Created by kuhn on 5/25/2017.

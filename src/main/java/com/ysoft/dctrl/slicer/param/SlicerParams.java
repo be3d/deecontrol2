@@ -36,7 +36,10 @@ public class SlicerParams {
     protected boolean isEdited = false;
 
     @Autowired
-    public SlicerParams(EventBus eventBus, DeeControlContext deeControlContext, PrinterResource printerResource, Cura slicer, SlicerParamRelations paramRelations) throws IOException {
+    public SlicerParams(EventBus eventBus, DeeControlContext deeControlContext,
+                        PrinterResource printerResource, Cura slicer,
+                        SlicerParamRelations paramRelations) throws IOException {
+
         this.eventBus = eventBus;
         this.deeControlContext = deeControlContext;
         this.slicer = slicer;
@@ -82,8 +85,6 @@ public class SlicerParams {
 
     public void printerChanged(Event event){
         this.slicerParameters = loadParams();
-        // reload available profiles...
-        System.out.println("PRINTER CHANGED diff to parameters.");
     }
 
     public void slicerParamChanged(Event event){

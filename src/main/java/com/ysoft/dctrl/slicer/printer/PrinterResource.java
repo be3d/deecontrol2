@@ -1,87 +1,36 @@
 package com.ysoft.dctrl.slicer.printer;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.slicer.AbstractConfigResource;
+import com.ysoft.dctrl.utils.DeeControlContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.security.CodeSource;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+
 
 /**
  * Created by kuhn on 4/5/2017.
  */
 
 @Component
-public class PrinterResource {
+public class PrinterResource extends AbstractConfigResource {
 
-    private static ObjectMapper objectMapper;
-    private static EventBus eventBus;
+    private static final String DEFINITIONS_PATH = "print/slicer/definitions/printer";
 
-    private static final String DEFINITIONS_PATH = "/print/slicer/definitions/printer";
-
-    List<Printer> printers;
-    Printer selectedPrinter;
+    private List<Printer> printers;
+    private Printer selectedPrinter;
 
     @Autowired
-    public PrinterResource(EventBus eventBus){
-        System.err.println("Printer resource init");
-        objectMapper = new ObjectMapper();
-
-        this.eventBus = eventBus;
+    public PrinterResource(EventBus eventBus, DeeControlContext deeControlContext){
+        super(eventBus, deeControlContext);
         this.printers = loadPrinters();
     }
 
     private List<Printer> loadPrinters(){
-        List<Printer> printers = new ArrayList<>();
-        File [] printerFiles = new File[0];
-
-        try {
-            URL printerDefinitions = PrinterResource.class.getResource(DEFINITIONS_PATH);
-
-            if (printerDefinitions == null) throw new IOException("Printer definitions folder not found.");
-
-            System.out.println(printerDefinitions.toURI());
-            System.out.println(Paths.get(printerDefinitions.toURI()));
-            File printerDefinitionsFolder = Paths.get(printerDefinitions.toURI()).toFile();
-            printerFiles = printerDefinitionsFolder.listFiles();
-
-            if (printers == null) throw new IOException("No printers found.");
-
-        } catch ( IOException e) {
-            System.out.println( e.getMessage());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        for(File f : printerFiles){
-            if(f.isFile()){
-                try{
-                    Printer p = this.objectMapper.readValue(f, Printer.class);
-                    if (p.id != null){
-                        printers.add(p);
-                    }
-                } catch (JsonMappingException e){
-                    e.printStackTrace();
-                } catch ( IOException e){
-                    System.out.println("Printer definition error." + f.toString() + " " + e.getMessage());
-                    e.printStackTrace();
-                }catch (IllegalArgumentException e){
-                    System.out.println("Printer parameter parsing error. " + f.toString() + " " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        }
+        List<Printer> printers = super.loadObjects(DEFINITIONS_PATH, Printer.class, true);
         return printers;
     }
 
