@@ -26,14 +26,10 @@ import java.util.*;
 @Component
 public class Cura extends AbstractSlicer {
 
-    private static final String CURA_RESOURCES_PATH = "/print/slicer/cura";
-    private static final String CURA_BIN = "C:\\Projects\\deecontrol\\bin\\cura";
-    private static final String CURA_EXE_PATH = CURA_BIN + (System.getProperty("os.name").startsWith("Win") ? "/CuraEngine.exe" : "maccosi");
-    private static final String PARAM_SAMPLE_FILE = CURA_BIN + (System.getProperty("os.name").startsWith("Win") ? "/def/fdmprinter.def.json" : "maccosi");
-
-    private static final String TEMP_PATH = System.getProperty("user.home") + File.separator + ".dctrl" + File.separator + ".slicer";
-    private static final String LOG_FILE = TEMP_PATH + File.separator + "cura.log";
-    private static final String GCODE_FILE = TEMP_PATH + File.separator + "sliced.gcode";
+    private String CURA_BIN_FOLDER;
+    private String CURA_BIN_FILE;
+    private String CURA_PARAM_SAMPLE_FILE;
+    private String CURA_LOG_FILE;
 
     private static final CuraParamMap curaParamMap = new CuraParamMap(SlicerParamType.class);
     private static double progress = 0.0;
@@ -41,6 +37,12 @@ public class Cura extends AbstractSlicer {
     @Autowired
     public Cura(EventBus eventBus, DeeControlContext deeControlContext) throws IOException {
         super(eventBus, deeControlContext);
+
+        CURA_BIN_FOLDER = deeControlContext.getFileService().BIN_PATH + File.separator + "cura";
+        CURA_BIN_FILE = CURA_BIN_FOLDER + "/CuraEngine.exe"; // for windows
+        CURA_PARAM_SAMPLE_FILE = CURA_BIN_FOLDER + "/def/fdmprinter.def.json";
+        CURA_LOG_FILE = deeControlContext.getFileService().TEMP_SLICER_PATH + File.separator + "cura.log";
+
     }
 
     public boolean supportsParam(String paramName) {
@@ -96,7 +98,8 @@ public class Cura extends AbstractSlicer {
 
         // Construct the command with current parameters
         List<String> cmdParams = new ArrayList<>(
-                Arrays.asList(CURA_EXE_PATH, "slice", "-v", "-p", "-j", PARAM_SAMPLE_FILE, "-o", GCODE_FILE, "-e0")
+                Arrays.asList(CURA_BIN_FILE, "slice", "-v", "-p", "-j", CURA_PARAM_SAMPLE_FILE,
+                        "-o", deeControlContext.getFileService().TEMP_SLICER_GCODE_FILE, "-e0")
         );
         for (Map.Entry<String, SlicerParam> entry : slicerParams.entrySet()) {
             try {
@@ -130,7 +133,7 @@ public class Cura extends AbstractSlicer {
 
         try (
                 BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                BufferedWriter bw = new BufferedWriter(new FileWriter(new File(LOG_FILE)))
+                BufferedWriter bw = new BufferedWriter(new FileWriter(new File(CURA_LOG_FILE)))
         ) {
 
             String s;

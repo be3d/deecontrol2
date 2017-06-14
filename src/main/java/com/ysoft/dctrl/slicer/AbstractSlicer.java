@@ -17,8 +17,8 @@ import java.util.Properties;
 @Component
 public abstract class AbstractSlicer implements Slicer {
 
-    private final EventBus eventBus;
-    private final DeeControlContext deeControlContext;
+    protected final EventBus eventBus;
+    protected final DeeControlContext deeControlContext;
 
     public AbstractSlicer(EventBus eventBus, DeeControlContext deeControlContext) throws IOException {
         this.eventBus = eventBus;
