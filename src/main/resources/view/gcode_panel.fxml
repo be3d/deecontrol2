@@ -16,40 +16,37 @@
 
 <AnchorPane fx:id="gcodePanelPane" fx:controller="com.ysoft.dctrl.ui.controller.GCodePanelController" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu" visible="false">
 
-            <VBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+    <VBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <Header label="PRINT JOB INFORMATION" icon="@/img/control_menu/job_info_icon.png" />
+        <VBox AnchorPane.leftAnchor="10" AnchorPane.topAnchor="5">
+            <TextFlow>
+                <!--Todo generate in controller-->
+                <Text text="Print job name: " styleClass="control-text-label"></Text>
+                <Text text="Default"></Text>
+                <Text text="&#13;"></Text>
+                <Text text="Print time: " styleClass="control-text-label"></Text>
+                <Text text="1hr 46min"></Text>
+                <Text text="&#13;"></Text>
+                <Text text="Filament usage: " styleClass="control-text-label"></Text>
+                <Text text="243mm"></Text>
+                <Text text="&#13;"></Text>
+            </TextFlow>
+        </VBox>
+        <Header label="OBJECT VISUALISATION" icon="@/img/control_menu/gc_viewer_icon.png"/>
 
-                <Header label="PRINT JOB INFORMATION" icon="@/img/control_menu/job_info_icon.png" />
-                <VBox AnchorPane.leftAnchor="10" AnchorPane.topAnchor="5">
-                    <TextFlow>
-                        <!--Todo generate in controller-->
-                        <Text text="Print job name: " styleClass="control-text-label"></Text>
-                        <Text text="Default"></Text>
-                        <Text text="&#13;"></Text>
-                        <Text text="Print time: " styleClass="control-text-label"></Text>
-                        <Text text="1hr 46min"></Text>
-                        <Text text="&#13;"></Text>
-                        <Text text="Filament usage: " styleClass="control-text-label"></Text>
-                        <Text text="243mm"></Text>
-                        <Text text="&#13;"></Text>
-                    </TextFlow>
-                </VBox>
-                <Header label="OBJECT VISUALISATION" icon="@/img/control_menu/gc_viewer_icon.png"/>
+        <CheckBoxInline fx:id="displayShell" text="Display shell"></CheckBoxInline>
+        <CheckBoxInline fx:id="displayTravelMoves" text="Display travel moves"></CheckBoxInline>
+        <CheckBoxInline fx:id="displayInfill" text="Display infill"></CheckBoxInline>
+        <CheckBoxInline fx:id="displaySupports" text="Display supports"></CheckBoxInline>
+        <!--<CheckBoxInline fx:id="viewOneLayer" text="View individual layer"></CheckBoxInline>-->
 
-                <CheckBoxInline fx:id="displayShell" text="Display shell"></CheckBoxInline>
-                <CheckBoxInline fx:id="displayTravelMoves" text="Display travel moves"></CheckBoxInline>
-                <CheckBoxInline fx:id="displayInfill" text="Display infill"></CheckBoxInline>
-                <CheckBoxInline fx:id="displaySupports" text="Display supports"></CheckBoxInline>
-                <CheckBoxInline fx:id="viewOneLayer" text="View individual layer"></CheckBoxInline>
-
-            </VBox>
-
+    </VBox>
 
     <VBox alignment="CENTER" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10"  >
         <Button fx:id="backToEditBtn" styleClass="control-button-back" text="BACK TO EDIT" />
         <Region prefHeight="10"></Region>
         <Button fx:id="sendJobBtn" styleClass="control-button" text="SEND TO SAFEQ" />
     </VBox>
-
 
     <stylesheets>
         <URL value="@/css/master.css" />

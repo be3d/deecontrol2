@@ -1,7 +1,6 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
 import com.ysoft.dctrl.slicer.param.SlicerParam;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -11,7 +10,7 @@ import java.text.DecimalFormat;
 /**
  * Created by kuhn on 5/5/2017.
  */
-public class SliderDiscrete extends com.ysoft.dctrl.ui.controller.controlMenu.Slider{
+public class SliderDiscrete extends com.ysoft.dctrl.ui.controller.controlMenu.BaseSlider {
 
     @FXML
     Slider slider;

@@ -4,25 +4,29 @@ import javafx.geometry.Point3D;
 import javafx.scene.Node;
 import javafx.scene.paint.Material;
 import javafx.scene.shape.MeshView;
+import javafx.scene.shape.TriangleMesh;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * Created by kuhn on 5/24/2017.
  */
-public class GCodeLayer implements DrawableMesh {
+public class GCodeLayer {
 
     private int number = 0;
     private LinkedList<GCodeMove> moveBuffer = new LinkedList<>();
+    private LinkedHashMap<String,MeshView> meshViewsMap = new LinkedHashMap<>();
+    private LinkedHashMap<String, LinkedList<GCodeMeshData>> meshDataMap = new LinkedHashMap<>();
 
-    private HashMap<String, LinkedList<GCodeMesh>> geometry = new HashMap<>();
-    private MeshView view;
+    private final GCodeMeshProperties gCodeMeshProperties = new GCodeMeshProperties();
+    private final GCodeMeshGenerator gCodeMeshGenerator = new GCodeMeshGenerator(new GCodeMeshProperties());
 
     public GCodeLayer(int number) {
         this.number = number;
-        view = new MeshView();
+    }
+
+    public int getNumber() {
+        return number;
     }
 
     public void processCmd(GCodeMoveType moveType, double x, double y, double z){
@@ -47,26 +51,92 @@ public class GCodeLayer implements DrawableMesh {
         }
     }
 
-    public void addMesh(GCodeMesh mesh){
+    public void addMeshData(GCodeMeshData mesh){
+        //if (mesh!= null && ( mesh.getType() == GCodeMoveType.SUPPORT || mesh.getType() == GCodeMoveType.WALL_OUTER)){
         if (mesh != null){
-            if (geometry.get(mesh.getType().name()) == null){
-                geometry.put(mesh.getType().name(), new LinkedList<>());
+            if (meshDataMap.get(mesh.getType().name()) == null){
+                meshDataMap.put(mesh.getType().name(), new LinkedList<>());
             }
-            geometry.get(mesh.getType().name()).add(mesh);
+            meshDataMap.get(mesh.getType().name()).add(mesh);
         }
     }
 
-    public HashMap<String, LinkedList<GCodeMesh>> getGeometry() {
-        return geometry;
+    public HashMap<String, LinkedList<GCodeMeshData>> getGeometryData() {
+        return meshDataMap;
     }
 
-    @Override
-    public Node getNode() {
-        return view;
+
+    public void generateMeshViews(){
+        for (LinkedList<GCodeMeshData> meshList: meshDataMap.values()){
+            MeshView view = new MeshView(constructMeshFromSegments(meshList));
+            view.setMaterial(gCodeMeshProperties.getMaterial(meshList.getFirst().getType()));
+            meshViewsMap.put(meshList.getFirst().getType().name() , view);
+        }
     }
 
-    @Override
-    public void setMaterial(Material material) {
+    public void generateMeshViews(GCodeMoveType... types){
+        for (GCodeMoveType t : types){
+            LinkedList<GCodeMeshData> meshList = meshDataMap.get(t.name());
+            MeshView view = new MeshView(constructMeshFromSegments(meshList));
+            view.setMaterial(gCodeMeshProperties.getMaterial(meshList.getFirst().getType()));
+            meshViewsMap.put(meshList.getFirst().getType().name() , view);
+        }
+    }
 
+    private TriangleMesh constructMeshFromSegments(LinkedList<GCodeMeshData> meshList){
+        TriangleMesh mesh = new TriangleMesh();
+        for (GCodeMeshData meshData : meshList) {
+
+            // Face indexes must be recalculated by offset of already added geometry
+            int offset = mesh.getPoints().size()/3;
+            int[] faces = new int[meshData.getFaces().length];
+            for (int i = 0; i < faces.length; i++){
+                if (i % 2 == 0){
+                    // Odd values must be left 0, because those are texture coords.
+                    faces[i] = meshData.getFaces()[i] + offset;
+                }
+            }
+            mesh.getPoints().addAll(meshData.getVertices());
+            mesh.getFaces().addAll(faces);
+            mesh.getTexCoords().addAll(0, 0);
+        }
+        return mesh;
+    }
+
+    public LinkedHashMap<String, MeshView> getMeshViews() {
+        return meshViewsMap;
+    }
+
+    public void clearMeshView(GCodeMoveType type){
+        meshViewsMap.put(type.name(), null);
+    }
+
+    public void setVisible(boolean value){
+        for (MeshView view : meshViewsMap.values()){
+            if(view != null)
+                view.setVisible(value);
+        }
+    }
+
+    // todo refactor to GCodeViewer
+    public void setVisibleOne(GCodeMoveType type){
+        for (String key : meshViewsMap.keySet()){
+            if( key.equals(type.name())){
+                meshViewsMap.get(key).setVisible(true);
+            } else{
+                meshViewsMap.get(key).setVisible(false);
+                //meshViewsMap.put(key,null);
+            }
+        }
+    }
+
+
+    public void finalizeLayer(){
+        generateMeshViews();
+    }
+
+    public void finalizeSegment() {
+        addMeshData(gCodeMeshGenerator.run(getMoveBuffer()));
+        clearMoveBuffer();
     }
 }

@@ -1,9 +1,6 @@
 package com.ysoft.dctrl.editor.importer;
 
-import com.ysoft.dctrl.editor.mesh.GCodeLayer;
-import com.ysoft.dctrl.editor.mesh.GCodeMesh;
-import com.ysoft.dctrl.editor.mesh.GCodeMeshGenerator;
-import com.ysoft.dctrl.editor.mesh.GCodeMoveType;
+import com.ysoft.dctrl.editor.mesh.*;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
@@ -14,6 +11,7 @@ import javafx.geometry.Point3D;
 import javafx.scene.shape.TriangleMesh;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 
@@ -32,9 +30,9 @@ public class GCodeImporter extends YieldModelImporter {
     private final Pattern LAYER_NUMBER_PATTERN = Pattern.compile(";LAYER:[0-9]+");
 
     private GCodeLayer gCodeLayer = new GCodeLayer(-1); // in CURA it can start with negative layers !! change this
-    private LinkedList<GCodeLayer> layers = new LinkedList<>();
+    private ArrayList<GCodeLayer> layers = new ArrayList<>();
     private GCodeContext gCodeContext = new GCodeContext();
-    private GCodeMeshGenerator gCodeMeshGenerator = new GCodeMeshGenerator();
+    private GCodeMeshGenerator gCodeMeshGenerator = new GCodeMeshGenerator(new GCodeMeshProperties());
 
     public GCodeImporter(EventBus eventBus){
         super();
@@ -47,70 +45,31 @@ public class GCodeImporter extends YieldModelImporter {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"))) {
             String line;
             while ((line = br.readLine()) != null) {
-                //System.out.println(line);
 
                 if (LAYER_NUMBER_PATTERN.matcher(line).matches()) {
-
-                    // todo refactor to functions
-                    if (gCodeLayer != null) {
-                        this.finalizeSegment(gCodeLayer);
-
-                        layers.add(gCodeLayer);
-                        yield(gCodeLayer);
-                    }
-
-                    // Init new layer
-                    int layerNumber = Integer.parseInt(line.substring(7));
-                    gCodeContext.setLayer(layerNumber);
-                    gCodeLayer = new GCodeLayer(layerNumber);
+                    handleNewLayer(line);
+                    continue;
                 }
 
                 if (TRAVEL_MOVE_TYPE_PATTERN.matcher(line).matches()) {
-                    GCodeMoveType moveType = GCodeMoveType.getValueOf(line.substring(6));
-                    if (gCodeContext.setMoveType(moveType)) {
-                        this.finalizeSegment(gCodeLayer);
-                    }
+                    handleMoveTypeChange(line);
+                    continue;
                 }
 
                 if (TRAVEL_MOVE_PATTERN.matcher(line).matches()) {
-                    if (gCodeContext.setTravelMove(true)) {
-                        this.finalizeSegment(gCodeLayer);
-                    }
-
-                    gCodeContext.setX(extractGCodeParam(line, "X"));
-                    gCodeContext.setY(extractGCodeParam(line, "Y"));
-                    gCodeContext.setZ(extractGCodeParam(line, "Z"));
-
-                    try {
-                        gCodeLayer.processCmd(GCodeMoveType.TRAVEL,
-                                gCodeContext.getX(), gCodeContext.getY(), gCodeContext.getZ());
-                    } catch (NumberFormatException e) {
-                        System.out.println("Gcode line corrupt: " + line);
-                    }
+                    handleTravelMove(line);
+                    continue;
                 }
 
                 if (LINEAR_MOVE_PATTERN.matcher(line).matches()) {
-                    if (gCodeContext.setTravelMove(false)) {
-                        this.finalizeSegment(gCodeLayer);
-                    }
-
-                    gCodeContext.setX(extractGCodeParam(line, "X"));
-                    gCodeContext.setY(extractGCodeParam(line, "Y"));
-                    gCodeContext.setZ(extractGCodeParam(line, "Z"));
-                    try {
-                        gCodeLayer.processCmd(gCodeContext.getMoveType(),
-                                gCodeContext.getX(), gCodeContext.getY(), gCodeContext.getZ());
-                    } catch (NumberFormatException e) {
-                        System.out.println("Gcode line corrupt: " + line);
-                    }
+                    handlePrintMove(line);
+                    continue;
                 }
             }
 
             // Append last layer
-            if (gCodeLayer != null)
-                this.finalizeSegment(gCodeLayer);
-                layers.add(gCodeLayer);
-                yield(gCodeLayer);
+            finalizeLayer(gCodeLayer);
+
         }
         catch(Exception e){
             e.printStackTrace();
@@ -131,9 +90,68 @@ public class GCodeImporter extends YieldModelImporter {
         return null;
     }
 
-    private void finalizeSegment(GCodeLayer layer) {
-        layer.addMesh(gCodeMeshGenerator.run(layer.getMoveBuffer()));
-        layer.clearMoveBuffer();
+    private void finalizeLayer(GCodeLayer layer){
+        if (layer != null){
+            layer.finalizeSegment();
+            layer.finalizeLayer();
+            layers.add(layer);
+            yield(layer);
+        }
+    }
+
+    private void handleNewLayer(String line){
+        finalizeLayer(gCodeLayer);
+
+        int layerNumber = Integer.parseInt(line.substring(7));
+        gCodeContext.setLayer(layerNumber);
+        gCodeLayer = new GCodeLayer(layerNumber);
+    }
+
+    private void handleMoveTypeChange(String line){
+        GCodeMoveType moveType = GCodeMoveType.getValueOf(line.substring(6));
+        if (gCodeContext.setMoveType(moveType)) {
+            gCodeLayer.finalizeSegment();
+        }
+    }
+
+    private void handleTravelMove(String line){
+        if (gCodeContext.setTravelMove(true)) {
+            gCodeLayer.finalizeSegment();
+        }
+
+        gCodeContext.setX(extractGCodeParam(line, "X"));
+        gCodeContext.setY(extractGCodeParam(line, "Y"));
+        if (gCodeContext.setZ(extractGCodeParam(line, "Z"))){
+            // Move along z is not displayed
+            gCodeLayer.finalizeSegment();
+        }
+
+        try {
+            gCodeLayer.processCmd(GCodeMoveType.TRAVEL,
+                    gCodeContext.getX(), gCodeContext.getY(), gCodeContext.getZ());
+        } catch (NumberFormatException e) {
+            System.out.println("Gcode line corrupt: " + line);
+        }
+    }
+
+    private void handlePrintMove(String line){
+        if (gCodeContext.setTravelMove(false)) {
+            gCodeLayer.finalizeSegment();
+        }
+
+        gCodeContext.setX(extractGCodeParam(line, "X"));
+        gCodeContext.setY(extractGCodeParam(line, "Y"));
+        if (gCodeContext.setZ(extractGCodeParam(line, "Z"))){
+            gCodeLayer.finalizeSegment();
+        }
+
+        try {
+            gCodeLayer.processCmd(gCodeContext.getMoveType(),
+                    gCodeContext.getX(), gCodeContext.getY(), gCodeContext.getZ());
+        } catch (NumberFormatException e) {
+            System.out.println("Gcode line corrupt: " + line);
+        }
+
     }
 
 }

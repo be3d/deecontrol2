@@ -26,6 +26,7 @@ public class BaseWindow {
     private Region mainPanel;
     private Region slicerPanel;
     private Region gcodePanel;
+    private Region gCodeLayerControlPanel;
 
     @Autowired
     public BaseWindow(KeyEventPropagator keyEventPropagator,
@@ -33,7 +34,8 @@ public class BaseWindow {
                       MainPanelFactory mainPanelFactory,
                       EditorCanvasFactory editorCanvasFactory,
                       SlicerPanelFactory slicerPanelFactory,
-                      GCodePanelFactory gcodePanelFactory
+                      GCodePanelFactory gcodePanelFactory,
+                      GCodeLayerSliderFactory gCodeLayerSliderFactory
     ) {
         this.keyEventPropagator = keyEventPropagator;
         menuBar = menuBarFactory.buildMenuBar();
@@ -41,6 +43,7 @@ public class BaseWindow {
         editorCanvas = editorCanvasFactory.buildEditorCanvas();
         slicerPanel = slicerPanelFactory.buildSlicerPanel();
         gcodePanel = gcodePanelFactory.buildGCodePanel();
+        gCodeLayerControlPanel = gCodeLayerSliderFactory.buildGCodeLayerSlider();
     }
 
     public void composeWindow(Stage stage) {
@@ -62,11 +65,12 @@ public class BaseWindow {
         setAnchors(gcodePanel, 0.0, null, 0.0, 0.0);
         setAnchors(editorCanvas, 0.0, 0.0, 0.0, null);
         setAnchors(mainPanel, 0.0, 0.0, null, 0.0);
-;
+        setAnchors(gCodeLayerControlPanel, 20.0, null, null, 305.0);
+
         editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
         editorCanvas.prefWidthProperty().bind(root.widthProperty().subtract(slicerPanel.widthProperty()));
 
-        canvasPane.getChildren().addAll(editorCanvas, slicerPanel, gcodePanel);
+        canvasPane.getChildren().addAll(editorCanvas, slicerPanel, gcodePanel, gCodeLayerControlPanel);
 
         root.getChildren().addAll(menuBar, mainPanel, canvasPane);
         stage.setScene(scene);

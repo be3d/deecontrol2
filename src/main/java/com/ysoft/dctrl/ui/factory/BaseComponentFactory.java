@@ -26,7 +26,8 @@ public class BaseComponentFactory implements
         MainPanelFactory,
         NoModelPanelFactory,
         SlicerPanelFactory,
-        GCodePanelFactory
+        GCodePanelFactory,
+        GCodeLayerSliderFactory
 {
     private final SpringFXMLLoader loader;
 
@@ -85,4 +86,8 @@ public class BaseComponentFactory implements
 
     @Override
     public AnchorPane buildGCodePanel(){return (AnchorPane) loader.load("/view/gcode_panel.fxml"); }
+
+    @Override
+    public AnchorPane buildGCodeLayerSlider(){return (AnchorPane) loader.load("/view/gcode_layer_picker.fxml") ;}
+
 }

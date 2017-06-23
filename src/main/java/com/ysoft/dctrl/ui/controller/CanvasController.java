@@ -54,7 +54,7 @@ public class CanvasController extends AbstractController implements Initializabl
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        SubScene subScene = new SubScene(sceneGraph.getSceneGroup(), 10, 10, true, SceneAntialiasing.DISABLED);
+        SubScene subScene = new SubScene(sceneGraph.getSceneGroup(), 10, 10, true, SceneAntialiasing.BALANCED);
         subScene.setFill(Color.WHITESMOKE);
         subScene.setCamera(sceneGraph.getCamera());
 

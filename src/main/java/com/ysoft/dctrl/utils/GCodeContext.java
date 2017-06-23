@@ -1,4 +1,4 @@
-package com.ysoft.dctrl.utils;
+    package com.ysoft.dctrl.utils;
 
 import com.ysoft.dctrl.editor.mesh.GCodeMoveType;
 
@@ -7,7 +7,7 @@ public class GCodeContext {
     public GCodeMoveType moveType = GCodeMoveType.NONE;
     private boolean isTravelMove = false;
 
-    private double x, y, z;
+    private double x, y, z = 0;
     private int layer;
 
     public void setX(Double x) {
@@ -18,8 +18,14 @@ public class GCodeContext {
         if (y != null) this.y = y;
     }
 
-    public void setZ(Double z) {
-        if (z != null) this.z = z;
+    public boolean setZ(Double z) {
+        if(z != null && (Double)this.z != null){
+            if( this.z != z){
+                this.z = z;
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setLayer(int layer) {

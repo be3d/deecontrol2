@@ -1,18 +1,15 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
 import com.ysoft.dctrl.slicer.param.SlicerParam;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 
 /**
  * Created by kuhn on 5/5/2017.
  */
-public class SliderContinuous extends com.ysoft.dctrl.ui.controller.controlMenu.Slider {
+public class SliderContinuous extends com.ysoft.dctrl.ui.controller.controlMenu.BaseSlider {
     @FXML
     Slider slider;
 

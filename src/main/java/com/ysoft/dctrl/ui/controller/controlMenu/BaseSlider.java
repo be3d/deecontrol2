@@ -6,12 +6,12 @@ import javafx.fxml.FXML;
 /**
  * Created by kuhn on 5/19/2017.
  */
-public class Slider extends BaseCustomControl{
+public class BaseSlider extends BaseCustomControl{
     @FXML
     javafx.scene.control.Slider slider;
 
 
-    public Slider(String fxmlResource) {
+    public BaseSlider(String fxmlResource) {
         super();
         super.init(fxmlResource);
 
@@ -41,7 +41,7 @@ public class Slider extends BaseCustomControl{
      * @param param
      * @return
      */
-    public Slider load(SlicerParam param){
+    public BaseSlider load(SlicerParam param){
 
         // todo perform the type conversion directly in param object
         this.boundParam = param;
@@ -62,7 +62,7 @@ public class Slider extends BaseCustomControl{
      * Default handle for slicerParam change with no further processing
      * @return
      */
-    public Slider bindParamChanged(){
+    public BaseSlider bindParamChanged(){
         boundParam.getDoubleProperty().addListener(
                 (observable, oldValue, newValue) -> this.setValue((Double)newValue)
         );
@@ -74,7 +74,7 @@ public class Slider extends BaseCustomControl{
      * @param listener
      * @return
      */
-    public Slider bindParamChanged(javafx.beans.value.ChangeListener listener){
+    public BaseSlider bindParamChanged(javafx.beans.value.ChangeListener listener){
         boundParam.getDoubleProperty().addListener(listener);
         return this;
     }

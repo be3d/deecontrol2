@@ -27,6 +27,7 @@ public class FileService {
     public final String TEMP_PATH = System.getProperty("user.home") + File.separator + ".dctrl" + File.separator + "temp";
     public final String TEMP_SLICER_PATH = this.initFolder(TEMP_PATH + File.separator + "slicer");
     public final String TEMP_SLICER_GCODE_FILE = TEMP_SLICER_PATH + File.separator + "sliced.gco";
+    public final String TEMP_SLICER_GCODE_FILE_TEST = TEMP_SLICER_PATH + File.separator + "slicede.gcode";
 
     private boolean isDevel;
     private JarFile jarFile;

@@ -15,7 +15,7 @@ public class Header extends BaseCustomControl {
     private String imgUrl;
 
     public Header(){
-        super.init("/view/controlMenu/section_header.fxml");
+        super.init("/view/controlMenu/header_section.fxml");
     }
 
     public String getIcon(){ return imgUrl; }

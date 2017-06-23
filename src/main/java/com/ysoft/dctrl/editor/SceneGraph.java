@@ -30,7 +30,6 @@ import javafx.scene.transform.Translate;
 public class SceneGraph {
     private LinkedList<SceneMesh> sceneMeshes;
     private ExtendedPerspectiveCamera camera;
-    private GCodeGraph gCodeGraph;
 
     private Group sceneGroup;
 
@@ -45,7 +44,6 @@ public class SceneGraph {
         this.eventBus = eventBus;
         sceneGroup = new Group();
         sceneMeshes = new LinkedList<>();
-        this.gCodeGraph = new GCodeGraph(eventBus, this);
 
         material = new PhongMaterial(Color.LIGHTBLUE);
         selectedMaterial = new PhongMaterial(new Color(0.3f, 0.4f, 0.9019608f, 1));
@@ -155,7 +153,4 @@ public class SceneGraph {
         return selected;
     }
 
-    public GCodeGraph getgCodeGraph() {
-        return gCodeGraph;
-    }
 }

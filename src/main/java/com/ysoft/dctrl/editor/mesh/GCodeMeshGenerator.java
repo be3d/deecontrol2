@@ -5,6 +5,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Material;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.TriangleMesh;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 
@@ -16,7 +18,10 @@ import static java.lang.Math.sin;
  */
 public class GCodeMeshGenerator {
 
-    public GCodeMeshGenerator() {
+    private final GCodeMeshProperties gCodeMeshProperties;
+
+    public GCodeMeshGenerator(GCodeMeshProperties gCodeMeshProperties) {
+        this.gCodeMeshProperties = gCodeMeshProperties;
     }
 
     /**
@@ -24,41 +29,16 @@ public class GCodeMeshGenerator {
      * @param moves
      * @return
      */
-    public GCodeMesh run(LinkedList<GCodeMove> moves){
+    public GCodeMeshData run(LinkedList<GCodeMove> moves){
 
         if (moves.size() < 1){
             return null;
         }
 
-        float d = 0.4f; // thickness
-        float h = 0.2f; // layer height
-        Material material = new PhongMaterial(Color.GOLD);
+        float d = gCodeMeshProperties.getLineWidth(moves.getLast().getType()); // thickness
+        float h = gCodeMeshProperties.getLineHeight(moves.getLast().getType()); // layer height
 
-        // Geometry constants for different types of move
-        switch(moves.getLast().getType()){
-            case WALL_INNER:
-                break;
-            case WALL_OUTER:
-                break;
-            case FILL:{
-                material = new PhongMaterial(Color.WHITESMOKE);
-                break;
-            }
-            case SKIN:
-                break;
-            case TRAVEL:{
-                material = new PhongMaterial(Color.RED);
-                d = 0.05f;
-                h = 0.01f;
-                break;
-            }
-            case SUPPORT:{
-                material = new PhongMaterial(Color.DIMGRAY);
-                break;
-            }
-        }
 
-        TriangleMesh mesh = new TriangleMesh();
         float[] meshPoints = new float[3 * 8 * (moves.size()-1)];
         int[] meshFaces = new int[6 * 8 * (moves.size()-1)];
 
@@ -71,11 +51,6 @@ public class GCodeMeshGenerator {
             }
 
             LineSegment segment = new LineSegment(move.getStart(), move.getFinish());
-
-            double xx = segment.getEndPoint().getX() + d * cos(segment.getAlfa()+Math.PI/2);
-            double xy = segment.getEndPoint().getY() + d * sin(segment.getAlfa()+Math.PI/2);
-            double yx = segment.getEndPoint().getX() - d * cos(segment.getAlfa()-Math.PI/2);
-            double yy = segment.getEndPoint().getY() - d * sin(segment.getAlfa()-Math.PI/2);
 
             // 12 o'clock (perpendicular cut)
             int n = 0; // nth point of the cut
@@ -174,10 +149,6 @@ public class GCodeMeshGenerator {
             i++;
         }
 
-        mesh.getPoints().addAll(meshPoints);
-        mesh.getFaces().addAll(meshFaces);
-        mesh.getTexCoords().addAll(0,0);
-
-        return new GCodeMesh(mesh, moves.getLast().getType(), material);
+        return new GCodeMeshData(meshPoints, meshFaces, moves.getLast().getType());
     }
 }
