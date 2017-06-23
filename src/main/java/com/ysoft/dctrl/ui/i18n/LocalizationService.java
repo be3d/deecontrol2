@@ -66,7 +66,7 @@ public class LocalizationService {
     }
 
     public final void addTranslation(MenuItem menuItem) {
-        if(menuItem.getText().startsWith("?_")) {
+        if(menuItem.getText() != null && menuItem.getText().startsWith("?_")) {
             String key = menuItem.getText().substring(2);
             menuTranslations.put(menuItem, key);
             translate(menuItem, startUpLocale, key);

@@ -14,7 +14,7 @@ import com.ysoft.dctrl.ui.dialog.Dialog;
 import com.ysoft.dctrl.ui.dialog.contract.DialogEventData;
 import com.ysoft.dctrl.ui.factory.dialog.DialogType;
 import com.ysoft.dctrl.ui.factory.dialog.PreferencesFactory;
-import com.ysoft.dctrl.ui.factory.dialog.WrapperFactory;
+import com.ysoft.dctrl.ui.factory.dialog.DialogWrapperFactory;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -32,11 +32,11 @@ public class DialogManager {
 
     @Autowired
     public DialogManager(EventBus eventBus,
-                         WrapperFactory wrapperFactory,
+                         DialogWrapperFactory dialogWrapperFactory,
                          PreferencesFactory preferencesFactory
     ) {
         this.eventBus = eventBus;
-        wrapper = wrapperFactory.buildWrapper();
+        wrapper = dialogWrapperFactory.buildWrapper();
         dialogs = new ConcurrentHashMap<>();
         dialogs.put(DialogType.PREFERENCES, preferencesFactory.buildPreferences());
     }

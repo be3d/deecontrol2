@@ -17,6 +17,7 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 
@@ -41,6 +42,7 @@ public class NoModelPanelController extends LocalizableController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        root.addEventHandler(MouseEvent.ANY, javafx.event.Event::consume);
         eventDecriptor = eventBus.subscribe(EventType.MODEL_LOADED.name(), this::hide);
 
         browse.setOnAction(event -> {

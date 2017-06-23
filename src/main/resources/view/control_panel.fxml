@@ -5,8 +5,8 @@
 
 <?import java.net.URL?>
 
-<AnchorPane fx:controller="com.ysoft.dctrl.ui.controller.ControlPanelController" xmlns:fx="http://javafx.com/fxml" styleClass="control-panel-wrapper">
-  <VBox AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" styleClass="panel, control-panel">
+<AnchorPane  fx:controller="com.ysoft.dctrl.ui.controller.ControlPanelController" xmlns:fx="http://javafx.com/fxml" styleClass="control-panel-wrapper">
+  <VBox fx:id="root" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" styleClass="panel, control-panel">
     <Tool fx:id="move" styleClass="control-button, move-button" />
     <Tool fx:id="scale" styleClass="control-button, scale-button" />
     <Tool fx:id="rotate" styleClass="control-button, rotate-button" />

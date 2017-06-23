@@ -5,6 +5,11 @@ DialogPane {
     -fx-max-height: 400px;
 }
 
+.tab-pane {
+    -fx-pref-height: 289px;
+    -fx-max-height: 289px;
+}
+
 .tab {
     -fx-background-position: top center;
     -fx-background-repeat: no-repeat;
@@ -47,7 +52,6 @@ DialogPane {
     -fx-background-color: #f9f9f9;
 }
 
-
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
     -fx-border-width: 0;
 }
@@ -85,6 +89,14 @@ DialogPane {
     -fx-background-image: url("../img/preferences/profiles-selected.png");
 }
 
+.settings-wrapper {
+    -fx-padding: 20px 30px 0 30px;
+}
+
+.options-row {
+    -fx-spacing: 15px;
+}
+
 .footer {
     -fx-pref-height: 66px;
     -fx-max-height: 66px;
@@ -95,4 +107,12 @@ DialogPane {
 .footer Button {
     -fx-pref-height: 36px;
     -fx-pref-width: 80px;
+}
+
+.server-address {
+    -fx-pref-width: 258px;
+}
+
+.server-port {
+    -fx-pref-width: 167px;
 }

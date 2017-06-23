@@ -1,3 +1,24 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('../font/robotoRegular.woff');
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-weight: 500;
+    src: url('../font/robotoMedium.woff');
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-weight: 900;
+    src: url('../font/robotoBold.woff');
+}
+
+* {
+    -fx-font-family: 'Roboto' !important;
+}
+
 .panel {
     -fx-padding: 5px;
     -fx-background-color: white;
@@ -66,7 +87,7 @@ DialogPane Label {
 
 }
 
-DialogPane HeaderBox Button {
+DialogPane HeaderBox Button, DialogPane HeaderBox Button:hover {
     -fx-background-color: transparent;
     -fx-background-image: url("../img/close.png");
     -fx-background-size: contain;
@@ -77,4 +98,43 @@ DialogPane HeaderBox Button {
 
 DialogPane HeaderBox Button:pressed {
     -fx-background-color: transparent;
+}
+
+.complex-control {
+    -fx-padding: 0;
+}
+
+.complex-control Label {
+    -fx-font-size: 14px;
+    -fx-padding: 0 0 8 0;
+}
+
+.complex-control Label.tooltip {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9b9ea0;
+    -fx-padding: 5 0 0 0;
+    -fx-background-color: transparent;
+    -fx-effect: none;
+}
+
+.complex-control ComboBox {
+    -fx-background-color: transparent;
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: #bfbfbf;
+}
+
+.complex-control ComboBox > .arrow-button {
+     -fx-background-color: transparent;
+}
+
+.complex-control ComboBox > .arrow-button > .arrow {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/control/drop_arrow.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-pref-width: 13px;
+    -fx-pref-height: 10px;
 }

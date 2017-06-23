@@ -4,6 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
@@ -19,15 +21,11 @@ public abstract class ComplexControl extends VBox {
 
         initControl();
 
-        toolTip.textProperty().addListener((o, oldValue, newValue) -> {
-            if(newValue == null || newValue.isEmpty()) {
-                getChildren().add(toolTip);
-            } else {
-                getChildren().remove(toolTip);
-            }
-        });
+        getStyleClass().addAll("complex-control");
+        toolTip.getStyleClass().addAll("tooltip");
 
         getChildren().addAll(label, getControl());
+        getControl().setMaxWidth(Double.MAX_VALUE);
     }
 
     public String getLabelText() {
@@ -44,6 +42,11 @@ public abstract class ComplexControl extends VBox {
 
     public void setToolTipText(String toolTipText) {
         toolTip.setText(toolTipText);
+        if(toolTipText == null || toolTipText.isEmpty()) {
+            getChildren().remove(toolTip);
+        } else {
+            getChildren().add(toolTip);
+        }
     }
 
     protected abstract Control getControl();
