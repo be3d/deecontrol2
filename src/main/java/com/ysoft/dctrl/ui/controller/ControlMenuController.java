@@ -40,6 +40,7 @@ import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
+import com.ysoft.dctrl.ui.notification.ProgressNotification;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
@@ -93,15 +94,6 @@ public class ControlMenuController extends LocalizableController implements Init
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        //        add.setOnAction(event -> {
-        //            System.err.println(event.toString());
-        //            final FileChooser dialog = new FileChooser();
-        //            File f = dialog.showOpenDialog(null);
-        //            if(f == null) return;
-        //            eventBus.publish(new Event(EventType.ADD_MODEL.name(), f.getAbsolutePath()));
-        //        });
-
         List<Profile> list = profileResource.getProfiles();
         ObservableList obList = FXCollections.observableList(list);
 
@@ -116,26 +108,25 @@ public class ControlMenuController extends LocalizableController implements Init
         infillDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
         supportDensitySlider.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
 
+        ProgressNotification notification = new ProgressNotification();
+        notification.setLabelText("Slicing objects…");
         eventBus.subscribe(EventType.SLICE_STARTED.name(), (e) -> {
+            notification.setProgress(0.0);
             ReadOnlyDoubleProperty progressProperty = (ReadOnlyDoubleProperty) e.getData();
-            progress.progressProperty().bind(progressProperty);
+            progressProperty.addListener((o, oldValue, newValue) -> {
+                notification.setProgress(newValue.doubleValue());
+            });
+            eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), notification));
+
         });
 
         eventBus.subscribe(EventType.SLICE_DONE.name(), (e) -> {
-            progress.setVisible(false);
-            progress.progressProperty().unbind();
-            FileChooser fileChooser = new FileChooser();
-            File out = fileChooser.showSaveDialog(root.getScene().getWindow());
-            if(out == null) return;
-            try {
-                Files.copy(Paths.get(Cura.GCODE_FILE), out.toPath());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            notification.hide();
         });
 
         slice.setOnAction(event -> {
             System.err.println(event.toString());
+            deeControlContext.getCurrentProject().setName(printJobNameInput.getText());
             progress.setProgress(0);
             progress.setVisible(true);
             eventBus.publish(new Event(EventType.EXPORT_SCENE.name()));
