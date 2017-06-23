@@ -18,9 +18,9 @@ public class PrintJob {
     private final Socket client;
     private InputStream clientInput;
     private OutputStream clientOutput;
-    private final int length;
+    private final long length;
 
-    public PrintJob(String userName, String queue, String fileName, InputStream input, int length, Socket client) {
+    public PrintJob(String userName, String queue, String fileName, InputStream input, long length, Socket client) {
         this.userName = userName;
         this.queue = queue;
         this.fileName = fileName;
@@ -57,7 +57,7 @@ public class PrintJob {
         return clientOutput;
     }
 
-    public int getLength() {
+    public long getLength() {
         return length;
     }
 }

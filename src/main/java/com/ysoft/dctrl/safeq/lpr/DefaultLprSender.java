@@ -16,7 +16,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 /**
  * Created by pilar on 12.4.2017.
  */
-public class DefaultLprSender {
+public class DefaultLprSender implements LprSender {
     private static final int DEFAULT_PORT_NUMBER = 515;
     private static final String DEFAULT_ENCODING = StandardCharsets.UTF_8.name();
     private static final int DEFAULT_TIMEOUT = 30;
@@ -52,7 +52,7 @@ public class DefaultLprSender {
         this.networkTimeout = networkTimeout;
     }
 
-    public void send(String userName, String queue, String fileName, InputStream jobData, int length) throws IOException {
+    public void send(String userName, String queue, String fileName, InputStream jobData, long length) throws IOException {
         try (Socket client = new Socket(hostName, portNumber)) {
             client.setSoTimeout((int) SECONDS.toMillis(networkTimeout));
 
@@ -69,13 +69,13 @@ public class DefaultLprSender {
     }
 
     public void sendQueue(PrintJob printJob) throws IOException {
-        String cmd = formatLprCommand("\\x02", printJob.getQueue());
+        String cmd = formatLprCommand(new String(new char[]{0x02}), printJob.getQueue());
         sendCommand(cmd.getBytes(charset), printJob);
     }
 
     public void sendControlFile(PrintJob printJob) throws IOException {
         String cfData = getLprControlFile(printJob.getUserName(), hostName, printJob.getFileName());
-        String cfInfoCmd = formatLprCommand("\\x02", cfData.length() + " " + CONTROL_FILE_NAME + JOB_SEQUENCE + hostName);
+        String cfInfoCmd = formatLprCommand(new String(new char[]{0x02}), cfData.length() + " " + CONTROL_FILE_NAME + JOB_SEQUENCE + hostName);
 
         sendCommand(cfInfoCmd.getBytes(charset), printJob, true);
         sendCommand(cfData.getBytes(charset), printJob);
@@ -83,7 +83,7 @@ public class DefaultLprSender {
     }
 
     public void sendDataFile(PrintJob printJob) throws IOException {
-        String cmd = formatLprCommand("\\x03", printJob.getLength() + " " + DATA_FILE_NAME + JOB_SEQUENCE + hostName);
+        String cmd = formatLprCommand(new String(new char[]{0x03}), printJob.getLength() + " " + DATA_FILE_NAME + JOB_SEQUENCE + hostName);
 
         sendCommand(cmd.getBytes(charset), printJob, true);
         pipe(printJob.getInput(), printJob.getClientOutput());
@@ -101,7 +101,7 @@ public class DefaultLprSender {
 
         InputStream is = printJob.getClientInput();
         int res = is.read();
-        checkResponse(res);
+        //TODO response check should be done here
         is.skip(is.available());
     }
 
