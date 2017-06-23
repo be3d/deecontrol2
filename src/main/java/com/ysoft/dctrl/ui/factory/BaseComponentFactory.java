@@ -1,8 +1,10 @@
 package com.ysoft.dctrl.ui.factory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import com.ysoft.dctrl.ui.NotificationManager;
 import com.ysoft.dctrl.ui.control.DialogPane;
 import com.ysoft.dctrl.ui.factory.dialog.PreferencesFactory;
 import com.ysoft.dctrl.utils.SpringFXMLLoader;
@@ -10,6 +12,7 @@ import com.ysoft.dctrl.utils.SpringFXMLLoader;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -27,7 +30,8 @@ public class BaseComponentFactory implements
         BottomPanelWrapperFactory,
         MainPanelFactory,
         NoModelPanelFactory,
-        ControlMenuFactory
+        ControlMenuFactory,
+        NotificationWrapperFactory
 {
     private final SpringFXMLLoader loader;
 
@@ -82,5 +86,10 @@ public class BaseComponentFactory implements
     @Override
     public AnchorPane buildControlMenu() {
         return (AnchorPane) loader.load("/view/control_menu.fxml");
+    }
+
+    @Override
+    public StackPane buildNotificationWrapper() {
+        return (StackPane) loader.load("/view/notification_wrapper.fxml");
     }
 }

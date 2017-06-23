@@ -6,6 +6,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.imageio.ImageIO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -16,14 +18,19 @@ import com.ysoft.dctrl.editor.importer.StlImporter;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.ui.notification.ProgressNotification;
 import com.ysoft.dctrl.utils.DeeControlContext;
 import com.ysoft.dctrl.utils.KeyEventPropagator;
 
+import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point3D;
 import javafx.scene.SceneAntialiasing;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.SubScene;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyEvent;
@@ -66,7 +73,7 @@ public class CanvasController extends AbstractController implements Initializabl
             subScene.setHeight(newValue.doubleValue());
         });
 
-        TrackBallControls controls = new TrackBallControls(sceneGraph.getCamera(), new Point3D(0,-400,0));
+        TrackBallControls controls = new TrackBallControls(sceneGraph.getCamera(), new Point3D(0,-400,400));
 
         canvas.setOnMousePressed(controls::onMousePressed);
         canvas.setOnMouseDragged(controls::onMouseDragged);
@@ -77,10 +84,8 @@ public class CanvasController extends AbstractController implements Initializabl
 
         keyEventPropagator.onKeyPressed(this::keyDown);
         eventBus.subscribe(EventType.ADD_MODEL.name(), this::addModel);
-        eventBus.subscribe(EventType.MODEL_LOAD_PROGRESS.name(), (e) -> {
-            System.err.println("p: " + (double) e.getData());
-        });
         eventBus.subscribe(EventType.RESET_VIEW.name(), (e) -> controls.resetCamera());
+        eventBus.subscribe(EventType.TAKE_SCENE_SNAPSHOT.name(), (e) -> takeSnapShot((String) e.getData()));
     }
 
     private void onDragOver(DragEvent dragEvent) {
@@ -103,11 +108,22 @@ public class CanvasController extends AbstractController implements Initializabl
     }
 
     public void addModel(String modelPath) {
+        ProgressNotification progressNotification = new ProgressNotification();
+        progressNotification.setLabelText("Inserting objects...");
+        String hd = eventBus.subscribe(EventType.MODEL_LOAD_PROGRESS.name(), e -> {
+            progressNotification.setProgress(((double) e.getData())/100);
+        });
+
+        eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), progressNotification));
+
         StlImporter stlImporter = new StlImporter();
         ImportRunner importRunner = new ImportRunner(eventBus, stlImporter, modelPath);
         importRunner.setOnSucceeded(e -> {
+            progressNotification.hide();
             eventBus.publish(new Event(EventType.MODEL_LOADED.name(), importRunner.getValue()));
+            eventBus.unsubscribe(hd);
         });
+
         new Thread(importRunner).start();
     }
 
@@ -125,6 +141,15 @@ public class CanvasController extends AbstractController implements Initializabl
             case DELETE:
                 sceneGraph.deleteSelected();
                 break;
+        }
+    }
+
+    public void takeSnapShot(String path) {
+        WritableImage image = canvas.snapshot(new SnapshotParameters(), null);
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File(path));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

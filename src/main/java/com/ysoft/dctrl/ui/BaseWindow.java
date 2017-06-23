@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 public class BaseWindow {
     private KeyEventPropagator keyEventPropagator;
     private DialogManager dialogManager;
+    private NotificationManager notificationManager;
 
     private Region menuBar;
     private Region editorCanvas;
@@ -33,6 +34,7 @@ public class BaseWindow {
     @Autowired
     public BaseWindow(KeyEventPropagator keyEventPropagator,
                       DialogManager dialogManager,
+                      NotificationManager notificationManager,
                       MenuBarFactory menuBarFactory,
                       MainPanelFactory mainPanelFactory,
                       EditorCanvasFactory editorCanvasFactory,
@@ -40,6 +42,7 @@ public class BaseWindow {
     ) {
         this.keyEventPropagator = keyEventPropagator;
         this.dialogManager = dialogManager;
+        this.notificationManager = notificationManager;
         menuBar = menuBarFactory.buildMenuBar();
         mainPanel = mainPanelFactory.buildMainPanel();
         editorCanvas = editorCanvasFactory.buildEditorCanvas();
@@ -68,18 +71,20 @@ public class BaseWindow {
         AnchorPane canvasPane = new AnchorPane();
         canvasPane.maxHeightProperty().bind(content.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
         canvasPane.prefHeightProperty().bind(content.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
+        editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
+        editorCanvas.prefWidthProperty().bind(content.widthProperty().subtract(controlMenu.widthProperty()));
 
         setAnchors(controlMenu, 0.0, null, 0.0, 0.0);
         setAnchors(editorCanvas, 0.0, 0.0, 0.0, null);
         setAnchors(mainPanel, 0.0, 0.0, null, 0.0);
-;
-        editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
-        editorCanvas.prefWidthProperty().bind(content.widthProperty().subtract(controlMenu.widthProperty()));
 
+        //fuck her right into the pussy refactor after merge
+        ((AnchorPane) editorCanvas).getChildren().add(notificationManager.getNode());
         canvasPane.getChildren().addAll(editorCanvas, controlMenu);
-
         content.getChildren().addAll(menuBar, mainPanel, canvasPane);
+
         stage.setScene(scene);
+
     }
 
     private static void setAnchors(Node el, Double top, Double left, Double bottom, Double right) {

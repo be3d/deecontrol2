@@ -57,9 +57,7 @@ public class SceneGraph {
         material = new PhongMaterial(Color.LIGHTBLUE);
         selectedMaterial = new PhongMaterial(new Color(0.3f, 0.4f, 0.9019608f, 1));
         camera = createCamera();
-        Box box = new Box(2,2,2);
-        box.setMaterial(new PhongMaterial(Color.RED));
-        sceneGroup.getChildren().addAll(camera, createPrintBed(), box);
+        sceneGroup.getChildren().addAll(camera, createPrintBed());
         selected = null;
 
         eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> addMesh((TriangleMesh) e.getData()));
@@ -149,7 +147,7 @@ public class SceneGraph {
 
     public void selectNext() {
         if(selected == null) {
-            selectNew(sceneMeshes.getFirst());
+            if(!sceneMeshes.isEmpty()) selectNew(sceneMeshes.getFirst());
         } else {
             int next = sceneMeshes.indexOf(selected) + 1;
             if(next > sceneMeshes.size() - 1) { next = 0; }
@@ -159,7 +157,7 @@ public class SceneGraph {
 
     public void selectPrevious() {
         if(selected == null) {
-            selectNew(sceneMeshes.getLast());
+            if(!sceneMeshes.isEmpty()) selectNew(sceneMeshes.getLast());
         } else {
             int prev = sceneMeshes.indexOf(selected) - 1;
             if(prev < 0) { prev = sceneMeshes.size() -1; }

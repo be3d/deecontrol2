@@ -138,3 +138,123 @@ DialogPane HeaderBox Button:pressed {
     -fx-pref-width: 13px;
     -fx-pref-height: 10px;
 }
+
+/* notifications */
+
+
+.notification {
+    -fx-padding: 0;
+    -fx-min-width: 350px;
+    -fx-pref-width: -1;
+    -fx-max-width: -1;
+    -fx-pref-height: -1;
+    -fx-max-height: -1;
+    -fx-min-height: 0;
+    -fx-alignment: top-center;
+}
+
+.notification .base-row {
+    -fx-pref-height: 48px;
+    -fx-max-height: 48px;
+    -fx-min-height: 0;
+    -fx-padding: 6px 15px 6px 20px;
+    -fx-alignment: center;
+    -fx-pref-width: -1;
+    -fx-max-width: -1;
+}
+
+.notification .base-row Label {
+    -fx-max-width: Infinity;
+    -fx-font-size: 14px;
+    -fx-padding: 0;
+}
+
+.notification .base-row > Separator {
+    -fx-orientation: vertical;
+    -fx-pref-height: 36px;
+    -fx-max-height: 36px;
+    -fx-padding: 0 15px 0 15px;
+}
+
+.notification .base-row > Separator .line {
+    -fx-border-width: 0 1 0 0;
+    -fx-border-color: #e6e6e6;
+}
+
+.notification .notification-icon {
+    -fx-background-color: transparent;
+    -fx-background-position: left;
+    -fx-background-repeat: no-repeat;
+    -fx-pref-width: 26px;
+    -fx-max-width: 26px;
+    -fx-pref-height: 16px;
+    -fx-max-height: 16px;
+}
+
+.notification.progress {
+    -fx-background-insets: 5px 0 0 0;
+    -fx-background-radius: 0 0 5px 5px;
+    -fx-border-radius: 5px;
+}
+
+.notification .progress-bar {
+    -fx-padding: 0;
+    -fx-pref-height: 5px;
+    -fx-min-height: 0;
+    -fx-max-height: 5px;
+    -fx-pref-width: -1;
+    -fx-max-width: 1000;
+    -fx-border-width: 0;
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 5px 5px 0 0;
+}
+
+.notification .progress-bar > .track {
+    -fx-pref-height: 5px;
+    -fx-max-height: 5px;
+    -fx-min-height: 0;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 5px 5px 0 0;
+}
+
+.notification .progress-bar > .bar {
+    -fx-background-color: #00bff0;
+    -fx-min-height: 5px;
+    -fx-max-height: 5px;
+    -fx-pref-height: 5px;
+    -fx-background-insets: 0;
+    -fx-background-radius: none
+}
+
+.notification .notification-icon-info {
+    -fx-background-image: url("../img/notification/info.png");
+}
+
+.notification .notification-icon-success {
+    -fx-background-image: url("../img/notification/success.png");
+}
+
+.notification .notification-icon-error {
+    -fx-background-image: url("../img/notification/error.png");
+}
+
+.notification .close {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/close.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: contain;
+    -fx-pref-height: 16px;
+    -fx-max-height: 16px;
+    -fx-pref-width: 16px;
+    -fx-max-width: 16px;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+    -fx-border-insets: 0;
+    -fx-background-insets: 0;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+}

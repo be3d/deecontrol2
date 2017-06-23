@@ -36,7 +36,7 @@ public abstract class AbstractModelImporter implements ModelImporter {
         return mesh;
     }
 
-    abstract TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException;
+    public abstract TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException;
 
     protected void addBytesRead(long bytesRead) {
         this.bytesRead += bytesRead;
