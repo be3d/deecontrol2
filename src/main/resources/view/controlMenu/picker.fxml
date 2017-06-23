@@ -11,18 +11,8 @@
     <HBox>
         <children>
             <Region prefWidth="20"></Region>
-            <ComboBox fx:id="comboBox" value="Default print profile" styleClass="control-comboBox">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Default print profile" />
-                        <String fx:value="Fast print speed" />
-                        <String fx:value="Fine quality profile" />
-                        <Separator />
-                        <String fx:value="User Profile 1" />
-                    </FXCollections>
-                </items>
+            <ComboBox fx:id="comboBox" value="" styleClass="control-comboBox">
             </ComboBox>
         </children>
-
     </HBox>
 </fx:root>

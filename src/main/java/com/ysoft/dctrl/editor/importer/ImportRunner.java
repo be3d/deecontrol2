@@ -4,17 +4,19 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.ysoft.dctrl.editor.mesh.GCodeLayer;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 
+import com.ysoft.dctrl.utils.YieldTask;
 import javafx.concurrent.Task;
 import javafx.scene.shape.TriangleMesh;
 
 /**
  * Created by pilar on 13.4.2017.
  */
-public class ImportRunner extends Task<TriangleMesh> {
+public class ImportRunner extends YieldTask<TriangleMesh, GCodeLayer> {
     private final ModelImporter modelImporter;
     private final String path;
     private final EventBus eventBus;

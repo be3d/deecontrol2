@@ -1,8 +1,8 @@
 .control-menu {
     -fx-background-color: rgba(255,255,255,1);
-    -fx-pref-width: 342px;
-    -fx-max-width: 342px;
-    -fx-min-width: 342px;
+    -fx-pref-width: 284px;
+    -fx-max-width: 284px;
+    -fx-min-width: 284px;
 }
 
 .control-menu-scrollBar {
@@ -20,9 +20,22 @@
     -fx-background-color: #f9f9f9;
 }
 
+
 .control-menu-section-header-text {
     -fx-font-weight: 700;
+    -fx-font-size: 14px;
+}
+
+.control-menu-section-header {
+    -fx-background-color: #f9f9f9;
+    -fx-pref-height: 35px;
+}
+
+.control-menu-subSection-header-text {
+    -fx-font-weight: 700;
     -fx-font-size: 16px;
+    -fx-text-fill: #9b9ea0;
+    -fx-padding: 0 0 0 15;
 }
 
 .control-menu-footer-container {
@@ -41,6 +54,22 @@
     -fx-font-weight: 800;
 }
 
+
+.control-button-back {
+    -fx-border-style: solid;
+    -fx-border-color: #bfbfbf;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 46px;
+    -fx-min-height:46px;
+    -fx-text-fill: #337ab7;
+    -fx-font-weight: 800;
+    -fx-background-insets: 0;
+    -fx-background-color: #ffffff;
+
+}
+
 .control-button:hover {
     -fx-cursor: hand;
 }
@@ -50,19 +79,19 @@
     -fx-max-width: 200px;
     -fx-min-width: 200px;
     -fx-padding: 20 0 8 20;
-    -fx-font-weight: 700;
-    -fx-font-size: 16px;
+    -fx-font-weight: 500;
+    -fx-font-size: 14px;
 }
 
 .control-textInput {
-    -fx-pref-width: 300;
-    -fx-pref-height: 40;
-    -fx-min-height: 40;
+    -fx-pref-width: 244;
+    -fx-pref-height: 36;
+    -fx-min-height: 36;
 }
 .control-slider {
-    -fx-pref-width: 226px;
-    -fx-max-width: 226px;
-    -fx-min-width: 226px;
+    -fx-pref-width: 145px;
+    -fx-max-width: 145px;
+    -fx-min-width: 145px;
 }
 
 .control-slider .track {
@@ -73,7 +102,7 @@
 }
 .control-slider .thumb {
     -fx-background-color:#45beef;
-    -fx-padding: 10px;
+    -fx-padding: 8px;
 }
 
 .control-value {
@@ -94,7 +123,7 @@
 
 .control-checkBox {
     -fx-font-weight:600;
-    -fx-font-size:16px;
+    -fx-font-size:14px;
     -fx-padding: 0 0 20 0;
 }
 .control-checkBox > .box {
@@ -109,14 +138,14 @@
     -fx-background-color: #ffffff;
     -fx-border-color: #bfbfbf;
     -fx-border-radius: 3px;
-    -fx-pref-width: 300;
-    -fx-min-height: 40;
-    -fx-pref-height: 40;
+    -fx-pref-width: 244;
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
 }
 
 .control-comboBox .context-menu{
     -fx-background-color: antiquewhite ;
-    -fx-pref-width: 270;
+    -fx-pref-width: 244;
     -fx-padding: 5 5 5 5;
 }
 
@@ -161,6 +190,15 @@
     -fx-text-fill: #337ab7;
     -fx-font-weight: 700;
     -fx-cursor: hand;
+}
+
+.control-text-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.control-text-value {
+    -fx-font-size: 14px;
 }
 
 .add-control-button{

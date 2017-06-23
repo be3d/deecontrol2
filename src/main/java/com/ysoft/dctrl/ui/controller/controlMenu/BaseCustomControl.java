@@ -24,8 +24,8 @@ public abstract class BaseCustomControl extends VBox {
     @FXML
     Label label;
 
-    private SlicerParam boundParam;
-    private String boundParamID;
+    protected SlicerParam boundParam;
+    protected String boundParamID;
 
     public BaseCustomControl(){}
 

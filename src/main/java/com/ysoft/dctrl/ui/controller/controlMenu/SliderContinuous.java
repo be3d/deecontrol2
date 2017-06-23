@@ -1,15 +1,15 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
+import com.ysoft.dctrl.slicer.param.SlicerParam;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 
 /**
  * Created by kuhn on 5/5/2017.
  */
-public class SliderContinuous extends BaseCustomControl{
+public class SliderContinuous extends com.ysoft.dctrl.ui.controller.controlMenu.BaseSlider {
     @FXML
     Slider slider;
 
@@ -17,10 +17,9 @@ public class SliderContinuous extends BaseCustomControl{
     TextField valueText;
 
     public SliderContinuous(){
-        super.init("/view/controlMenu/slider_continuous.fxml");
+        super("/view/controlMenu/slider_continuous.fxml");
 
         PseudoClass errorClass = PseudoClass.getPseudoClass("error");
-
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
             setTextValue((Double)newValue);
             valueText.pseudoClassStateChanged(errorClass, false);
@@ -41,22 +40,23 @@ public class SliderContinuous extends BaseCustomControl{
         });
     }
 
-    public void setMin(Double value){ slider.setMin(value);}
-    public Double getMin(){return slider.getMin();}
-
-    public void setMax(Double value){ slider.setMax(value);}
-    public Double getMax(){return slider.getMax();}
-
-
-    public void setValue(Double value){ slider.setValue(value);}
-    public Double getValue(){ return slider.getValue();}
-
     private void setTextValue(Double value){
         valueText.setText(new Double((Math.round(value * 10D) / 10D)).toString());
     }
 
-    @Override
-    public void addChangeListener(javafx.beans.value.ChangeListener listener){
-        slider.valueProperty().addListener(listener);
+    public SliderContinuous load(SlicerParam param) {
+        return (SliderContinuous) super.load(param);
+    }
+
+    public SliderContinuous bindParamChanged(){
+        return (SliderContinuous)super.bindParamChanged();
+    }
+
+    public SliderContinuous bindParamChanged(javafx.beans.value.ChangeListener listener){
+        return (SliderContinuous)super.bindParamChanged(listener);
+    }
+
+    public void bindControlChanged(javafx.beans.value.ChangeListener listener){
+        super.bindControlChanged(listener);
     }
 }

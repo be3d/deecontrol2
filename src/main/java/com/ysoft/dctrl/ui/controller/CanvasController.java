@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.ysoft.dctrl.editor.importer.GCodeImporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -78,7 +79,7 @@ public class CanvasController extends AbstractController implements Initializabl
         keyEventPropagator.onKeyPressed(this::keyDown);
         eventBus.subscribe(EventType.ADD_MODEL.name(), this::addModel);
         eventBus.subscribe(EventType.MODEL_LOAD_PROGRESS.name(), (e) -> {
-            System.err.println("p: " + (double) e.getData());
+            //System.err.println("p: " + (double) e.getData());
         });
         eventBus.subscribe(EventType.RESET_VIEW.name(), (e) -> controls.resetCamera());
     }

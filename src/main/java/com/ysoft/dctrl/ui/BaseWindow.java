@@ -1,13 +1,9 @@
 package com.ysoft.dctrl.ui;
 
+import com.ysoft.dctrl.ui.factory.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.ysoft.dctrl.ui.factory.ControlMenuFactory;
-import com.ysoft.dctrl.ui.factory.ControlPanelFactory;
-import com.ysoft.dctrl.ui.factory.EditorCanvasFactory;
-import com.ysoft.dctrl.ui.factory.MainPanelFactory;
-import com.ysoft.dctrl.ui.factory.MenuBarFactory;
 import com.ysoft.dctrl.utils.KeyEventPropagator;
 
 import javafx.scene.Node;
@@ -28,20 +24,26 @@ public class BaseWindow {
     private Region menuBar;
     private Region editorCanvas;
     private Region mainPanel;
-    private Region controlMenu;
+    private Region slicerPanel;
+    private Region gcodePanel;
+    private Region gCodeLayerControlPanel;
 
     @Autowired
     public BaseWindow(KeyEventPropagator keyEventPropagator,
                       MenuBarFactory menuBarFactory,
                       MainPanelFactory mainPanelFactory,
                       EditorCanvasFactory editorCanvasFactory,
-                      ControlMenuFactory controlMenuFactory
+                      SlicerPanelFactory slicerPanelFactory,
+                      GCodePanelFactory gcodePanelFactory,
+                      GCodeLayerSliderFactory gCodeLayerSliderFactory
     ) {
         this.keyEventPropagator = keyEventPropagator;
         menuBar = menuBarFactory.buildMenuBar();
         mainPanel = mainPanelFactory.buildMainPanel();
         editorCanvas = editorCanvasFactory.buildEditorCanvas();
-        controlMenu = controlMenuFactory.buildControlMenu();
+        slicerPanel = slicerPanelFactory.buildSlicerPanel();
+        gcodePanel = gcodePanelFactory.buildGCodePanel();
+        gCodeLayerControlPanel = gCodeLayerSliderFactory.buildGCodeLayerSlider();
     }
 
     public void composeWindow(Stage stage) {
@@ -59,14 +61,16 @@ public class BaseWindow {
         canvasPane.maxHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
         canvasPane.prefHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
 
-        setAnchors(controlMenu, 0.0, null, 0.0, 0.0);
+        setAnchors(slicerPanel, 0.0, null, 0.0, 0.0);
+        setAnchors(gcodePanel, 0.0, null, 0.0, 0.0);
         setAnchors(editorCanvas, 0.0, 0.0, 0.0, null);
         setAnchors(mainPanel, 0.0, 0.0, null, 0.0);
-;
-        editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
-        editorCanvas.prefWidthProperty().bind(root.widthProperty().subtract(controlMenu.widthProperty()));
+        setAnchors(gCodeLayerControlPanel, 20.0, null, null, 305.0);
 
-        canvasPane.getChildren().addAll(editorCanvas, controlMenu);
+        editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
+        editorCanvas.prefWidthProperty().bind(root.widthProperty().subtract(slicerPanel.widthProperty()));
+
+        canvasPane.getChildren().addAll(editorCanvas, slicerPanel, gcodePanel, gCodeLayerControlPanel);
 
         root.getChildren().addAll(menuBar, mainPanel, canvasPane);
         stage.setScene(scene);

@@ -36,7 +36,10 @@ public class SlicerParams {
     protected boolean isEdited = false;
 
     @Autowired
-    public SlicerParams(EventBus eventBus, DeeControlContext deeControlContext, PrinterResource printerResource, Cura slicer, SlicerParamRelations paramRelations) throws IOException {
+    public SlicerParams(EventBus eventBus, DeeControlContext deeControlContext,
+                        PrinterResource printerResource, Cura slicer,
+                        SlicerParamRelations paramRelations) throws IOException {
+
         this.eventBus = eventBus;
         this.deeControlContext = deeControlContext;
         this.slicer = slicer;
@@ -70,7 +73,7 @@ public class SlicerParams {
 
             // todo reconsider not using Map but list
             for (SlicerParam p: params){
-                slicerParameters.put(p.id, p);
+                slicerParameters.put(p.getId(), p);
             }
             return slicerParameters;
 
@@ -82,8 +85,6 @@ public class SlicerParams {
 
     public void printerChanged(Event event){
         this.slicerParameters = loadParams();
-        // reload available profiles...
-        System.out.println("PRINTER CHANGED diff to parameters.");
     }
 
     public void slicerParamChanged(Event event){
@@ -99,9 +100,15 @@ public class SlicerParams {
         this.eventBus.publish(new Event(EventType.SLICER_PARAM_CHANGED.name(), paramID));
     }
 
-    //public void updateParams(List<SlicerParam> params){}
+    public void updateParams(List<SlicerParam> params){
+        if (params != null){
+            for (SlicerParam p : params){
+                this.updateParam(p.getId(), p.getValue());
+            }
+        }
+    }
 
-    public void updateParams(Map<String, Object> params){
+    public void updateParams(Map<String, SlicerParam> params){
         for (String key : params.keySet()){
             this.updateParam(key, params.get(key));
         }
@@ -111,5 +118,18 @@ public class SlicerParams {
         return this.slicerParameters;
     }
 
+    /**
+     *
+     * @param name ID of the parameter <- (SlicerParamType)
+     * @return
+     */
+    public SlicerParam get(String name){
+        return this.slicerParameters.get(name);
+    }
 
+    public void resetToDefault(){
+        for (SlicerParam p : this.slicerParameters.values()){
+            p.resetToDefault();
+        }
+    }
 }

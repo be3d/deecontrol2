@@ -1,15 +1,16 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
-import com.ysoft.dctrl.slicer.param.SlicerParamType;
-import javafx.css.PseudoClass;
+import com.ysoft.dctrl.slicer.param.SlicerParam;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by kuhn on 5/5/2017.
  */
-public class SliderDiscrete extends BaseCustomControl{
+public class SliderDiscrete extends com.ysoft.dctrl.ui.controller.controlMenu.BaseSlider {
 
     @FXML
     Slider slider;
@@ -18,34 +19,32 @@ public class SliderDiscrete extends BaseCustomControl{
     Label valueLabel;
 
     public SliderDiscrete(){
-        super.init("/view/controlMenu/slider_discrete.fxml");
+        super("/view/controlMenu/slider_discrete.fxml");
+//        super.init("/view/controlMenu/slider_discrete.fxml");"/view/controlMenu/slider_discrete.fxml"
 
-
-
+        DecimalFormat df = new DecimalFormat("#.##");
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            valueLabel.setText(newValue.toString());
+            if (this.getStep() instanceof Double)
+                valueLabel.setText(df.format(new Double((Math.round(newValue.doubleValue() / this.getStep()) * this.getStep()))));
+            else
+                valueLabel.setText((newValue).toString());
         });
     }
 
-    public void setMin(Double value){ slider.setMin(value);}
-    public Double getMin(){return slider.getMin();}
-
-    public void setMax(Double value){ slider.setMax(value);}
-    public Double getMax(){return slider.getMax();}
-
-    public void setStep(Double value){
-        // todo add make tick invisible over certain threshold
-        slider.setMajorTickUnit(value);
+    public SliderDiscrete load(SlicerParam param){
+        return (SliderDiscrete)super.load(param);
     }
 
-    public Double getStep(){ return slider.getMajorTickUnit();}
+    public SliderDiscrete bindParamChanged(){
+        return (SliderDiscrete)super.bindParamChanged();
+    }
 
-    public void setValue(Double value){ slider.setValue(value);}
-    public Double getValue(){ return slider.getValue();}
+    public SliderDiscrete bindParamChanged(javafx.beans.value.ChangeListener handler){
+        return (SliderDiscrete)super.bindParamChanged(handler);
+    }
 
-    @Override
-    public void addChangeListener(javafx.beans.value.ChangeListener listener){
-        slider.valueProperty().addListener(listener);
+    public void bindControlChanged(javafx.beans.value.ChangeListener handler){
+        super.bindControlChanged(handler);
     }
 
 }

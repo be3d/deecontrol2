@@ -1,0 +1,17 @@
+.mainPane {
+    -fx-background-color: #ffffff;
+    -fx-pref-height: 300px;
+    -fx-pref-width: 120px;
+    -fx-max-width: 60px;
+    -fx-height: 300px;
+    -fx-width: 120px;
+    -fx-border-color: #f9f9f9;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.layerSlider {
+    -fx-pref-width: 36px;
+    -fx-pref-height: 300px;
+    -fx-padding: 20px ;
+}

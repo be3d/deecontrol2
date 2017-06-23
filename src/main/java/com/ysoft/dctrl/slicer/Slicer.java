@@ -12,12 +12,10 @@ public interface Slicer {
 
     void run(Map<String, SlicerParam> slicerParams, String modelSTL, ProgressBar progressBar) throws Exception;
 
-    void stopTask();
-
     Map<String,SlicerParam> filterSupportedParams(Map<String, SlicerParam> allParams);
 
     boolean supportsParam(String paramName);
 
-
+    double getProgress();
 
 }
