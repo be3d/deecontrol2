@@ -6,6 +6,7 @@
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="">
     <Label fx:id="label" styleClass="control-label" />
     <HBox>
+
         <Region prefWidth="20"/>
         <ComboBox fx:id="comboBox" styleClass="control-comboBox" />
     </HBox>

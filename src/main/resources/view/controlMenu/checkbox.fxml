@@ -2,7 +2,7 @@
 <?import javafx.scene.layout.*?>
 
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="">
-    <Label fx:id="label" text="sdf" styleClass="control-label"></Label>
+    <Label fx:id="label" text="" styleClass="control-label"></Label>
     <HBox spacing="0"  alignment="TOP_LEFT">
         <children>
             <Region prefWidth="20"></Region>

@@ -1,17 +1,16 @@
 package com.ysoft.dctrl.editor;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.ysoft.dctrl.editor.mesh.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ysoft.dctrl.editor.control.ExtendedPerspectiveCamera;
 import com.ysoft.dctrl.editor.exporter.SceneExporter;
-import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
-import com.ysoft.dctrl.editor.mesh.MeshUtils;
-import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
@@ -20,7 +19,6 @@ import com.ysoft.dctrl.slicer.SlicerController;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -54,6 +52,7 @@ public class SceneGraph {
         this.deeControlContext = deeControlContext;
         sceneGroup = new Group();
         sceneMeshes = new LinkedList<>();
+
         material = new PhongMaterial(Color.LIGHTBLUE);
         selectedMaterial = new PhongMaterial(new Color(0.3f, 0.4f, 0.9019608f, 1));
         camera = createCamera();
@@ -143,6 +142,12 @@ public class SceneGraph {
 
         selected = null;
         selectNext();
+    }
+
+    public void hideAllMeshes(){
+        for (SceneMesh mesh : sceneMeshes){
+            mesh.getNode().setVisible(false);
+        }
     }
 
     public void selectNext() {

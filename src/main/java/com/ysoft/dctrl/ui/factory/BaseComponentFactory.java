@@ -12,7 +12,6 @@ import com.ysoft.dctrl.utils.SpringFXMLLoader;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -30,6 +29,9 @@ public class BaseComponentFactory implements
         BottomPanelWrapperFactory,
         MainPanelFactory,
         NoModelPanelFactory,
+        SlicerPanelFactory,
+        GCodePanelFactory,
+        GCodeLayerSliderFactory,
         ControlMenuFactory,
         NotificationWrapperFactory
 {
@@ -84,12 +86,20 @@ public class BaseComponentFactory implements
     public StackPane buildNoModelPanel() { return (StackPane) loader.load("/view/no_model_panel.fxml"); }
 
     @Override
-    public AnchorPane buildControlMenu() {
-        return (AnchorPane) loader.load("/view/control_menu.fxml");
+    public AnchorPane buildSlicerPanel() {
+        return (AnchorPane) loader.load("/view/slicer_panel.fxml");
     }
+
+    @Override
+    public AnchorPane buildGCodePanel(){return (AnchorPane) loader.load("/view/gcode_panel.fxml"); }
+
+    @Override
+    public AnchorPane buildGCodeLayerSlider(){return (AnchorPane) loader.load("/view/gcode_layer_picker.fxml") ;}
 
     @Override
     public StackPane buildNotificationWrapper() {
         return (StackPane) loader.load("/view/notification_wrapper.fxml");
     }
+
+
 }

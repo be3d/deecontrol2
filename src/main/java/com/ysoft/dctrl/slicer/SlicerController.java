@@ -3,6 +3,7 @@ package com.ysoft.dctrl.slicer;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.slicer.param.SlicerParams;
+import com.ysoft.dctrl.utils.DeeControlContext;
 import javafx.scene.control.ProgressBar;
 import com.ysoft.dctrl.slicer.cura.Cura;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,12 @@ import javax.annotation.PostConstruct;
  */
 @Component
 public class SlicerController {
+
     SlicerParams slicerParams;
     Map<String, Slicer> slicerMap;
+
+    private final EventBus eventBus;
+    private final DeeControlContext deeControlContext;
 
     public String selectedSlicerID = "";
     public static final String sceneSTL = System.getProperty("user.home") + File.separator + ".dctrl" + File.separator + ".slicer" + File.separator + "dctrl_scene.stl";
@@ -39,7 +44,6 @@ public class SlicerController {
         this.slicerMap = slicerMap;
         this.setSlicer("Cura");
     }
-
     @PostConstruct
     private void initialize() {
         eventBus.subscribe(EventType.SCENE_EXPORTED.name(), (e) -> startSlice((String) e.getData()));

@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
  * Created by kuhn on 5/5/2017.
  */
 @Controller
-public class Picker extends BaseCustomControl{
+public class Picker extends BaseCustomControl {
 
     @FXML
     private Label label;
@@ -45,7 +45,7 @@ public class Picker extends BaseCustomControl{
         label.textProperty().set(value);
     }
 
-
+    public void addItem(Object item){comboBox.getItems().add(item);}
     public void addItems(ObservableList list) {getItems().addAll(list);}
     public void setItems(ObservableList list) {comboBox.setItems(list);}
     public ObservableList getItems() {return comboBox.getItems();}
@@ -55,23 +55,38 @@ public class Picker extends BaseCustomControl{
         comboBox.getSelectionModel().select(item);
     }
 
-    public void addChangeListener(javafx.beans.value.ChangeListener listener){
+    public Picker bindParamChanged(){
+        boundParam.getStringProperty().addListener(
+                (observable, oldValue, newValue) -> this.selectItem(newValue)
+        );
+        return this;
+    }
+
+    public Picker bindParamChanged(javafx.beans.value.ChangeListener listener){
+        boundParam.getStringProperty().addListener(listener);
+        return this;
+    }
+
+    public void bindControlChanged(javafx.beans.value.ChangeListener listener){
         comboBox.getSelectionModel().selectedItemProperty().addListener(listener);
     }
 
-    public void loadFromSlicerParam(SlicerParam param){
+    public Picker load(SlicerParam param){
+        this.boundParam = param;
         if (param != null){
             items = param.getOptions();
             setItems(FXCollections.observableList(new ArrayList<>(items.values())));
-            selectItem(items.get(param.defaultValue));
+            selectItem(items.get(param.getDefaultValue()));
         }
+        return this;
     }
 
-    @FXML
-    protected void doSomething() {
-       // this.setText(this.getBoundParamID());
-        System.out.println("The button was clicked!");
-    }
+//    Sample
+//    @FXML
+//    protected void doSomething() {
+//        System.out.println("The button was clicked!");
+//    }
+
 }
 
 

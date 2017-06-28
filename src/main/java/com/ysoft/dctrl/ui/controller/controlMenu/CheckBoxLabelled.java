@@ -21,14 +21,13 @@ public class CheckBoxLabelled extends BaseCustomControl {
     public String getText() { return checkBox.textProperty().get();}
     public void setText(String value) { checkBox.textProperty().set(value);}
 
-    @Override
-    public void addChangeListener(javafx.beans.value.ChangeListener listener){
+
+    public CheckBoxLabelled bindParamChanged(javafx.beans.value.ChangeListener listener){
+        this.boundParam.getBooleanProperty().addListener(listener);
+        return this;
+    }
+    public void bindControlChanged(javafx.beans.value.ChangeListener listener){
         checkBox.selectedProperty().addListener(listener);
     }
 
-    @FXML
-    protected void doSomething() {
-        // this.setText(this.getBoundParamID());
-        System.out.println("The button was clicked!");
-    }
 }

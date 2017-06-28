@@ -17,6 +17,12 @@ import java.util.Properties;
 @Component
 public abstract class AbstractSlicer implements Slicer {
 
-    public AbstractSlicer() throws IOException {}
+    protected final EventBus eventBus;
+    protected final DeeControlContext deeControlContext;
+
+    public AbstractSlicer(EventBus eventBus, DeeControlContext deeControlContext) throws IOException {
+        this.eventBus = eventBus;
+        this.deeControlContext = deeControlContext;
+    }
 
 }

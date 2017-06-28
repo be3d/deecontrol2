@@ -1,12 +1,8 @@
 package com.ysoft.dctrl.ui;
 
+import com.ysoft.dctrl.ui.factory.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import com.ysoft.dctrl.ui.factory.ControlMenuFactory;
-import com.ysoft.dctrl.ui.factory.EditorCanvasFactory;
-import com.ysoft.dctrl.ui.factory.MainPanelFactory;
-import com.ysoft.dctrl.ui.factory.MenuBarFactory;
 import com.ysoft.dctrl.utils.KeyEventPropagator;
 
 import javafx.scene.Node;
@@ -29,7 +25,9 @@ public class BaseWindow {
     private Region menuBar;
     private Region editorCanvas;
     private Region mainPanel;
-    private Region controlMenu;
+    private Region slicerPanel;
+    private Region gcodePanel;
+    private Region gCodeLayerControlPanel;
 
     @Autowired
     public BaseWindow(KeyEventPropagator keyEventPropagator,
@@ -38,7 +36,9 @@ public class BaseWindow {
                       MenuBarFactory menuBarFactory,
                       MainPanelFactory mainPanelFactory,
                       EditorCanvasFactory editorCanvasFactory,
-                      ControlMenuFactory controlMenuFactory
+                      SlicerPanelFactory slicerPanelFactory,
+                      GCodePanelFactory gcodePanelFactory,
+                      GCodeLayerSliderFactory gCodeLayerSliderFactory
     ) {
         this.keyEventPropagator = keyEventPropagator;
         this.dialogManager = dialogManager;
@@ -46,7 +46,9 @@ public class BaseWindow {
         menuBar = menuBarFactory.buildMenuBar();
         mainPanel = mainPanelFactory.buildMainPanel();
         editorCanvas = editorCanvasFactory.buildEditorCanvas();
-        controlMenu = controlMenuFactory.buildControlMenu();
+        slicerPanel = slicerPanelFactory.buildSlicerPanel();
+        gcodePanel = gcodePanelFactory.buildGCodePanel();
+        gCodeLayerControlPanel = gCodeLayerSliderFactory.buildGCodeLayerSlider();
     }
 
     public void composeWindow(Stage stage) {
@@ -74,13 +76,18 @@ public class BaseWindow {
         editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
         editorCanvas.prefWidthProperty().bind(content.widthProperty().subtract(controlMenu.widthProperty()));
 
-        setAnchors(controlMenu, 0.0, null, 0.0, 0.0);
+        setAnchors(slicerPanel, 0.0, null, 0.0, 0.0);
+        setAnchors(gcodePanel, 0.0, null, 0.0, 0.0);
         setAnchors(editorCanvas, 0.0, 0.0, 0.0, null);
         setAnchors(mainPanel, 0.0, 0.0, null, 0.0);
+       
+        setAnchors(gCodeLayerControlPanel, 20.0, null, null, 305.0);
 
-        //fuck her right into the pussy refactor after merge
-        ((AnchorPane) editorCanvas).getChildren().add(notificationManager.getNode());
-        canvasPane.getChildren().addAll(editorCanvas, controlMenu);
+        editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
+        editorCanvas.prefWidthProperty().bind(root.widthProperty().subtract(slicerPanel.widthProperty()));
+
+
+        ((AnchorPane) editorCanvas).getChildren().add(notificationManager.getNode());        canvasPane.getChildren().addAll(editorCanvas, slicerPanel, gcodePanel, gCodeLayerControlPanel);
         content.getChildren().addAll(menuBar, mainPanel, canvasPane);
 
         stage.setScene(scene);
