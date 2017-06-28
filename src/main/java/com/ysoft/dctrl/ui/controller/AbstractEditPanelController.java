@@ -9,6 +9,7 @@ import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.beans.value.ObservableValue;
@@ -31,8 +32,8 @@ public abstract class AbstractEditPanelController extends LocalizableController 
 
     @FXML protected Button reset;
 
-    public AbstractEditPanelController(SceneGraph sceneGraph, LocalizationResource localizationResource, EventBus eventBus, DeeControlContext context) {
-        super(localizationResource, eventBus, context);
+    public AbstractEditPanelController(SceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
+        super(localizationService, eventBus, context);
         this.sceneGraph = sceneGraph;
     }
 

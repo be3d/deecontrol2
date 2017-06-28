@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.ysoft.dctrl.ui.control.DialogPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.Button?>
+
+<?import java.net.URL?>
+
+<?import com.ysoft.dctrl.ui.control.complex.Picker?>
+<?import com.ysoft.dctrl.ui.control.complex.TextInput?>
+
+<?import com.ysoft.dctrl.ui.control.complex.contract.PickerItem?>
+<?import javafx.collections.FXCollections?>
+
+<DialogPane xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.dialog.PreferencesController" text="Preferences" StackPane.alignment="CENTER">
+  <VBox>
+    <TabPane tabClosingPolicy="UNAVAILABLE">
+      <Tab text="GENERAL" styleClass="general-preferences" >
+        <VBox styleClass="settings-wrapper">
+          <Picker fx:id="language" labelText="Language" placeholderText="Select language…">
+            <items>
+              <FXCollections fx:factory="observableArrayList">
+                <PickerItem label="English" value="en_US" />
+                <PickerItem label="Czech" value="cs_CZ"/>
+              </FXCollections>
+            </items>
+          </Picker>
+        </VBox>
+      </Tab>
+      <Tab text="NETWORK" styleClass="network-preferences">
+        <VBox styleClass="settings-wrapper">
+          <HBox styleClass="options-row">
+            <TextInput fx:id="flexiSpoolerAddress" labelText="SafeQ server address" toolTipText="Type in IP address of Flexi Spooler" placeholderText="e.g. 10.0.0.169" styleClass="server-address" />
+            <TextInput fx:id="flexiSpoolerPort" labelText="Port" placeholderText="e.g. 515" styleClass="server-port"/>
+          </HBox>
+        </VBox>
+      </Tab>
+      <Tab text="PROFILES" styleClass="profiles-preferences">
+        <VBox  styleClass="settings-wrapper">
+
+        </VBox>
+      </Tab>
+    </TabPane>
+    <HBox styleClass="footer">
+      <Region HBox.hgrow="ALWAYS" />
+      <Button fx:id="save" text="SAVE" styleClass="blue" />
+      <Button fx:id="cancel" text="CANCEL" />
+    </HBox>
+  </VBox>
+
+
+  <stylesheets>
+    <URL value="@/css/preferences.css" />
+    <URL value="@/css/master.css" />
+  </stylesheets>
+</DialogPane>

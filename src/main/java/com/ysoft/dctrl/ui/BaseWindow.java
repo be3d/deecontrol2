@@ -3,7 +3,6 @@ package com.ysoft.dctrl.ui;
 import com.ysoft.dctrl.ui.factory.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.ysoft.dctrl.utils.KeyEventPropagator;
 
 import javafx.scene.Node;
@@ -20,6 +19,8 @@ import javafx.stage.Stage;
 @Component
 public class BaseWindow {
     private KeyEventPropagator keyEventPropagator;
+    private DialogManager dialogManager;
+    private NotificationManager notificationManager;
 
     private Region menuBar;
     private Region editorCanvas;
@@ -30,6 +31,8 @@ public class BaseWindow {
 
     @Autowired
     public BaseWindow(KeyEventPropagator keyEventPropagator,
+                      DialogManager dialogManager,
+                      NotificationManager notificationManager,
                       MenuBarFactory menuBarFactory,
                       MainPanelFactory mainPanelFactory,
                       EditorCanvasFactory editorCanvasFactory,
@@ -38,6 +41,8 @@ public class BaseWindow {
                       GCodeLayerSliderFactory gCodeLayerSliderFactory
     ) {
         this.keyEventPropagator = keyEventPropagator;
+        this.dialogManager = dialogManager;
+        this.notificationManager = notificationManager;
         menuBar = menuBarFactory.buildMenuBar();
         mainPanel = mainPanelFactory.buildMainPanel();
         editorCanvas = editorCanvasFactory.buildEditorCanvas();
@@ -47,8 +52,16 @@ public class BaseWindow {
     }
 
     public void composeWindow(Stage stage) {
-        VBox root = new VBox();
-        root.setBackground(Background.EMPTY);
+        AnchorPane root = new AnchorPane();
+
+        VBox content = new VBox();
+
+        setAnchors(content, 0.0, 0.0, 0.0, 0.0);
+        setAnchors(dialogManager.getNode(), 0.0, 0.0, 0.0, 0.0);
+
+        root.getChildren().addAll(content, dialogManager.getNode());
+
+        content.setBackground(Background.EMPTY);
 
         // TODO add config to application - get default values from config
         //
@@ -58,22 +71,27 @@ public class BaseWindow {
         root.prefWidthProperty().bind(scene.widthProperty());
 
         AnchorPane canvasPane = new AnchorPane();
-        canvasPane.maxHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
-        canvasPane.prefHeightProperty().bind(root.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
+        canvasPane.maxHeightProperty().bind(content.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
+        canvasPane.prefHeightProperty().bind(content.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
+        editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
+        editorCanvas.prefWidthProperty().bind(content.widthProperty().subtract(controlMenu.widthProperty()));
 
         setAnchors(slicerPanel, 0.0, null, 0.0, 0.0);
         setAnchors(gcodePanel, 0.0, null, 0.0, 0.0);
         setAnchors(editorCanvas, 0.0, 0.0, 0.0, null);
         setAnchors(mainPanel, 0.0, 0.0, null, 0.0);
+       
         setAnchors(gCodeLayerControlPanel, 20.0, null, null, 305.0);
 
         editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
         editorCanvas.prefWidthProperty().bind(root.widthProperty().subtract(slicerPanel.widthProperty()));
 
-        canvasPane.getChildren().addAll(editorCanvas, slicerPanel, gcodePanel, gCodeLayerControlPanel);
 
-        root.getChildren().addAll(menuBar, mainPanel, canvasPane);
+        ((AnchorPane) editorCanvas).getChildren().add(notificationManager.getNode());        canvasPane.getChildren().addAll(editorCanvas, slicerPanel, gcodePanel, gCodeLayerControlPanel);
+        content.getChildren().addAll(menuBar, mainPanel, canvasPane);
+
         stage.setScene(scene);
+
     }
 
     private static void setAnchors(Node el, Double top, Double left, Double bottom, Double right) {

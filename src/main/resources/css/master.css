@@ -1,3 +1,24 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('../font/robotoRegular.woff');
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-weight: 500;
+    src: url('../font/robotoMedium.woff');
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-weight: 900;
+    src: url('../font/robotoBold.woff');
+}
+
+* {
+    -fx-font-family: 'Roboto' !important;
+}
+
 .panel {
     -fx-padding: 5px;
     -fx-background-color: white;
@@ -16,6 +37,224 @@ Tool:focused, Button:focused {
     -fx-background-insets: 0;
 }
 
-Tool:pressed, Button:pressed {
+Tool:pressed {
     -fx-background-color: #e5e5e5;
+}
+
+Button {
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: #bfbfbf;
+    -fx-text-fill: #337ab7;
+    -fx-font-size: 14px;
+}
+
+Button:hover {
+    -fx-background-color: #e5e5e5;
+    -fx-text-fill: #102068;
+}
+
+Button.blue {
+    -fx-border-width: 0;
+    -fx-background-color: #337ab7;
+    -fx-text-fill: white;
+}
+
+Button.blue:hover {
+    -fx-background-color: #26567e;
+}
+
+DialogPane {
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.0, 0, 0);
+}
+
+DialogPane HeaderBox {
+    -fx-pref-height: 45px;
+    -fx-max-height: 45px;
+    -fx-background-color: #f9f9f9;
+    -fx-padding: 0 15 0 15;
+    -fx-spacing: 15px;
+    -fx-background-radius: 5px 5px 0 0;
+}
+
+DialogPane Label {
+    -fx-font-size: 16px;
+
+}
+
+DialogPane HeaderBox Button, DialogPane HeaderBox Button:hover {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/close.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-border-width: 0;
+}
+
+DialogPane HeaderBox Button:pressed {
+    -fx-background-color: transparent;
+}
+
+.complex-control {
+    -fx-padding: 0;
+}
+
+.complex-control Label {
+    -fx-font-size: 14px;
+    -fx-padding: 0 0 8 0;
+}
+
+.complex-control Label.tooltip {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9b9ea0;
+    -fx-padding: 5 0 0 0;
+    -fx-background-color: transparent;
+    -fx-effect: none;
+}
+
+.complex-control ComboBox {
+    -fx-background-color: transparent;
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: #bfbfbf;
+}
+
+.complex-control ComboBox > .arrow-button {
+     -fx-background-color: transparent;
+}
+
+.complex-control ComboBox > .arrow-button > .arrow {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/control/drop_arrow.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-pref-width: 13px;
+    -fx-pref-height: 10px;
+}
+
+/* notifications */
+
+
+.notification {
+    -fx-padding: 0;
+    -fx-min-width: 350px;
+    -fx-pref-width: -1;
+    -fx-max-width: -1;
+    -fx-pref-height: -1;
+    -fx-max-height: -1;
+    -fx-min-height: 0;
+    -fx-alignment: top-center;
+}
+
+.notification .base-row {
+    -fx-pref-height: 48px;
+    -fx-max-height: 48px;
+    -fx-min-height: 0;
+    -fx-padding: 6px 15px 6px 20px;
+    -fx-alignment: center;
+    -fx-pref-width: -1;
+    -fx-max-width: -1;
+}
+
+.notification .base-row Label {
+    -fx-max-width: Infinity;
+    -fx-font-size: 14px;
+    -fx-padding: 0;
+}
+
+.notification .base-row > Separator {
+    -fx-orientation: vertical;
+    -fx-pref-height: 36px;
+    -fx-max-height: 36px;
+    -fx-padding: 0 15px 0 15px;
+}
+
+.notification .base-row > Separator .line {
+    -fx-border-width: 0 1 0 0;
+    -fx-border-color: #e6e6e6;
+}
+
+.notification .notification-icon {
+    -fx-background-color: transparent;
+    -fx-background-position: left;
+    -fx-background-repeat: no-repeat;
+    -fx-pref-width: 26px;
+    -fx-max-width: 26px;
+    -fx-pref-height: 16px;
+    -fx-max-height: 16px;
+}
+
+.notification.progress {
+    -fx-background-insets: 5px 0 0 0;
+    -fx-background-radius: 0 0 5px 5px;
+    -fx-border-radius: 5px;
+}
+
+.notification .progress-bar {
+    -fx-padding: 0;
+    -fx-pref-height: 5px;
+    -fx-min-height: 0;
+    -fx-max-height: 5px;
+    -fx-pref-width: -1;
+    -fx-max-width: 1000;
+    -fx-border-width: 0;
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 5px 5px 0 0;
+}
+
+.notification .progress-bar > .track {
+    -fx-pref-height: 5px;
+    -fx-max-height: 5px;
+    -fx-min-height: 0;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 5px 5px 0 0;
+}
+
+.notification .progress-bar > .bar {
+    -fx-background-color: #00bff0;
+    -fx-min-height: 5px;
+    -fx-max-height: 5px;
+    -fx-pref-height: 5px;
+    -fx-background-insets: 0;
+    -fx-background-radius: none
+}
+
+.notification .notification-icon-info {
+    -fx-background-image: url("../img/notification/info.png");
+}
+
+.notification .notification-icon-success {
+    -fx-background-image: url("../img/notification/success.png");
+}
+
+.notification .notification-icon-error {
+    -fx-background-image: url("../img/notification/error.png");
+}
+
+.notification .close {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/close.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: contain;
+    -fx-pref-height: 16px;
+    -fx-max-height: 16px;
+    -fx-pref-width: 16px;
+    -fx-max-width: 16px;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+    -fx-border-insets: 0;
+    -fx-background-insets: 0;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
 }

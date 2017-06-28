@@ -23,7 +23,7 @@ import java.util.*;
 /**
  * Created by kuhn on 4/4/2017.
  */
-@Component
+@Component("Cura")
 public class Cura extends AbstractSlicer {
 
     private String CURA_BIN_FOLDER;

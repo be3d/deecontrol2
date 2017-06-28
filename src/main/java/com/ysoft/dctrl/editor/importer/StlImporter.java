@@ -51,6 +51,7 @@ public class StlImporter extends AbstractModelImporter {
             bis.read(data, 0, data.length);
             bis.mark(data.length);
             bis.reset();
+            addBytesRead(6);
             TriangleMesh mesh;
             if(ASCII_START.equals(new String(data, StandardCharsets.UTF_8))) {
                 mesh = loadAscii(bis);

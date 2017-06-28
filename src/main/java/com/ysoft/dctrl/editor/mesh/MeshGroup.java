@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.ysoft.dctrl.math.BoundingBox;
+
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -73,6 +75,11 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
 
     @Override
     public Point3D getPosition() {
+        return null;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
         return null;
     }
 }

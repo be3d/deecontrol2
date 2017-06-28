@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+
+<?import java.net.URL?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:id="root">
+    <stylesheets>
+    <URL value="@/css/dialog.css" />
+    <URL value="@/css/master.css" />
+  </stylesheets>
+</AnchorPane>

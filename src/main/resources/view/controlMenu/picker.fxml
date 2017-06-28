@@ -2,17 +2,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
-
 
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="">
-    <Label fx:id="label" text="Top solid layers" styleClass="control-label"></Label>
+    <Label fx:id="label" styleClass="control-label" />
     <HBox>
-        <children>
-            <Region prefWidth="20"></Region>
-            <ComboBox fx:id="comboBox" value="" styleClass="control-comboBox">
-            </ComboBox>
-        </children>
+
+        <Region prefWidth="20"/>
+        <ComboBox fx:id="comboBox" styleClass="control-comboBox" />
     </HBox>
 </fx:root>

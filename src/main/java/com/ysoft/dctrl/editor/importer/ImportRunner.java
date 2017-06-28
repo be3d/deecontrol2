@@ -9,9 +9,12 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import com.ysoft.dctrl.utils.YieldTask;
-import javafx.concurrent.Task;
 import javafx.scene.shape.TriangleMesh;
+import javafx.util.Duration;
 
 /**
  * Created by pilar on 13.4.2017.
@@ -29,27 +32,21 @@ public class ImportRunner extends YieldTask<TriangleMesh, GCodeLayer> {
 
     @Override
     protected TriangleMesh call() {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(getUpdateTask(), 0, 250);
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), (e) -> {
+            eventBus.publish(new Event(EventType.MODEL_LOAD_PROGRESS.name(), modelImporter.getProgress()));
+        }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
         TriangleMesh mesh = null;
         try {
             mesh = modelImporter.load(path);
-            //eventBus.publish(new Event(EventType.MODEL_LOADED.name(), mesh));
         } catch (IOException e) {
 
             System.err.println("fuck");
             e.printStackTrace();
         }
-        timer.cancel();
-        return mesh;
-    }
 
-    private TimerTask getUpdateTask() {
-        return new TimerTask() {
-            @Override
-            public void run() {
-                eventBus.publish(new Event(EventType.MODEL_LOAD_PROGRESS.name(), modelImporter.getProgress()));
-            }
-        };
+        timeline.stop();
+        return mesh;
     }
 }

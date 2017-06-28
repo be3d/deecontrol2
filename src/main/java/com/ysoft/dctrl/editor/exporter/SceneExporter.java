@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
+import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
+import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.scene.shape.MeshView;
@@ -61,9 +63,12 @@ public class SceneExporter {
                         writeToOutput(converted, 84, converted.length - 84);
                     } catch (IOException e) {
                         System.err.println("fuck");
+                        e.printStackTrace();
                     }
                 }
             });
+
+            eventBus.publish(new Event(EventType.SCENE_EXPORTED.name(), outputPath));
 
         } catch (IOException e) {
             e.printStackTrace();
