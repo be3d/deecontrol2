@@ -41,9 +41,6 @@ public class DeeControlContext {
         return loader;
     }
 
-
-    }
-
     public String getSlicerTempFolder() {
         return slicerTempFolder;
     }

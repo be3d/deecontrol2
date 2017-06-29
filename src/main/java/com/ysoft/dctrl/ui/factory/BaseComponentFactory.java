@@ -32,7 +32,6 @@ public class BaseComponentFactory implements
         SlicerPanelFactory,
         GCodePanelFactory,
         GCodeLayerSliderFactory,
-        ControlMenuFactory,
         NotificationWrapperFactory
 {
     private final SpringFXMLLoader loader;

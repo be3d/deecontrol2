@@ -11,6 +11,7 @@ import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.controller.controlMenu.CheckBoxInline;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
@@ -50,11 +51,11 @@ public class GCodePanelController extends LocalizableController implements Initi
     public GCodePanelController(
             SceneGraph sceneGraph,
             GCodeViewer gCodeViewer,
-            LocalizationResource localizationResource,
+            LocalizationService localizationService,
             EventBus eventBus,
             DeeControlContext context) {
 
-        super(localizationResource, eventBus, context);
+        super(localizationService, eventBus, context);
         this.sceneGraph = sceneGraph;
         this.gCodeViewer = gCodeViewer;
     }
