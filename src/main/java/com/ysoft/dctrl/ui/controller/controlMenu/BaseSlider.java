@@ -1,14 +1,17 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
 import com.ysoft.dctrl.slicer.param.SlicerParam;
+
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
+import javafx.scene.control.Slider;
 
 /**
  * Created by kuhn on 5/19/2017.
  */
 public class BaseSlider extends BaseCustomControl{
     @FXML
-    javafx.scene.control.Slider slider;
+    private Slider slider;
 
 
     public BaseSlider(String fxmlResource) {
@@ -74,7 +77,7 @@ public class BaseSlider extends BaseCustomControl{
      * @param listener
      * @return
      */
-    public BaseSlider bindParamChanged(javafx.beans.value.ChangeListener listener){
+    public BaseSlider bindParamChanged(ChangeListener<Number> listener){
         boundParam.getDoubleProperty().addListener(listener);
         return this;
     }
@@ -83,7 +86,7 @@ public class BaseSlider extends BaseCustomControl{
      * Custom handle for UI Control change -> usually just throw an event
      * @param listener
      */
-    public void bindControlChanged(javafx.beans.value.ChangeListener listener){
+    public void bindControlChanged(ChangeListener<Number> listener){
         slider.valueProperty().addListener(listener);
     }
 }

@@ -29,13 +29,11 @@ public class SlicerController {
     Map<String, Slicer> slicerMap;
 
     private final EventBus eventBus;
-    private final DeeControlContext deeControlContext;
 
     public String selectedSlicerID = "";
     public static final String sceneSTL = System.getProperty("user.home") + File.separator + ".dctrl" + File.separator + ".slicer" + File.separator + "dctrl_scene.stl";
-    public Slicer slicer;
+    private Slicer currenSlicer;
 
-    private final EventBus eventBus;
 
     @Autowired
     public SlicerController(EventBus eventBus, SlicerParams slicerParams, Map<String, Slicer> slicerMap) {
@@ -50,23 +48,12 @@ public class SlicerController {
     }
 
     private void startSlice(String stlPath) {
-        try{
-            slice(stlPath);
-        }catch (Exception e ){
-            System.err.println("Slicing error.");
-        }
+        SlicerRunner slicerRunner = new SlicerRunner(eventBus, currenSlicer, slicerParams.getAllParams(), stlPath);
+        new Thread(slicerRunner).start();
     }
 
     private void setSlicer(String id){
-        this.slicer = slicerMap.get(id);
+        this.currenSlicer = slicerMap.get(id);
         this.selectedSlicerID = id;
-    }
-
-    public void slice(String modelStl){
-        try {
-            this.slicer.run(slicerParams.getAllParams(), modelStl);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

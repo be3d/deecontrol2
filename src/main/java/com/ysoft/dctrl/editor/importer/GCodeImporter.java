@@ -40,7 +40,7 @@ public class GCodeImporter extends YieldModelImporter {
     }
 
     @Override
-    TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException {
+    public TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"))) {
             String line;

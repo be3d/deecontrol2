@@ -73,8 +73,6 @@ public class BaseWindow {
         AnchorPane canvasPane = new AnchorPane();
         canvasPane.maxHeightProperty().bind(content.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
         canvasPane.prefHeightProperty().bind(content.heightProperty().subtract(menuBar.heightProperty()).subtract(mainPanel.heightProperty()));
-        editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
-        editorCanvas.prefWidthProperty().bind(content.widthProperty().subtract(controlMenu.widthProperty()));
 
         setAnchors(slicerPanel, 0.0, null, 0.0, 0.0);
         setAnchors(gcodePanel, 0.0, null, 0.0, 0.0);

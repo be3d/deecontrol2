@@ -39,7 +39,7 @@ public class SlicerRunner extends Task<Slicer> {
         progressTimer.scheduleAtFixedRate(getUpdateTask(), 0, 250);
 
         try{
-            slicer.run(slicerParams, scene, null);
+            slicer.run(slicerParams, scene);
         }catch(Exception e){
             System.out.println("Slicer fuck");
             e.printStackTrace();

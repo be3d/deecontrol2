@@ -46,7 +46,7 @@ public class Cura extends AbstractSlicer {
     }
 
     public boolean supportsParam(String paramName) {
-        for (Object s : this.curaParamMap.keySet()) {
+        for (Object s : Cura.curaParamMap.keySet()) {
             try {
                 if (s == SlicerParamType.valueOf(paramName)) {
                     return true;
@@ -64,7 +64,7 @@ public class Cura extends AbstractSlicer {
         while (iter.hasNext()) {
             Map.Entry<String, SlicerParam> entry = iter.next();
             try {
-                if (!this.curaParamMap.containsKey(SlicerParamType.valueOf(entry.getKey()))) {
+                if (!curaParamMap.containsKey(SlicerParamType.valueOf(entry.getKey()))) {
                     throw new NoSuchElementException();
                 }
             } catch (IllegalArgumentException e) {
@@ -83,7 +83,7 @@ public class Cura extends AbstractSlicer {
         for (Iterator<SlicerParam> iter = params.iterator(); iter.hasNext(); ) {
             SlicerParam param = iter.next();
             try {
-                if (!this.curaParamMap.containsKey(SlicerParamType.valueOf(param.getId()))) {
+                if (!curaParamMap.containsKey(SlicerParamType.valueOf(param.getId()))) {
                     throw new NoSuchElementException();
                 }
             } catch (IllegalArgumentException | NoSuchElementException e) {
@@ -94,7 +94,7 @@ public class Cura extends AbstractSlicer {
     }
 
     @Override
-    public void run(Map<String, SlicerParam> slicerParams, String modelSTL, ProgressBar progressBar) throws IOException {
+    public void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws IOException {
 
         // Construct the command with current parameters
         List<String> cmdParams = new ArrayList<>(
@@ -103,7 +103,7 @@ public class Cura extends AbstractSlicer {
         );
         for (Map.Entry<String, SlicerParam> entry : slicerParams.entrySet()) {
             try {
-                Object paramName = this.curaParamMap.get(SlicerParamType.valueOf((String) entry.getKey()));
+                Object paramName = curaParamMap.get(SlicerParamType.valueOf((String) entry.getKey()));
                 if (paramName != null) {
                     SlicerParam param = entry.getValue();
                     if (param.getValue() != null) {
@@ -170,6 +170,6 @@ public class Cura extends AbstractSlicer {
     }
 
     public double getProgress(){
-        return this.progress;
+        return progress;
     }
 }
