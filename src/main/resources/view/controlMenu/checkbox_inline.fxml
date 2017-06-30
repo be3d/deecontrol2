@@ -4,9 +4,8 @@
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="">
     <HBox spacing="0"  alignment="TOP_LEFT">
         <children>
-            <Region prefWidth="20"></Region>
+            <Region styleClass="left-control-hpadding"></Region>
             <CheckBox fx:id="checkBox" text="" styleClass="control-checkBox"></CheckBox>
-            <Region prefWidth="26"></Region>
         </children>
     </HBox>
 </fx:root>

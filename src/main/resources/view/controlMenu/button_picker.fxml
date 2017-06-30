@@ -1,0 +1,10 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="">
+    <Label fx:id="label" styleClass="control-label"></Label>
+    <HBox fx:id="buttonGroupHBox" spacing="0"  alignment="CENTER_LEFT">
+
+    </HBox>
+</fx:root>

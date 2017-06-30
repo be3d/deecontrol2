@@ -6,12 +6,13 @@
     <Label fx:id="label" styleClass="control-label"></Label>
     <HBox spacing="0"  alignment="TOP_LEFT">
     <children>
-        <Region prefWidth="30"></Region>
+        <Region styleClass="left-control-hpadding"></Region>
         <Slider fx:id="slider"
                 showTickMarks="false"  majorTickUnit="0.05" showTickLabels="false" minorTickCount="0" styleClass="control-slider" snapToTicks="true"
                 max="0.2" min="0.1" value="0.15"></Slider>
-        <Region prefWidth="26"></Region>
+        <Region HBox.hgrow="ALWAYS" ></Region>
         <Label fx:id="valueLabel" text="0.15" styleClass="control-value"></Label>
+        <Region styleClass="right-control-hpadding"></Region>
     </children>
     </HBox>
 </fx:root>

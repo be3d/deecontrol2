@@ -81,12 +81,6 @@ public class Picker extends BaseCustomControl {
         return this;
     }
 
-//    Sample
-//    @FXML
-//    protected void doSomething() {
-//        System.out.println("The button was clicked!");
-//    }
-
 }
 
 
