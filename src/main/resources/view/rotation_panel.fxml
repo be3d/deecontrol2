@@ -1,35 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Button?>
 <?import java.net.URL?>
+<?import com.ysoft.dctrl.ui.control.NumberField?>
 
-<HBox xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.RotationPanelController" StackPane.alignment="TOP_CENTER" styleClass="panel, edit-panel, rotation-panel">
+<?import javafx.scene.control.Button?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.RotationPanelController" StackPane.alignment="TOP_LEFT" styleClass="panel, edit-panel, rotation-panel">
   <HBox styleClass="edit-panel-group">
     <Label text="X" labelFor="$x" mnemonicParsing="true" />
-    <TextField fx:id="x" styleClass="" />
+    <HBox styleClass="rotation-field">
+      <Button fx:id="counterX" styleClass="rotate, rotate-counter" />
+      <NumberField fx:id="x" value="90" styleClass="rotate-value" unit="°"/>
+      <Button fx:id="clockX" styleClass="rotate, rotate-clock" />
+    </HBox>
   </HBox>
   <HBox styleClass="edit-panel-group">
     <Label text="Y" labelFor="$y" mnemonicParsing="true" />
-    <TextField fx:id="y" styleClass="" />
+    <HBox styleClass="rotation-field">
+      <Button fx:id="counterY" styleClass="rotate, rotate-counter" />
+      <NumberField fx:id="y" value="90" styleClass="rotate-value" unit="°"/>
+      <Button fx:id="clockY" styleClass="rotate, rotate-clock" />
+    </HBox>
   </HBox>
   <HBox styleClass="edit-panel-group">
     <Label text="Z" labelFor="$z" mnemonicParsing="true" />
-    <TextField fx:id="z" styleClass="" />
+    <HBox styleClass="rotation-field">
+      <Button fx:id="counterZ" styleClass="rotate, rotate-counter" />
+      <NumberField fx:id="z" value="90" styleClass="rotate-value" unit="°"/>
+      <Button fx:id="clockZ" styleClass="rotate, rotate-clock" />
+    </HBox>
   </HBox>
-
-  <Separator orientation="VERTICAL" />
-
-  <Button fx:id="reset" text="?_edit_panel_reset" />
 
   <stylesheets>
     <URL value="@/css/edit_panel.css" />
     <URL value="@/css/master.css" />
   </stylesheets>
-</HBox>
+</VBox>
 
 

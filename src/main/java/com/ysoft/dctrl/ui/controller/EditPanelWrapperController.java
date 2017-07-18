@@ -23,7 +23,7 @@ import javafx.scene.layout.StackPane;
  */
 
 @Controller
-public class BottomPanelWrapperController extends AbstractController implements Initializable {
+public class EditPanelWrapperController extends AbstractController implements Initializable {
     @FXML
     private StackPane wrapper;
 
@@ -34,7 +34,7 @@ public class BottomPanelWrapperController extends AbstractController implements 
     private Region visiblePanel;
 
     @Autowired
-    public BottomPanelWrapperController(
+    public EditPanelWrapperController(
             EventBus eventBus,
             DeeControlContext deeControlContext,
             RotationPanelFactory rotationMenuFactory,

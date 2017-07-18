@@ -1,18 +1,15 @@
 package com.ysoft.dctrl.ui.factory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import com.ysoft.dctrl.ui.NotificationManager;
-import com.ysoft.dctrl.ui.control.DialogPane;
-import com.ysoft.dctrl.ui.factory.dialog.PreferencesFactory;
 import com.ysoft.dctrl.utils.SpringFXMLLoader;
 
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 /**
  * Created by pilar on 20.3.2017.
@@ -26,7 +23,7 @@ public class BaseComponentFactory implements
         RotationPanelFactory,
         MovePanelFactory,
         ScalePanelFactory,
-        BottomPanelWrapperFactory,
+        EditPanelWrapperFactory,
         MainPanelFactory,
         NoModelPanelFactory,
         SlicerPanelFactory,
@@ -54,26 +51,26 @@ public class BaseComponentFactory implements
     @Override
     public AnchorPane buildEditorCanvas() {
         AnchorPane canvas = (AnchorPane) loader.load("/view/editor_canvas.fxml");
-        canvas.getChildren().addAll(buildBottomPanelWrapper(), buildControlPanel(), buildNoModelPanel());
+        canvas.getChildren().addAll(buildEditPanelWrapper(), buildControlPanel(), buildNoModelPanel());
         return canvas;
     }
 
     @Override
-    public HBox buildRotationPanel() {
-        return (HBox) loader.load("/view/rotation_panel.fxml");
+    public VBox buildRotationPanel() {
+        return (VBox) loader.load("/view/rotation_panel.fxml");
     }
 
     @Override
-    public HBox buildMovePanel() {
-        return (HBox) loader.load("/view/move_panel.fxml");
+    public VBox buildMovePanel() {
+        return (VBox) loader.load("/view/move_panel.fxml");
     }
 
     @Override
-    public HBox buildScalePanel() { return (HBox) loader.load("/view/scale_panel.fxml"); }
+    public VBox buildScalePanel() { return (VBox) loader.load("/view/scale_panel.fxml"); }
 
     @Override
-    public StackPane buildBottomPanelWrapper() {
-        return (StackPane) loader.load("/view/bottom_panel_wrapper.fxml");
+    public StackPane buildEditPanelWrapper() {
+        return (StackPane) loader.load("/view/edit_panel_wrapper.fxml");
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.ui.control.NumberField;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
@@ -26,11 +27,9 @@ public abstract class AbstractEditPanelController extends LocalizableController 
 
     protected SceneGraph sceneGraph;
 
-    @FXML protected TextField x;
-    @FXML protected TextField y;
-    @FXML protected TextField z;
-
-    @FXML protected Button reset;
+    @FXML protected NumberField x;
+    @FXML protected NumberField y;
+    @FXML protected NumberField z;
 
     public AbstractEditPanelController(SceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
         super(localizationService, eventBus, context);
@@ -43,11 +42,10 @@ public abstract class AbstractEditPanelController extends LocalizableController 
             if(newValue) refresh();
         });
 
-        x.textProperty().addListener((observable, oldValue, newValue) -> onChange(newValue, Item.X));
-        y.textProperty().addListener((observable, oldValue, newValue) -> onChange(newValue, Item.Y));
-        z.textProperty().addListener((observable, oldValue, newValue) -> onChange(newValue, Item.Z));
+        x.textProperty().addListener((observable, oldValue, newValue) -> onChange(x.getValue(), Item.X));
+        y.textProperty().addListener((observable, oldValue, newValue) -> onChange(y.getValue(), Item.Y));
+        z.textProperty().addListener((observable, oldValue, newValue) -> onChange(z.getValue(), Item.Z));
 
-        reset.setOnMouseClicked((e) -> onReset());
 
         root.setOnMousePressed(Event::consume);
 
@@ -58,7 +56,7 @@ public abstract class AbstractEditPanelController extends LocalizableController 
 
     public abstract void refresh();
 
-    private void onChange(String newValue, Item item) {
+    private void onChange(double newValue, Item item) {
         SceneMesh mesh = sceneGraph.getSelected();
         if(mesh == null) return;
         switch (item) {
@@ -74,8 +72,8 @@ public abstract class AbstractEditPanelController extends LocalizableController 
         }
     }
 
-    public abstract void onXChange(SceneMesh mesh, String newValue);
-    public abstract void onYChange(SceneMesh mesh, String newValue);
-    public abstract void onZChange(SceneMesh mesh, String newValue);
+    public abstract void onXChange(SceneMesh mesh, double newValue);
+    public abstract void onYChange(SceneMesh mesh, double newValue);
+    public abstract void onZChange(SceneMesh mesh, double newValue);
     public abstract void onReset();
 }

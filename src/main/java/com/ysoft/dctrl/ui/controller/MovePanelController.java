@@ -41,16 +41,16 @@ public class MovePanelController extends AbstractEditPanelController {
         y.setText(String.valueOf(position.getY()));
     }
 
-    public void onXChange(SceneMesh mesh, String newValue) {
-        mesh.setPositionX(Double.valueOf(newValue));
+    public void onXChange(SceneMesh mesh, double newValue) {
+        mesh.setPositionX(newValue);
     }
 
-    public void onYChange(SceneMesh mesh, String newValue) {
-        mesh.setPositionY(Double.valueOf(newValue));
+    public void onYChange(SceneMesh mesh, double newValue) {
+        mesh.setPositionY(newValue);
     }
 
-    public void onZChange(SceneMesh mesh, String newValue) {
-        mesh.setPositionZ(Double.valueOf(newValue));
+    public void onZChange(SceneMesh mesh, double newValue) {
+        mesh.setPositionZ(newValue);
     }
 
     public void onReset() {

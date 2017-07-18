@@ -2,34 +2,31 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.control.Separator?>
 <?import java.net.URL?>
 
-<HBox  xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.MovePanelController" StackPane.alignment="TOP_CENTER" styleClass="panel, edit-panel, move-panel">
+<?import com.ysoft.dctrl.ui.control.NumberField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+<VBox  xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.MovePanelController" StackPane.alignment="TOP_LEFT" styleClass="panel, edit-panel, move-panel">
+  <Region managed="false" styleClass="arrow-ear" />
   <HBox styleClass="edit-panel-group">
     <Label text="X" labelFor="$x" mnemonicParsing="true" />
-    <TextField fx:id="x" styleClass="" />
+    <NumberField fx:id="x" styleClass="value-field" />
   </HBox>
   <HBox styleClass="edit-panel-group">
     <Label text="Y" labelFor="$y" mnemonicParsing="true" />
-    <TextField fx:id="y" styleClass="" />
+    <NumberField fx:id="y" styleClass="value-field" />
   </HBox>
   <HBox styleClass="edit-panel-group" visible="false" managed="false">
     <Label text="Z" labelFor="$z" mnemonicParsing="true" />
-    <TextField fx:id="z" styleClass="" />
+    <NumberField fx:id="z" styleClass="value-field" />
   </HBox>
-
-  <Separator orientation="VERTICAL" />
-
-  <Button fx:id="reset" text="?_edit_panel_reset" />
 
   <stylesheets>
     <URL value="@/css/edit_panel.css" />
     <URL value="@/css/master.css" />
   </stylesheets>
-</HBox>
+</VBox>
 
 
