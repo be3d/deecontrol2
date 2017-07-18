@@ -1,7 +1,23 @@
-group 'com.ysoft.be3d'
-version '1.0.0-SNAPSHOT'
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.edu.sc.seis:macAppBundle:2.1.6"
+    }
+}
+
+plugins {
+    id 'edu.sc.seis.launch4j' version '2.3.0'
+}
 
 apply plugin: 'java'
+apply plugin: "edu.sc.seis.macAppBundle"
+
+group 'com.ysoft.be3d'
+version '1.0.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -21,9 +37,13 @@ dependencies {
 }
 
 task zip(dependsOn: jar, type: Zip) {
-    from configurations.compile.allArtifacts.files
-    from configurations.compile
-    into(project.name + "_" + project.version)
+    from configurations.runtime.allArtifacts.files
+    from configurations.runtime
+}
+
+task copyBin(dependsOn: createExe, type: Copy) {
+    from "bin"
+    into "build/launch4j/bin"
 }
 
 jar {
@@ -34,4 +54,18 @@ jar {
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
+}
+
+launch4j {
+    xmlFileName = "test.xml"
+}
+
+macAppBundle {
+    mainClassName = "com.ysoft.dctrl.DeeControl"
+    bundleJRE = true
+    jreHome = "mac/jre1.8.0_131.jre/Contents/Home"
+}
+
+task createOut (dependsOn: copyBin, type: Zip) {
+    from "build/launch4j"
 }
