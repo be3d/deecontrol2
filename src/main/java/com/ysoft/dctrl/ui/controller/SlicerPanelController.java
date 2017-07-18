@@ -30,6 +30,7 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
@@ -89,7 +90,7 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     @Autowired
     public SlicerPanelController(
-            LocalizationResource localizationResource,
+            LocalizationService localizationService,
             EventBus eventBus,
             DeeControlContext deeControlContext,
             SceneExporter sceneExporter,
@@ -99,7 +100,7 @@ public class SlicerPanelController extends LocalizableController implements Init
             SlicerParams slicerParams,
             ProfileResource profileResource) {
 
-        super(localizationResource, eventBus, deeControlContext);
+        super(localizationService, eventBus, deeControlContext);
         this.sceneExporter = sceneExporter;
         this.sceneGraph = sceneGraph;
         this.printerResource = printerResource;
@@ -231,13 +232,9 @@ public class SlicerPanelController extends LocalizableController implements Init
                 advSettingsBox.setVisible(true);
                 advSettingsToggle.setText("Hide advanced settings...");
             }
-
-            eventBus.publish(new Event(EventType.SLICER_STOP.name()));
-
         });
 
         eventBus.subscribe(EventType.SLICER_SCENE_EXPORT.name(), this::exportScene);
-        eventBus.subscribe(EventType.SLICER_SCENE_EXPORTED.name(), this::startSlicer);
         eventBus.subscribe(EventType.SLICER_PROGRESS.name(), this::slicerProgressHandle);
         eventBus.subscribe(EventType.SLICER_FINISHED.name(), this::gCodeViewerStart);
 
@@ -246,16 +243,6 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     private void exportScene(Event e){
         sceneExporter.exportScene(sceneGraph, sceneSTL);
-        eventBus.publish(new Event(EventType.SLICER_SCENE_EXPORTED.name()));
-    }
-
-    private void startSlicer(Event e){
-        // todo clean any previous instance of runner (this way they are stacking after slicing multiple times)
-        SlicerRunner slicerRunner = new SlicerRunner(eventBus, slicerController.slicer,
-                slicerParams.getAllParams(), System.getProperty("user.home") +
-                    File.separator + ".dctrl" + File.separator + ".slicer" + File.separator +"dctrl_scene.stl");
-        new Thread(slicerRunner).start();
-
     }
 
     private void slicerProgressHandle(Event e){

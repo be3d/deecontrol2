@@ -6,7 +6,7 @@ import com.ysoft.dctrl.editor.mesh.GCodeLayer;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
-import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -36,11 +36,11 @@ public class GCodeLayerSliderController extends LocalizableController implements
     @FXML
     Slider layerSlider;
 
-    public GCodeLayerSliderController(LocalizationResource localizationResource,
+    public GCodeLayerSliderController(LocalizationService localizationService,
                                       EventBus eventBus, DeeControlContext context,
                                       GCodeViewer gCodeViewer) {
 
-        super(localizationResource, eventBus, context);
+        super(localizationService, eventBus, context);
         this.gCodeViewer = gCodeViewer;
     }
 

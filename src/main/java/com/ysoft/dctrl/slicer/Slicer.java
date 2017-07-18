@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public interface Slicer {
 
-    void run(Map<String, SlicerParam> slicerParams, String modelSTL, ProgressBar progressBar) throws Exception;
+    void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws Exception;
 
     Map<String,SlicerParam> filterSupportedParams(Map<String, SlicerParam> allParams);
 

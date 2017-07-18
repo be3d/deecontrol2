@@ -12,10 +12,12 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 
@@ -34,12 +36,13 @@ public class NoModelPanelController extends LocalizableController {
     private String eventDecriptor;
 
 
-    public NoModelPanelController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext context) {
-        super(localizationResource, eventBus, context);
+    public NoModelPanelController(LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
+        super(localizationService, eventBus, context);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        root.addEventHandler(MouseEvent.ANY, javafx.event.Event::consume);
         eventDecriptor = eventBus.subscribe(EventType.MODEL_LOADED.name(), this::hide);
 
         browse.setOnAction(event -> {

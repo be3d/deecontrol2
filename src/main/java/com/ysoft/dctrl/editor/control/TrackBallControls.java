@@ -49,7 +49,7 @@ public class TrackBallControls {
         target = new Point3D(0,0,0);
         position = new Point3D(0,0,0);
         alpha = Math.PI;
-        theta = 0;
+        theta = Math.toRadians(90 - initialPosition.angle(0,0,1));
         previousMousePosition = new Point2D(0,0);
         currentState = State.NONE;
         previousState = State.NONE;

@@ -1,5 +1,6 @@
 package com.ysoft.dctrl.utils;
 
+import java.io.File;
 import java.util.Locale;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,8 +8,10 @@ import com.ysoft.dctrl.utils.files.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ysoft.dctrl.Project;
+import com.ysoft.dctrl.utils.settings.SafeQSettings;
 import com.ysoft.dctrl.utils.settings.SettingsStore;
-import com.ysoft.dctrl.utils.settings.contract.Settings;
+import com.ysoft.dctrl.utils.settings.Settings;
 
 /**
  * Created by pilar on 21.3.2017.
@@ -16,10 +19,13 @@ import com.ysoft.dctrl.utils.settings.contract.Settings;
 
 @Service
 public class DeeControlContext {
+    private final String slicerTempFolder = System.getProperty("user.home") + File.separator + ".dctrl" + File.separator + ".slicer";
+
     private final SpringFXMLLoader loader;
     private final Settings settings;
     private final ObjectMapper objectMapper;
     private final FileService fileService;
+    private Project currentProject;
 
     @Autowired
     public DeeControlContext(SpringFXMLLoader loader, SettingsStore settingsStore, FileService fileService) {
@@ -27,6 +33,7 @@ public class DeeControlContext {
         this.settings = settingsStore.getSettings();
         this.objectMapper = new ObjectMapper();
         this.fileService = fileService;
+        this.currentProject = new Project();
 
     }
 
@@ -34,11 +41,20 @@ public class DeeControlContext {
         return loader;
     }
 
-    public Locale getStartUpLocale() {
-        return settings.getStartUpLocale();
+    public String getSlicerTempFolder() {
+        return slicerTempFolder;
     }
 
-    public String getLastOpenPwd() { return settings.getLastOpenPwd(); }
+
+    public Settings getSettings() { return settings; }
+
+    public Project getCurrentProject() {
+        return currentProject;
+    }
+
+    public void setCurrentProject(Project currentProject) {
+        this.currentProject = currentProject;
+    }
 
     public ObjectMapper getObjectMapper() {
         return objectMapper;

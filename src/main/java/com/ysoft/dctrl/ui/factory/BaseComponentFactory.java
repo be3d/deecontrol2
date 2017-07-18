@@ -1,8 +1,12 @@
 package com.ysoft.dctrl.ui.factory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import com.ysoft.dctrl.ui.NotificationManager;
+import com.ysoft.dctrl.ui.control.DialogPane;
+import com.ysoft.dctrl.ui.factory.dialog.PreferencesFactory;
 import com.ysoft.dctrl.utils.SpringFXMLLoader;
 
 import javafx.scene.control.MenuBar;
@@ -27,7 +31,8 @@ public class BaseComponentFactory implements
         NoModelPanelFactory,
         SlicerPanelFactory,
         GCodePanelFactory,
-        GCodeLayerSliderFactory
+        GCodeLayerSliderFactory,
+        NotificationWrapperFactory
 {
     private final SpringFXMLLoader loader;
 
@@ -89,5 +94,11 @@ public class BaseComponentFactory implements
 
     @Override
     public AnchorPane buildGCodeLayerSlider(){return (AnchorPane) loader.load("/view/gcode_layer_picker.fxml") ;}
+
+    @Override
+    public StackPane buildNotificationWrapper() {
+        return (StackPane) loader.load("/view/notification_wrapper.fxml");
+    }
+
 
 }

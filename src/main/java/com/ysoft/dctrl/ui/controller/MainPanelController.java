@@ -10,6 +10,7 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
@@ -26,11 +27,15 @@ public class MainPanelController extends LocalizableController implements Initia
     @FXML Button add;
 
     @FXML Button center;
+    @FXML Button left;
+    @FXML Button right;
+    @FXML Button front;
+    @FXML Button back;
 
     @FXML Button resetView;
 
-    public MainPanelController(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext context) {
-        super(localizationResource, eventBus, context);
+    public MainPanelController(LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
+        super(localizationService, eventBus, context);
     }
 
     @Override
@@ -47,6 +52,10 @@ public class MainPanelController extends LocalizableController implements Initia
         });
 
         center.setOnAction(event -> {eventBus.publish(new Event(EventType.CENTER_SELECTED_MODEL.name()));});
+        left.setOnAction(event -> {eventBus.publish(new Event(EventType.ALIGN_LEFT_SELECTED_MODEL.name()));});
+        right.setOnAction(event -> {eventBus.publish(new Event(EventType.ALIGN_RIGHT_SELECTED_MODEL.name()));});
+        front.setOnAction(event -> {eventBus.publish(new Event(EventType.ALIGN_FRONT_SELECTED_MODEL.name()));});
+        back.setOnAction(event -> {eventBus.publish(new Event(EventType.ALIGN_BACK_SELECTED_MODEL.name()));});
 
         super.initialize(location, resources);
     }
