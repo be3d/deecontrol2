@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 /**
  * Created by kuhn on 5/5/2017.
  */
-public class SliderDiscrete extends com.ysoft.dctrl.ui.controller.controlMenu.BaseSlider {
+public class SliderDiscrete extends BaseSlider {
 
     @FXML
     Slider slider;
@@ -22,12 +22,15 @@ public class SliderDiscrete extends com.ysoft.dctrl.ui.controller.controlMenu.Ba
         super("/view/controlMenu/slider_discrete.fxml");
 //        super.init("/view/controlMenu/slider_discrete.fxml");"/view/controlMenu/slider_discrete.fxml"
 
-        DecimalFormat df = new DecimalFormat("#.##");
+
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (this.getStep() instanceof Double)
-                valueLabel.setText(df.format(new Double((Math.round(newValue.doubleValue() / this.getStep()) * this.getStep()))));
-            else
-                valueLabel.setText((newValue).toString());
+            if (this.getStep() instanceof Double){
+                value = new Double((Math.round(newValue.doubleValue() / this.getStep()) * this.getStep()));
+            }
+            else{
+                value = (double)newValue;
+            }
+            updateView();
         });
     }
 
@@ -47,4 +50,8 @@ public class SliderDiscrete extends com.ysoft.dctrl.ui.controller.controlMenu.Ba
         super.bindControlChanged(handler);
     }
 
+    public void updateView(){
+        DecimalFormat df = new DecimalFormat("#.##");
+        valueLabel.setText(df.format(this.value) + (unit != null ? " " + unit : ""));
+    }
 }

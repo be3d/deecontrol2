@@ -2,9 +2,7 @@ package com.ysoft.dctrl.ui.controller;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import com.ysoft.dctrl.editor.SceneGraph;
@@ -17,15 +15,10 @@ import com.ysoft.dctrl.slicer.printer.PrinterResource;
 import com.ysoft.dctrl.slicer.profile.Profile;
 import com.ysoft.dctrl.slicer.profile.ProfileResource;
 import com.ysoft.dctrl.ui.controller.controlMenu.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -42,7 +35,7 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.stage.FileChooser;
+
 
 /**
  * Created by pilar on 21.3.2017.
@@ -75,16 +68,16 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     // Adv settings
     @FXML SliderDiscrete layerHeightSlider;
-    @FXML SliderDiscrete roofThicknessSlider;
-    @FXML SliderDiscrete bottomThicknessSlider;
-    @FXML SliderContinuous printSpeedSolidSlider;
-    @FXML SliderDiscrete shellThicknessSlider;
-    @FXML SliderContinuous printSpeedShellSlider;
+    @FXML ButtonIncrement roofThicknessIncrement;
+    @FXML ButtonIncrement bottomThicknessIncrement;
+    @FXML SliderDiscrete printSpeedSolidSlider;
+    @FXML ButtonIncrement shellThicknessIncrement;
+    @FXML SliderDiscrete printSpeedShellSlider;
     @FXML Picker infillPatternPicker;
-    @FXML SliderContinuous infillDensitySlider;
-    @FXML SliderContinuous supportDensitySlider;
+    @FXML SliderDiscrete infillDensitySlider;
+    @FXML SliderDiscrete supportDensitySlider;
     @FXML Picker supportPatternPicker;
-    @FXML SliderContinuous supportAngleSlider;
+    @FXML SliderDiscrete supportAngleSlider;
 
     @FXML Button slice;
     @FXML ImageView saveProfile;
@@ -135,6 +128,7 @@ public class SlicerPanelController extends LocalizableController implements Init
                 .bindParamChanged()
                 .bindControlChanged((observable, oldValue, newValue) -> {
                     slicerParams.updateParam(SlicerParamType.SUPPORT_BUILDPLATE_TYPE.name(), newValue);
+                    roofThicknessIncrement.updateView();
                     this.setEdited(true);
                 });
 
@@ -145,30 +139,25 @@ public class SlicerPanelController extends LocalizableController implements Init
                 .bindParamChanged()
                 .bindControlChanged(((observable, oldValue, newValue) -> {
                     slicerParams.updateParam(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name(), newValue);
+                    roofThicknessIncrement.updateView();
+                    bottomThicknessIncrement.updateView();
                     this.setEdited(true);
                 }));
 
-        roofThicknessSlider
+        roofThicknessIncrement
+                .bindRecalculation((e) -> (double)slicerParams.get(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name()).getValue() * e)
                 .load(slicerParams.get(SlicerParamType.SHELL_TOP_LAYERS.name()))
-                .bindParamChanged()
-                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SHELL_TOP_LAYERS.name(), newValue)));
+                .bindParamChanged();
 
-
-        bottomThicknessSlider
+        bottomThicknessIncrement
+                .bindRecalculation((e) -> (double)slicerParams.get(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name()).getValue() * e)
                 .load(slicerParams.get(SlicerParamType.SHELL_BOTTOM_LAYERS.name()))
-                .bindParamChanged()
-                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SHELL_BOTTOM_LAYERS.name(), newValue)));
-
+                .bindParamChanged();
 
         printSpeedSolidSlider
                 .load(slicerParams.get(SlicerParamType.SPEED_SOLID_LAYERS.name()))
                 .bindParamChanged()
                 .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SPEED_SOLID_LAYERS.name(), newValue)));
-
-        shellThicknessSlider
-                .load(slicerParams.get(SlicerParamType.SHELL_THICKNESS.name()))
-                .bindParamChanged()
-                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SHELL_THICKNESS.name(), newValue)));
 
         printSpeedShellSlider
                 .load(slicerParams.get(SlicerParamType.SPEED_OUTER_WALL.name()))
