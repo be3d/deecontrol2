@@ -6,6 +6,7 @@ import java.util.List;
 import com.ysoft.dctrl.math.BoundingBox;
 import com.ysoft.dctrl.math.TransformMatrix;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.Node;
 import javafx.scene.paint.Material;
@@ -30,6 +31,7 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     private Translate position = new Translate(0,0,0);
 
     private BoundingBox boundingBox;
+    private boolean isDirty;
 
     private MeshView view;
 
@@ -40,12 +42,14 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     public ExtendedMesh() {
         view = new MeshView();
         boundingBox = new BoundingBox();
+        isDirty = false;
         initTransforms();
     }
 
     public ExtendedMesh(TriangleMesh mesh) {
         view = new MeshView(mesh);
         boundingBox = new BoundingBox(mesh.getPoints().toArray(null));
+        isDirty = false;
         initTransforms();
     }
 
@@ -63,7 +67,18 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         view.getTransforms().addAll(position, rotationX, rotationY, rotationZ, scale);
     }
 
-    public BoundingBox getBoundingBox() { return boundingBox; }
+    public BoundingBox getBoundingBox() {
+        checkBoundingBox();
+        return boundingBox;
+    }
+
+    private void checkBoundingBox() {
+        if(!isDirty) { return; }
+
+        boundingBox.update(((TriangleMesh) view.getMesh()).getPoints().toArray(null), getTransformMatrix());
+        System.err.println(boundingBox);
+        isDirty = false;
+    }
 
     public void translateToZero() {
         MeshUtils.translateVertexesAndUpdateBoundingBox((TriangleMesh) view.getMesh(), boundingBox);
@@ -74,12 +89,12 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         this.scale.setX(scale.getX());
         this.scale.setY(scale.getY());
         this.scale.setZ(scale.getZ());
+        isDirty = true;
     }
 
     @Override
     public Point3D getScale() {
         return new Point3D(scale.getX(), scale.getY(), scale.getZ());
-        //return new Point3D(view.getScaleX(), view.getScaleY(), view.getScaleZ());
     }
 
     @Override
@@ -87,6 +102,7 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         this.rotationX.setAngle(normalizeRotation(rotation.getX()));
         this.rotationY.setAngle(normalizeRotation(rotation.getY()));
         this.rotationZ.setAngle(normalizeRotation(rotation.getZ()));
+        isDirty = true;
     }
 
     private double normalizeRotation(double value) {
@@ -107,6 +123,7 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         this.position.setX(position.getX());
         this.position.setY(position.getY());
         this.position.setZ(position.getZ());
+        isDirty = true;
     }
 
     @Override
@@ -138,5 +155,23 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
 
     private void handlePositionChange(TransformChangedEvent event) {
         onPositionChange.forEach(h -> h.accept(this));
+    }
+
+    public void addOnRotationChangeListener(OnMeshChange eventHandler) {
+        onRotationChange.add(eventHandler);
+    }
+
+    public void addOnScaleChangeListener(OnMeshChange eventHandler) {
+        onScaleChange.add(eventHandler);
+    }
+
+    public void addOnPositionChangeListener(OnMeshChange eventHandler) {
+        onPositionChange.add(eventHandler);
+    }
+
+    public void addOnMeshChangeListener(OnMeshChange eventHandler) {
+        addOnPositionChangeListener(eventHandler);
+        addOnRotationChangeListener(eventHandler);
+        addOnScaleChangeListener(eventHandler);
     }
 }

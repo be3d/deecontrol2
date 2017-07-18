@@ -12,14 +12,22 @@ import javafx.scene.shape.TriangleMesh;
 
 /**
  * Created by pilar on 11.4.2017.
+ *
+ * This converter is used for
  */
 public class MeshConverter {
     private final TriangleMesh mesh;
     private final TransformMatrix transformMatrix;
 
-    public MeshConverter(ExtendedMesh extendedMesh) {
+    private volatile double progress;
+
+    public MeshConverter(ExtendedMesh extendedMesh, TransformMatrix transformMatrix) {
         this.mesh = (TriangleMesh) ((MeshView) extendedMesh.getNode()).getMesh();
-        this.transformMatrix = extendedMesh.getTransformMatrix();
+        this.transformMatrix = transformMatrix;
+    }
+
+    public MeshConverter(ExtendedMesh extendedMesh) {
+        this(extendedMesh, extendedMesh.getTransformMatrix());
     }
 
     public byte[] convertToStl() {
@@ -36,6 +44,7 @@ public class MeshConverter {
 
         for(int i = 0; i < facesNumber; i += 9) {
             writeFace(bb, i, faces, points, normals);
+            progress = i/facesNumber;
         }
 
         return bb.array();
@@ -70,5 +79,9 @@ public class MeshConverter {
     private Point3D getVertex(int pointOffset, float[] points) {
         Point3D v = new Point3D(points[pointOffset], points[pointOffset + 1], points[pointOffset + 2]);
         return transformMatrix.applyTo(v);
+    }
+
+    public double getProgress() {
+        return progress;
     }
 }

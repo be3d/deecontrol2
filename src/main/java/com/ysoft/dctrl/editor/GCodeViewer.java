@@ -8,6 +8,9 @@ import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 
 import com.ysoft.dctrl.utils.DeeControlContext;
+import com.ysoft.dctrl.utils.files.FilePath;
+import com.ysoft.dctrl.utils.files.FilePathResource;
+
 import javafx.scene.shape.MeshView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,16 +29,19 @@ public class GCodeViewer {
 
     protected ArrayList<GCodeLayer> layers = new ArrayList<>();
 
+    private final String slicedGcodeFile;
+
     protected final List<String> DRAFT_RENDER_TYPES = Arrays.asList(
             GCodeMoveType.WALL_OUTER.name(),
             GCodeMoveType.SUPPORT.name()
     );
 
     @Autowired
-    public GCodeViewer(EventBus eventBus, DeeControlContext deeControlContext, SceneGraph sceneGraph){
+    public GCodeViewer(EventBus eventBus, DeeControlContext deeControlContext, SceneGraph sceneGraph, FilePathResource filePathResource){
         this.eventBus = eventBus;
         this.deeControlContext = deeControlContext;
         this.sceneGraph = sceneGraph;
+        this.slicedGcodeFile = filePathResource.getPath(FilePath.SLICER_GCODE_FILE);
 
         eventBus.subscribe(EventType.GCODE_LAYER_GENERATED.name(), this::loadGCodeLayerDraft);
         eventBus.subscribe(EventType.GCODE_LAYER_RENDER_DETAIL.name(), this::loadGCodeLayerDetail);
@@ -45,10 +51,7 @@ public class GCodeViewer {
 
     public void startViewer(){
         GCodeImporter gCodeImporter = new GCodeImporter(eventBus);
-        YieldImportRunner importRunner = new YieldImportRunner<GCodeLayer>(
-                eventBus, gCodeImporter,
-                deeControlContext.getFileService().TEMP_SLICER_GCODE_FILE
-        );
+        YieldImportRunner<GCodeLayer> importRunner = new YieldImportRunner<>(eventBus, gCodeImporter, slicedGcodeFile);
         importRunner.setOnYield((l)-> {
             eventBus.publish(new Event(EventType.GCODE_LAYER_GENERATED.name(), l));
         });

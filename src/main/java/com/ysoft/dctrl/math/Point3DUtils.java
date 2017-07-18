@@ -24,6 +24,10 @@ public class Point3DUtils {
         return new Point3D(p.getX(), p.getY(), z);
     }
 
+    public static Point3D divideElements(Point3D a, Point3D b) {
+        return new Point3D(a.getX()/b.getX(), a.getY()/b.getY(), a.getZ()/b.getZ());
+    }
+
     public static Point3D applyMatrix(Point3D p, Matrix3D m) {
         double[] e = m.getElements();
         double[] res = new double[3];

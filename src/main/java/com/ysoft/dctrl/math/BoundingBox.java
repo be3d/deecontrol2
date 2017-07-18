@@ -10,12 +10,11 @@ public class BoundingBox {
     private Point3D max;
 
     public BoundingBox() {
-        this.max = new Point3D(Double.MIN_VALUE,Double.MIN_VALUE,Double.MIN_VALUE);
-        this.min = new Point3D(Double.MAX_VALUE,Double.MAX_VALUE,Double.MAX_VALUE);
+        init();
     }
 
     public BoundingBox(float[] vertices) {
-        this();
+        init();
         int len = vertices.length;
 
         for(int i = 0; i < len; i +=3) {
@@ -24,7 +23,16 @@ public class BoundingBox {
     }
 
     public BoundingBox(float[] vertices, TransformMatrix matrix) {
-        this();
+        update(vertices, matrix);
+    }
+
+    private void init() {
+        this.max = new Point3D(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        this.min = new Point3D(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+    }
+
+    public void update(float[] vertices, TransformMatrix matrix) {
+        init();
         int len = vertices.length;
 
         for(int i = 0; i < len; i+=3) {
@@ -86,5 +94,10 @@ public class BoundingBox {
 
     public Point3D getHalfSize() {
         return getSize().multiply(0.5);
+    }
+
+    @Override
+    public String toString() {
+        return "BoundingBox[\n" + min + "\n" + max + "\n]";
     }
 }

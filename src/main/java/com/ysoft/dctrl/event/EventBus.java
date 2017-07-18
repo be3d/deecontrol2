@@ -7,5 +7,6 @@ public interface EventBus {
     void publish(Event e);
 
     String subscribe(String type, EventHandler eventHandler);
+    String subscribeOnce(String type, EventHandler eventHandler);
     void unsubscribe(String handlerDescriptor);
 }
