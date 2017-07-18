@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by kuhn on 4/11/2017.
  */
 
-public class CuraParamMap<T> extends EnumMap<SlicerParamType, String>{
+public class CuraParamMap extends EnumMap<SlicerParamType, String>{
 
     private void init() {
         this.put(SlicerParamType.MACHINE_WIDTH,"machine_width");

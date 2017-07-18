@@ -20,7 +20,7 @@ import static java.lang.Math.*;
 /**
  * Created by kuhn on 5/22/2017.
  */
-public class GCodeImporter extends YieldModelImporter {
+public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
 
     private final EventBus eventBus;
 

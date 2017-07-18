@@ -2,15 +2,13 @@ package com.ysoft.dctrl.ui.controller;
 
 import com.ysoft.dctrl.editor.GCodeViewer;
 import com.ysoft.dctrl.editor.SceneGraph;
-import com.ysoft.dctrl.editor.importer.GCodeImporter;
-import com.ysoft.dctrl.editor.importer.YieldImportRunner;
-import com.ysoft.dctrl.editor.mesh.GCodeLayer;
 import com.ysoft.dctrl.editor.mesh.GCodeMoveType;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.safeq.SafeQSender;
+import com.ysoft.dctrl.safeq.job.JobCreator;
 import com.ysoft.dctrl.ui.controller.controlMenu.CheckBoxInline;
-import com.ysoft.dctrl.ui.i18n.LocalizationResource;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
@@ -21,7 +19,6 @@ import javafx.scene.layout.AnchorPane;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
@@ -30,8 +27,9 @@ import java.util.ResourceBundle;
 @Controller
 public class GCodePanelController extends LocalizableController implements Initializable {
 
-    protected SceneGraph sceneGraph;
-    protected GCodeViewer gCodeViewer;
+    private GCodeViewer gCodeViewer;
+    private SafeQSender safeQSender;
+    private JobCreator jobCreator;
 
     @FXML
     AnchorPane gcodePanelPane;
@@ -49,15 +47,17 @@ public class GCodePanelController extends LocalizableController implements Initi
     AnchorPane layerSlider;
 
     public GCodePanelController(
-            SceneGraph sceneGraph,
             GCodeViewer gCodeViewer,
+            JobCreator jobCreator,
+            SafeQSender safeQSender,
             LocalizationService localizationService,
             EventBus eventBus,
             DeeControlContext context) {
 
         super(localizationService, eventBus, context);
-        this.sceneGraph = sceneGraph;
         this.gCodeViewer = gCodeViewer;
+        this.jobCreator = jobCreator;
+        this.safeQSender = safeQSender;
     }
 
     @Override
@@ -103,7 +103,10 @@ public class GCodePanelController extends LocalizableController implements Initi
         });
 
         sendJobBtn.setOnAction(event -> {
-            eventBus.publish(new Event(EventType.SEND_TO_SAFEQ_CLICK.name()));
+            jobCreator.createJobFile();
+            eventBus.subscribeOnce(EventType.JOB_FILE_DONE.name(), (e) -> {
+                safeQSender.sendJob((String) e.getData());
+            });
         });
 
         super.initialize(location, resources);

@@ -9,8 +9,18 @@
    "SLICER_PARAMS": [
       {
          "id":"MACHINE_HEIGHT",
-         "type":"float",
+         "type":"int",
          "value":150
+      },
+      {
+         "id":"MACHINE_WIDTH",
+         "type": "int",
+         "value": 0
+      },
+      {
+         "id":"MACHINE_DEPTH",
+         "type": "int",
+         "value": 0
       },
       {
          "id":"RESOLUTION_LAYER_HEIGHT",
@@ -341,12 +351,12 @@
       {
          "id":"START_GCODE",
          "type":"string",
-         "value":"start gcode"
+         "value":";D3D:START:START\nT0\nM104 S{MATERIAL_PRINT_TEMPERATURE}\nG21\nG90\nM107\nT0\nG28\nG29\nM109 T0 S{MATERIAL_PRINT_TEMPERATURE}\nG0 F3000\nM107\nT0\nG92 E0\nG0 X0 Y149 Z0.1 F3600\nG1 Y49 E6.5 F1200\nG0 Z1\nG92 E0"
       },
       {
          "id":"END_GCODE",
          "type":"string",
-         "value":"gcode footer"
+         "value":"M104 S0\nM140 S0\n;Retract the filament\nG92 E1\nG1 E-1 F300"
       }
    ],
    "SPEED_PROFILES":{

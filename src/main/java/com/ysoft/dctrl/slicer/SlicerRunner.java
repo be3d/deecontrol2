@@ -4,9 +4,15 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
+
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.concurrent.Task;
+import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,8 +27,6 @@ public class SlicerRunner extends Task<Slicer> {
     private final String scene; // stl file path
     private final Map<String, SlicerParam> slicerParams;
 
-    private Timer progressTimer;
-
     public SlicerRunner(EventBus eventBus, Slicer slicer, Map<String, SlicerParam> slicerParams,
                         String scene) {
         this.slicer = slicer;
@@ -35,42 +39,35 @@ public class SlicerRunner extends Task<Slicer> {
 
     @Override
     protected Slicer call() throws Exception {
-        progressTimer = new Timer();
-        progressTimer.scheduleAtFixedRate(getUpdateTask(), 0, 250);
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(250), (e) -> {
+            eventBus.publish(new Event(EventType.SLICER_PROGRESS.name(), slicer.getProgress()));
+        }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
 
-        try{
+        try {
             slicer.run(slicerParams, scene);
-        }catch(Exception e){
+        } catch (IOException e) {
             System.out.println("Slicer fuck");
             e.printStackTrace();
         }
 
-        return null;
-    }
+        timeline.stop();
 
-    private TimerTask getUpdateTask() {
-        return new TimerTask() {
-            @Override
-            public void run() {
-                eventBus.publish(new Event(EventType.SLICER_PROGRESS.name(), slicer.getProgress()));
-            }
-        };
+        return null;
     }
 
     @Override
     protected void succeeded(){
-        this.cleanup();
         eventBus.publish(new Event(EventType.SLICER_FINISHED.name()));
     }
 
     @Override
     protected void cancelled(){
-        this.cleanup();
         super.cancelled();
     }
 
     @Override protected void failed(){
-        this.cleanup();
         super.failed();
 
     }
@@ -80,7 +77,12 @@ public class SlicerRunner extends Task<Slicer> {
         this.cancel();
     }
 
-    private void cleanup(){
-        progressTimer.cancel();
+    public long getDuration() {
+        return slicer.getDuration();
     }
+
+    public Long[] getMaterialUsage() {
+        return slicer.getMaterialUsage();
+    }
+
 }
