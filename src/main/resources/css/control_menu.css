@@ -16,6 +16,21 @@
     -fx-background-color: rgba(255,255,255,1);
 }
 
+.control-menu-scrollBar .scroll-bar {
+    -fx-background-color: transparent;
+    -fx-pref-width: 10px;
+}
+
+.control-menu-scrollBar .scroll-bar:vertical .thumb {
+    -fx-background-color: #9b9b9b;
+    -fx-background-radius: 5px;
+
+}
+
+.control-menu-scrollBar .increment-arrow, .control-menu-scrollBar .decrement-arrow {
+    -fx-pref-height: 0px;
+}
+
 .control-menu-section-header {
     -fx-background-color: #f9f9f9;
 }
@@ -89,16 +104,15 @@
     -fx-min-height: 36;
 }
 .control-slider {
-    -fx-pref-width: 145px;
-    -fx-max-width: 145px;
-    -fx-min-width: 145px;
+    -fx-pref-width: 162px;
+    -fx-max-width: 162px;
+    -fx-min-width: 162px;
 }
 
 .control-slider .track {
-    -fx-background-color:#45beef;  /* Hide the track */
-    -fx-background-insets: 1 0 -1 0, 0, 1;
+    -fx-background-color:#45beef;
     -fx-background-radius: 2.5, 2.5, 1.5;
-    -fx-padding: 2px; /* 2.5 */
+    -fx-padding: 1 0 1 0px;
 }
 .control-slider .thumb {
     -fx-background-color:#45beef;
@@ -106,15 +120,15 @@
 }
 
 .control-value {
-    -fx-font-weight:800;
+    -fx-font-weight:500;
 }
 
 .control-slider-value {
-    -fx-font-weight:800;
+    -fx-font-weight:500;
 }
 .control-slider-text {
     -fx-pref-height: 50;
-    -fx-pref-width: 50;
+    -fx-min-width: 50;
 }
 .control-slider-text:error {
     -fx-text-box-border: red;
@@ -210,4 +224,77 @@
     -fx-pref-width: 200px;
     -fx-pref-height: 160px;
     -fx-min-height: 100px;
+}
+
+.button-group{
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.button-group-first{
+    -fx-border-radius: 3 0 0 3;
+    -fx-background-radius: 3 0 0 3;
+}
+
+.button-group-last{
+    -fx-border-radius: 0 3 3 0;
+    -fx-background-radius: 0 3 3 0;
+    -fx-border-width: 1 1 1 0;
+}
+
+.control-menu-increment-button {
+    -fx-pref-height: 36px;
+    -fx-max-height: 36px;
+    -fx-min-height: 36px;
+    -fx-pref-width: 40px;
+    -fx-max-width: 40px;
+    -fx-min-width: 40px;
+
+    -fx-background-size: 16 16;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+
+    -fx-border-color: #bfbfbf;
+
+    -fx-text-fill: #337ab7;
+    -fx-font-size: 5px;
+    -fx-font-weight: bold;
+    -fx-background-color: #ffffff;
+
+}
+
+.minus-button {
+    -fx-background-image: url("../img/control_menu/minus-normal.png");
+}
+
+.minus-button:disabled {
+    -fx-background-image: url("../img/control_menu/minus-disabled.png");
+}
+
+.plus-button{
+    -fx-background-image: url("../img/control_menu/plus-normal.png");
+}
+
+.plus-button:disabled {
+    -fx-background-image: url("../img/control_menu/plus-disabled.png");
+}
+
+.control-menu-btnPicker-button {
+    -fx-pref-height: 36px;
+    -fx-pref-width: 88px;
+    -fx-border-color: #bfbfbf;
+
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-color: #ffffff;
+
+}
+
+/* DIVIDER REGIONS */
+.left-control-hpadding {
+    -fx-pref-width: 20px;
+}
+
+.right-control-hpadding {
+    -fx-pref-width: 22px;
 }

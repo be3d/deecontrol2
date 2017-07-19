@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 /**
  * Created by kuhn on 5/5/2017.
  */
-public class SliderContinuous extends com.ysoft.dctrl.ui.controller.controlMenu.BaseSlider {
+public class SliderContinuous extends BaseSlider {
     @FXML
     Slider slider;
 

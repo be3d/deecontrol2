@@ -6,13 +6,13 @@
     <Label fx:id="label" styleClass="control-label"></Label>
     <HBox spacing="0"  alignment="CENTER_LEFT">
         <children>
-            <Region prefWidth="30"></Region>
+            <Region styleClass="left-control-hpadding"></Region>
             <Slider fx:id="slider"
                     styleClass="control-slider"
                      ></Slider>
-            <Region prefWidth="8"></Region>
+            <Region HBox.hgrow="ALWAYS"></Region>
             <TextField fx:id="valueText" text="" styleClass="control-slider-text"></TextField>
-
+            <Region styleClass="right-control-hpadding"></Region>
         </children>
     </HBox>
 </fx:root>

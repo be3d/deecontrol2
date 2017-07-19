@@ -10,7 +10,7 @@
    <Label fx:id="label" text="Print job name" styleClass="control-label"></Label>
    <HBox>
      <children>
-       <Region prefWidth="20"></Region>
+       <Region styleClass="left-control-hpadding"></Region>
      <TextField fx:id="text" promptText="Type this print job's name" styleClass="control-textInput" ></TextField>
      </children>
    </HBox>

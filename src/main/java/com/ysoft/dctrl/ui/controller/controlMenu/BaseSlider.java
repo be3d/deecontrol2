@@ -9,10 +9,12 @@ import javafx.scene.control.Slider;
 /**
  * Created by kuhn on 5/19/2017.
  */
-public class BaseSlider extends BaseCustomControl{
+public class BaseSlider extends BaseCustomControl implements SlicerParamBindable{
     @FXML
     private Slider slider;
 
+    protected String unit = "";
+    protected double value;
 
     public BaseSlider(String fxmlResource) {
         super();
@@ -27,7 +29,10 @@ public class BaseSlider extends BaseCustomControl{
     public Double getMax(){return slider.getMax();}
 
 
-    public void setValue(Double value){ slider.setValue(value);}
+    public void setValue(Double value){
+        this.value = value;
+        updateView();
+    }
     public Double getValue(){ return slider.getValue();}
 
 //    private void setTextValue(Double value){
@@ -37,6 +42,13 @@ public class BaseSlider extends BaseCustomControl{
     public void setStep(Double value){ slider.setMajorTickUnit(value);}
     public Double getStep(){ return slider.getMajorTickUnit();}
 
+    public void setUnit(String value){
+        unit = value;
+    }
+
+    public String getUnit(){
+        return unit;
+    }
 
     /**
      * Initialize the controller from the Slicer param object
@@ -53,6 +65,7 @@ public class BaseSlider extends BaseCustomControl{
             this.setMin(new Double(param.getMin().toString()));
             this.setStep(new Double(param.getStep().toString()));
             this.setValue(new Double(param.getValue().toString()));
+            this.updateView();
 
         }catch(Exception e){
             System.out.println("Error loading " + param.getId());
@@ -89,4 +102,8 @@ public class BaseSlider extends BaseCustomControl{
     public void bindControlChanged(ChangeListener<Number> listener){
         slider.valueProperty().addListener(listener);
     }
+
+    public void updateView(){
+        slider.setValue(value);
+    };
 }
