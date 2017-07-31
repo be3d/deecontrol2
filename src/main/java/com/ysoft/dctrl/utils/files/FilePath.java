@@ -20,7 +20,9 @@ public enum FilePath {
     SCENE_IMAGE_FILE(SLICER_DIR.path.extendAsFile("image.png")),
 
     JOB_META_FILE(SLICER_DIR.path.extendAsFile("metadata.json")),
-    SAFEQ_JOB_FILE(SLICER_DIR.path.extendAsFile("tmp.3djob"));
+    SAFEQ_JOB_FILE(SLICER_DIR.path.extendAsFile("tmp.3djob")),
+
+    LOGGER_DIR(TMP_DIR.path.extendAsDir("logs"));
 
     private Path path;
 

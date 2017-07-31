@@ -49,5 +49,10 @@ public class FilePathResource {
     public File[] listFiles(FilePath path) throws IOException {
         File dir = new File(path.getPath().getPathString());
         if(!dir.exists()) { throw new IOException("Directory not found"); }
-        return dir.listFiles(); }
+        return dir.listFiles();
+    }
+
+    public static String getLoggerDir() {
+        return FilePath.LOGGER_DIR.getPath().getPathString();
+    }
 }
