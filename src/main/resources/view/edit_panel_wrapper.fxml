@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import java.net.URL?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:id="wrapper" fx:controller="com.ysoft.dctrl.ui.controller.EditPanelWrapperController" AnchorPane.leftAnchor="85" AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="0" styleClass="edit-panel-wrapper">
+  <stylesheets>
+    <URL value="@/css/edit_panel_wrapper.css" />
+    <URL value="@/css/master.css" />
+  </stylesheets>
+</StackPane>

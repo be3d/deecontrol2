@@ -13,20 +13,35 @@ import org.springframework.stereotype.Service;
 @Service
 public class DefaultEventBus implements EventBus{
     private static final String SEPARATOR = "<<>>";
+
+    private static final String ONCE_PREFIX = "ONCE";
+    private static final String DEFAULT_PREFIX = "DEFAULT";
+
     private Map<String, Map<Integer, EventHandler>> handlerMap;
+    private Map<String, Map<Integer, EventHandler>> onceHandlerMap;
     private Integer handlerCounter;
 
     public DefaultEventBus() {
         handlerMap = new ConcurrentHashMap<>();
+        onceHandlerMap = new ConcurrentHashMap<>();
         handlerCounter = 0;
     }
 
     public void publish(Event e) {
         Map<Integer, EventHandler> handlers = handlerMap.get(e.getType());
-        if(handlers  == null) { return; }
-        handlers.forEach((d, h) -> {
-            h.accept(e);
-        });
+        if(handlers != null) {
+            handlers.forEach((d, h) -> {
+                h.accept(e);
+            });
+        }
+
+        handlers = onceHandlerMap.get(e.getType());
+        if(handlers != null) {
+            handlers.forEach((d, h) -> {
+                h.accept(e);
+            });
+            onceHandlerMap.remove(e.getType());
+        }
     }
 
     public String subscribe(String type, EventHandler handler) {
@@ -37,18 +52,40 @@ public class DefaultEventBus implements EventBus{
         }
 
         handlers.put(handlerCounter, handler);
-        return type + SEPARATOR + String.valueOf(handlerCounter++);
+        return DEFAULT_PREFIX + SEPARATOR + type + SEPARATOR + String.valueOf(handlerCounter++);
+    }
+
+    public String subscribeOnce(String type, EventHandler handler) {
+        Map<Integer, EventHandler> handlers = onceHandlerMap.get(type);
+        if(handlers == null) {
+            handlers = new ConcurrentHashMap<>();
+            onceHandlerMap.put(type, handlers);
+        }
+
+        handlers.put(handlerCounter, handler);
+        return ONCE_PREFIX + SEPARATOR + type + SEPARATOR + String.valueOf(handlerCounter++);
     }
 
     public void unsubscribe(String handlerDescriptor) {
         String[] parts = handlerDescriptor.split(SEPARATOR);
-        if(parts.length != 2) { return; }
-        Map<Integer, EventHandler> handlers = handlerMap.get(parts[0]);
+        if(parts.length != 3) { return; }
+        switch (parts[0]) {
+            case DEFAULT_PREFIX:
+                remove(handlerMap, parts[1], Integer.valueOf(parts[2]));
+                break;
+            case ONCE_PREFIX:
+                remove(onceHandlerMap, parts[1], Integer.valueOf(parts[2]));
+                break;
+        }
+    }
+
+    private void remove(Map<String, Map<Integer, EventHandler>> map, String type, int handlerID) {
+        Map<Integer, EventHandler> handlers = map.get(type);
         if(handlers == null) { return; }
-        handlers.remove(Integer.valueOf(parts[1]));
+        handlers.remove(handlerID);
 
         if(handlers.isEmpty()) {
-            handlerMap.remove(parts[0]);
+            map.remove(type);
         }
     }
 }

@@ -96,7 +96,7 @@ public class SlicerParams {
     }
 
     public void updateParam(String paramID, Object value){
-        this.slicerParameters.get(paramID).setVal(value);
+        this.slicerParameters.get(paramID).setValue(value);
         this.eventBus.publish(new Event(EventType.SLICER_PARAM_CHANGED.name(), paramID));
     }
 

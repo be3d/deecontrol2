@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,13 +49,12 @@ public class StlImporter extends AbstractModelImporter {
     @Override
     public TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException {
         try (BufferedInputStream bis = new BufferedInputStream(stream)){
-            byte[] data = new byte[6];
+            byte[] data = new byte[100];
+            bis.mark(100);
             bis.read(data, 0, data.length);
-            bis.mark(data.length);
             bis.reset();
-            addBytesRead(6);
             TriangleMesh mesh;
-            if(ASCII_START.equals(new String(data, StandardCharsets.UTF_8))) {
+            if(isAscii(data)) {
                 mesh = loadAscii(bis);
             } else {
                 mesh = loadBinary(bis);
@@ -63,9 +64,18 @@ public class StlImporter extends AbstractModelImporter {
         }
     }
 
+    private boolean isAscii(byte[] data) {
+        String head = new String(data, StandardCharsets.UTF_8);
+        return head.startsWith(ASCII_START) && isAsciiString(head);
+    }
+
+    private boolean isAsciiString(String s) {
+        return StandardCharsets.US_ASCII.newEncoder().canEncode(s);
+    }
+
     private TriangleMesh loadBinary(BufferedInputStream stream) throws IllegalArgumentException, IOException {
-        byte[] data = new byte[74];
-        if(stream.read(data) != 74) { throw new IllegalArgumentException("Not a valid stl file"); }
+        byte[] data = new byte[80];
+        if(stream.read(data) != 80) { throw new IllegalArgumentException("Not a valid stl file"); }
         addBytesRead(80);
         data = new byte[4];
         if(stream.read(data) != 4) { throw new IllegalArgumentException("Not a valid stl file"); }

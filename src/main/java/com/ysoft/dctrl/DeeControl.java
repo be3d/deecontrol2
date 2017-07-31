@@ -1,9 +1,10 @@
 package com.ysoft.dctrl;
 
-import javafx.concurrent.Task;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.ysoft.dctrl.log.DeeControlConfigurationFactory;
 import com.ysoft.dctrl.ui.BaseWindow;
 import com.ysoft.dctrl.utils.DeeControlConfig;
 import com.ysoft.dctrl.utils.DeeControlContext;
@@ -15,9 +16,15 @@ import javafx.stage.Stage;
  * Created by pilar on 20.3.2017.
  */
 public class DeeControl extends Application {
+
     private ApplicationContext applicationContext;
     public static void main(String[] args) {
+        initLogger();
         launch(args);
+    }
+
+    private static void initLogger() {
+        ConfigurationFactory.setConfigurationFactory(new DeeControlConfigurationFactory());
     }
 
     @Override

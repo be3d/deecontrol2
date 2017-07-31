@@ -2,6 +2,7 @@ package com.ysoft.dctrl.math;
 
 import java.util.Arrays;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 
 /**
@@ -19,7 +20,33 @@ public class TransformMatrix {
         };
     }
 
-    private TransformMatrix multiply(TransformMatrix m) {
+    private TransformMatrix(double[] elements) {
+        this.elements = elements;
+    }
+
+    public static TransformMatrix getRotationAxis(Point3D axis, double angle) {
+        double c = Math.cos(angle);
+        double s = Math.sin(angle);
+        double t = 1 - c;
+        double x = axis.getX();
+        double y = axis.getY();
+        double z = axis.getZ();
+        double tx = t*x;
+        double ty = t*y;
+
+        return new TransformMatrix(new double[] {
+                tx * x + c    , tx * y + s * z, tx * z - s * y, 0,
+                tx * y - s * z, ty * y + c    , ty * z + s * x, 0,
+                tx * z + s * y, ty * z - s * x, t * z * z + c , 0,
+                0             , 0             , 0             , 1
+        });
+    }
+
+    public static TransformMatrix fromEuler(Point3D euler) {
+        return (new TransformMatrix()).applyEuler(euler);
+    }
+
+    public TransformMatrix multiply(TransformMatrix m) {
         double[] e1 = Arrays.copyOf(elements, elements.length);
         double[] e2 = m.elements;
         for(int i = 0; i < 16; i += 4) {
@@ -81,6 +108,14 @@ public class TransformMatrix {
         return multiply(tm);
     }
 
+    public TransformMatrix multiplyTranslation(Point3D multiplication) {
+        elements[3] *= multiplication.getX();
+        elements[7] *= multiplication.getY();
+        elements[11] *= multiplication.getZ();
+
+        return this;
+    }
+
     public Point3D applyTo(Point3D point) {
         return applyTo(point.getX(), point.getY(), point.getZ());
     }
@@ -93,5 +128,32 @@ public class TransformMatrix {
         double resZ = e[8] * x + e[9] * y + e[10] * z + e[11];
 
         return new Point3D(resX,resY,resZ);
+    }
+
+    @Override
+    public String toString() {
+        return "TransformMatrix[\n" +
+                elements[0]  + "," + elements[1]  + "," + elements[2]  + "," + elements[3]  + "\n" +
+                elements[4]  + "," + elements[5]  + "," + elements[6]  + "," + elements[7]  + "\n" +
+                elements[8]  + "," + elements[9]  + "," + elements[10] + "," + elements[11] + "\n" +
+                elements[12] + "," + elements[13] + "," + elements[14] + "," + elements[15] + "\n" +
+        "]";
+    }
+
+    public Point3D toEuler() {
+        double x,y,z;
+        double[] e = elements;
+
+        y = Math.asin(Utils.clamp(e[2], -1, 1));
+
+        if(Math.abs(e[2]) < (1 - 1e-10)) {
+            x = Math.atan2((-e[6] == 0) ? 0 : -e[6], e[10]);
+            z = Math.atan2((-e[1] == 0) ? 0 : -e[1], e[0]);
+        } else {
+            x = Math.atan2(e[9], e[5]);
+            z = 0;
+        }
+
+        return new Point3D(x,y,z);
     }
 }

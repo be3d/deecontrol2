@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.ysoft.dctrl.utils.KeyEventPropagator;
 
+import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Region;
@@ -53,6 +55,7 @@ public class BaseWindow {
 
     public void composeWindow(Stage stage) {
         AnchorPane root = new AnchorPane();
+        root.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
 
         VBox content = new VBox();
 

@@ -1,5 +1,5 @@
 .edit-panel {
-    -fx-padding: 12px 20px 12px 20px;
+    -fx-padding: 20px 25px 20px 20px;
     -fx-spacing: 20px;
     -fx-font-size: 14px;
     -fx-pref-height: 60px;
@@ -15,14 +15,21 @@
     -fx-alignment: center;
 }
 
-.edit-panel TextField {
+.edit-panel NumberField {
     -fx-pref-width: 65px;
     -fx-pref-height: 36px;
+    -fx-min-width: 65px;
+    -fx-min-height: 36px;
+    -fx-max-width: 65px;
+    -fx-max-height: 36px;
     -fx-border-color: #bfbfbf;
     -fx-border-width: 1px;
     -fx-border-style: solid;
     -fx-border-radius: 3px;
     -fx-alignment: center-left;
+    -fx-padding: 10px;
+    -fx-effect: none;
+    -fx-background-color: white;
 }
 
 .edit-panel Button {
@@ -37,6 +44,10 @@
 }
 
 .edit-panel CheckBox {
+    -fx-padding: 8px;
+}
+
+.edit-panel CheckBox .box {
     -fx-pref-width: 20px;
     -fx-pref-height: 20px;
     -fx-border-radius: 3px;
@@ -44,16 +55,96 @@
     -fx-border-width: 2px;
     -fx-border-style: solid;
     -fx-border-color: #bfbfbf;
+    -fx-background-color: transparent;
+}
+
+.edit-panel CheckBox .box .mark {
+    -fx-background-color: transparent;
+    -fx-shape: none;
+}
+
+.edit-panel CheckBox:selected .box {
+    -fx-background-color: #00bff0;
+    -fx-border-color: #00bff0;
+}
+
+.arrow-ear {
+    -fx-pref-height: 1px;
+    -fx-pref-width: 1px;
+    -fx-border-width: 8px 10px 8px 0;
+    -fx-border-color: transparent black transparent transparent;
 }
 
 .move-panel {
-    -fx-max-width: 311px;
+    -fx-max-width: 129px;
+    -fx-max-height: 132px;
 }
 
 .scale-panel {
-    -fx-max-width: 557px;
+    -fx-max-width: 200px;
+    -fx-max-height: 284px;
+}
+
+.scale-panel NumberField {
+    -fx-pref-width: 90px;
+    -fx-min-width: 90px;
+    -fx-max-width: 90px;
+}
+
+.scale-panel Button {
+    -fx-pref-height: 36px;
+    -fx-max-width: Infinity;
+    -fx-border-width: 0;
+    -fx-text-alignment: center;
+}
+
+.scale-panel Button:hover {
+    -fx-background-color: transparent;
+}
+
+.scale-panel .edit-panel-group.uniform {
+    -fx-padding: 0 0 0 19px;
+    -fx-spacing: 8px;
 }
 
 .rotation-panel {
-    -fx-max-width: 415px;
+    -fx-max-width: 186px;
+    -fx-max-height: 188px;
+}
+
+.rotation-panel NumberField {
+    -fx-border-radius: 0px;
+    -fx-pref-width: 65px;
+    -fx-min-width: 65px;
+    -fx-max-width: 65px;
+    -fx-text-alignment: center;
+}
+
+.rotation-panel .rotation-field {
+    -fx-spacing: 0;
+}
+
+.rotation-panel .rotate {
+    -fx-pref-width: 39px;
+    -fx-min-width: 39px;
+    -fx-max-width: 39px;
+    -fx-pref-height: 36px;
+    -fx-border-color: #bfbfbf;
+    -fx-background-color: white;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+}
+
+.rotation-panel .rotate-counter {
+    -fx-border-width: 1px 0 1px 1px;
+    -fx-background-radius: 3px 0 0 3px;
+    -fx-border-radius: 3px 0 0 3px;
+    -fx-background-image: url("../img/control/rotate-counter.png");
+}
+
+.rotation-panel .rotate-clock {
+    -fx-border-width: 1px 1px 1px 0;
+    -fx-background-radius: 0 3px 3px 0;
+    -fx-border-radius: 0 3px 3px 0;
+    -fx-background-image: url("../img/control/rotate-clock.png");
 }

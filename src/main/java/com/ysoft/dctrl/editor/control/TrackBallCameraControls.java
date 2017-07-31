@@ -1,7 +1,5 @@
 package com.ysoft.dctrl.editor.control;
 
-import com.sun.javafx.geom.Matrix3f;
-import com.ysoft.dctrl.math.AxisAngleRotation;
 import com.ysoft.dctrl.math.Matrix3D;
 import com.ysoft.dctrl.math.Matrix3DFactory;
 import com.ysoft.dctrl.math.Point3DUtils;
@@ -14,10 +12,10 @@ import javafx.scene.input.ScrollEvent;
 /**
  * Created by pilar on 24.3.2017.
  */
-public class TrackBallControls {
+public class TrackBallCameraControls {
     private static final double ROTATE_SPEED = 0.01;
-    private static final double ZOOM_SPEED = 5;
-    private static final double PAN_SPEED = 0.1;
+    private static final double ZOOM_SPEED = 10;
+    private static final double PAN_SPEED = 0.2;
 
     private static final double MAX_ZOOM = 20;
     private static final double MIN_ZOOM = 800;
@@ -27,7 +25,6 @@ public class TrackBallControls {
 
     private final ExtendedPerspectiveCamera camera;
     private final Point3D initialCameraPosition;
-    private boolean enabled;
     private Point3D target;
     private Point3D position;
 
@@ -39,11 +36,11 @@ public class TrackBallControls {
     private State currentState;
     private State previousState;
 
-    public TrackBallControls(ExtendedPerspectiveCamera camera) {
+    public TrackBallCameraControls(ExtendedPerspectiveCamera camera) {
         this(camera, new Point3D(0, -100, 0));
     }
 
-    public TrackBallControls(ExtendedPerspectiveCamera camera, Point3D initialPosition) {
+    public TrackBallCameraControls(ExtendedPerspectiveCamera camera, Point3D initialPosition) {
         this.camera = camera;
         this.initialCameraPosition = initialPosition;
         target = new Point3D(0,0,0);
@@ -51,8 +48,8 @@ public class TrackBallControls {
         alpha = Math.PI;
         theta = Math.toRadians(90 - initialPosition.angle(0,0,1));
         previousMousePosition = new Point2D(0,0);
-        currentState = State.NONE;
-        previousState = State.NONE;
+        currentState = State.ENABLED;
+        previousState = State.ENABLED;
 
         setCameraPosition(new Point3D(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ()));
         camera.setRotationX(Math.toDegrees(-theta));
@@ -60,7 +57,7 @@ public class TrackBallControls {
     }
 
     private enum State {
-        NONE, ROTATE, ZOOM, PAN
+        ENABLED, ROTATE, ZOOM, PAN, DISABLED
     }
 
     private void setState(State state) {
@@ -92,7 +89,7 @@ public class TrackBallControls {
     }
 
     public void onMousePressed(MouseEvent event) {
-        if(currentState != State.NONE) { return; }
+        if(currentState != State.ENABLED) { return; }
         switch (event.getButton()) {
             case NONE:
                 return;
@@ -112,7 +109,8 @@ public class TrackBallControls {
     public void onMouseDragged(MouseEvent event) {
         Point2D p = new Point2D(event.getSceneX(), event.getSceneY());
         switch (currentState) {
-            case NONE:
+            case ENABLED:
+            case DISABLED:
                 return;
             case ROTATE:
                 rotateCamera(p);
@@ -126,7 +124,7 @@ public class TrackBallControls {
     }
 
     public void onMouseReleased(MouseEvent event) {
-        setState(State.NONE);
+        setState(State.ENABLED);
     }
 
     public void onScroll(ScrollEvent event) {
@@ -195,6 +193,14 @@ public class TrackBallControls {
     public void setCameraPosition(Point3D position) {
         this.position = position;
         updatePosition();
+    }
+
+    public void enable() {
+        this.currentState = State.ENABLED;
+    }
+
+    public void disable() {
+        this.currentState = State.DISABLED;
     }
 
     public static Point3D getDiff3D(Point2D a, Point2D b) {

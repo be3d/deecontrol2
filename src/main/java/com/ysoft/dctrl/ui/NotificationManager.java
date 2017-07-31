@@ -46,6 +46,7 @@ public class NotificationManager {
     }
 
     public void showNotification(Notification notification) {
+        wrapper.getChildren().clear();
         int timeout = notification.getTimeout();
 
         notification.addOnCloseAction((e) -> {

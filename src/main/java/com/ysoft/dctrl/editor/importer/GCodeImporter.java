@@ -20,7 +20,7 @@ import static java.lang.Math.*;
 /**
  * Created by kuhn on 5/22/2017.
  */
-public class GCodeImporter extends YieldModelImporter {
+public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
 
     private final EventBus eventBus;
 
@@ -32,7 +32,6 @@ public class GCodeImporter extends YieldModelImporter {
     private GCodeLayer gCodeLayer = new GCodeLayer(-1); // in CURA it can start with negative layers !! change this
     private ArrayList<GCodeLayer> layers = new ArrayList<>();
     private GCodeContext gCodeContext = new GCodeContext();
-    private GCodeMeshGenerator gCodeMeshGenerator = new GCodeMeshGenerator(new GCodeMeshProperties());
 
     public GCodeImporter(EventBus eventBus){
         super();

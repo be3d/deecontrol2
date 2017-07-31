@@ -2,11 +2,13 @@ package com.ysoft.dctrl.ui.controller.controlMenu;
 
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 
 /**
  * Created by kuhn on 5/9/2017.
@@ -38,6 +40,10 @@ public class TextInput extends BaseCustomControl {
     @Override
     public void addChangeListener(javafx.beans.value.ChangeListener listener){
         //text.getSelectionModel().selectedItemProperty().addListener(listener);
+        text.addEventFilter(KeyEvent.KEY_TYPED, (e) -> {
+            e.getEventType().getName();
+            e.consume();
+        });
     }
 
     public void addFocusChangedListener(javafx.beans.value.ChangeListener listener){

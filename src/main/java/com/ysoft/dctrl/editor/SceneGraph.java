@@ -1,29 +1,28 @@
 package com.ysoft.dctrl.editor;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 
-import com.ysoft.dctrl.editor.mesh.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ysoft.dctrl.editor.control.ExtendedPerspectiveCamera;
-import com.ysoft.dctrl.editor.exporter.SceneExporter;
-import com.ysoft.dctrl.event.Event;
+import com.ysoft.dctrl.editor.mesh.PrintBed;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
-import com.ysoft.dctrl.math.BoundingBox;
-import com.ysoft.dctrl.slicer.SlicerController;
-import com.ysoft.dctrl.utils.DeeControlContext;
 
-import javafx.geometry.Point2D;
+import javafx.collections.ObservableList;
+import javafx.geometry.Point3D;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 
@@ -33,39 +32,37 @@ import javafx.scene.transform.Translate;
 
 @Component
 public class SceneGraph {
-    private LinkedList<SceneMesh> sceneMeshes;
+    private static final Point3D PRINTER_SIZE = new Point3D(150,150,150);
     private ExtendedPerspectiveCamera camera;
-
-    private Group sceneGroup;
-
-    private PhongMaterial material;
-    private PhongMaterial selectedMaterial;
-
-    private SceneMesh selected;
-
+    private final Group sceneGroup;
+    private final Map<SceneMode, SubSceneGraph> subSceneGraphs;
+    private SceneMode mode;
     private final EventBus eventBus;
-    private final DeeControlContext deeControlContext;
 
     @Autowired
-    public SceneGraph(EventBus eventBus, DeeControlContext deeControlContext) {
+    public SceneGraph(EventBus eventBus, List<SubSceneGraph> subSceneGraphs) {
         this.eventBus = eventBus;
-        this.deeControlContext = deeControlContext;
+        this.subSceneGraphs = initSubSceneGraphs(subSceneGraphs);
+        mode = null;
         sceneGroup = new Group();
-        sceneMeshes = new LinkedList<>();
-
-        material = new PhongMaterial(Color.LIGHTBLUE);
-        selectedMaterial = new PhongMaterial(new Color(0.3f, 0.4f, 0.9019608f, 1));
         camera = createCamera();
-        sceneGroup.getChildren().addAll(camera, createPrintBed());
-        selected = null;
+        sceneGroup.getChildren().addAll(camera, createPrintBed().getView());
+    }
 
-        eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> addMesh((TriangleMesh) e.getData()));
-        eventBus.subscribe(EventType.CENTER_SELECTED_MODEL.name(), (e) -> centerSelected());
-        eventBus.subscribe(EventType.ALIGN_LEFT_SELECTED_MODEL.name(), (e) -> alignSelectedToLeft());
-        eventBus.subscribe(EventType.ALIGN_RIGHT_SELECTED_MODEL.name(), (e) -> alignSelectedToRight());
-        eventBus.subscribe(EventType.ALIGN_FRONT_SELECTED_MODEL.name(), (e) -> alignSelectedToFront());
-        eventBus.subscribe(EventType.ALIGN_BACK_SELECTED_MODEL.name(), (e) -> alignSelectedToBack());
-        eventBus.subscribe(EventType.EXPORT_SCENE.name(), (e) -> exportScene());
+    private Map<SceneMode, SubSceneGraph> initSubSceneGraphs(List<SubSceneGraph> subSceneGraphs) {
+        Map<SceneMode, SubSceneGraph> res = new HashMap<>();
+        subSceneGraphs.forEach((g) -> {
+            SubSceneMode m = g.getClass().getAnnotation(SubSceneMode.class);
+            res.put(m.value(), g);
+        });
+        return res;
+    }
+
+    @PostConstruct
+    public void init() {
+        setMode(SceneMode.EDIT);
+
+        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> setMode((SceneMode) e.getData()));
     }
 
     private ExtendedPerspectiveCamera createCamera() {
@@ -75,114 +72,21 @@ public class SceneGraph {
         return camera;
     }
 
-    private Box createPrintBed() {
-        Box bed = new Box(150, 150, 4);
-        bed.setMaterial(new PhongMaterial(Color.GRAY));
-        bed.getTransforms().addAll(new Translate(0,0,-bed.getDepth()/2));
-        return bed;
+    private PrintBed createPrintBed() {
+        return new PrintBed(150, 150, "/img/edee_bed.png");
+    }
+
+    public void setMode(SceneMode mode) {
+        if(this.mode != null) { sceneGroup.getChildren().remove(subSceneGraphs.get(this.mode).getSceneGroup()); }
+        this.mode = mode;
+        sceneGroup.getChildren().add(0, subSceneGraphs.get(this.mode).getSceneGroup());
     }
 
     public ExtendedPerspectiveCamera getCamera() {
         return camera;
     }
 
-    public Group getSceneGroup() {
+    public Parent getSceneGroup() {
         return sceneGroup;
-    }
-
-    public LinkedList<SceneMesh> getSceneMeshses() {
-        return sceneMeshes;
-    }
-
-    public LinkedList<SceneMesh> getSceneMeshes() { return sceneMeshes; }
-
-    public void centerSelected() {
-        if(selected == null) { return; }
-        selected.setPosition(new Point2D(0,0));
-    }
-
-    public void alignSelectedToLeft() {
-        if(selected == null) { return; }
-        selected.setPosition(new Point2D(-75 + selected.getBoundingBox().getHalfSize().getX(), selected.getPositionY()));
-    }
-
-    public void alignSelectedToRight() {
-        if(selected == null) { return; }
-        selected.setPosition(new Point2D(75 - selected.getBoundingBox().getHalfSize().getX(), selected.getPositionY()));
-    }
-
-    public void alignSelectedToFront() {
-        if(selected == null) { return; }
-        selected.setPosition(new Point2D(selected.getPositionX(), -75 + selected.getBoundingBox().getHalfSize().getY()));
-    }
-
-    public void alignSelectedToBack() {
-        if(selected == null) { return; }
-        selected.setPosition(new Point2D(selected.getPositionX(), 75 - selected.getBoundingBox().getHalfSize().getY()));
-    }
-
-    public void addMesh(TriangleMesh mesh) {
-        ExtendedMesh extendedMesh = new ExtendedMesh(mesh);
-        extendedMesh.setMaterial(material);
-        extendedMesh.translateToZero();
-        extendedMesh.setPositionZ(extendedMesh.getBoundingBox().getHalfSize().getZ());
-        sceneMeshes.add(extendedMesh);
-        sceneGroup.getChildren().add(extendedMesh.getNode());
-        extendedMesh.getNode().setOnMouseClicked((event -> {
-            if(event.getTarget() != extendedMesh.getNode()) { return; }
-            selectNew(extendedMesh);
-        }));
-    }
-
-    public void deleteSelected() {
-        if(selected == null) { return; }
-
-        sceneMeshes.remove(selected);
-        sceneGroup.getChildren().remove(selected.getNode());
-
-        selected = null;
-        selectNext();
-    }
-
-    public void hideAllMeshes(){
-        for (SceneMesh mesh : sceneMeshes){
-            mesh.getNode().setVisible(false);
-        }
-    }
-
-    public void selectNext() {
-        if(selected == null) {
-            if(!sceneMeshes.isEmpty()) selectNew(sceneMeshes.getFirst());
-        } else {
-            int next = sceneMeshes.indexOf(selected) + 1;
-            if(next > sceneMeshes.size() - 1) { next = 0; }
-            selectNew(sceneMeshes.get(next));
-        }
-    }
-
-    public void selectPrevious() {
-        if(selected == null) {
-            if(!sceneMeshes.isEmpty()) selectNew(sceneMeshes.getLast());
-        } else {
-            int prev = sceneMeshes.indexOf(selected) - 1;
-            if(prev < 0) { prev = sceneMeshes.size() -1; }
-            selectNew(sceneMeshes.get(prev));
-        }
-    }
-
-    private void selectNew(SceneMesh mesh) {
-        if(selected != null) { selected.setMaterial(material); }
-        selected = mesh;
-        selected.setMaterial(selectedMaterial);
-        eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), selected));
-    }
-
-    public SceneMesh getSelected() {
-        return selected;
-    }
-
-    public void exportScene() {
-        SceneExporter sceneExporter = new SceneExporter(eventBus, deeControlContext);
-        sceneExporter.exportScene(this, SlicerController.sceneSTL);
     }
 }
