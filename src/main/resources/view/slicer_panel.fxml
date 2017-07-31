@@ -16,7 +16,6 @@
 <?import com.ysoft.dctrl.ui.controller.controlMenu.TextInput?>
 <?import com.ysoft.dctrl.ui.controller.controlMenu.CheckBoxLabelled?>
 <?import com.ysoft.dctrl.ui.controller.controlMenu.SliderDiscrete?>
-<?import com.ysoft.dctrl.ui.controller.controlMenu.SliderContinuous?>
 
 <?import com.ysoft.dctrl.ui.controller.controlMenu.SubHeader?>
 <?import com.ysoft.dctrl.ui.controller.controlMenu.ButtonIncrement?>
@@ -39,7 +38,6 @@
           <Image url="@/img/control_menu/save-mock.png"></Image>
         </image>
       </ImageView>
-      <!--<Button fx:id="add" styleClass="add-control-button" text="." visible="true" AnchorPane.rightAnchor="0"/>-->
     </children>
   </HBox>
 
@@ -48,37 +46,36 @@
       <VBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
 
-        <Picker label="Print profile" boundParamID="test" fx:id="profilePicker" ></Picker>
-        <TextInput fx:id="printJobNameInput" label="Print job name" textPlaceHolder="Type this print job's name"></TextInput>
-        <Picker label="Initial platform" boundParamID="test" fx:id="raftStructurePicker" ></Picker>
-        <CheckBoxLabelled fx:id="supportsCheckBox" text="Print Supports" label="Model supports"></CheckBoxLabelled>
+        <Picker label="Print profile" boundParamID="test" fx:id="profilePicker" />
+        <TextInput fx:id="printJobNameInput" label="Print job name" textPlaceHolder="Type this print job's name" />
+        <Picker label="Initial platform" boundParamID="test" fx:id="raftStructurePicker" />
+        <CheckBoxLabelled fx:id="supportsCheckBox" text="Print Supports" label="Model supports" />
 
         <VBox fx:id="advSettingsBox" visible="false" managed="false">
           <SubHeader text="LAYERS" />
-          <SliderDiscrete fx:id="layerHeightSlider" label="Layer height (mm)" min="0.0" max="0.15" step="0.05" unit="mm"></SliderDiscrete>
+          <SliderDiscrete fx:id="layerHeightSlider" label="Layer height (mm)" min="0.0" max="0.15" step="0.05" unit="mm" />
           <ButtonIncrement fx:id="roofThicknessIncrement" label="Roof thickness" increment="1" max="10" min="0" unit="mm"/>
           <ButtonIncrement fx:id="bottomThicknessIncrement" label="Bottom thickness" increment="1" max="10" min="0" unit="mm"/>
-          <SliderDiscrete fx:id="printSpeedSolidSlider" label="Print speed - Solid layers" min="0.0" max="90.00" step="5" unit="mm/s"></SliderDiscrete>
+          <SliderDiscrete fx:id="printSpeedSolidSlider" label="Print speed - Solid layers" min="0.0" max="90.00" step="5" unit="mm/s" />
 
           <SubHeader text="SHELL" />
-          <!--<SliderDiscrete fx:id="shellThicknessSlider" label="Shell thickness" min="0.4" max="4.0" step="0.4" unit="mm"></SliderDiscrete>-->
           <ButtonIncrement fx:id="shellThicknessIncrement" label="Shell thickness" increment="1" max="10" min="0" unit="mm"/>
-          <SliderDiscrete fx:id="printSpeedShellSlider" label="Print speed - Shell" min="10.0" max="90.00" step="5" unit="mm"></SliderDiscrete>
+          <SliderDiscrete fx:id="printSpeedShellSlider" label="Print speed - Shell" min="10.0" max="90.00" step="5" unit="mm" />
 
           <SubHeader text="INFILL" />
-          <Picker fx:id="infillPatternPicker"  label="Infill internal pattern" boundParamID="test" ></Picker>
-          <SliderDiscrete fx:id="infillDensitySlider" label="Infill density (%)" min="0.0" max="100.0"></SliderDiscrete>
+          <Picker fx:id="infillPatternPicker"  label="Infill internal pattern" boundParamID="test" />
+          <SliderDiscrete fx:id="infillDensitySlider" label="Infill density (%)" min="0.0" max="100.0" />
 
           <SubHeader text="SUPPORTS" />
-          <SliderDiscrete fx:id="supportDensitySlider" label="Support density" min="5.0" max="50.0" step="1" unit="\%" ></SliderDiscrete>
-          <Picker fx:id="supportPatternPicker"  label="Support internal pattern" boundParamID="test" ></Picker>
-          <SliderDiscrete fx:id="supportAngleSlider" label="Support starting angle" min="0.0" max="90.0" step="1" unit="°"></SliderDiscrete>
+          <SliderDiscrete fx:id="supportDensitySlider" label="Support density" min="5.0" max="50.0" step="1" unit="\%" />
+          <Picker fx:id="supportPatternPicker"  label="Support internal pattern" boundParamID="test" />
+          <SliderDiscrete fx:id="supportAngleSlider" label="Support starting angle" min="0.0" max="90.0" step="1" unit="°" />
         </VBox>
 
-        <Label fx:id="advSettingsToggle" AnchorPane.leftAnchor="20" styleClass="control-advSettingsToggle"  text="Show advanced settings..."></Label>
+        <Label fx:id="advSettingsToggle" AnchorPane.leftAnchor="20" styleClass="control-advSettingsToggle" text="Show advanced settings…" />
 
-        <Region prefHeight="30"></Region>
-        <ProgressBar fx:id="progress"  styleClass="control-progress" translateX="20" visible="false"></ProgressBar>
+        <Region prefHeight="30" />
+        <ProgressBar fx:id="progress"  styleClass="control-progress" translateX="20" visible="false" />
       </VBox>
 
     </content>

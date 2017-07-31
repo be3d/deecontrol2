@@ -41,17 +41,12 @@
          "value":0.4
       },
       {
-         "id":"SHELL_TOP_BOTTOM_THICKNESS",
-         "type":"float",
-         "value":1.2
-      },
-      {
          "id":"SHELL_THICKNESS",
          "type":"float",
-         "value":0.8,
-         "min":0.4,
-         "max":4,
-         "step":0.4 
+         "value":2,
+         "min":1,
+         "max":10,
+         "step":1
       },
       {
          "id":"SHELL_TOP_LAYERS",
@@ -85,9 +80,9 @@
          "value":"0"
       },
       {
-         "id":"INFILL_OVERLAP_PERCENTAGE",
+         "id":"INFILL_OVERLAP_MM",
          "type":"float",
-         "value":8
+         "value":0.032
       },
       {
          "id":"INFILL_LAYER_THICKNESS",
@@ -211,7 +206,7 @@
       {
          "id":"COOL_FAN_SPEED_REG_LAYER",
          "type":"float",
-         "value":0.15
+         "value":2
       },
       {
          "id":"COOL_MIN_LAYER_TIME",
@@ -264,9 +259,9 @@
          "default":"zigzag"
       },
       {
-         "id":"SUPPORT_BUILDPLATE_BRIM_WIDTH",
+         "id":"SUPPORT_BUILDPLATE_BRIM_LINES",
          "type":"float",
-         "value":6
+         "value":15
       },
       {
          "id":"SUPPORT_ANGLE",
@@ -277,7 +272,12 @@
          "default":55
       },
       {
-         "id":"SUPPORT_Z_DISTANCE",
+         "id":"SUPPORT_TOP_DISTANCE",
+         "type":"float",
+         "value":0.15
+      },
+      {
+         "id":"SUPPORT_BOTTOM_DISTANCE",
          "type":"float",
          "value":0.15
       },
