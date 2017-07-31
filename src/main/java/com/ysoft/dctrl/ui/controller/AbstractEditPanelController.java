@@ -2,22 +2,17 @@ package com.ysoft.dctrl.ui.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
-import com.ysoft.dctrl.editor.SceneGraph;
+import com.ysoft.dctrl.editor.EditSceneGraph;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.control.NumberField;
-import com.ysoft.dctrl.ui.i18n.LocalizationResource;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
-import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 
 /**
  * Created by pilar on 10.4.2017.
@@ -25,13 +20,13 @@ import javafx.scene.control.TextField;
 public abstract class AbstractEditPanelController extends LocalizableController {
     private enum Item { X,Y,Z }
 
-    protected SceneGraph sceneGraph;
+    protected EditSceneGraph sceneGraph;
 
     @FXML protected NumberField x;
     @FXML protected NumberField y;
     @FXML protected NumberField z;
 
-    public AbstractEditPanelController(SceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
+    public AbstractEditPanelController(EditSceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
         super(localizationService, eventBus, context);
         this.sceneGraph = sceneGraph;
     }
@@ -45,7 +40,6 @@ public abstract class AbstractEditPanelController extends LocalizableController 
         x.textProperty().addListener((observable, oldValue, newValue) -> onChange(x.getValue(), Item.X));
         y.textProperty().addListener((observable, oldValue, newValue) -> onChange(y.getValue(), Item.Y));
         z.textProperty().addListener((observable, oldValue, newValue) -> onChange(z.getValue(), Item.Z));
-
 
         root.setOnMousePressed(Event::consume);
 

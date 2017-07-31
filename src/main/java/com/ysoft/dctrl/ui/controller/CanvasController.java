@@ -140,14 +140,14 @@ public class CanvasController extends AbstractController implements Initializabl
             case TAB:
                 if(keyEvent.isControlDown()) {
                     if(keyEvent.isShiftDown()) {
-                        sceneGraph.selectPrevious();
+                        eventBus.publish(new Event(EventType.EDIT_SELECT_PREV.name()));
                     } else {
-                        sceneGraph.selectNext();
+                        eventBus.publish(new Event(EventType.EDIT_SELECT_NEXT.name()));
                     }
                 }
                 break;
             case DELETE:
-                sceneGraph.deleteSelected();
+                eventBus.publish(new Event(EventType.EDIT_DELETE_SELECTED.name()));
                 break;
         }
     }

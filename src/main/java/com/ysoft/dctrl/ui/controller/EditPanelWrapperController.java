@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.ysoft.dctrl.editor.SceneMode;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.factory.MovePanelFactory;
@@ -63,6 +64,8 @@ public class EditPanelWrapperController extends AbstractController implements In
         eventBus.subscribe(EventType.MODEL_SELECTED.name(), (e) -> {
             if(e.getData() == null) { hidePanel(); }
         });
+
+        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), e -> wrapper.setVisible(e.getData() == SceneMode.EDIT));
     }
 
     public void hidePanel() {
@@ -71,6 +74,8 @@ public class EditPanelWrapperController extends AbstractController implements In
 
     public void showPanel(Region panel) {
         if(visiblePanel != null) { visiblePanel.setVisible(false); }
+
+        if(visiblePanel == panel) { panel = null; }
         if(panel != null) { panel.setVisible(true); }
         visiblePanel = panel;
     }

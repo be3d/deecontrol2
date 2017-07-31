@@ -1,17 +1,15 @@
 package com.ysoft.dctrl.ui.controller;
 
-import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import com.ysoft.dctrl.editor.SceneGraph;
+import com.ysoft.dctrl.editor.SceneMode;
 import com.ysoft.dctrl.editor.exporter.SceneExporter;
 import com.ysoft.dctrl.slicer.SlicerController;
-import com.ysoft.dctrl.slicer.SlicerRunner;
 import com.ysoft.dctrl.slicer.param.SlicerParamType;
 import com.ysoft.dctrl.slicer.param.SlicerParams;
-import com.ysoft.dctrl.slicer.printer.PrinterResource;
 import com.ysoft.dctrl.slicer.profile.Profile;
 import com.ysoft.dctrl.slicer.profile.ProfileResource;
 import com.ysoft.dctrl.ui.controller.controlMenu.*;
@@ -30,7 +28,9 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
+import com.ysoft.dctrl.ui.notification.Notification;
 import com.ysoft.dctrl.ui.notification.ProgressNotification;
+import com.ysoft.dctrl.ui.notification.SuccessNotification;
 import com.ysoft.dctrl.utils.DeeControlContext;
 import com.ysoft.dctrl.utils.files.FilePath;
 import com.ysoft.dctrl.utils.files.FilePathResource;
@@ -50,14 +50,13 @@ public class SlicerPanelController extends LocalizableController implements Init
     private final String sceneImage;
     private boolean edited = false;
 
-    private final PrinterResource printerResource;
     private final SceneExporter sceneExporter;
-    private final SceneGraph sceneGraph;
     private final SlicerController slicerController;
     private final SlicerParams slicerParams;
     private final ProfileResource profileResource;
 
     private final ProgressNotification slicingProgressNotification;
+    private final SuccessNotification slicingDoneNotification;
 
     // Layout
     @FXML AnchorPane anchorPane;
@@ -100,14 +99,12 @@ public class SlicerPanelController extends LocalizableController implements Init
             DeeControlContext deeControlContext,
             FilePathResource filePathResource,
             SceneExporter sceneExporter,
-            SceneGraph sceneGraph,
             SlicerController slicerController,
             SlicerParams slicerParams,
             ProfileResource profileResource) {
 
         super(localizationService, eventBus, deeControlContext);
         this.sceneExporter = sceneExporter;
-        this.sceneGraph = sceneGraph;
         this.slicerController = slicerController;
         this.slicerParams = slicerParams;
         this.profileResource = profileResource;
@@ -115,6 +112,7 @@ public class SlicerPanelController extends LocalizableController implements Init
         this.sceneImage = filePathResource.getPath(FilePath.SCENE_IMAGE_FILE);
 
         this.slicingProgressNotification = new ProgressNotification();
+        this.slicingDoneNotification = new SuccessNotification();
     }
 
     @Override
@@ -166,6 +164,11 @@ public class SlicerPanelController extends LocalizableController implements Init
                 .load(slicerParams.get(SlicerParamType.SPEED_SOLID_LAYERS.name()))
                 .bindParamChanged()
                 .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SPEED_SOLID_LAYERS.name(), newValue)));
+
+        shellThicknessIncrement
+                .bindRecalculation((v) -> 0.4 * v)
+                .load(slicerParams.get(SlicerParamType.SHELL_THICKNESS.name()))
+                .bindParamChanged();
 
         printSpeedShellSlider
                 .load(slicerParams.get(SlicerParamType.SPEED_OUTER_WALL.name()))
@@ -237,28 +240,35 @@ public class SlicerPanelController extends LocalizableController implements Init
             if (advSettingsBox.isVisible()){
                 advSettingsBox.setManaged(false);
                 advSettingsBox.setVisible(false);
-                advSettingsToggle.setText("Show advanced settings...");
+                advSettingsToggle.setText("Show advanced settings…");
             } else {
                 advSettingsBox.setManaged(true);
                 advSettingsBox.setVisible(true);
-                advSettingsToggle.setText("Hide advanced settings...");
+                advSettingsToggle.setText("Hide advanced settings…");
             }
         });
 
-        slicingProgressNotification.setLabelText("Slicing objects�");
+        slicingProgressNotification.setLabelText("Slicing objects…");
         slicingProgressNotification.addOnCloseAction((e) -> {
             slicerController.stopSlice();
         });
 
+        slicingDoneNotification.setLabelText("Slicing completed.");
+
         eventBus.subscribe(EventType.SCENE_EXPORT_PROGRESS.name(), this::onSceneExportProgress);
         eventBus.subscribe(EventType.SLICER_PROGRESS.name(), this::onSlicerProgress);
-        eventBus.subscribe(EventType.SLICER_FINISHED.name(), (e) -> slicingProgressNotification.hide());
+        eventBus.subscribe(EventType.SLICER_FINISHED.name(), (e) -> {
+            slicingProgressNotification.hide();
+            eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingDoneNotification));
+            eventBus.publish(new Event(EventType.SCENE_SET_MODE.name(), SceneMode.GCODE));
+        });
+
 
         super.initialize(location, resources);
     }
 
     private void exportScene(){
-        sceneExporter.exportScene(sceneGraph, sceneSTL);
+        sceneExporter.exportScene(sceneSTL);
     }
 
     private void onSceneExportProgress(Event e) {

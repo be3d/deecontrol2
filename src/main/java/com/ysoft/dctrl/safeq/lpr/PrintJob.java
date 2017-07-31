@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import com.ysoft.dctrl.editor.SceneGraph;
-
 /**
  * Created by pilar on 12.4.2017.
  */
