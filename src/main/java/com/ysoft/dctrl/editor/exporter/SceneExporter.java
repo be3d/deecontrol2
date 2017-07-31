@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ysoft.dctrl.editor.EditSceneGraph;
 import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
@@ -36,15 +37,16 @@ import javafx.util.Duration;
 public class SceneExporter {
     private final EventBus eventBus;
     private final DeeControlContext deeControlContext;
-
+    private final EditSceneGraph sceneGraph;
 
     @Autowired
-    public SceneExporter(EventBus eventBus, DeeControlContext deeControlContext) {
+    public SceneExporter(EventBus eventBus, DeeControlContext deeControlContext, EditSceneGraph sceneGraph) {
         this.eventBus = eventBus;
         this.deeControlContext = deeControlContext;
+        this.sceneGraph = sceneGraph;
     }
 
-    public void exportScene(SceneGraph sceneGraph, String outputPath) {
+    public void exportScene(String outputPath) {
         ExportTask exportTask = new ExportTask(sceneGraph, outputPath, deeControlContext.getCurrentProject().getPrinterTransformMatrix());
 
         exportTask.setOnSucceeded((e) -> {
@@ -53,6 +55,7 @@ public class SceneExporter {
 
         exportTask.setOnFailed((e) -> {
             System.err.println("ou snap, something went wrong");
+            exportTask.getException().printStackTrace();
         });
 
         new Thread(exportTask).start();
@@ -60,14 +63,14 @@ public class SceneExporter {
 
     private class ExportTask extends Task<Void> {
         BufferedOutputStream outputStream;
-        SceneGraph sceneGraph;
+        EditSceneGraph sceneGraph;
         TransformMatrix printerTransformMatrix;
         String outputPath;
         volatile MeshConverter currentMeshConverter;
         volatile int totalMeshes;
         volatile int currentMesh;
 
-        ExportTask(SceneGraph sceneGraph, String outputPath, TransformMatrix printerTransformMatrix) {
+        ExportTask(EditSceneGraph sceneGraph, String outputPath, TransformMatrix printerTransformMatrix) {
             this.sceneGraph = sceneGraph;
             this.outputPath = outputPath;
             this.printerTransformMatrix = printerTransformMatrix;
@@ -104,13 +107,13 @@ public class SceneExporter {
                         currentMesh++;
                         ExtendedMesh mesh = (ExtendedMesh) m;
                         TransformMatrix a = mesh.getTransformMatrix();
-                        TransformMatrix p = new TransformMatrix().applyTranslate(new Point3D(-75,-75,0));
-                        TransformMatrix s = new TransformMatrix().applyScale(new Point3D(-1, -1, 1));
+                        TransformMatrix p = new TransformMatrix().applyTranslate(new Point3D(75,75,0));
+                        TransformMatrix s = TransformMatrix.getRotationAxis(new Point3D(0,0,1), Math.PI);
 
                         TransformMatrix res = new TransformMatrix();
+                        res.multiply(s);
                         res.multiply(p);
                         res.multiply(a);
-                        res.multiply(s);
                         res.multiplyTranslation(new Point3D(-1,-1,1));
                         currentMeshConverter = new MeshConverter(mesh, res);
                         byte[] converted = currentMeshConverter.convertToStl();

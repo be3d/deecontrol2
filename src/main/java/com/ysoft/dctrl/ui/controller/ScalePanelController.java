@@ -3,25 +3,21 @@ package com.ysoft.dctrl.ui.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import org.springframework.stereotype.Controller;
 
-import com.ysoft.dctrl.editor.SceneGraph;
+import com.ysoft.dctrl.editor.EditSceneGraph;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.math.BoundingBox;
 import com.ysoft.dctrl.ui.control.NumberField;
-import com.ysoft.dctrl.ui.i18n.LocalizationResource;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Point3D;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
 
 /**
  * Created by pilar on 10.4.2017.
@@ -43,7 +39,7 @@ public class ScalePanelController extends AbstractEditPanelController {
 
     private volatile boolean refreshInProgress;
 
-    public ScalePanelController(SceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
+    public ScalePanelController(EditSceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
         super(sceneGraph, localizationService, eventBus, context);
         refreshInProgress = false;
     }

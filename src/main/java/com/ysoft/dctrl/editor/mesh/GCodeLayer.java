@@ -5,6 +5,8 @@ import javafx.scene.Node;
 import javafx.scene.paint.Material;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 
 import java.util.*;
 
@@ -70,6 +72,7 @@ public class GCodeLayer {
         for (LinkedList<GCodeMeshData> meshList: meshDataMap.values()){
             MeshView view = new MeshView(constructMeshFromSegments(meshList));
             view.setMaterial(gCodeMeshProperties.getMaterial(meshList.getFirst().getType()));
+            view.getTransforms().addAll(new Rotate(180, new Point3D(0,0,1)), new Translate(-75,-75));
             meshViewsMap.put(meshList.getFirst().getType().name() , view);
         }
     }
@@ -113,21 +116,15 @@ public class GCodeLayer {
 
     public void setVisible(boolean value){
         for (MeshView view : meshViewsMap.values()){
-            if(view != null)
-                view.setVisible(value);
+            if(view != null) view.setVisible(value);
         }
     }
 
     // todo refactor to GCodeViewer
     public void setVisibleOne(GCodeMoveType type){
-        for (String key : meshViewsMap.keySet()){
-            if( key.equals(type.name())){
-                meshViewsMap.get(key).setVisible(true);
-            } else{
-                meshViewsMap.get(key).setVisible(false);
-                //meshViewsMap.put(key,null);
-            }
-        }
+        meshViewsMap.forEach((k,v) -> {
+            v.setVisible(k.equals(type.name()));
+        });
     }
 
 

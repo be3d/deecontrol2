@@ -5,18 +5,13 @@ import java.util.ResourceBundle;
 
 import org.springframework.stereotype.Controller;
 
-import com.ysoft.dctrl.editor.SceneGraph;
+import com.ysoft.dctrl.editor.EditSceneGraph;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.EventBus;
-import com.ysoft.dctrl.ui.i18n.LocalizationResource;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
-import javafx.beans.value.ObservableValue;
-import javafx.fxml.FXML;
 import javafx.geometry.Point3D;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 
 /**
  * Created by pilar on 7.4.2017.
@@ -24,7 +19,7 @@ import javafx.scene.control.TextField;
 
 @Controller
 public class MovePanelController extends AbstractEditPanelController {
-    public MovePanelController(SceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
+    public MovePanelController(EditSceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
         super(sceneGraph, localizationService, eventBus, context);
     }
 

@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 
 import org.springframework.stereotype.Controller;
 
-import com.ysoft.dctrl.editor.SceneGraph;
+import com.ysoft.dctrl.editor.EditSceneGraph;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.math.TransformMatrix;
@@ -38,7 +38,7 @@ public class RotationPanelController extends AbstractEditPanelController {
     @FXML Button counterZ;
     @FXML Button clockZ;
 
-    public RotationPanelController(SceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
+    public RotationPanelController(EditSceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
         super(sceneGraph, localizationService, eventBus, context);
     }
 

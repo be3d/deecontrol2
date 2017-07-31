@@ -90,7 +90,7 @@ public class BaseSlider extends BaseCustomControl implements SlicerParamBindable
      * @param listener
      * @return
      */
-    public BaseSlider bindParamChanged(ChangeListener<Number> listener){
+    public BaseSlider bindParamChanged(ChangeListener listener){
         boundParam.getDoubleProperty().addListener(listener);
         return this;
     }
@@ -99,7 +99,7 @@ public class BaseSlider extends BaseCustomControl implements SlicerParamBindable
      * Custom handle for UI Control change -> usually just throw an event
      * @param listener
      */
-    public void bindControlChanged(ChangeListener<Number> listener){
+    public void bindControlChanged(ChangeListener listener){
         slider.valueProperty().addListener(listener);
     }
 
