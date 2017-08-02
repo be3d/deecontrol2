@@ -70,8 +70,6 @@ public class PrintBed {
     private PhongMaterial createMaterial(Image texture) {
         PhongMaterial mat = new PhongMaterial();
         mat.setDiffuseMap(texture);
-        //mat.setSpecularMap(new Image(getClass().getResourceAsStream("/img/spec.png")));
-        mat.setSpecularPower(0);
         return mat;
     }
 

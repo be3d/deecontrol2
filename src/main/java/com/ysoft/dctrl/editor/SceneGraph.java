@@ -1,6 +1,7 @@
 package com.ysoft.dctrl.editor;
 
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,14 +16,13 @@ import com.ysoft.dctrl.editor.mesh.PrintBed;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 
-import javafx.collections.ObservableList;
 import javafx.geometry.Point3D;
+import javafx.scene.AmbientLight;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.PointLight;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 
@@ -46,7 +46,6 @@ public class SceneGraph {
         mode = null;
         sceneGroup = new Group();
         camera = createCamera();
-        sceneGroup.getChildren().addAll(camera, createPrintBed().getView());
     }
 
     private Map<SceneMode, SubSceneGraph> initSubSceneGraphs(List<SubSceneGraph> subSceneGraphs) {
@@ -60,6 +59,8 @@ public class SceneGraph {
 
     @PostConstruct
     public void init() {
+        sceneGroup.getChildren().addAll(camera, createPrintBed().getView());
+        sceneGroup.getChildren().addAll(createLights());
         setMode(SceneMode.EDIT);
 
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> setMode((SceneMode) e.getData()));
@@ -73,7 +74,26 @@ public class SceneGraph {
     }
 
     private PrintBed createPrintBed() {
-        return new PrintBed(150, 150, "/img/edee_bed.png");
+        return new PrintBed(PRINTER_SIZE.getX(), PRINTER_SIZE.getY(), "/img/edee_bed.png");
+    }
+
+    private Node[] createLights() {
+        AmbientLight am = new AmbientLight(getGrayColor(0.3));
+
+        PointLight pl = new PointLight(getGrayColor(0.27));
+        pl.getTransforms().add(new Translate(-250,250,10));
+
+        PointLight pl2 = new PointLight(getGrayColor(0.5));
+        pl2.getTransforms().add(new Translate(250,-250,200));
+
+        PointLight cl = new PointLight(getGrayColor(0.18));
+        cl.getTransforms().add(camera.getTransforms().get(0));
+
+        return new Node[] {am, pl, pl2, cl};
+    }
+
+    private Color getGrayColor(double value) {
+        return new Color(value, value, value, 1);
     }
 
     public void setMode(SceneMode mode) {
