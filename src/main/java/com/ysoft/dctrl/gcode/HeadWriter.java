@@ -151,6 +151,10 @@ public class HeadWriter {
                 bos.write(buffer, 0, read);
             }
 
+            bos.flush();
+            bos.close();
+            bis.close();
+
             return null;
         }
 

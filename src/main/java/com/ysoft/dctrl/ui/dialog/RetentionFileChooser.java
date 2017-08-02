@@ -27,18 +27,33 @@ public class RetentionFileChooser {
     }
 
     public File showOpenDialog(Window parent, FileChooser.ExtensionFilter... filters) {
+        return showOpenDialog(parent, null, filters);
+    }
+
+    public File showOpenDialog(Window parent, String initialName, FileChooser.ExtensionFilter... filters) {
         setFilters(filters);
         setPwd();
+        if(initialName != null) { fileChooser.setInitialFileName(initialName); }
         File f = fileChooser.showOpenDialog(parent);
         if(f != null) { updatePwd(f.getParent()); }
         return f;
     }
 
     public File showSaveDialog(Window parent, FileChooser.ExtensionFilter... filters) {
+        return showSaveDialog(parent, null, filters);
+    }
+
+    public File showSaveDialog(Window parent, String initialName, FileChooser.ExtensionFilter... filters) {
         setFilters(filters);
+        setPwd();
+        if(initialName != null) { fileChooser.setInitialFileName(initialName); }
         File f = fileChooser.showSaveDialog(parent);
         if(f != null) { updatePwd(f.getParent()); }
         return f;
+    }
+
+    public FileChooser.ExtensionFilter getSelectedExtensionFilter() {
+        return fileChooser.getSelectedExtensionFilter();
     }
 
     public void setFilters(FileChooser.ExtensionFilter... filters) {
