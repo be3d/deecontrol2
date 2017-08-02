@@ -10,6 +10,7 @@ import com.ysoft.dctrl.utils.DeeControlConfig;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -36,7 +37,12 @@ public class DeeControl extends Application {
         BaseWindow baseWindow = applicationContext.getBean(BaseWindow.class);
         baseWindow.composeWindow(primaryStage);
         primaryStage.setTitle("DeeControl2");
+        primaryStage.getIcons().addAll(
+                new Image(getClass().getResourceAsStream("/img/ico/icon-16.png")),
+                new Image(getClass().getResourceAsStream("/img/ico/icon-32.png")),
+                new Image(getClass().getResourceAsStream("/img/ico/icon-48.png")),
+                new Image(getClass().getResourceAsStream("/img/ico/icon-256.png"))
+        );
         primaryStage.show();
-
     }
 }
