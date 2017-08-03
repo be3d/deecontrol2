@@ -9,7 +9,7 @@
 
     <HBox alignment="CENTER_LEFT" spacing="0">
         <children>
-            <Region prefWidth="14"></Region>
+            <Region styleClass="control-menu-section-header-left-padding"></Region>
             <ImageView fx:id="icon" fitHeight="16" fitWidth="16" />
             <Region prefWidth="14"></Region>
             <Label fx:id="label" text="" styleClass="control-menu-section-header-text"></Label>

@@ -2,7 +2,7 @@
 <?import javafx.scene.layout.*?>
 
 
-<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="">
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu-component-container">
     <Label fx:id="label" styleClass="control-label"></Label>
     <HBox spacing="0"  alignment="CENTER_LEFT">
         <Region styleClass="left-control-hpadding"></Region>
@@ -10,6 +10,6 @@
         <Button fx:id="plusBtn" text="+" styleClass="button-group, button-group-last, control-menu-increment-button, plus-button"></Button>
         <Region HBox.hgrow="ALWAYS"></Region>
         <Label alignment="CENTER_RIGHT" fx:id="textValue" text="" styleClass="control-slider-text"></Label>
-        <Region styleClass="right-control-hpadding"></Region>
+
     </HBox>
 </fx:root>

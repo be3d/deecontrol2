@@ -1,0 +1,14 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu-component-container" >
+    <Label fx:id="label" styleClass="control-label"></Label>
+    <HBox spacing="0"  alignment="TOP_LEFT">
+        <children>
+            <Region styleClass="left-control-hpadding"></Region>
+            <fx:define><ToggleGroup fx:id="toggleGroup"></ToggleGroup></fx:define>
+            <HBox fx:id="buttonsContainer" HBox.hgrow="ALWAYS" styleClass="control-toggle-group"></HBox>
+
+        </children>
+    </HBox>
+</fx:root>

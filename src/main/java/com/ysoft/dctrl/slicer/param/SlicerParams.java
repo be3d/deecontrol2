@@ -7,6 +7,8 @@ import com.ysoft.dctrl.slicer.cura.Cura;
 import com.ysoft.dctrl.slicer.printer.Printer;
 import com.ysoft.dctrl.slicer.printer.PrinterResource;
 import com.ysoft.dctrl.utils.DeeControlContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,7 @@ import java.util.Map;
  */
 @Component
 public class SlicerParams {
+    private final Logger logger = LogManager.getLogger(SlicerParams.class);
     protected final EventBus eventBus;
     protected final DeeControlContext deeControlContext;
     protected final PrinterResource printerResource;
@@ -58,7 +61,7 @@ public class SlicerParams {
         try{
             this.printerResource.setPrinter("edee");
         }catch(Exception e){
-            System.out.println("Printer EDEE could not be set.");
+            logger.warn("Printer EDEE could not be set.");
         }
 
         this.slicerParameters = this.loadParams();
@@ -78,7 +81,7 @@ public class SlicerParams {
             return slicerParameters;
 
         } else {
-            System.out.println("No printer selected.");
+            logger.warn("No printer selected.");
             return null;
         }
     }

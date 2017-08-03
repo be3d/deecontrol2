@@ -2,7 +2,7 @@
 
 <?import javafx.scene.layout.HBox?>
 
-<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" minHeight="50" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" minHeight="50" styleClass="control-menu-subSection-header" alignment="CENTER_LEFT">
 
     <HBox alignment="CENTER_LEFT" spacing="0">
         <children>

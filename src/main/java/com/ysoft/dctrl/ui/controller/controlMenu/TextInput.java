@@ -49,10 +49,4 @@ public class TextInput extends BaseCustomControl {
     public void addFocusChangedListener(javafx.beans.value.ChangeListener listener){
         text.focusedProperty().addListener(listener);
     }
-
-    @FXML
-    protected void doSomething() {
-        // this.setText(this.getBoundParamID());
-        System.out.println("The button was clicked!");
-    }
 }

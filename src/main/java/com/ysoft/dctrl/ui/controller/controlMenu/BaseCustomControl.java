@@ -1,6 +1,8 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.Collections;
 
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
@@ -12,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public abstract class BaseCustomControl extends VBox {
+    protected final Logger logger = LogManager.getLogger(BaseCustomControl.class);
 
     @FXML
     Label label;
@@ -63,4 +68,15 @@ public abstract class BaseCustomControl extends VBox {
     }
 
     public void addChangeListener(javafx.beans.value.ChangeListener listener){}
+
+    protected DecimalFormat getDecimalFormat(int decimals){
+        DecimalFormat df;
+        if (decimals > 0){
+            df = new DecimalFormat("#."+String.join("", Collections.nCopies(decimals, "#")));
+        }
+        else {
+            df = new DecimalFormat("#");
+        }
+        return df;
+    }
 }

@@ -16,6 +16,7 @@ import com.ysoft.dctrl.ui.controller.controlMenu.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -61,6 +62,7 @@ public class SlicerPanelController extends LocalizableController implements Init
     // Layout
     @FXML AnchorPane anchorPane;
     @FXML ScrollPane scrollPane;
+    @FXML VBox panelControlsContainer;
     @FXML Label advSettingsToggle;
     @FXML VBox advSettingsBox;
 
@@ -71,7 +73,7 @@ public class SlicerPanelController extends LocalizableController implements Init
     @FXML TextInput printJobNameInput;
 
     // Adv settings
-    @FXML SliderDiscrete layerHeightSlider;
+    @FXML ToggleButtonGroup layerHeightToggle;
     @FXML ButtonIncrement roofThicknessIncrement;
     @FXML ButtonIncrement bottomThicknessIncrement;
     @FXML SliderDiscrete printSpeedSolidSlider;
@@ -85,6 +87,7 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     @FXML Button slice;
     @FXML ImageView saveProfile;
+    @FXML Label editedLabel;
 
     //test
     //@FXML Button add;
@@ -137,16 +140,24 @@ public class SlicerPanelController extends LocalizableController implements Init
                     this.setEdited(true);
                 });
 
-        supportsCheckBox.addChangeListener((observable, oldValue, newValue) -> System.out.println(newValue));
+        supportsCheckBox
+                .load(slicerParams.get(SlicerParamType.SUPPORT_ENABLED.name()))
+                .bindParamChanged()
+                .bindControlChanged((observable, oldValue, newValue) -> {
+                    slicerParams.updateParam(SlicerParamType.SUPPORT_ENABLED.name(), newValue);
+                    this.setEdited(true);
+                });
 
-        layerHeightSlider
+        layerHeightToggle
                 .load(slicerParams.get(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name()))
                 .bindParamChanged()
                 .bindControlChanged(((observable, oldValue, newValue) -> {
-                    slicerParams.updateParam(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name(), newValue);
-                    roofThicknessIncrement.updateView();
-                    bottomThicknessIncrement.updateView();
-                    this.setEdited(true);
+                    if (newValue != null){
+                        slicerParams.updateParam(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name(), ((ToggleButton) newValue).getUserData());
+                        roofThicknessIncrement.updateView();
+                        bottomThicknessIncrement.updateView();
+                        this.setEdited(true);
+                    }
                 }));
 
         roofThicknessIncrement
@@ -204,6 +215,7 @@ public class SlicerPanelController extends LocalizableController implements Init
             eventBus.publish(new Event(EventType.TAKE_SCENE_SNAPSHOT.name(), sceneImage));
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingProgressNotification));
             deeControlContext.getCurrentProject().setName(printJobNameInput.getText());
+            disableControls();
             exportScene();
         });
 
@@ -281,5 +293,11 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     private void setEdited(boolean value){
         saveProfile.setVisible(value);
+        editedLabel.setVisible(value);
+    }
+
+    private void disableControls(){
+        ObservableList<Node> controls = panelControlsContainer.getChildren();
+        panelControlsContainer.setDisable(true);
     }
 }

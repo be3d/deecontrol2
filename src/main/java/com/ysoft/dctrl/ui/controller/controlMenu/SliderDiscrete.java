@@ -3,26 +3,23 @@ package com.ysoft.dctrl.ui.controller.controlMenu;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 
 import java.text.DecimalFormat;
+import java.util.Collections;
 
 /**
  * Created by kuhn on 5/5/2017.
  */
 public class SliderDiscrete extends BaseSlider {
 
-    @FXML
-    Slider slider;
-
-    @FXML
-    Label valueLabel;
+    @FXML    Slider slider;
+    @FXML    Label valueLabel;
+    @FXML    ProgressBar progress;
 
     public SliderDiscrete(){
         super("/view/controlMenu/slider_discrete.fxml");
-//        super.init("/view/controlMenu/slider_discrete.fxml");"/view/controlMenu/slider_discrete.fxml"
-
-
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (this.getStep() instanceof Double){
                 value = new Double((Math.round(newValue.doubleValue() / this.getStep()) * this.getStep()));
@@ -32,6 +29,7 @@ public class SliderDiscrete extends BaseSlider {
             }
             updateView();
         });
+        updateView();
     }
 
     public SliderDiscrete load(SlicerParam param){
@@ -51,7 +49,8 @@ public class SliderDiscrete extends BaseSlider {
     }
 
     public void updateView(){
-        DecimalFormat df = new DecimalFormat("#.##");
-        valueLabel.setText(df.format(this.value) + (unit != null ? " " + unit : ""));
+        valueLabel.setText(super.getDecimalFormat(decimals).format(this.value) + (unit != null ? " " + unit : ""));
+        progress.setProgress((this.value - this.getMin()) / (this.getMax() - this.getMin()));
+        slider.setValue(this.value);
     }
 }

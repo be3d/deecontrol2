@@ -128,8 +128,7 @@ public class ButtonIncrement extends BaseCustomControl implements SlicerParamBin
             value = (Double)param.getValue();
             updateView();
         } catch(Exception e){
-            System.out.println("Error loading " + param.getId());
-            e.printStackTrace();
+            logger.warn("Error loading {}", param.getId(), e);
         }
         return this;
     }

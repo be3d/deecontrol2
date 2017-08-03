@@ -3,31 +3,35 @@ package com.ysoft.dctrl.ui.controller.controlMenu;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
 
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 
 /**
  * Created by kuhn on 5/19/2017.
  */
 public class BaseSlider extends BaseCustomControl implements SlicerParamBindable{
-    @FXML
-    private Slider slider;
+
+    @FXML   private Slider slider;
+    @FXML   private ProgressBar progress;
 
     protected String unit = "";
     protected double value;
+    protected int decimals = 2;
 
     public BaseSlider(String fxmlResource) {
         super();
         super.init(fxmlResource);
-
     }
 
-    public void setMin(Double value){ slider.setMin(value);}
+    public void setMin(Double value){
+        slider.setMin(value);
+    }
     public Double getMin(){return slider.getMin();}
 
     public void setMax(Double value){ slider.setMax(value);}
     public Double getMax(){return slider.getMax();}
-
 
     public void setValue(Double value){
         this.value = value;
@@ -35,21 +39,18 @@ public class BaseSlider extends BaseCustomControl implements SlicerParamBindable
     }
     public Double getValue(){ return slider.getValue();}
 
-//    private void setTextValue(Double value){
-//        valueText.setText(new Double((Math.round(value * 10D) / 10D)).toString());
-//    }
-
     public void setStep(Double value){ slider.setMajorTickUnit(value);}
     public Double getStep(){ return slider.getMajorTickUnit();}
 
     public void setUnit(String value){
         unit = value;
     }
-
     public String getUnit(){
         return unit;
     }
 
+    public void setDecimals(int value){ decimals = value; }
+    public int getDecimals(){ return decimals; }
     /**
      * Initialize the controller from the Slicer param object
      *
@@ -68,8 +69,7 @@ public class BaseSlider extends BaseCustomControl implements SlicerParamBindable
             this.updateView();
 
         }catch(Exception e){
-            System.out.println("Error loading " + param.getId());
-            e.printStackTrace();
+            logger.warn("Error loading {}", param.getId(), e);
         }
         return this;
     }
@@ -106,4 +106,5 @@ public class BaseSlider extends BaseCustomControl implements SlicerParamBindable
     public void updateView(){
         slider.setValue(value);
     };
+
 }
