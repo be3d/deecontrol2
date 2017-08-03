@@ -263,7 +263,7 @@
 .control-comboBox .arrow{
     -fx-shape: none;
     -fx-padding: 4 6;
-    -fx-background-color: #f121212;
+    -fx-background-color: #121212;
     -fx-background-position: center;
     -fx-background-insets: 0;
     -fx-background-size: stretch;

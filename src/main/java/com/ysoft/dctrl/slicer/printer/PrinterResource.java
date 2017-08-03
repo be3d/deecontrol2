@@ -8,6 +8,8 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 import com.ysoft.dctrl.utils.files.FilePath;
 import com.ysoft.dctrl.utils.files.FilePathResource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -56,7 +58,7 @@ public class PrinterResource extends AbstractConfigResource {
                 return;
             }
         }
-        System.out.println("PrinterResource: Printer " + printerID + "could not be set.");
+        logger.warn(" Printer {} could not be set.", printerID);
     }
 
     public Printer getPrinter() {

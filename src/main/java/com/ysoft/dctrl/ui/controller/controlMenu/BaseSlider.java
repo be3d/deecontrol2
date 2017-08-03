@@ -69,8 +69,7 @@ public class BaseSlider extends BaseCustomControl implements SlicerParamBindable
             this.updateView();
 
         }catch(Exception e){
-            System.out.println("Error loading " + param.getId());
-            e.printStackTrace();
+            logger.warn("Error loading {}", param.getId(), e);
         }
         return this;
     }

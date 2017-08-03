@@ -11,6 +11,8 @@ import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,7 +23,7 @@ import java.util.TimerTask;
  * Created by kuhn on 5/29/2017.
  */
 public class SlicerRunner extends Task<Slicer> {
-
+    private final Logger logger = LogManager.getLogger(SlicerRunner.class);
     private final Slicer slicer;
     private final EventBus eventBus;
     private final String scene; // stl file path
@@ -48,8 +50,7 @@ public class SlicerRunner extends Task<Slicer> {
         try {
             slicer.run(slicerParams, scene);
         } catch (IOException e) {
-            System.out.println("Slicer fuck");
-            e.printStackTrace();
+            logger.warn("Slicer error ", e);
         }
 
         timeline.stop();
@@ -73,7 +74,7 @@ public class SlicerRunner extends Task<Slicer> {
     }
 
     public void stopTask(Event e){
-        System.out.println("Cancelling slicer...");
+        logger.trace("Cancelling slicer");
         this.cancel();
     }
 

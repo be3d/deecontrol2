@@ -6,6 +6,8 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 import com.ysoft.dctrl.utils.files.FilePath;
 import com.ysoft.dctrl.utils.files.FilePathResource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -22,7 +24,7 @@ import java.util.List;
  */
 
 public abstract class AbstractConfigResource {
-
+    protected final Logger logger = LogManager.getLogger(AbstractConfigResource.class);
     protected final DeeControlContext deeControlContext;
     protected final EventBus eventBus;
     private final FilePathResource filePathResource;

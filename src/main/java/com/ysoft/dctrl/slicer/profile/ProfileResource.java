@@ -104,7 +104,7 @@ public class ProfileResource extends AbstractConfigResource {
                 return;
             }
         }
-        System.out.println("PrinterResource: Printer " + profileID + "could not be set.");
+        logger.warn("Profile {} could not be set ", profileID);
     }
 
 
@@ -116,9 +116,8 @@ public class ProfileResource extends AbstractConfigResource {
      */
     public void saveProfile(){
         if (this.selectedProfile == null){
-            System.out.println("No profile selected");
+            logger.debug("No profile selected.");
         }
-
         this.saveProfile(this.selectedProfile);
     }
 

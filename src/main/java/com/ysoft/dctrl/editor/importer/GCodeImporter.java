@@ -130,7 +130,7 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
             gCodeLayer.processCmd(GCodeMoveType.TRAVEL,
                     gCodeContext.getX(), gCodeContext.getY(), gCodeContext.getZ());
         } catch (NumberFormatException e) {
-            System.out.println("Gcode line corrupt: " + line);
+            logger.warn("GCode line corrupt {}", line);
         }
     }
 

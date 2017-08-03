@@ -30,8 +30,7 @@ public abstract class BaseCheckBox extends BaseCustomControl implements SlicerPa
             this.updateView();
 
         }catch(Exception e){
-            System.out.println("Error loading " + param.getId());
-            e.printStackTrace();
+            logger.warn("Error loading {}", param.getId(), e);
         }
         return this;
     }

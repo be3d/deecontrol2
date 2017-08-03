@@ -9,6 +9,8 @@ import com.ysoft.dctrl.utils.OSVersion;
 import com.ysoft.dctrl.utils.files.FilePath;
 import com.ysoft.dctrl.utils.files.FilePathResource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,8 @@ import java.util.regex.Pattern;
  */
 @Component("Cura")
 public class Cura implements Slicer {
+    private final Logger logger = LogManager.getLogger(Cura.class);
+
     private static final String CURA_FOLDER = "cura" + File.separator;
     private static final String WIN_BINARY = "CuraEngine.exe";
     private static final String MAC_BINARY = "CuraEngine";
@@ -59,7 +63,7 @@ public class Cura implements Slicer {
         try {
             return Cura.curaParamMap.containsKey(SlicerParamType.valueOf(paramName));
         } catch (IllegalArgumentException e) {
-            System.err.println("Not supported param " + paramName);
+            logger.debug("Not supported param {}",paramName);
         }
         return false;
     }
@@ -74,11 +78,11 @@ public class Cura implements Slicer {
                 }
             } catch (IllegalArgumentException e) {
                 iter.remove();
-                System.out.println("Slicer param type not defined. " + entry.getKey());
+                logger.debug("Slicer param type not defined {}", entry.getKey());
 
             } catch (NoSuchElementException e) {
                 iter.remove();
-                System.out.println("Parameter not supported by Cura. " + entry.getKey());
+                logger.debug("Parameter not supported by Cura {}", entry.getKey());
             }
         }
         return params;
