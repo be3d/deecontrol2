@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class LocalizationResource {
+class LocalizationResource {
     private static final String L10N_BUNDLE = "messages";
     private static final Locale DEFAULT_LOCALE = Locale.US;
 

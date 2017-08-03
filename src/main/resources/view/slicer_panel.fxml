@@ -72,7 +72,7 @@
           <SliderDiscrete fx:id="supportAngleSlider" label="Support starting angle" min="0.0" max="90.0" step="1" unit="°" />
         </VBox>
 
-        <Label fx:id="advSettingsToggle" AnchorPane.leftAnchor="20" styleClass="control-advSettingsToggle" text="Show advanced settings…" />
+        <Label fx:id="advSettingsToggle" AnchorPane.leftAnchor="20" styleClass="control-advSettingsToggle" text="Show advanced settings..." />
 
         <Region prefHeight="30" />
         <ProgressBar fx:id="progress"  styleClass="control-progress" translateX="20" visible="false" />

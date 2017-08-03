@@ -8,25 +8,25 @@
 <AnchorPane fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.MainPanelController" xmlns:fx="http://javafx.com/fxml">
   <HBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" styleClass="panel, main-panel">
     <HBox styleClass="main-panel-group">
-      <Button fx:id="add" text="Add" styleClass="main-panel-button, add-button" />
+      <Button fx:id="add" text="?_main_add" styleClass="main-panel-button, add-button" />
     </HBox>
     <HBox styleClass="main-panel-group">
-      <Button fx:id="undo" text="Undo" styleClass="main-panel-button, undo-button" />
-      <Button fx:id="redo" text="Redo" styleClass="main-panel-button, redo-button" />
+      <Button fx:id="undo" text="?_main_undo" styleClass="main-panel-button, undo-button" />
+      <Button fx:id="redo" text="?_main_redo" styleClass="main-panel-button, redo-button" />
     </HBox>
     <HBox styleClass="main-panel-group">
-      <Button fx:id="group" text="Group" styleClass="main-panel-button, group-button" />
-      <Button fx:id="ungroup" text="Ungroup" styleClass="main-panel-button, ungourp-button" />
+      <Button fx:id="group" text="?_main_group" styleClass="main-panel-button, group-button" />
+      <Button fx:id="ungroup" text="?_main_ungroup" styleClass="main-panel-button, ungourp-button" />
     </HBox>
     <HBox styleClass="main-panel-group">
-      <Button fx:id="center" text="Center" styleClass="main-panel-button, center-button" />
-      <Button fx:id="left" text="Left" styleClass="main-panel-button, left-button" />
-      <Button fx:id="right" text="Right" styleClass="main-panel-button, right-button" />
-      <Button fx:id="front" text="Front" styleClass="main-panel-button, front-button" />
-      <Button fx:id="back" text="Back" styleClass="main-panel-button, back-button" />
+      <Button fx:id="center" text="?_main_center" styleClass="main-panel-button, center-button" />
+      <Button fx:id="left" text="?_main_left" styleClass="main-panel-button, left-button" />
+      <Button fx:id="right" text="?_main_right" styleClass="main-panel-button, right-button" />
+      <Button fx:id="front" text="?_main_front" styleClass="main-panel-button, front-button" />
+      <Button fx:id="back" text="?_main_back" styleClass="main-panel-button, back-button" />
     </HBox>
     <HBox styleClass="main-panel-group">
-      <Button fx:id="resetView" text="Reset view" styleClass="main-panel-button, reset-view-button" />
+      <Button fx:id="resetView" text="?_main_reset_view" styleClass="main-panel-button, reset-view-button" />
     </HBox>
   </HBox>
 
