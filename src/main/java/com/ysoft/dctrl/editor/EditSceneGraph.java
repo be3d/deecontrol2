@@ -35,6 +35,14 @@ public class EditSceneGraph extends SubSceneGraph {
     private static final PhongMaterial material = new PhongMaterial(Color.LIGHTBLUE);
     private static final PhongMaterial selectedMaterial = new PhongMaterial(new Color(0.3f, 0.4f, 0.9019608f, 1));
 
+    static {
+        material.setSpecularColor(new Color(0.2,0.2,0.2,1));
+        material.setSpecularPower(10);
+
+        selectedMaterial.setSpecularColor(new Color(0.2,0.2,0.2,1));
+        selectedMaterial.setSpecularPower(10);
+    }
+
     private SceneMesh selected;
     private SceneMesh currentlyFixing;
 

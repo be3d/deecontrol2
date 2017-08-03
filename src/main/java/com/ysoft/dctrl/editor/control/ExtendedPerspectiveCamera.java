@@ -26,7 +26,6 @@ public class ExtendedPerspectiveCamera extends PerspectiveCamera {
 
     public ExtendedPerspectiveCamera(boolean fixedEyeAtCameraZero) {
         super(fixedEyeAtCameraZero);
-        //getTransforms().addAll(getExtendedTransforms());
         getTransforms().addAll(position, rotationY, rotationX, rotationZ);
     }
 
