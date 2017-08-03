@@ -32,6 +32,7 @@ public class LocalizationService {
     private final LocalizationResource localizationResource;
     private final EventBus eventBus;
     private final Locale startUpLocale;
+    private Locale currentLocale;
 
     @Autowired
     public LocalizationService(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext context) {
@@ -40,6 +41,7 @@ public class LocalizationService {
         this.localizationResource = localizationResource;
         this.eventBus = eventBus;
         this.startUpLocale = context.getSettings().getStartUpLocale();
+        this.currentLocale = startUpLocale;
     }
 
     @PostConstruct
@@ -79,6 +81,7 @@ public class LocalizationService {
 
     private void onTranslate(Event e) {
         Locale newLocale = e.getData() instanceof Locale ? (Locale) e.getData() : null;
+        currentLocale = newLocale;
         translate(newLocale);
     }
 
@@ -97,5 +100,9 @@ public class LocalizationService {
 
     private void translate(MenuItem menuItem, Locale locale, String key) {
         menuItem.setText(localizationResource.getMessage(locale, key));
+    }
+
+    public String getMessage(String key) {
+        return localizationResource.getMessage(currentLocale, key);
     }
 }

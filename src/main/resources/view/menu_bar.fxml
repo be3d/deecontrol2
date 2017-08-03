@@ -15,7 +15,7 @@
       <SeparatorMenuItem />
       <MenuItem text="Save" styleClass="menu-item"/>
       <MenuItem text="Save as…" styleClass="menu-item"/>
-      <MenuItem text="Export as…" styleClass="menu-item"/>
+      <MenuItem fx:id="exportAs" text="Export as…" styleClass="menu-item" disable="true"/>
       <SeparatorMenuItem />
       <MenuItem fx:id="settings" text="Settings" styleClass="menu-item" />
       <SeparatorMenuItem />

@@ -252,20 +252,20 @@ public class SlicerPanelController extends LocalizableController implements Init
             if (advSettingsBox.isVisible()){
                 advSettingsBox.setManaged(false);
                 advSettingsBox.setVisible(false);
-                advSettingsToggle.setText("Show advanced settings…");
+                advSettingsToggle.setText(getMessage("show_advanced_settings"));
             } else {
                 advSettingsBox.setManaged(true);
                 advSettingsBox.setVisible(true);
-                advSettingsToggle.setText("Hide advanced settings…");
+                advSettingsToggle.setText(getMessage("hide_advanced_settings"));
             }
         });
 
-        slicingProgressNotification.setLabelText("Slicing objects…");
+        slicingProgressNotification.setLabelText(getMessage("slicing_objects"));
         slicingProgressNotification.addOnCloseAction((e) -> {
             slicerController.stopSlice();
         });
 
-        slicingDoneNotification.setLabelText("Slicing completed.");
+        slicingDoneNotification.setLabelText(getMessage("slicing_completed"));
 
         eventBus.subscribe(EventType.SCENE_EXPORT_PROGRESS.name(), this::onSceneExportProgress);
         eventBus.subscribe(EventType.SLICER_PROGRESS.name(), this::onSlicerProgress);
