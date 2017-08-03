@@ -2,40 +2,45 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Button?>
 <?import java.net.URL?>
 
-<HBox  xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.ScalePanelController" StackPane.alignment="TOP_CENTER" styleClass="panel, edit-panel, scale-panel">
+<?import com.ysoft.dctrl.ui.control.NumberField?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox  xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.ScalePanelController" StackPane.alignment="TOP_LEFT" styleClass="panel, edit-panel, scale-panel">
   <HBox styleClass="edit-panel-group">
-  <Label text="X" labelFor="$x" mnemonicParsing="true" />
-    <TextField fx:id="x" styleClass="" />
+    <Label text="X" labelFor="$x" mnemonicParsing="true" />
+    <NumberField fx:id="xSize" styleClass="" unit="mm" />
+    <NumberField fx:id="x" styleClass="" unit="\%" />
   </HBox>
   <HBox styleClass="edit-panel-group">
     <Label text="Y" labelFor="$y" mnemonicParsing="true" />
-    <TextField fx:id="y" styleClass="" />
-  </HBox>
-  <HBox styleClass="edit-panel-group">
-    <Label text="Z" labelFor="$z" mnemonicParsing="true" />
-    <TextField fx:id="z" styleClass="" />
+    <NumberField fx:id="ySize" styleClass="" unit="mm" />
+    <NumberField fx:id="y" styleClass="" unit="\%" />
   </HBox>
 
   <HBox styleClass="edit-panel-group">
+    <Label text="Z" labelFor="$z" mnemonicParsing="true" />
+    <NumberField fx:id="zSize" styleClass="" unit="mm" />
+    <NumberField fx:id="z" styleClass="" unit="\%" />
+  </HBox>
+
+  <HBox styleClass="edit-panel-group, uniform">
     <CheckBox fx:id="uniform" />
     <Label text="Uniform scaling" labelFor="$uniform" mnemonicParsing="true" />
   </HBox>
 
-  <Separator orientation="VERTICAL" />
-
-  <Button fx:id="reset" text="?_edit_panel_reset" />
+  <HBox styleClass="edit-panel-group">
+    <Button fx:id="toMax" text="SCALE TO MAX" styleClass="" HBox.Hgrow="ALWAYS"/>
+  </HBox>
 
   <stylesheets>
     <URL value="@/css/edit_panel.css" />
     <URL value="@/css/master.css" />
   </stylesheets>
-</HBox>
+</VBox>
 
 

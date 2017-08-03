@@ -1,6 +1,5 @@
 package com.ysoft.dctrl.slicer.profile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.slicer.AbstractConfigResource;
 import com.ysoft.dctrl.slicer.SlicerController;
@@ -8,14 +7,14 @@ import com.ysoft.dctrl.slicer.param.SlicerParam;
 import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.slicer.printer.PrinterResource;
 import com.ysoft.dctrl.utils.DeeControlContext;
+import com.ysoft.dctrl.utils.files.FilePath;
+import com.ysoft.dctrl.utils.files.FilePathResource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,25 +28,23 @@ public class ProfileResource extends AbstractConfigResource {
     private final SlicerParams slicerParams;
     private final SlicerController slicerController;
 
-    private static final String PROFILE_FOLDER = System.getProperty("user.home") + File.separator + ".dctrl" +
-            File.separator + ".slicer" + File.separator + ".userProfiles";
-    private static final String FACTORY_PROFILE_FOLDER = "print/slicer/definitions/factory_profiles";
+    private List<Profile> profiles;
+    private Profile selectedProfile;
 
-
-    protected List<Profile> profiles;
-    protected Profile selectedProfile;
+    private final String profileFolder;
 
     @Autowired
     public ProfileResource(EventBus eventBus, DeeControlContext deeControlContext,
                            PrinterResource printerResource, SlicerParams slicerParams,
-                           SlicerController slicerController) {
+                           SlicerController slicerController, FilePathResource filePathResource) {
 
-        super(eventBus, deeControlContext);
+        super(eventBus, deeControlContext, filePathResource);
 
         this.printerResource = printerResource;
         this.slicerParams = slicerParams;
         this.slicerController = slicerController;
         this.profiles = this.loadProfiles();
+        this.profileFolder = filePathResource.getPath(FilePath.PROFILE_DIR);
     }
 
     public List<Profile> loadProfiles(){
@@ -56,14 +53,20 @@ public class ProfileResource extends AbstractConfigResource {
         // Add default profile with no value overrides
         profiles.add(new Profile());
 
-        List<Profile> factoryProfiles = super.loadObjects(FACTORY_PROFILE_FOLDER, Profile.class, true);
-        for (Profile p : factoryProfiles){
-            profiles.add(p);
+        try {
+            List<Profile> factoryProfiles = super.loadFromResource(FilePath.RESOURCE_PROFILE_DIR, Profile.class);
+            profiles.addAll(factoryProfiles);
+        } catch (IOException e) {
+            System.err.println("Unable to read profiles from resources");
+            e.printStackTrace();
         }
 
-        List<Profile> userProfiles = super.loadObjects(PROFILE_FOLDER, Profile.class, false);
-        for (Profile p : userProfiles){
-            profiles.add(p);
+        try {
+            List<Profile> userProfiles = super.loadFromFolder(FilePath.PROFILE_DIR, Profile.class);
+            profiles.addAll(userProfiles);
+        } catch (IOException e) {
+            System.err.println("Unable to read profiles from user folder");
+            e.printStackTrace();
         }
 
         return profiles;
@@ -150,7 +153,7 @@ public class ProfileResource extends AbstractConfigResource {
      */
     private void saveProfile(Profile profile){
         try {
-            deeControlContext.getObjectMapper().writeValue(new File(PROFILE_FOLDER + File.separator + profile.getId() + ".json"), profile);
+            deeControlContext.getObjectMapper().writeValue(new File(profileFolder + File.separator + profile.getId() + ".json"), profile);
         } catch(IOException e){
             e.printStackTrace();
         }

@@ -3,17 +3,16 @@ package com.ysoft.dctrl.ui.controller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
-import com.ysoft.dctrl.editor.importer.GCodeImporter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.ysoft.dctrl.editor.SceneGraph;
-import com.ysoft.dctrl.editor.control.TrackBallControls;
+import com.ysoft.dctrl.editor.control.MeshTransformControls;
+import com.ysoft.dctrl.editor.control.TrackBallCameraControls;
 import com.ysoft.dctrl.editor.importer.ImportRunner;
 import com.ysoft.dctrl.editor.importer.StlImporter;
 import com.ysoft.dctrl.event.Event;
@@ -23,7 +22,6 @@ import com.ysoft.dctrl.ui.notification.ProgressNotification;
 import com.ysoft.dctrl.utils.DeeControlContext;
 import com.ysoft.dctrl.utils.KeyEventPropagator;
 
-import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,9 +35,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.TriangleMesh;
 
 /**
  * Created by pilar on 22.3.2017.
@@ -51,12 +47,19 @@ public class CanvasController extends AbstractController implements Initializabl
 
     private SceneGraph sceneGraph;
     private KeyEventPropagator keyEventPropagator;
+    private MeshTransformControls meshTransformControls;
 
     @Autowired
-    public CanvasController(EventBus eventBus, DeeControlContext deeControlContext, SceneGraph sceneGraph, KeyEventPropagator keyEventPropagator) {
+    public CanvasController(EventBus eventBus,
+                            DeeControlContext deeControlContext,
+                            SceneGraph sceneGraph,
+                            KeyEventPropagator keyEventPropagator,
+                            MeshTransformControls meshTransformControls
+    ) {
         super(eventBus, deeControlContext);
         this.sceneGraph = sceneGraph;
         this.keyEventPropagator = keyEventPropagator;
+        this.meshTransformControls = meshTransformControls;
     }
 
     @Override
@@ -74,9 +77,12 @@ public class CanvasController extends AbstractController implements Initializabl
             subScene.setHeight(newValue.doubleValue());
         });
 
-        TrackBallControls controls = new TrackBallControls(sceneGraph.getCamera(), new Point3D(0,-400,400));
-
-        canvas.setOnMousePressed(controls::onMousePressed);
+        TrackBallCameraControls controls = new TrackBallCameraControls(sceneGraph.getCamera(), new Point3D(0,-400,400));
+        
+        canvas.setOnMousePressed((e) -> {
+            meshTransformControls.onMousePressed(e);
+            controls.onMousePressed(e);
+        });
         canvas.setOnMouseDragged(controls::onMouseDragged);
         canvas.setOnMouseReleased(controls::onMouseReleased);
         canvas.setOnScroll(controls::onScroll);
@@ -99,7 +105,8 @@ public class CanvasController extends AbstractController implements Initializabl
     private void onDragDrop(DragEvent dragEvent) {
         Dragboard db = dragEvent.getDragboard();
         if(db.hasFiles()) {
-            db.getFiles().forEach((f) -> addModel(f.getAbsolutePath()));
+            addModel(db.getFiles().get(0).getAbsolutePath());
+            //db.getFiles().forEach((f) -> addModel(f.getAbsolutePath()));
         }
     }
 
@@ -133,14 +140,14 @@ public class CanvasController extends AbstractController implements Initializabl
             case TAB:
                 if(keyEvent.isControlDown()) {
                     if(keyEvent.isShiftDown()) {
-                        sceneGraph.selectPrevious();
+                        eventBus.publish(new Event(EventType.EDIT_SELECT_PREV.name()));
                     } else {
-                        sceneGraph.selectNext();
+                        eventBus.publish(new Event(EventType.EDIT_SELECT_NEXT.name()));
                     }
                 }
                 break;
             case DELETE:
-                sceneGraph.deleteSelected();
+                eventBus.publish(new Event(EventType.EDIT_DELETE_SELECTED.name()));
                 break;
         }
     }

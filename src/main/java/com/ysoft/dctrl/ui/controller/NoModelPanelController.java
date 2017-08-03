@@ -4,14 +4,13 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.ysoft.dctrl.editor.importer.ImportRunner;
-import com.ysoft.dctrl.editor.importer.StlImporter;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
-import com.ysoft.dctrl.ui.i18n.LocalizationResource;
+import com.ysoft.dctrl.ui.dialog.RetentionFileChooser;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
@@ -33,21 +32,22 @@ public class NoModelPanelController extends LocalizableController {
     @FXML
     Button browse;
 
-    private String eventDecriptor;
+    private String eventDescriptor;
+    private RetentionFileChooser retentionFileChooser;
 
-
-    public NoModelPanelController(LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
+    @Autowired
+    public NoModelPanelController(LocalizationService localizationService, EventBus eventBus, DeeControlContext context, RetentionFileChooser retentionFileChooser) {
         super(localizationService, eventBus, context);
+        this.retentionFileChooser = retentionFileChooser;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         root.addEventHandler(MouseEvent.ANY, javafx.event.Event::consume);
-        eventDecriptor = eventBus.subscribe(EventType.MODEL_LOADED.name(), this::hide);
+        eventDescriptor = eventBus.subscribe(EventType.MODEL_LOADED.name(), this::hide);
 
         browse.setOnAction(event -> {
-            final FileChooser dialog = new FileChooser();
-            File f = dialog.showOpenDialog(root.getScene().getWindow());
+            File f = retentionFileChooser.showOpenDialog(root.getScene().getWindow(), new FileChooser.ExtensionFilter("3D models", "*.STL", "*.stl"));
             if(f == null) return;
             eventBus.publish(new Event(EventType.ADD_MODEL.name(), f.getAbsolutePath()));
         });
@@ -57,6 +57,6 @@ public class NoModelPanelController extends LocalizableController {
 
     public void hide(Event event) {
         root.setVisible(false);
-        eventBus.unsubscribe(eventDecriptor);
+        eventBus.unsubscribe(eventDescriptor);
     }
 }

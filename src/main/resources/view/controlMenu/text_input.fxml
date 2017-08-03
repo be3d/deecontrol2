@@ -6,7 +6,7 @@
 <?import java.lang.String?>
 
 
-<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="">
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu-component-container">
    <Label fx:id="label" text="Print job name" styleClass="control-label"></Label>
    <HBox>
      <children>

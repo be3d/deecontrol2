@@ -12,7 +12,6 @@ public abstract class IconNotification extends Notification {
         super();
         icon = new Region();
         getBaseRow().getChildren().add(0, icon);
-        System.err.println("notification-icon-" + getIconType().name().toLowerCase());
         icon.getStyleClass().addAll("notification-icon", "notification-icon-" + getIconType().name().toLowerCase());
     }
 

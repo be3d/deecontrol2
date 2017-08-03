@@ -6,11 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
-import javafx.beans.InvalidationListener;
+
 import javafx.beans.property.*;
-import javafx.beans.property.adapter.JavaBeanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.LinkedHashMap;
@@ -68,10 +66,7 @@ public class SlicerParam implements Cloneable {
         this.step = step;
         this.options = options;
         this.defaultValue = defaultValue;
-        if (value == null)
-            this.value = defaultValue;
-        else
-            this.value = value;
+        this.value = (value == null) ? defaultValue : value;
 
         if(type != null){
             switch(ValueType.valueOf(type.toUpperCase())) {
@@ -109,7 +104,7 @@ public class SlicerParam implements Cloneable {
         this.value = original.value;
     }
 
-    public void setVal(Object value){
+    public void setValue(Object value){
         this.value = value;
         this.setValueProperty(value);
         System.out.println("Setting " + this.id + " to " + value.toString());
@@ -125,10 +120,7 @@ public class SlicerParam implements Cloneable {
     }
 
     public Object getValue() {
-        if (value != null)
-            return value;
-        else
-            return defaultValue;
+        return (value != null) ? value : defaultValue;
     }
 
     public String getId() {
@@ -193,7 +185,7 @@ public class SlicerParam implements Cloneable {
 
     public void resetToDefault(){
         if (this.defaultValue != null){
-            this.setVal(this.defaultValue);
+            this.setValue(this.defaultValue);
 //            try{
 //                this.setValueProperty((double)this.defaultValue);
 //            }catch(ClassCastException e){

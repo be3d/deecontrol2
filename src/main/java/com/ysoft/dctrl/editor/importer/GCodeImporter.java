@@ -9,19 +9,20 @@ import com.ysoft.dctrl.utils.GCodeContext;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.shape.TriangleMesh;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 
-import static java.lang.Math.*;
 
 /**
  * Created by kuhn on 5/22/2017.
  */
-public class GCodeImporter extends YieldModelImporter {
-
+public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
+    private final Logger logger = LogManager.getLogger(GCodeImporter.class);
     private final EventBus eventBus;
 
     private final Pattern TRAVEL_MOVE_PATTERN = Pattern.compile("G0\\s.+");
@@ -32,7 +33,6 @@ public class GCodeImporter extends YieldModelImporter {
     private GCodeLayer gCodeLayer = new GCodeLayer(-1); // in CURA it can start with negative layers !! change this
     private ArrayList<GCodeLayer> layers = new ArrayList<>();
     private GCodeContext gCodeContext = new GCodeContext();
-    private GCodeMeshGenerator gCodeMeshGenerator = new GCodeMeshGenerator(new GCodeMeshProperties());
 
     public GCodeImporter(EventBus eventBus){
         super();
@@ -149,7 +149,7 @@ public class GCodeImporter extends YieldModelImporter {
             gCodeLayer.processCmd(gCodeContext.getMoveType(),
                     gCodeContext.getX(), gCodeContext.getY(), gCodeContext.getZ());
         } catch (NumberFormatException e) {
-            System.out.println("Gcode line corrupt: " + line);
+            logger.warn("Gcode line corrupt: {}", line, e);
         }
 
     }

@@ -151,7 +151,6 @@ public class ButtonIncrement extends BaseCustomControl implements SlicerParamBin
     public void bindControlChanged(ChangeListener listener) {
         minusBtn.onActionProperty().addListener(listener);
         plusBtn.onActionProperty().addListener(listener);
-        System.out.println("out");
     }
 
     public void bindOnAction(javafx.event.EventHandler<javafx.event.ActionEvent> handler){
@@ -160,6 +159,6 @@ public class ButtonIncrement extends BaseCustomControl implements SlicerParamBin
     }
 
     public void updateParam(){
-        boundParam.setVal(getValue());
+        boundParam.setValue(getValue());
     }
 }

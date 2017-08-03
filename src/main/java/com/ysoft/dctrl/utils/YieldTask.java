@@ -2,6 +2,7 @@ package com.ysoft.dctrl.utils;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import javafx.animation.Animation;
@@ -26,25 +27,27 @@ public abstract class YieldTask<T, R> extends Task<T> {
     private void init() {
         onYield = null;
         queue = new ConcurrentLinkedQueue<>();
-        timeline = new Timeline(new KeyFrame(Duration.millis(0.1), (e) -> {
-            if(queue.isEmpty()) {
-                switch (getState()) {
-                    case SUCCEEDED:
-                    case CANCELLED:
-                    case FAILED:
-                        timeline.stop();
-                        timeline.getKeyFrames().clear();
-                }
-                return;
-            } else if(onYield  == null) {
-                return;
-            }
-
-            onYield.accept(queue.poll());
-
+        timeline = new Timeline(new KeyFrame(Duration.millis(4), (e) -> {
+            yielding();
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+    }
+
+    private synchronized void yielding() {
+        if(queue.isEmpty()) {
+            switch (getState()) {
+                case SUCCEEDED:
+                case CANCELLED:
+                case FAILED:
+                    timeline.stop();
+                    timeline.getKeyFrames().clear();
+            }
+            return;
+        } else if(onYield  == null) {
+            return;
+        }
+        onYield.accept(queue.poll());
     }
 
     public void setOnYield(Consumer<R> consumer) {

@@ -5,9 +5,13 @@ import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.slicer.AbstractConfigResource;
 import com.ysoft.dctrl.utils.DeeControlContext;
+import com.ysoft.dctrl.utils.files.FilePath;
+import com.ysoft.dctrl.utils.files.FilePathResource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
 
 
@@ -17,20 +21,22 @@ import java.util.*;
 
 @Component
 public class PrinterResource extends AbstractConfigResource {
-
-    private static final String DEFINITIONS_PATH = "print/slicer/definitions/printer";
-
     private List<Printer> printers;
     private Printer selectedPrinter;
 
     @Autowired
-    public PrinterResource(EventBus eventBus, DeeControlContext deeControlContext){
-        super(eventBus, deeControlContext);
+    public PrinterResource(EventBus eventBus, DeeControlContext deeControlContext, FilePathResource filePathResource){
+        super(eventBus, deeControlContext, filePathResource);
         this.printers = loadPrinters();
     }
 
     private List<Printer> loadPrinters(){
-        List<Printer> printers = super.loadObjects(DEFINITIONS_PATH, Printer.class, true);
+        List<Printer> printers = new ArrayList<>();
+        try {
+            printers = super.loadFromResource(FilePath.RESOURCE_PRINTER_DIR, Printer.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return printers;
     }
 

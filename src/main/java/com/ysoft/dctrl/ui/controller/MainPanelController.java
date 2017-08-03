@@ -4,11 +4,13 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.ui.dialog.RetentionFileChooser;
 import com.ysoft.dctrl.ui.i18n.LocalizationResource;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
@@ -34,15 +36,18 @@ public class MainPanelController extends LocalizableController implements Initia
 
     @FXML Button resetView;
 
-    public MainPanelController(LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
+    private RetentionFileChooser retentionFileChooser;
+
+    @Autowired
+    public MainPanelController(LocalizationService localizationService, EventBus eventBus, DeeControlContext context, RetentionFileChooser retentionFileChooser) {
         super(localizationService, eventBus, context);
+        this.retentionFileChooser = retentionFileChooser;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         add.setOnAction(event -> {
-            final FileChooser dialog = new FileChooser();
-            File f = dialog.showOpenDialog(root.getScene().getWindow());
+            File f = retentionFileChooser.showOpenDialog(root.getScene().getWindow(), new FileChooser.ExtensionFilter("3D models", "*.STL", "*.stl"));
             if(f == null) return;
             eventBus.publish(new Event(EventType.ADD_MODEL.name(), f.getAbsolutePath()));
         });

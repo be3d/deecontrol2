@@ -241,6 +241,10 @@ DialogPane HeaderBox Button:pressed {
     -fx-background-image: url("../img/notification/error.png");
 }
 
+.notification .notification-icon-spinner {
+    -fx-background-image: url("../img/notification/spinner.gif");
+}
+
 .notification .close {
     -fx-background-color: transparent;
     -fx-background-image: url("../img/close.png");

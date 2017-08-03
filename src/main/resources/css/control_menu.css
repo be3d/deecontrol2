@@ -24,7 +24,6 @@
 .control-menu-scrollBar .scroll-bar:vertical .thumb {
     -fx-background-color: #9b9b9b;
     -fx-background-radius: 5px;
-
 }
 
 .control-menu-scrollBar .increment-arrow, .control-menu-scrollBar .decrement-arrow {
@@ -35,6 +34,13 @@
     -fx-background-color: #f9f9f9;
 }
 
+.control-menu-section-header-left-padding {
+    -fx-pref-width: 3px;
+}
+
+.control-menu-section-header-right-padding {
+    -fx-pref-width: 15px;
+}
 
 .control-menu-section-header-text {
     -fx-font-weight: 700;
@@ -43,7 +49,21 @@
 
 .control-menu-section-header {
     -fx-background-color: #f9f9f9;
-    -fx-pref-height: 35px;
+}
+
+.control-menu-subSection-header {
+    -fx-padding: 10 0 0 0;
+    -fx-background-insets: 10 0 0 0;
+    -fx-background-color: #f9f9f9;
+    -fx-pref-height: 45px;
+    -fx-min-height: 45px;
+    -fx-max-height: 45px;
+}
+
+.control-menu-section-header-addtext {
+    -fx-font-size: 14px;
+    -fx-text-fill: #9b9b9b;
+    -fx-font-style: italic;
 }
 
 .control-menu-subSection-header-text {
@@ -110,15 +130,76 @@
 }
 
 .control-slider .track {
-    -fx-background-color:#45beef;
+
+    -fx-background-color: null ;
     -fx-background-radius: 2.5, 2.5, 1.5;
     -fx-padding: 1 0 1 0px;
 }
 .control-slider .thumb {
-    -fx-background-color:#45beef;
+    -fx-background-color:#00bff0;
     -fx-padding: 8px;
 }
 
+.control-slider .thumb:disabled{
+    -fx-background-color:#bfbfbf;
+}
+
+.control-slider-progress {
+    -fx-pref-width: 150px;
+    -fx-pref-height: 3px;
+    -fx-background-color:#ffffff;
+}
+
+.control-slider-progress  .track {
+    -fx-pref-height: 3px;
+    -fx-background-color: #bfbfbf;
+}
+
+.control-slider-progress > .bar {
+    -fx-padding: 1px;
+    -fx-background-insets: 0;
+    -fx-background-color: #00bff0;
+}
+
+.control-slider-progress > .bar:disabled {
+    -fx-background-color: #bfbfbf;
+}
+
+.control-toggle-group {
+    -fx-pref-width: 244px;
+    -fx-min-width: 244px;
+    -fx-max-width: 244px;
+}
+.control-toggle-group ToggleButton {
+    -fx-background-color: white;
+    -fx-pref-height: 36px;
+    -fx-min-height: 36px;
+    -fx-border-color: #bfbfbf;
+    -fx-border-radius: 0px;
+    -fx-background-insets: 0;
+    -fx-cursor: hand;
+}
+
+.control-toggle-group ToggleButton:selected {
+    -fx-background-color: #00bff0;
+    -fx-text-fill: #ffffff;
+}
+
+.control-toggle-group ToggleButton:selected:disabled{
+    -fx-background-color: #bfbfbf;
+}
+
+.control-toggle-group-button-first {
+    -fx-border-radius:3 0 0 3px;
+    -fx-background-radius: 3 0 0 3px;
+    -fx-border-width: 1 0 1 1px;
+}
+
+.control-toggle-group-button-last {
+    -fx-border-radius:0 3 3 0px;
+    -fx-background-radius: 0 3 3 0px;
+    -fx-border-width: 1 1 1 0px;
+}
 .control-value {
     -fx-font-weight:500;
 }
@@ -148,6 +229,28 @@
     -fx-border-radius: 3px;
 }
 
+.control-checkBox:selected .box {
+    -fx-background-color: #21c1ef;
+    -fx-border-color: #21c1ef;
+}
+
+.control-checkBox:selected .mark {
+    -fx-background-image: url("../img/control_menu/checkmark.png");;
+    -fx-background-position: center;
+    -fx-background-repeat: stretch;
+    -fx-background-insets: 0;
+    -fx-shape: none;
+}
+
+.control-checkBox:selected:disabled .mark {
+    -fx-background-image: none;
+    -fx-background-color: #cccccc;
+}
+
+.control-checkBox:disabled .box {
+    -fx-background-color: #cccccc;
+}
+
 .control-comboBox {
     -fx-background-color: #ffffff;
     -fx-border-color: #bfbfbf;
@@ -155,6 +258,16 @@
     -fx-pref-width: 244;
     -fx-min-height: 36;
     -fx-pref-height: 36;
+}
+
+.control-comboBox .arrow{
+    -fx-shape: none;
+    -fx-padding: 4 6;
+    -fx-background-color: #f121212;
+    -fx-background-position: center;
+    -fx-background-insets: 0;
+    -fx-background-size: stretch;
+    -fx-background-image:  url("../img/control_menu/comboBox-arrow.png");
 }
 
 .control-comboBox .context-menu{
@@ -175,7 +288,10 @@
 
 .control-comboBox .list-view .list-cell:selected:hover {
     -fx-background-color: #45beef;
+}
 
+.control-comboBox:disabled {
+    -fx-background-color:  #cccccc;
 }
 
 .control-choiceBox {
@@ -189,6 +305,8 @@
 .control-choiceBox .context-menu {
     -fx-pref-width: 270;
 }
+
+
 
 .control-progress {
     -fx-pref-width: 300;
@@ -263,6 +381,10 @@
 
 }
 
+.control-menu-increment-button:disabled {
+    -fx-border-color: #bfbfbf;
+}
+
 .minus-button {
     -fx-background-image: url("../img/control_menu/minus-normal.png");
 }
@@ -290,7 +412,19 @@
 
 }
 
+.control-menu-component-container {
+    -fx-padding: -5 0 5 0;
+}
+
+.control-menu-component-container-checkbox {
+    -fx-padding: -5 0 -15 0;
+}
+
+
 /* DIVIDER REGIONS */
+.top-label-padding {
+    -fx-pref-height: 1px;
+}
 .left-control-hpadding {
     -fx-pref-width: 20px;
 }
@@ -298,3 +432,8 @@
 .right-control-hpadding {
     -fx-pref-width: 22px;
 }
+
+.bottom-control-vpadding {
+    -fx-pref-height: 10px;
+}
+

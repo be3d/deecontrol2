@@ -1,6 +1,8 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.Collections;
 
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
@@ -63,4 +65,15 @@ public abstract class BaseCustomControl extends VBox {
     }
 
     public void addChangeListener(javafx.beans.value.ChangeListener listener){}
+
+    protected DecimalFormat getDecimalFormat(int decimals){
+        DecimalFormat df;
+        if (decimals > 0){
+            df = new DecimalFormat("#."+String.join("", Collections.nCopies(decimals, "#")));
+        }
+        else {
+            df = new DecimalFormat("#");
+        }
+        return df;
+    }
 }

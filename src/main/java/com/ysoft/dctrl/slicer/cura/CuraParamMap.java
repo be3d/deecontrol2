@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by kuhn on 4/11/2017.
  */
 
-public class CuraParamMap<T> extends EnumMap<SlicerParamType, String>{
+public class CuraParamMap extends EnumMap<SlicerParamType, String>{
 
     private void init() {
         this.put(SlicerParamType.MACHINE_WIDTH,"machine_width");
@@ -34,16 +34,14 @@ public class CuraParamMap<T> extends EnumMap<SlicerParamType, String>{
         this.put(SlicerParamType.RESOLUTION_LAYER_HEIGHT_0,"layer_height_0");
         this.put(SlicerParamType.RESOLUTION_LINE_WIDTH_0,"wall_line_width_0");
 
-        this.put(SlicerParamType.SHELL_THICKNESS, "wall_thickness");
-        this.put(SlicerParamType.SHELL_TOP_BOTTOM_THICKNESS,"top_bottom_thickness");
+        this.put(SlicerParamType.SHELL_THICKNESS, "wall_line_count");
         this.put(SlicerParamType.SHELL_TOP_LAYERS,"top_layers");
         this.put(SlicerParamType.SHELL_BOTTOM_LAYERS,"bottom_layers");
-        this.put(SlicerParamType.SHELL_TOP_THICKNESS,"top_thickness");
         this.put(SlicerParamType.SHELL_OUTER_WALL_INSET,"wall_0_inset");
         this.put(SlicerParamType.SHELL_Z_SEAM_X,"z_seam_x");
         this.put(SlicerParamType.SHELL_Z_SEAM_Y,"z_seam_y");
 
-        this.put(SlicerParamType.INFILL_OVERLAP_PERCENTAGE,"infill_overlap");
+        this.put(SlicerParamType.INFILL_OVERLAP_MM,"infill_overlap_mm");
         this.put(SlicerParamType.INFILL_LAYER_THICKNESS,"infill_sparse_thickness");
         this.put(SlicerParamType.INFILL_PATTERN,"infill_pattern");
         this.put(SlicerParamType.INFILL_DENSITY,"infill_sparse_density");
@@ -60,24 +58,26 @@ public class CuraParamMap<T> extends EnumMap<SlicerParamType, String>{
         this.put(SlicerParamType.MATERIAL_RETRACTION_MINIMUM_TRAVEL,"retraction_min_travel");
 
         this.put(SlicerParamType.COOL_FAN_REGMAX_SPEED_THRESHOLD, "cool_min_layer_time_fan_speed_max");
-        this.put(SlicerParamType.COOL_FAN_SPEED_REG_LAYER, "cool_fan_full_at_height");
+        this.put(SlicerParamType.COOL_FAN_SPEED_REG_LAYER, "cool_fan_full_layer");
         this.put(SlicerParamType.COOL_MIN_LAYER_TIME, "cool_min_layer_time");
         this.put(SlicerParamType.COOL_LIFT_HEAD, "cool_lift_head");
 
         this.put(SlicerParamType.SUPPORT_ENABLED,"support_enable");
         this.put(SlicerParamType.SUPPORT_PLACEMENT,"support_type");
         this.put(SlicerParamType.SUPPORT_BUILDPLATE_TYPE,"adhesion_type");
-        this.put(SlicerParamType.SUPPORT_BUILDPLATE_BRIM_WIDTH,"brim_width");
+        this.put(SlicerParamType.SUPPORT_BUILDPLATE_BRIM_LINES,"brim_line_count");
         this.put(SlicerParamType.SUPPORT_DENSITY,"support_infill_rate");
         this.put(SlicerParamType.SUPPORT_PATTERN,"support_pattern");
         this.put(SlicerParamType.SUPPORT_ANGLE,"support_angle");
         this.put(SlicerParamType.SUPPORT_CONNECT_ZIGZAGS,"support_connect_zigzags");
-        this.put(SlicerParamType.SUPPORT_Z_DISTANCE,"support_z_distance");
+        this.put(SlicerParamType.SUPPORT_TOP_DISTANCE,"support_top_distance");
+        this.put(SlicerParamType.SUPPORT_BOTTOM_DISTANCE,"support_bottom_distance");
         this.put(SlicerParamType.SUPPORT_XY_DISTANCE,"support_xy_distance");
         this.put(SlicerParamType.SUPPORT_STAIR_STEP_HEIGHT,"support_bottom_stair_step_height");
         this.put(SlicerParamType.SUPPORT_HORIZONTAL_EXPANSION,"support_offset");
         this.put(SlicerParamType.SUPPORT_INTERFACE_ENABLE,"support_interface_enable");
-        this.put(SlicerParamType.SUPPORT_INTERFACE_THICKNESS,"support_interface_height");
+        this.put(SlicerParamType.SUPPORT_ROOF_THICKNESS,"support_roof_height");
+        this.put(SlicerParamType.SUPPORT_BOTTOM_THICKNESS,"support_bottom_height");
         this.put(SlicerParamType.SUPPORT_INTERFACE_RESOLUTION,"support_interface_skip_height");
         this.put(SlicerParamType.SUPPORT_INTERFACE_DENSITY,"support_interface_density");
         this.put(SlicerParamType.SUPPORT_TOWER_DIAMETER,"support_tower_diameter");

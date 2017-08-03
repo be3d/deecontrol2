@@ -1,60 +1,65 @@
 package com.ysoft.dctrl.slicer.cura;
 
-import com.ysoft.dctrl.event.Event;
-import com.ysoft.dctrl.event.EventBus;
-import com.ysoft.dctrl.event.EventType;
-import com.ysoft.dctrl.slicer.AbstractSlicer;
-
+import com.ysoft.dctrl.slicer.Slicer;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
 import com.ysoft.dctrl.slicer.param.SlicerParamType;
 
-import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.utils.DeeControlContext;
-import javafx.scene.control.ProgressBar;
+import com.ysoft.dctrl.utils.OSVersion;
+import com.ysoft.dctrl.utils.files.FilePath;
+import com.ysoft.dctrl.utils.files.FilePathResource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
 import java.io.*;
 import java.util.*;
-
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by kuhn on 4/4/2017.
  */
 @Component("Cura")
-public class Cura extends AbstractSlicer {
+public class Cura implements Slicer {
+    private static final String CURA_FOLDER = "cura" + File.separator;
+    private static final String WIN_BINARY = "CuraEngine.exe";
+    private static final String MAC_BINARY = "CuraEngine";
+    private static final String CONFIG_FILE = "def" + File.separator + "printer.def.json";
+    private static final String LOG_FILE = "cura.log";
 
-    private String CURA_BIN_FOLDER;
-    private String CURA_BIN_FILE;
-    private String CURA_PARAM_SAMPLE_FILE;
-    private String CURA_LOG_FILE;
+    private static final Matcher durationMatcher = Pattern.compile("^;TIME:(?<time>\\d+)").matcher("");
+    private static final Matcher materialMatcher = Pattern.compile("^;Filament used: (?<usage>\\d+(\\.\\d+)?)m").matcher("");
+    private static final Matcher placeholderMatcher = Pattern.compile("\\{(?<param>[A-Z0-9_]+)}").matcher("");
+
+    private final String binFile;
+    private final String configFile;
+    private final String logFile;
+    private final String outputFile;
+
+    private final DeeControlContext deeControlContext;
 
     private static final CuraParamMap curaParamMap = new CuraParamMap(SlicerParamType.class);
     private static double progress = 0.0;
 
+    private volatile long duration;
+    private volatile Long[] materialUsage;
+
     @Autowired
-    public Cura(EventBus eventBus, DeeControlContext deeControlContext) throws IOException {
-        super(eventBus, deeControlContext);
-
-        CURA_BIN_FOLDER = deeControlContext.getFileService().BIN_PATH + File.separator + "cura";
-        CURA_BIN_FILE = CURA_BIN_FOLDER + "/CuraEngine.exe"; // for windows
-        CURA_PARAM_SAMPLE_FILE = CURA_BIN_FOLDER + "/def/fdmprinter.def.json";
-        CURA_LOG_FILE = deeControlContext.getFileService().TEMP_SLICER_PATH + File.separator + "cura.log";
-
+    public Cura(FilePathResource filePathResource, DeeControlContext deeControlContext) throws IOException {
+        this.deeControlContext = deeControlContext;
+        String binPath = filePathResource.getPath(FilePath.BIN_DIR) + File.separator + CURA_FOLDER;
+        binFile = binPath + (OSVersion.is(OSVersion.WIN) ? WIN_BINARY : MAC_BINARY);
+        configFile = binPath + CONFIG_FILE;
+        logFile = filePathResource.getPath(FilePath.SLICER_DIR) + File.separator + LOG_FILE;
+        outputFile = filePathResource.getPath(FilePath.SLICER_GCODE_FILE);
     }
 
     public boolean supportsParam(String paramName) {
-        for (Object s : Cura.curaParamMap.keySet()) {
-            try {
-                if (s == SlicerParamType.valueOf(paramName)) {
-                    return true;
-                }
-            } catch (IllegalArgumentException e) {
-                // Not supported parameter
-                continue;
-            }
+        try {
+            return Cura.curaParamMap.containsKey(SlicerParamType.valueOf(paramName));
+        } catch (IllegalArgumentException e) {
+            System.err.println("Not supported param " + paramName);
         }
         return false;
     }
@@ -95,31 +100,14 @@ public class Cura extends AbstractSlicer {
 
     @Override
     public void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws IOException {
+        duration = 0;
+        materialUsage = new Long[16];
+        int counter = 0;
 
-        // Construct the command with current parameters
-        List<String> cmdParams = new ArrayList<>(
-                Arrays.asList(CURA_BIN_FILE, "slice", "-v", "-p", "-j", CURA_PARAM_SAMPLE_FILE,
-                        "-o", deeControlContext.getFileService().TEMP_SLICER_GCODE_FILE, "-e0")
-        );
-        for (Map.Entry<String, SlicerParam> entry : slicerParams.entrySet()) {
-            try {
-                Object paramName = curaParamMap.get(SlicerParamType.valueOf((String) entry.getKey()));
-                if (paramName != null) {
-                    SlicerParam param = entry.getValue();
-                    if (param.getValue() != null) {
-                        cmdParams.add("-s");
-                        cmdParams.add(paramName + "=" + param.getValue());
-                    } else if (param.getDefaultValue() != null) {
-                        cmdParams.add("-s");
-                        cmdParams.add(paramName + "=" + param.getDefaultValue());
-                    } else {
-                        System.err.println("Param has no value nor default value");
-                    }
-                }
-            } catch (IllegalArgumentException e) {
-                continue;   // parameter not defined for cura
-            }
-        }
+        createConfigFile(slicerParams);
+
+        List<String> cmdParams = new ArrayList<>(Arrays.asList(binFile, "slice", "-v", "-p", "-j", configFile,"-o", outputFile, "-e0"));
+
         cmdParams.add("-l");
         cmdParams.add(modelSTL);
         String[] cmd = cmdParams.toArray(new String[cmdParams.size()]);
@@ -133,11 +121,12 @@ public class Cura extends AbstractSlicer {
 
         try (
                 BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                BufferedWriter bw = new BufferedWriter(new FileWriter(new File(CURA_LOG_FILE)))
+                BufferedWriter bw = new BufferedWriter(new FileWriter(new File(logFile)))
         ) {
 
             String s;
             while ((s = stdInput.readLine()) != null) {
+                System.err.println(s);
 
                 // Check for cancel command
                 if (Thread.currentThread().isInterrupted()) {
@@ -162,6 +151,16 @@ public class Cura extends AbstractSlicer {
                         // Not parsable line
                     }
                 }
+
+                durationMatcher.reset(s);
+                if(durationMatcher.find()) {
+                    duration = Long.parseLong(durationMatcher.group("time"));
+                }
+
+                materialMatcher.reset(s);
+                if(materialMatcher.find()) {
+                    materialUsage[counter++] = Math.round(1000 * Double.parseDouble(materialMatcher.group("usage")));
+                }
             }
         } catch (IOException e) {
             System.out.println("Cura exception.");
@@ -169,7 +168,55 @@ public class Cura extends AbstractSlicer {
         }
     }
 
+    private void createConfigFile(Map<String, SlicerParam> slicerParams) {
+        final PrinterProfile printerProfile = new PrinterProfile();
+        slicerParams.forEach((k, p) -> {
+            String paramName = curaParamMap.get(SlicerParamType.valueOf(k));
+            if(paramName == null) return;
+
+            Object o;
+            if((o = p.getValue()) != null) {
+                printerProfile.addOverride(paramName, (o instanceof String) ? replacePlaceholders((String) o, slicerParams) : o);
+            }
+        });
+
+        try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(configFile))){
+            deeControlContext.getObjectMapper().writeValue(os, printerProfile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String replacePlaceholders(String value, Map<String, SlicerParam> slicerParams) {
+        placeholderMatcher.reset(value);
+
+        while(placeholderMatcher.find()) {
+            String paramName = placeholderMatcher.group("param");
+            try {
+                SlicerParamType type = SlicerParamType.valueOf(paramName);
+                if(!curaParamMap.containsKey(type)) { continue; }
+                SlicerParam p = slicerParams.get(paramName);
+                if(p.getValue() == null) { continue; }
+                value = value.replace("{" + paramName + "}", p.getValue().toString());
+            } catch (IllegalArgumentException e) {
+                System.err.println("Unknown pramaeter");
+            }
+        }
+
+        return value;
+    }
+
     public double getProgress(){
         return progress;
+    }
+
+    @Override
+    public long getDuration() {
+        return duration;
+    }
+
+    @Override
+    public Long[] getMaterialUsage() {
+        return materialUsage;
     }
 }

@@ -3,62 +3,60 @@ package com.ysoft.dctrl.slicer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.utils.DeeControlContext;
+import com.ysoft.dctrl.utils.files.FilePath;
+import com.ysoft.dctrl.utils.files.FilePathResource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by kuhn on 6/13/2017.
  */
-@Component
+
 public abstract class AbstractConfigResource {
 
     protected final DeeControlContext deeControlContext;
     protected final EventBus eventBus;
+    private final FilePathResource filePathResource;
 
-    @Autowired
-    public AbstractConfigResource(EventBus eventBus, DeeControlContext deeControlContext) {
+    public AbstractConfigResource(EventBus eventBus, DeeControlContext deeControlContext, FilePathResource filePathResource) {
         this.eventBus = eventBus;
         this.deeControlContext = deeControlContext;
-
+        this.filePathResource = filePathResource;
     }
 
-    /**
-     * Crawls the folder, and uses objectMapper to parse files into java objects of (type)
-     */
-    public <T> List<T> loadObjects(String path, Class<T> type, Boolean fromResources){
+    public <T> List<T> loadFromResource(FilePath resourcePath, Class<T> type) throws IOException {
+        Resource[] resources = filePathResource.listResources(resourcePath);
+        List<T> res = new ArrayList<>();
 
-        List<T> objects = new ArrayList<>();
-        List<File> fileObjects;
-
-        if (fromResources){
-            fileObjects = this.deeControlContext.getFileService().getResourceFiles(path);
-        } else {
-            fileObjects = this.deeControlContext.getFileService().getUserFiles(path);
-        }
-
-        for (File f : fileObjects){
-
-            if (!f.isFile()){ continue; }
-
-            try {
-                objects.add(deeControlContext.getObjectMapper().readValue(f, type));
-            } catch (JsonMappingException e){
-                System.out.println("Config resource: parsing error." + f.toString() + " " + e.getMessage());
-                e.printStackTrace();
-            } catch ( IOException e){
-                System.out.println("Config resource: definition error." + f.toString() + " " + e.getMessage());
-                e.printStackTrace();
-            }catch (IllegalArgumentException e){
-                System.out.println("Config resource: parsing error. " + f.toString() + " " + e.getMessage());
-                e.printStackTrace();
+        for(Resource r : resources) {
+            try (InputStream is = r.getInputStream()) {
+                res.add(deeControlContext.getObjectMapper().readValue(is, type));
             }
         }
 
-        return objects;
+        return res;
     }
+
+    public <T> List<T> loadFromFolder(FilePath folderPath, Class<T> type) throws IOException {
+        File[] files = filePathResource.listFiles(folderPath);
+        List<T> res = new ArrayList<>();
+
+        for(File f : files) {
+            try(InputStream is = new FileInputStream(f)) {
+                res.add(deeControlContext.getObjectMapper().readValue(is, type));
+            }
+        }
+
+        return res;
+    }
+
 }

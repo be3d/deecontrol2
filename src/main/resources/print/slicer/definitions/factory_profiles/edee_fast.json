@@ -71,9 +71,14 @@
          "value":5
       },
       {
-         "id":"SUPPORT_Z_DISTANCE",
+         "id":"SUPPORT_TOP_DISTANCE",
          "type":"float",
          "value":0.2
+      },
+      {
+        "id":"SUPPORT_BOTTOM_DISTANCE",
+        "type":"float",
+        "value":0.2
       },
       {
          "id":"SUPPORT_INTERFACE_ENABLE",
@@ -81,9 +86,14 @@
          "value":true
       },
       {
-         "id":"SUPPORT_INTERFACE_THICKNESS",
+         "id":"SUPPORT_ROOF_THICKNESS",
          "type":"float",
          "value":0.8
+      },
+      {
+        "id":"SUPPORT_BOTTOM_THICKNESS",
+        "type":"float",
+        "value":0.8
       },
       {
          "id":"SUPPORT_INTERFACE_DENSITY",
