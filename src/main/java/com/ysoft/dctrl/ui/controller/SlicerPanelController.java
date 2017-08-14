@@ -221,7 +221,7 @@ public class SlicerPanelController extends LocalizableController implements Init
             eventBus.publish(new Event(EventType.TAKE_SCENE_SNAPSHOT.name(), sceneImage));
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingProgressNotification));
             deeControlContext.getCurrentProject().setName(printJobNameInput.getText());
-            setControlsEnabled(true);
+            setControlsEnabled(false);
             exportScene();
         });
 
@@ -265,6 +265,7 @@ public class SlicerPanelController extends LocalizableController implements Init
         eventBus.subscribe(EventType.SLICER_PROGRESS.name(), this::onSlicerProgress);
         eventBus.subscribe(EventType.SLICER_FINISHED.name(), this::onSlicerFinished);
         eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> setSliceEnabled(true));
+        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), this::onEditModeActivate);
 
         super.initialize(location, resources);
     }
@@ -285,6 +286,12 @@ public class SlicerPanelController extends LocalizableController implements Init
         slicingProgressNotification.hide();
         eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingDoneNotification));
         eventBus.publish(new Event(EventType.SCENE_SET_MODE.name(), SceneMode.GCODE));
+    }
+
+    private void onEditModeActivate(Event e){
+        if(e.getData() == SceneMode.EDIT){
+            setControlsEnabled(true);
+        }
     }
 
     private void setControlsEnabled(boolean value){

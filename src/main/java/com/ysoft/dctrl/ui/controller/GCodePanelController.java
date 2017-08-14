@@ -146,10 +146,10 @@ public class GCodePanelController extends LocalizableController implements Initi
 
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
             if(e.getData() == SceneMode.GCODE) {
+                resetControlsToDefault();
                 gcodeSceneGraph.loadGCode();
                 show();
             } else {
-                resetControlsToDefault();
                 hide();
             }
         });
