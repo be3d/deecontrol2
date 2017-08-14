@@ -20,6 +20,7 @@ public abstract class BaseCheckBox extends BaseCustomControl implements SlicerPa
     public void setOnAction(EventHandler<ActionEvent> handler){ checkBox.setOnAction(handler);}
     public void setValue(boolean value){
         this.value = value;
+        updateView();
     }
 
     @Override

@@ -21,5 +21,5 @@ public interface Slicer {
 
     long getDuration();
     Long[] getMaterialUsage();
-
+    int getLayerCount();
 }

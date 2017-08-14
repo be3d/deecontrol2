@@ -14,13 +14,22 @@ import com.ysoft.dctrl.ui.notification.SpinnerNotification;
 import com.ysoft.dctrl.ui.notification.SuccessNotification;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
+import com.ysoft.dctrl.utils.Project;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -40,12 +49,19 @@ public class GCodePanelController extends LocalizableController implements Initi
     @FXML
     Button sendJobBtn;
 
+    @FXML ToggleGroup viewToggleGroup;
+    @FXML RadioButton optimizedViewRadio;
+    @FXML RadioButton detailedViewRadio;
+    @FXML VBox detailViewControls;
     @FXML CheckBoxInline displayShell;
     @FXML CheckBoxInline displayTravelMoves;
     @FXML CheckBoxInline displayInfill;
     @FXML CheckBoxInline displaySupports;
-    @FXML CheckBoxInline viewOneLayer;
-    @FXML AnchorPane layerSlider;
+    @FXML CheckBoxInline displayOuterWalls;
+
+    @FXML Label jobNameLabel;
+    @FXML Label printTimeLabel;
+    @FXML Label filamentUsageLabel;
 
     private SuccessNotification jobSendDoneNotification;
     private SpinnerNotification jobSendProgressNotification;
@@ -69,36 +85,43 @@ public class GCodePanelController extends LocalizableController implements Initi
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
-            if(e.getData() == SceneMode.GCODE) {
-                gcodeSceneGraph.loadGCode();
-                show();
-            } else {
-                hide();
+        resetControlsToDefault();
+
+        viewToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            switch((String)newValue.getUserData()){
+                case "optimizedView": switchToOptimizedView();
+                    break;
+                case "detailedView": switchToDetailedView();
+                    break;
             }
         });
-
         displayShell.bindControlChanged(
                 (observable, oldValue, newValue) -> {
-
-                      // TBD UX
-                      //ArrayList<GCodeMoveType> associatedTypes = new ArrayList<>();
-                      //associatedTypes.add(GCodeMoveType.NONE);
-                      //associatedTypes.add(GCodeMoveType.WALL_OUTER);
-                      //associatedTypes.add(GCodeMoveType.WALL_INNER);
-                      //associatedTypes.add(GCodeMoveType.SKIN);
-
-                    gcodeSceneGraph.showGCodeType(GCodeMoveType.WALL_OUTER, (boolean)newValue);
-
+                    List<GCodeMoveType> shellTypes = Arrays.asList(
+                            GCodeMoveType.NONE,
+                            GCodeMoveType.WALL_OUTER,
+                            GCodeMoveType.WALL_INNER,
+                            GCodeMoveType.SKIN
+                    );
+                    gcodeSceneGraph.showGCodeTypes(shellTypes, (boolean)newValue);
                 });
-
         displayTravelMoves.bindControlChanged(
-                ((observable, oldValue, newValue) -> gcodeSceneGraph.showGCodeType(GCodeMoveType.TRAVEL, (boolean)newValue)));
+                ((observable, oldValue, newValue) -> {
+                    gcodeSceneGraph.showGCodeType(GCodeMoveType.TRAVEL, (boolean)newValue);
+                }));
         displayInfill.bindControlChanged(
-                ((observable, oldValue, newValue) -> gcodeSceneGraph.showGCodeType(GCodeMoveType.FILL, (boolean)newValue)));
+                ((observable, oldValue, newValue) -> {
+                    gcodeSceneGraph.showGCodeType(GCodeMoveType.FILL, (boolean)newValue);
+                }));
         displaySupports.bindControlChanged(
-                ((observable, oldValue, newValue) -> gcodeSceneGraph.showGCodeType(GCodeMoveType.SUPPORT, (boolean)newValue)));
-
+                ((observable, oldValue, newValue) -> {
+                    gcodeSceneGraph.showGCodeType(GCodeMoveType.SUPPORT, (boolean)newValue);
+                }));
+        displayOuterWalls.bindControlChanged(
+                (((observable, oldValue, newValue) -> {
+                    gcodeSceneGraph.showGCodeType(GCodeMoveType.WALL_OUTER, (boolean)newValue);
+                }))
+        );
         backToEditBtn.setOnAction(event -> {
             eventBus.publish(new Event(EventType.SCENE_SET_MODE.name(), SceneMode.EDIT));
         });
@@ -121,12 +144,35 @@ public class GCodePanelController extends LocalizableController implements Initi
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), jobSendDoneNotification));
         });
 
+        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
+            if(e.getData() == SceneMode.GCODE) {
+                gcodeSceneGraph.loadGCode();
+                show();
+            } else {
+                resetControlsToDefault();
+                hide();
+            }
+        });
+
+        eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), (e) -> {
+            optimizedViewRadio.setDisable(false);
+            detailedViewRadio.setDisable(false);
+        });
+
         super.initialize(location, resources);
     }
 
+    private void loadProjectInfo(){
+        Project project = deeControlContext.getCurrentProject();
+        jobNameLabel.setText(project.getName());
+        printTimeLabel.setText((new Long(project.getPrintDuration())).toString() + " min");
+        filamentUsageLabel.setText(String.valueOf((project.getMaterialUsage().get("PLA")/1000f))+" m");
+    }
 
     private void show(){
+        resetControlsToDefault();
         this.setVisible(true);
+        loadProjectInfo();
     }
 
     private void hide(){
@@ -137,6 +183,36 @@ public class GCodePanelController extends LocalizableController implements Initi
         gcodePanelPane.setVisible(value);
     }
 
+    private void switchToOptimizedView(){
+        displayShell.setValue(false);
+        displayTravelMoves.setValue(false);
+        displayInfill.setValue(false);
+        displaySupports.setValue(true);
+        displayOuterWalls.setValue(true);
+        detailViewControls.setVisible(false);
+        gcodeSceneGraph.showOptimizedView();
+    }
 
+    private void switchToDetailedView(){
+        displayShell.setValue(true);
+        displayTravelMoves.setValue(false);
+        displayInfill.setValue(true);
+        displaySupports.setValue(true);
+        detailViewControls.setVisible(true);
+        displayOuterWalls.setVisible(true);
+        gcodeSceneGraph.showDetailedView();
+    }
 
+    private void resetControlsToDefault(){
+        optimizedViewRadio.setSelected(true);
+        optimizedViewRadio.setDisable(true);
+        detailedViewRadio.setDisable(true);
+        displayShell.setValue(false);
+        displayTravelMoves.setValue(false);
+        displayInfill.setValue(false);
+        displaySupports.setValue(true);
+        displayOuterWalls.setValue(true);
+        detailViewControls.setVisible(false);
+    }
 }
+

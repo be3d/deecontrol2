@@ -87,15 +87,8 @@
 
 
   <HBox alignment="CENTER" AnchorPane.bottomAnchor="10"  AnchorPane.leftAnchor="10"  AnchorPane.rightAnchor="10"  >
-    <Button fx:id="slice" styleClass="control-button" text="PREPARE FOR PRINT" />
+    <Button fx:id="sliceButton" styleClass="control-button" disable="true" text="PREPARE FOR PRINT" />
   </HBox>
-
-  <!--Testing-->
-  <Button fx:id="cancelSlice" text="Cancel Slice" styleClass="control-button" visible="false"/>
-  <Button fx:id="prepareSlice" text="Prepare slice" styleClass="control-button" visible="false"/>
-  <Button fx:id="loadProfile" text="Load profile" styleClass="control-button" visible="false" />
-  <!--<Button fx:id="saveProfile" text="Save profile" styleClass="control-button" visible="false"/>-->
-
 
   <stylesheets>
     <URL value="@/css/master.css" />

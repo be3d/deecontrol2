@@ -7,7 +7,10 @@ import java.util.ResourceBundle;
 import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.SceneMode;
 import com.ysoft.dctrl.editor.exporter.SceneExporter;
+import com.ysoft.dctrl.editor.mesh.GCodeMeshData;
+import com.ysoft.dctrl.editor.mesh.GCodeMeshProperties;
 import com.ysoft.dctrl.slicer.SlicerController;
+import com.ysoft.dctrl.slicer.param.SlicerParam;
 import com.ysoft.dctrl.slicer.param.SlicerParamType;
 import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.slicer.profile.Profile;
@@ -55,6 +58,7 @@ public class SlicerPanelController extends LocalizableController implements Init
     private final SlicerController slicerController;
     private final SlicerParams slicerParams;
     private final ProfileResource profileResource;
+    private final GCodeMeshProperties gCodeMeshProperties;
 
     private final ProgressNotification slicingProgressNotification;
     private final SuccessNotification slicingDoneNotification;
@@ -85,15 +89,9 @@ public class SlicerPanelController extends LocalizableController implements Init
     @FXML Picker supportPatternPicker;
     @FXML SliderDiscrete supportAngleSlider;
 
-    @FXML Button slice;
+    @FXML Button sliceButton;
     @FXML ImageView saveProfile;
     @FXML Label editedLabel;
-
-    //test
-    //@FXML Button add;
-    @FXML ProgressBar progress;
-    @FXML Button cancelSlice;
-    @FXML Button loadProfile;
 
     @Autowired
     public SlicerPanelController(
@@ -104,6 +102,7 @@ public class SlicerPanelController extends LocalizableController implements Init
             SceneExporter sceneExporter,
             SlicerController slicerController,
             SlicerParams slicerParams,
+            GCodeMeshProperties gCodeMeshProperties,
             ProfileResource profileResource) {
 
         super(localizationService, eventBus, deeControlContext);
@@ -111,6 +110,7 @@ public class SlicerPanelController extends LocalizableController implements Init
         this.slicerController = slicerController;
         this.slicerParams = slicerParams;
         this.profileResource = profileResource;
+        this.gCodeMeshProperties = gCodeMeshProperties;
         this.sceneSTL = filePathResource.getPath(FilePath.SCENE_EXPORT_FILE);
         this.sceneImage = filePathResource.getPath(FilePath.SCENE_IMAGE_FILE);
 
@@ -148,28 +148,35 @@ public class SlicerPanelController extends LocalizableController implements Init
                     this.setEdited(true);
                 });
 
+        // Layer height parameter also needs to be sent to GCodeViewer properties object
+        SlicerParam layerHeightParam = slicerParams.get(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name());
         layerHeightToggle
-                .load(slicerParams.get(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name()))
-                .bindParamChanged()
-                .bindControlChanged(((observable, oldValue, newValue) -> {
+                .load(layerHeightParam)
+                .bindParamChanged((observable, oldValue, newValue) -> {
+                    gCodeMeshProperties.setLayerHeight(((Double)newValue).floatValue());
+                })
+                .bindControlChanged((observable, oldValue, newValue) -> {
                     if (newValue != null){
                         slicerParams.updateParam(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name(), ((ToggleButton) newValue).getUserData());
                         roofThicknessIncrement.updateView();
                         bottomThicknessIncrement.updateView();
                         this.setEdited(true);
                     }
-                }));
+                });
+        gCodeMeshProperties.setLayerHeight(((Double)layerHeightParam.getValue()).floatValue());
 
         roofThicknessIncrement
                 .bindRecalculation((e) -> (double)slicerParams.get(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name()).getValue() * e)
                 .load(slicerParams.get(SlicerParamType.SHELL_TOP_LAYERS.name()))
-                .bindParamChanged();
+                .bindParamChanged()
+                .bindControlChanged((observable, oldValue, newValue) -> setEdited(newValue != oldValue));
 
 
         bottomThicknessIncrement
                 .bindRecalculation((e) -> (double)slicerParams.get(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name()).getValue() * e)
                 .load(slicerParams.get(SlicerParamType.SHELL_BOTTOM_LAYERS.name()))
-                .bindParamChanged();
+                .bindParamChanged()
+                .bindControlChanged((observable, oldValue, newValue) -> setEdited(newValue != oldValue));
 
         printSpeedSolidSlider
                 .load(slicerParams.get(SlicerParamType.SPEED_SOLID_LAYERS.name()))
@@ -179,7 +186,8 @@ public class SlicerPanelController extends LocalizableController implements Init
         shellThicknessIncrement
                 .bindRecalculation((v) -> 0.4 * v)
                 .load(slicerParams.get(SlicerParamType.SHELL_THICKNESS.name()))
-                .bindParamChanged();
+                .bindParamChanged()
+                .bindControlChanged((observable, oldValue, newValue) -> setEdited(newValue != oldValue));
 
         printSpeedShellSlider
                 .load(slicerParams.get(SlicerParamType.SPEED_OUTER_WALL.name()))
@@ -209,26 +217,12 @@ public class SlicerPanelController extends LocalizableController implements Init
                 .bindParamChanged((observable, oldValue, newValue) -> supportAngleSlider.setValue((Double)newValue))
                 .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SUPPORT_ANGLE.name(), newValue)));
 
-        progress.setProgress(0);
-
-        slice.setOnAction(event -> {
+        sliceButton.setOnAction(event -> {
             eventBus.publish(new Event(EventType.TAKE_SCENE_SNAPSHOT.name(), sceneImage));
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingProgressNotification));
             deeControlContext.getCurrentProject().setName(printJobNameInput.getText());
-            disableControls();
+            setControlsEnabled(true);
             exportScene();
-        });
-
-
-        cancelSlice.setOnAction(event -> {
-            eventBus.publish(new Event(EventType.SLICER_STOP.name()));
-        });
-
-        loadProfile.setOnAction(event -> {
-            List<Profile> profiles = profileResource.loadProfiles();
-            for(Profile p : profiles){
-                System.out.println(p.getId());
-            }
         });
 
         saveProfile.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -269,12 +263,8 @@ public class SlicerPanelController extends LocalizableController implements Init
 
         eventBus.subscribe(EventType.SCENE_EXPORT_PROGRESS.name(), this::onSceneExportProgress);
         eventBus.subscribe(EventType.SLICER_PROGRESS.name(), this::onSlicerProgress);
-        eventBus.subscribe(EventType.SLICER_FINISHED.name(), (e) -> {
-            slicingProgressNotification.hide();
-            eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingDoneNotification));
-            eventBus.publish(new Event(EventType.SCENE_SET_MODE.name(), SceneMode.GCODE));
-        });
-
+        eventBus.subscribe(EventType.SLICER_FINISHED.name(), this::onSlicerFinished);
+        eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> setSliceEnabled(true));
 
         super.initialize(location, resources);
     }
@@ -291,13 +281,24 @@ public class SlicerPanelController extends LocalizableController implements Init
         slicingProgressNotification.setProgress(0.2 + 0.8 * (double) e.getData());
     }
 
+    private void onSlicerFinished(Event e){
+        slicingProgressNotification.hide();
+        eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingDoneNotification));
+        eventBus.publish(new Event(EventType.SCENE_SET_MODE.name(), SceneMode.GCODE));
+    }
+
+    private void setControlsEnabled(boolean value){
+        panelControlsContainer.setDisable(!value);
+    }
+
+    private void setSliceEnabled(boolean value){
+        sliceButton.setDisable(!value);
+    }
+
     private void setEdited(boolean value){
         saveProfile.setVisible(value);
         editedLabel.setVisible(value);
     }
 
-    private void disableControls(){
-        ObservableList<Node> controls = panelControlsContainer.getChildren();
-        panelControlsContainer.setDisable(true);
-    }
+
 }
