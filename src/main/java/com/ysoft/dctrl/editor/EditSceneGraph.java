@@ -34,8 +34,8 @@ public class EditSceneGraph extends SubSceneGraph {
     private static final Point3D PRINTER_SIZE = new Point3D(150,150,150);
     private static final Point3D PRINTER_HALF_SIZE = new Point3D(75,75,75);
 
-    private static final PhongMaterial material = new PhongMaterial(Color.LIGHTBLUE);
-    private static final PhongMaterial selectedMaterial = new PhongMaterial(new Color(0.3f, 0.4f, 0.9019608f, 1));
+    public static final PhongMaterial material = new PhongMaterial(Color.web("#cccccc"));
+    public static final PhongMaterial selectedMaterial = new PhongMaterial(Color.web("#4dc824"));
 
     static {
         material.setSpecularColor(new Color(0.2,0.2,0.2,1));

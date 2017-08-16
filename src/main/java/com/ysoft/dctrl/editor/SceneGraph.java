@@ -39,6 +39,11 @@ public class SceneGraph {
     private SceneMode mode;
     private final EventBus eventBus;
 
+    public static final AmbientLight am = new AmbientLight(getGrayColor(0.3));
+    public static final PointLight b = new PointLight(getGrayColor(0.27));
+    public static final PointLight f = new PointLight(getGrayColor(0.35));
+    public static final PointLight c = new PointLight(getGrayColor(0.3));
+
     @Autowired
     public SceneGraph(EventBus eventBus, List<SubSceneGraph> subSceneGraphs) {
         this.eventBus = eventBus;
@@ -59,7 +64,7 @@ public class SceneGraph {
 
     @PostConstruct
     public void init() {
-        sceneGroup.getChildren().addAll(camera, createPrintBed().getView());
+        sceneGroup.getChildren().addAll(camera, createPrintBed().getNode());
         sceneGroup.getChildren().addAll(createLights());
         setMode(SceneMode.EDIT);
 
@@ -74,25 +79,17 @@ public class SceneGraph {
     }
 
     private PrintBed createPrintBed() {
-        return new PrintBed(PRINTER_SIZE.getX(), PRINTER_SIZE.getY(), "/img/edee_bed.png");
+        return new PrintBed((float) PRINTER_SIZE.getX(),(float) PRINTER_SIZE.getY());
     }
 
     private Node[] createLights() {
-        AmbientLight am = new AmbientLight(getGrayColor(0.3));
-
-        PointLight pl = new PointLight(getGrayColor(0.27));
-        pl.getTransforms().add(new Translate(-250,250,10));
-
-        PointLight pl2 = new PointLight(getGrayColor(0.5));
-        pl2.getTransforms().add(new Translate(250,-250,200));
-
-        PointLight cl = new PointLight(getGrayColor(0.18));
-        cl.getTransforms().add(camera.getTransforms().get(0));
-
-        return new Node[] {am, pl, pl2, cl};
+        b.getTransforms().add(new Translate(-250,250,10));
+        f.getTransforms().add(new Translate(10000,-10000,8000));
+        c.getTransforms().add(camera.getTransforms().get(0));
+        return new Node[] {am, b, f, c};
     }
 
-    private Color getGrayColor(double value) {
+    private static Color getGrayColor(double value) {
         return new Color(value, value, value, 1);
     }
 

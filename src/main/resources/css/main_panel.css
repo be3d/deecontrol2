@@ -73,3 +73,7 @@
 .reset-view-button {
     -fx-background-image: url("../img/main_panel/reset-view-normal.png");
 }
+
+.top-view-button {
+    -fx-background-image: url("../img/main_panel/top-view-normal.png");
+}

@@ -56,6 +56,7 @@ public class EditPanelWrapperController extends AbstractController implements In
         movePanel.setVisible(false);
         scalePanel.setVisible(false);
         wrapper.getChildren().addAll(rotationPanel, movePanel, scalePanel);
+        wrapper.setPickOnBounds(false);
 
         eventBus.subscribe(EventType.CONTROL_MOVE_MODEL_CLICK.name(), (e) -> showPanel(movePanel));
         eventBus.subscribe(EventType.CONTROL_ROTATE_MODEL_CLICK.name(), (e) -> showPanel(rotationPanel));
@@ -73,10 +74,16 @@ public class EditPanelWrapperController extends AbstractController implements In
     }
 
     public void showPanel(Region panel) {
-        if(visiblePanel != null) { visiblePanel.setVisible(false); }
+        if(visiblePanel != null) {
+            visiblePanel.setVisible(false);
+            visiblePanel.setPickOnBounds(false);
+        }
 
         if(visiblePanel == panel) { panel = null; }
-        if(panel != null) { panel.setVisible(true); }
+        if(panel != null) {
+            panel.setVisible(true);
+            panel.setPickOnBounds(true);
+        }
         visiblePanel = panel;
     }
 }
