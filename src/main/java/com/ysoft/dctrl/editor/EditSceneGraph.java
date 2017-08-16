@@ -1,5 +1,6 @@
 package com.ysoft.dctrl.editor;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
+import com.ysoft.dctrl.editor.mesh.MeshGroup;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
@@ -43,12 +45,12 @@ public class EditSceneGraph extends SubSceneGraph {
         selectedMaterial.setSpecularPower(10);
     }
 
-    private SceneMesh selected;
+    private List<SceneMesh> selected;
     private SceneMesh currentlyFixing;
 
     public EditSceneGraph(EventBus eventBus) {
         super(eventBus);
-        selected = null;
+        selected = new ArrayList<>();
         currentlyFixing = null;
     }
 
@@ -64,6 +66,8 @@ public class EditSceneGraph extends SubSceneGraph {
         eventBus.subscribe(EventType.EDIT_SELECT_PREV.name(), (e) -> selectPrevious());
         eventBus.subscribe(EventType.EDIT_SELECT_NEXT.name(), (e) -> selectNext());
         eventBus.subscribe(EventType.EDIT_DELETE_SELECTED.name(), (e) -> deleteSelected());
+        eventBus.subscribe(EventType.EDIT_GROUP.name(), (e) -> groupModels());
+        eventBus.subscribe(EventType.EDIT_UNGROUP.name(), (e) -> ungroupModels());
     }
 
     public void addMesh(TriangleMesh mesh) {
@@ -75,41 +79,50 @@ public class EditSceneGraph extends SubSceneGraph {
         addMesh(extendedMesh);
         extendedMesh.getNode().setOnMouseClicked((event -> {
             if(event.getTarget() != extendedMesh.getNode()) { return; }
-            selectNew(extendedMesh);
+            if(event.isControlDown() && !selected.isEmpty()) {
+                addToSelection(extendedMesh);
+            } else {
+                selectSingle(extendedMesh);
+            }
         }));
     }
 
     public void centerSelected() {
-        if(selected == null) { return; }
-        selected.setPosition(getCenteredPosition(selected));
+        SceneMesh s = getSelected();
+        if(s == null) { return; }
+        s.setPosition(getCenteredPosition(s));
     }
 
     public void alignSelectedToLeft() {
-        if(selected == null) { return; }
-        BoundingBox bb = selected.getBoundingBox();
-        Point2D c = getCenteredPosition(selected);
-        selected.setPosition(new Point2D(-PRINTER_HALF_SIZE.getX() + bb.getHalfSize().getX() + c.getX(), selected.getPositionY()));
+        SceneMesh s = getSelected();
+        if(s == null) { return; }
+        BoundingBox bb = s.getBoundingBox();
+        Point2D c = getCenteredPosition(s);
+        s.setPosition(new Point2D(-PRINTER_HALF_SIZE.getX() + bb.getHalfSize().getX() + c.getX(), s.getPositionY()));
     }
 
     public void alignSelectedToRight() {
-        if(selected == null) { return; }
-        BoundingBox bb = selected.getBoundingBox();
-        Point2D c = getCenteredPosition(selected);
-        selected.setPosition(new Point2D(PRINTER_HALF_SIZE.getX() - bb.getHalfSize().getX() + c.getX(), selected.getPositionY()));
+        SceneMesh s = getSelected();
+        if(s == null) { return; }
+        BoundingBox bb = s.getBoundingBox();
+        Point2D c = getCenteredPosition(s);
+        s.setPosition(new Point2D(PRINTER_HALF_SIZE.getX() - bb.getHalfSize().getX() + c.getX(), s.getPositionY()));
     }
 
     public void alignSelectedToFront() {
-        if(selected == null) { return; }
-        BoundingBox bb = selected.getBoundingBox();
-        Point2D c = getCenteredPosition(selected);
-        selected.setPosition(new Point2D(selected.getPositionX(), -PRINTER_HALF_SIZE.getY() + bb.getHalfSize().getY() + c.getY()));
+        SceneMesh s = getSelected();
+        if(s == null) { return; }
+        BoundingBox bb = s.getBoundingBox();
+        Point2D c = getCenteredPosition(s);
+        s.setPosition(new Point2D(s.getPositionX(), -PRINTER_HALF_SIZE.getY() + bb.getHalfSize().getY() + c.getY()));
     }
 
     public void alignSelectedToBack() {
-        if(selected == null) { return; }
-        BoundingBox bb = selected.getBoundingBox();
-        Point2D c = getCenteredPosition(selected);
-        selected.setPosition(new Point2D(selected.getPositionX(), PRINTER_HALF_SIZE.getY() - bb.getHalfSize().getY() + c.getY()));
+        SceneMesh s = getSelected();
+        if(s == null) { return; }
+        BoundingBox bb = s.getBoundingBox();
+        Point2D c = getCenteredPosition(s);
+        s.setPosition(new Point2D(s.getPositionX(), PRINTER_HALF_SIZE.getY() - bb.getHalfSize().getY() + c.getY()));
     }
 
     private Point2D getCenteredPosition(SceneMesh mesh) {
@@ -119,11 +132,13 @@ public class EditSceneGraph extends SubSceneGraph {
     }
 
     public void scaleSelectedToMax() {
-        if(selected == null) return;
-        Point3D size = selected.getBoundingBox().getSize();
-        size = Point3DUtils.divideElements(size, selected.getScale());
+        SceneMesh s = getSelected();
+        if(s == null) return;
+        Point3D size = s.getBoundingBox().getSize();
+        size = Point3DUtils.divideElements(size, s.getScale());
         double scale = Utils.min(PRINTER_SIZE.getX()/size.getX(), PRINTER_SIZE.getY()/size.getY(), PRINTER_SIZE.getZ()/size.getZ());
-        selected.setScale(scale);
+        s.setScale(scale);
+        s.setPosition(getCenteredPosition(s));
     }
 
     public void fixToBed(SceneMesh mesh) {
@@ -136,42 +151,82 @@ public class EditSceneGraph extends SubSceneGraph {
     }
 
     public void deleteSelected() {
-        if(selected == null) { return; }
-        removeMesh(selected);
-        selected = null;
+        SceneMesh s = getSelected();
+        if(s == null) { return; }
+        removeMesh(s);
+        selected.remove(s);
         selectNext();
     }
 
     public void selectNext() {
         LinkedList<SceneMesh> sm = getSceneMeshes();
-        if(selected == null) {
-            if(!sm.isEmpty()) selectNew(sm.getFirst());
+        SceneMesh s = getSelected();
+        if(s == null) {
+            if(!sm.isEmpty()) selectSingle(sm.getFirst());
         } else {
-            int next = sm.indexOf(selected) + 1;
+            int next = sm.indexOf(s) + 1;
             if(next > sm.size() - 1) { next = 0; }
-            selectNew(sm.get(next));
+            selectSingle(sm.get(next));
         }
     }
 
     public void selectPrevious() {
         LinkedList<SceneMesh> sm = getSceneMeshes();
-        if(selected == null) {
-            if(!sm.isEmpty()) selectNew(sm.getLast());
+        SceneMesh s = getSelected();
+        if(s == null) {
+            if(!sm.isEmpty()) selectSingle(sm.getLast());
         } else {
-            int prev = sm.indexOf(selected) - 1;
+            int prev = sm.indexOf(s) - 1;
             if(prev < 0) { prev = sm.size() -1; }
-            selectNew(sm.get(prev));
+            selectSingle(sm.get(prev));
         }
     }
 
-    private void selectNew(SceneMesh mesh) {
-        if(selected != null) { selected.setMaterial(material); }
-        selected = mesh;
-        selected.setMaterial(selectedMaterial);
-        eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), selected));
+    private void selectSingle(SceneMesh mesh) {
+        selected.forEach(m -> m.setMaterial(material));
+        selected.clear();
+        mesh = mesh.getGroup() != null ? mesh.getGroup() : mesh;
+        selected.add(mesh);
+        mesh.setMaterial(selectedMaterial);
+        eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), mesh));
+    }
+
+    private void addToSelection(SceneMesh mesh) {
+        mesh = mesh.getGroup() != null ? mesh.getGroup() : mesh;
+        if(selected.contains(mesh)) {
+            selected.remove(mesh);
+            mesh.setMaterial(material);
+        } else {
+            selected.add(mesh);
+            mesh.setMaterial(selectedMaterial);
+            if(selected.size() == 2) { eventBus.publish(new Event(EventType.MODEL_MULTISELECTION.name())); }
+        }
+    }
+
+    private void groupModels() {
+        if(selected.size() < 2) { return; }
+        MeshGroup meshGroup = new MeshGroup(selected);
+        selected.forEach(this::removeMesh);
+        addMesh(meshGroup);
+        selected.clear();
+        selectSingle(meshGroup);
+    }
+
+    private void ungroupModels() {
+        SceneMesh m = getSelected();
+        if(m == null || !(m instanceof MeshGroup)) { return; }
+        removeMesh(m);
+        List<? extends SceneMesh> l = ((MeshGroup) m).getChildren();
+        l.forEach((sm) -> {
+            addMesh(sm);
+            sm.setMaterial(material);
+        });
+        SceneMesh mesh = l.get(0);
+        ((MeshGroup) m).dismiss();
+        selectSingle(mesh);
     }
 
     public SceneMesh getSelected() {
-        return selected;
+        return selected.size() == 1 ? selected.get(0) : null;
     }
 }

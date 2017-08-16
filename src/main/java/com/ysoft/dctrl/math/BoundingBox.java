@@ -31,6 +31,10 @@ public class BoundingBox {
         this.min = new Point3D(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
 
+    public void reset() {
+        init();
+    }
+
     public void update(float[] vertices, TransformMatrix matrix) {
         init();
         int len = vertices.length;
@@ -38,6 +42,11 @@ public class BoundingBox {
         for(int i = 0; i < len; i+=3) {
             checkVertex(matrix.applyTo(vertices[i], vertices[i+1], vertices[i+2]));
         }
+    }
+
+    public void extend(BoundingBox bb) {
+        this.max = new Point3D(Math.max(max.getX(), bb.getMax().getX()), Math.max(max.getY(), bb.getMax().getY()), Math.max(max.getZ(), bb.getMax().getZ()));
+        this.min = new Point3D(Math.min(min.getX(), bb.getMin().getX()), Math.min(min.getY(), bb.getMin().getY()), Math.min(min.getZ(), bb.getMin().getZ()));
     }
 
     private void checkVertex(Point3D point) {
@@ -95,6 +104,8 @@ public class BoundingBox {
     public Point3D getHalfSize() {
         return getSize().multiply(0.5);
     }
+
+    public Point3D getCenter() { return getMin().add(getHalfSize()); }
 
     @Override
     public String toString() {

@@ -34,6 +34,7 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     private boolean isDirty;
 
     private MeshView view;
+    private MeshGroup group;
 
     private List<OnMeshChange> onRotationChange;
     private List<OnMeshChange> onScaleChange;
@@ -43,6 +44,7 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         view = new MeshView();
         boundingBox = new BoundingBox();
         isDirty = false;
+        group = null;
         initTransforms();
     }
 
@@ -50,6 +52,7 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         view = new MeshView(mesh);
         boundingBox = new BoundingBox(mesh.getPoints().toArray(null));
         isDirty = false;
+        group = null;
         initTransforms();
     }
 
@@ -76,7 +79,6 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         if(!isDirty) { return; }
 
         boundingBox.update(((TriangleMesh) view.getMesh()).getPoints().toArray(null), getTransformMatrix());
-        System.err.println(boundingBox);
         isDirty = false;
     }
 
@@ -173,5 +175,18 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         addOnPositionChangeListener(eventHandler);
         addOnRotationChangeListener(eventHandler);
         addOnScaleChangeListener(eventHandler);
+    }
+
+    void setGroup(MeshGroup group) {
+        this.group = group;
+    }
+
+    void removeGroup() {
+        group = null;
+    }
+
+    @Override
+    public MeshGroup getGroup() {
+        return group;
     }
 }
