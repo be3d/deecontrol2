@@ -181,14 +181,15 @@ public class Cura implements Slicer {
     }
 
     private void createConfigFile(Map<String, SlicerParam> slicerParams) {
+        final CuraParamTranslator paramTranslator = new CuraParamTranslator(curaParamMap, slicerParams);
         final PrinterProfile printerProfile = new PrinterProfile();
         slicerParams.forEach((k, p) -> {
-            String paramName = curaParamMap.get(SlicerParamType.valueOf(k));
-            if(paramName == null) return;
-
             Object o;
             if((o = p.getValue()) != null) {
-                printerProfile.addOverride(paramName, (o instanceof String) ? replacePlaceholders((String) o, slicerParams) : o);
+                Map<String, Object> params = paramTranslator.generateParams(SlicerParamType.valueOf(k), o);
+                params.forEach((a, b) -> {
+                    printerProfile.addOverride(a, (b instanceof String) ? replacePlaceholders((String) b, slicerParams) : b);
+                });
             }
         });
 

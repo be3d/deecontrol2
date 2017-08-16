@@ -7,11 +7,15 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 
+import com.ysoft.dctrl.slicer.AbstractConfigResource;
 import javafx.beans.property.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by kuhn on 4/5/2017.
@@ -23,8 +27,8 @@ import java.util.LinkedHashMap;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SlicerParam implements Cloneable {
-
     @Autowired EventBus eventBus;
+    protected final Logger logger = LogManager.getLogger(SlicerParam.class);
 
     private final String id;
     private String type;
@@ -36,7 +40,7 @@ public class SlicerParam implements Cloneable {
     private LinkedHashMap<String, String> options;
     private Object defaultValue;
 
-    private static enum ValueType {
+    private enum ValueType {
         FLOAT("float"),
         STRING("string"),
         ENUM("enum"),
@@ -105,6 +109,19 @@ public class SlicerParam implements Cloneable {
     }
 
     public void setValue(Object value){
+        if(this.type.equals(ValueType.ENUM.v)){
+            LinkedHashMap<String, String> options = getOptions();
+            if(options == null){
+                logger.warn("Could not set value: {} , no enum options defined", this.id);
+                return;
+            }
+            for(Map.Entry<String,String> option : getOptions().entrySet()){
+                if(option.getValue().equals(value)){
+                    value = option.getKey();
+                    break;
+                }
+            }
+        }
         this.value = value;
         this.setValueProperty(value);
         System.out.println("Setting " + this.id + " to " + value.toString());

@@ -23,6 +23,7 @@ import java.util.*;
 
 @Component
 public class PrinterResource extends AbstractConfigResource {
+    private final Logger logger = LogManager.getLogger(PrinterResource.class);
     private List<Printer> printers;
     private Printer selectedPrinter;
 

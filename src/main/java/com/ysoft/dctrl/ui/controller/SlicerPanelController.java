@@ -127,7 +127,7 @@ public class SlicerPanelController extends LocalizableController implements Init
         profilePicker.setItems(obList);
         profilePicker.bindControlChanged((observable, oldValue, newValue) -> {
             profileResource.applyProfile(newValue);
-            this.setEdited(false);
+            this.setEdited(oldValue == newValue);
         });
         profilePicker.selectItem(obList.get(0));
 
@@ -137,7 +137,7 @@ public class SlicerPanelController extends LocalizableController implements Init
                 .bindControlChanged((observable, oldValue, newValue) -> {
                     slicerParams.updateParam(SlicerParamType.SUPPORT_BUILDPLATE_TYPE.name(), newValue);
                     roofThicknessIncrement.updateView();
-                    this.setEdited(true);
+                    this.setEdited(oldValue != newValue);
                 });
 
         supportsCheckBox
@@ -145,7 +145,7 @@ public class SlicerPanelController extends LocalizableController implements Init
                 .bindParamChanged()
                 .bindControlChanged((observable, oldValue, newValue) -> {
                     slicerParams.updateParam(SlicerParamType.SUPPORT_ENABLED.name(), newValue);
-                    this.setEdited(true);
+                    this.setEdited(oldValue != newValue);
                 });
 
         // Layer height parameter also needs to be sent to GCodeViewer properties object
@@ -160,7 +160,7 @@ public class SlicerPanelController extends LocalizableController implements Init
                         slicerParams.updateParam(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name(), ((ToggleButton) newValue).getUserData());
                         roofThicknessIncrement.updateView();
                         bottomThicknessIncrement.updateView();
-                        this.setEdited(true);
+                        this.setEdited(oldValue != newValue);
                     }
                 });
         gCodeMeshProperties.setLayerHeight(((Double)layerHeightParam.getValue()).floatValue());
@@ -181,7 +181,10 @@ public class SlicerPanelController extends LocalizableController implements Init
         printSpeedSolidSlider
                 .load(slicerParams.get(SlicerParamType.SPEED_SOLID_LAYERS.name()))
                 .bindParamChanged()
-                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SPEED_SOLID_LAYERS.name(), newValue)));
+                .bindControlChanged(((observable, oldValue, newValue) -> {
+                    slicerParams.updateParam(SlicerParamType.SPEED_SOLID_LAYERS.name(), newValue);
+                    this.setEdited(oldValue != newValue);
+                }));
 
         shellThicknessIncrement
                 .bindRecalculation((v) -> 0.4 * v)
@@ -195,27 +198,47 @@ public class SlicerPanelController extends LocalizableController implements Init
                 .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SPEED_OUTER_WALL.name(), newValue)));
 
 
-        infillPatternPicker.load(slicerParams.get(SlicerParamType.INFILL_PATTERN.name()));
+        infillPatternPicker
+                .load(slicerParams.get(SlicerParamType.INFILL_PATTERN.name()))
+                .bindParamChanged()
+                .bindControlChanged((observable, oldValue, newValue) -> {
+                    slicerParams.updateParam(SlicerParamType.INFILL_PATTERN.name(), newValue);
+                    this.setEdited(oldValue != newValue);
+                });
 
         infillDensitySlider
                 .load(slicerParams.get(SlicerParamType.INFILL_DENSITY.name()))
                 .bindParamChanged((observable, oldValue, newValue) -> infillDensitySlider.setValue((Double)newValue))
-                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.INFILL_DENSITY.name(), newValue)));
-
+                .bindControlChanged((observable, oldValue, newValue) -> {
+                    slicerParams.updateParam(SlicerParamType.INFILL_DENSITY.name(), newValue);
+                    this.setEdited(oldValue != newValue);
+                });
 
         supportDensitySlider
                 .load(slicerParams.get(SlicerParamType.SUPPORT_DENSITY.name()))
                 .bindParamChanged((observable, oldValue, newValue) -> supportDensitySlider.setValue((Double)newValue))
-                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SUPPORT_DENSITY.name(), newValue)));
+                .bindControlChanged(((observable, oldValue, newValue) -> {
+                    slicerParams.updateParam(SlicerParamType.SUPPORT_DENSITY.name(), newValue);
+                    this.setEdited(oldValue != newValue);
+                }));
 
 
-        supportPatternPicker.load(slicerParams.get(SlicerParamType.SUPPORT_PATTERN.name()));
+        supportPatternPicker
+                .load(slicerParams.get(SlicerParamType.SUPPORT_PATTERN.name()))
+                .bindParamChanged()
+                .bindControlChanged((observable, oldValue, newValue) -> {
+                    slicerParams.updateParam(SlicerParamType.SUPPORT_PATTERN.name(), newValue);
+                    this.setEdited(oldValue != newValue);
+                });
 
 
         supportAngleSlider
                 .load(slicerParams.get(SlicerParamType.SUPPORT_ANGLE.name()))
                 .bindParamChanged((observable, oldValue, newValue) -> supportAngleSlider.setValue((Double)newValue))
-                .bindControlChanged(((observable, oldValue, newValue) -> slicerParams.updateParam(SlicerParamType.SUPPORT_ANGLE.name(), newValue)));
+                .bindControlChanged(((observable, oldValue, newValue) -> {
+                    slicerParams.updateParam(SlicerParamType.SUPPORT_ANGLE.name(), newValue);
+                    this.setEdited(oldValue != newValue);
+                }));
 
         sliceButton.setOnAction(event -> {
             eventBus.publish(new Event(EventType.TAKE_SCENE_SNAPSHOT.name(), sceneImage));

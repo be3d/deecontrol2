@@ -12,6 +12,7 @@ public enum SlicerParamType {
     MACHINE_WIDTH,
     MACHINE_HEIGHT,
     MACHINE_DEPTH,
+    MACHINE_E0_NOZZLE_DIAMETER,
 
     //speed
     SPEED_PRINT,

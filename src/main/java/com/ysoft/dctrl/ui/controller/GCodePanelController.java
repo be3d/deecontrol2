@@ -53,11 +53,12 @@ public class GCodePanelController extends LocalizableController implements Initi
     @FXML RadioButton optimizedViewRadio;
     @FXML RadioButton detailedViewRadio;
     @FXML VBox detailViewControls;
-    @FXML CheckBoxInline displayShell;
+    @FXML CheckBoxInline displayOuterWalls;
+    @FXML CheckBoxInline displayInnerWalls;
     @FXML CheckBoxInline displayTravelMoves;
     @FXML CheckBoxInline displayInfill;
     @FXML CheckBoxInline displaySupports;
-    @FXML CheckBoxInline displayOuterWalls;
+
 
     @FXML Label jobNameLabel;
     @FXML Label printTimeLabel;
@@ -95,11 +96,15 @@ public class GCodePanelController extends LocalizableController implements Initi
                     break;
             }
         });
-        displayShell.bindControlChanged(
+        displayOuterWalls.bindControlChanged(
+                (((observable, oldValue, newValue) -> {
+                    gcodeSceneGraph.showGCodeType(GCodeMoveType.WALL_OUTER, (boolean)newValue);
+                }))
+        );
+        displayInnerWalls.bindControlChanged(
                 (observable, oldValue, newValue) -> {
                     List<GCodeMoveType> shellTypes = Arrays.asList(
                             GCodeMoveType.NONE,
-                            GCodeMoveType.WALL_OUTER,
                             GCodeMoveType.WALL_INNER,
                             GCodeMoveType.SKIN
                     );
@@ -117,11 +122,7 @@ public class GCodePanelController extends LocalizableController implements Initi
                 ((observable, oldValue, newValue) -> {
                     gcodeSceneGraph.showGCodeType(GCodeMoveType.SUPPORT, (boolean)newValue);
                 }));
-        displayOuterWalls.bindControlChanged(
-                (((observable, oldValue, newValue) -> {
-                    gcodeSceneGraph.showGCodeType(GCodeMoveType.WALL_OUTER, (boolean)newValue);
-                }))
-        );
+
         backToEditBtn.setOnAction(event -> {
             eventBus.publish(new Event(EventType.SCENE_SET_MODE.name(), SceneMode.EDIT));
         });
@@ -184,17 +185,17 @@ public class GCodePanelController extends LocalizableController implements Initi
     }
 
     private void switchToOptimizedView(){
-        displayShell.setValue(false);
+        displayInnerWalls.setValue(false);
+        displayOuterWalls.setValue(true);
         displayTravelMoves.setValue(false);
         displayInfill.setValue(false);
         displaySupports.setValue(true);
-        displayOuterWalls.setValue(true);
         detailViewControls.setVisible(false);
         gcodeSceneGraph.showOptimizedView();
     }
 
     private void switchToDetailedView(){
-        displayShell.setValue(true);
+        displayInnerWalls.setValue(true);
         displayTravelMoves.setValue(false);
         displayInfill.setValue(true);
         displaySupports.setValue(true);
@@ -207,7 +208,7 @@ public class GCodePanelController extends LocalizableController implements Initi
         optimizedViewRadio.setSelected(true);
         optimizedViewRadio.setDisable(true);
         detailedViewRadio.setDisable(true);
-        displayShell.setValue(false);
+        displayInnerWalls.setValue(false);
         displayTravelMoves.setValue(false);
         displayInfill.setValue(false);
         displaySupports.setValue(true);
