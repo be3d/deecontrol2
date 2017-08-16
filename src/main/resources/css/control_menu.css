@@ -89,6 +89,11 @@
     -fx-font-weight: 800;
 }
 
+.control-button:disabled {
+    -fx-background-color: #bfbfbf;
+    -fx-text-fill: #ffffff;
+    -fx-opacity: 1;
+}
 
 .control-button-back {
     -fx-border-style: solid;
@@ -219,7 +224,7 @@
 .control-checkBox {
     -fx-font-weight:600;
     -fx-font-size:14px;
-    -fx-padding: 0 0 20 0;
+    -fx-padding: 0 0 15 0;
 }
 .control-checkBox > .box {
     -fx-background-color: #ffffff;
@@ -420,6 +425,36 @@
     -fx-padding: -5 0 -15 0;
 }
 
+.control-menu-textContent{
+    -fx-padding: 20 20;
+}
+
+.control-menu-keyValueText-container {
+    -fx-padding:18 0 20 19px;
+    -fx-spacing: 7px;
+}
+.control-menu-keyValueText-key {
+    -fx-padding: 0 0 0 10px;
+    -fx-font-weight: bold
+}
+.control-menu-keyValueText-value {
+    -fx-padding: 0 0 0 3px;
+}
+
+.control-menu-radioButton-container {
+    -fx-padding: 20 20 0 19px;
+}
+
+.control-menu-radioButton {
+    -fx-font-weight: bold;
+}
+
+.control-menu-radioButton-info{
+    -fx-padding: 2 0 0 21px;
+    -fx-font-size: 12px;
+    -fx-text-fill: #9b9ea0 ;
+    -fx-max-width: 224px;
+}
 
 /* DIVIDER REGIONS */
 .top-label-padding {

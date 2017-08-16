@@ -34,6 +34,7 @@ public class Cura implements Slicer {
 
     private static final Matcher durationMatcher = Pattern.compile("^;TIME:(?<time>\\d+)").matcher("");
     private static final Matcher materialMatcher = Pattern.compile("^;Filament used: (?<usage>\\d+(\\.\\d+)?)m").matcher("");
+    private static final Matcher layerCountMatcher = Pattern.compile("^Layer count: (?<count>\\d+)").matcher("");
     private static final Matcher placeholderMatcher = Pattern.compile("\\{(?<param>[A-Z0-9_]+)}").matcher("");
 
     private final String binFile;
@@ -48,6 +49,7 @@ public class Cura implements Slicer {
 
     private volatile long duration;
     private volatile Long[] materialUsage;
+    private volatile int layerCount;
 
     @Autowired
     public Cura(FilePathResource filePathResource, DeeControlContext deeControlContext) throws IOException {
@@ -106,6 +108,7 @@ public class Cura implements Slicer {
     public void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws IOException {
         duration = 0;
         materialUsage = new Long[16];
+        layerCount = 0;
         int counter = 0;
 
         createConfigFile(slicerParams);
@@ -165,6 +168,11 @@ public class Cura implements Slicer {
                 if(materialMatcher.find()) {
                     materialUsage[counter++] = Math.round(1000 * Double.parseDouble(materialMatcher.group("usage")));
                 }
+
+                layerCountMatcher.reset(s);
+                if(layerCountMatcher.find()) {
+                    layerCount = Integer.parseInt(layerCountMatcher.group("count"));
+                }
             }
         } catch (IOException e) {
             System.out.println("Cura exception.");
@@ -223,4 +231,7 @@ public class Cura implements Slicer {
     public Long[] getMaterialUsage() {
         return materialUsage;
     }
+
+    @Override
+    public int getLayerCount() { return layerCount; }
 }

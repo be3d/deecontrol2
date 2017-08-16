@@ -4,17 +4,13 @@ import com.ysoft.dctrl.editor.mesh.*;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
-import com.ysoft.dctrl.math.LineSegment;
-import com.ysoft.dctrl.utils.GCodeContext;
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
+import com.ysoft.dctrl.gcode.GCodeContext;
 import javafx.scene.shape.TriangleMesh;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 

@@ -86,4 +86,6 @@ public class SlicerRunner extends Task<Slicer> {
         return slicer.getMaterialUsage();
     }
 
+    public int getLayerCount() { return slicer.getLayerCount(); }
+
 }

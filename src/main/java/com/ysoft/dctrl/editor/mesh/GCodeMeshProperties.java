@@ -3,16 +3,24 @@ package com.ysoft.dctrl.editor.mesh;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Material;
 import javafx.scene.paint.PhongMaterial;
+import org.springframework.stereotype.Component;
 
 
 /**
  * Created by kuhn on 6/21/2017.
  */
+@Component
 public class GCodeMeshProperties {
 
-    private final Material defaultMaterial = new PhongMaterial(Color.GOLD);
-    private float nozzleDiameter = 0.4f;
-    private float layerHeight = 0.20f;
+    private static final Material DEFAULT_MATERIAL = new PhongMaterial(Color.GOLD);
+    private static final Material OUTER_WALL_MATERIAL = new PhongMaterial(Color.GREEN);
+    private static final Material FILL_MATERIAL = new PhongMaterial(Color.WHITESMOKE);
+    private static final Material TRAVEL_MATERIAL = new PhongMaterial(Color.RED);
+    private static final Material SUPPORT_MATERIAL = new PhongMaterial(Color.DIMGRAY);
+    private static final Material SKIRT_MATERIAL = new PhongMaterial(Color.BLUE);
+
+    private static float nozzleDiameter = 0.4f;
+    private static float layerHeight = 0.20f;
 
 
     public GCodeMeshProperties() {}
@@ -33,25 +41,18 @@ public class GCodeMeshProperties {
     }
 
     public Material getMaterial(GCodeMoveType type){
-        Material material = defaultMaterial;
-
+        Material material = DEFAULT_MATERIAL;
         switch(type){
-            case FILL:{
-                material = new PhongMaterial(Color.WHITESMOKE);
+            case FILL: material = FILL_MATERIAL;
                 break;
-            }
-            case TRAVEL:{
-                material = new PhongMaterial(Color.RED);
+            case TRAVEL: material = TRAVEL_MATERIAL;
                 break;
-            }
-            case SUPPORT:{
-                material = new PhongMaterial(Color.DIMGRAY);
+            case SUPPORT: material = SUPPORT_MATERIAL;
                 break;
-            }
-            case SKIRT: {
-                material = new PhongMaterial(Color.BLUE);
+            case SKIRT: material = SKIRT_MATERIAL;
                 break;
-            }
+            case WALL_OUTER: material = OUTER_WALL_MATERIAL;
+                break;
         }
         return material;
     }

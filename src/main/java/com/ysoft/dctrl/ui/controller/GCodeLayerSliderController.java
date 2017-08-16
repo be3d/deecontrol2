@@ -25,7 +25,6 @@ import java.util.ResourceBundle;
 @Controller
 public class GCodeLayerSliderController extends LocalizableController implements Initializable {
     private GCodeSceneGraph gcodeSceneGraph;
-    private List<GCodeLayer> layers = new ArrayList<>();
 
     @FXML
     AnchorPane gCodeLayerPickerPane;
@@ -43,27 +42,20 @@ public class GCodeLayerSliderController extends LocalizableController implements
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        eventBus.subscribe(EventType.GCODE_IMPORT_COMPLETED.name(), (e) -> initSlider((List<GCodeLayer>) e.getData()));
-        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
-           setVisible(e.getData() == SceneMode.GCODE);
-        });
-
-        layerSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (oldValue.intValue() == newValue.intValue()) { return; }
-            gcodeSceneGraph.loadGCodeLayerDetail(layers.get(newValue.intValue()));
-            gcodeSceneGraph.unloadGCodeLayerDetail(layers.get(oldValue.intValue()));
-            gcodeSceneGraph.cutViewAtLayer(newValue.intValue());
-
-        });
+        eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), (e) -> initSlider((Integer) e.getData()));
+        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> setVisible(e.getData() == SceneMode.GCODE));
 
         super.initialize(location, resources);
     }
 
-    private void initSlider(List<GCodeLayer> layers){
-        this.layers = layers;
+    private void initSlider(Integer layerCount){
         layerSlider.setMin(1);
-        layerSlider.setMax(layers.size()-1);
-        layerSlider.setValue(layers.size()-1);
+        layerSlider.setMax(layerCount+1);
+        layerSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (oldValue.intValue() == newValue.intValue()) { return; }
+            gcodeSceneGraph.cutViewAtLayer(newValue.intValue());
+        });
+        layerSlider.setValue(layerCount+1);
     }
 
     private void setVisible(boolean value){
