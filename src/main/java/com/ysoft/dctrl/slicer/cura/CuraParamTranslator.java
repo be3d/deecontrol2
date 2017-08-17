@@ -2,6 +2,8 @@ package com.ysoft.dctrl.slicer.cura;
 
 import com.ysoft.dctrl.slicer.param.SlicerParam;
 import com.ysoft.dctrl.slicer.param.SlicerParamType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,14 +17,15 @@ import java.util.function.Function;
  */
 
 public class CuraParamTranslator {
-
-    private Map<SlicerParamType, Function<Double, Map<String, Object>>> dictionary = new HashMap<>();
+    private final Logger logger = LogManager.getLogger(CuraParamTranslator.class);
     private final CuraParamMap curaParamMap;
     private final Map<String, SlicerParam> slicerParams;
+    private Map<SlicerParamType, Function<Double, Map<String, Object>>> dictionary;
 
     public CuraParamTranslator(CuraParamMap curaParamMap, Map<String, SlicerParam> slicerParams) {
         this.curaParamMap = curaParamMap;
         this.slicerParams = slicerParams;
+        this.dictionary = new HashMap<>();
         initDictionary();
     }
 
@@ -33,14 +36,20 @@ public class CuraParamTranslator {
             params.put(s, value);
         }
 
-        Map<String, Object> additionalParams;
-        try{
-            additionalParams = dictionary.get(type).apply((Double)value);
+        Map<String, Object> additionalParams = new HashMap<>();
+        Function<Double, Map<String, Object>> f = dictionary.get(type);
+        if(f != null){
+            if(value instanceof Integer){
+                additionalParams = f.apply(((Integer) value).doubleValue());
+            } else {
+                try{
+                    additionalParams = f.apply((Double) value);
+                }catch(ClassCastException e){
+                    logger.warn("Param translation failed: {}", type, e);
+                }
+            }
             additionalParams.forEach((k,v) -> params.put(k,v));
-        }catch(Exception e){
-            System.out.println("fu");
         }
-
         return params;
     }
 
