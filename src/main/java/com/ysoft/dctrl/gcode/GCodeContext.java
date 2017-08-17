@@ -4,11 +4,10 @@ import com.ysoft.dctrl.editor.mesh.GCodeMoveType;
 
 public class GCodeContext {
 
-    public GCodeMoveType moveType = GCodeMoveType.NONE;
-    private boolean isTravelMove = false;
-
-    private double x, y, z = 0;
-    private int layer;
+    private static GCodeMoveType moveType = GCodeMoveType.NONE;
+    private static boolean isTravelMove = false;
+    private static double x, y, z = 0;
+    private static int layer;
 
     public void setX(Double x) {
         if (x != null) this.x = x;
@@ -19,13 +18,12 @@ public class GCodeContext {
     }
 
     public boolean setZ(Double z) {
-        if(z != null && (Double)this.z != null){
-            if( this.z != z){
-                this.z = z;
-                return true;
-            }
+        boolean res = false;
+        if(z != null){
+            res = this.z != z;
+            this.z = z;
         }
-        return false;
+        return res;
     }
 
     public void setLayer(int layer) {
@@ -60,23 +58,15 @@ public class GCodeContext {
      * @return
      */
     public boolean setTravelMove(boolean travelMove) {
-        if (isTravelMove != travelMove) {
-            isTravelMove = travelMove;
-            return true;
-        } else {
-            isTravelMove = travelMove;
-            return false;
-        }
+        boolean res = isTravelMove != travelMove;
+        isTravelMove = travelMove;
+        return res;
     }
 
     public boolean setMoveType(GCodeMoveType moveType) {
-        if (this.moveType != moveType) {
-            this.moveType = moveType;
-            return true;
-        } else {
-            this.moveType = moveType;
-            return false;
-        }
+        boolean res = this.moveType != moveType;
+        this.moveType = moveType;
+        return res;
     }
 
     public GCodeMoveType getMoveType() {
