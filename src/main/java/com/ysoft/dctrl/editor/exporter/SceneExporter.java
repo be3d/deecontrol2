@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.ysoft.dctrl.editor.EditSceneGraph;
 import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
+import com.ysoft.dctrl.editor.mesh.MeshGroup;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
@@ -89,7 +91,7 @@ public class SceneExporter {
                 currentMesh = 0;
                 totalMeshes = 0;
                 currentMeshConverter = null;
-                LinkedList<SceneMesh> meshes = sceneGraph.getSceneMeshes();
+                LinkedList<SceneMesh> meshes = filterMeshes(sceneGraph.getSceneMeshes());
                 int facesNumber = 0;
                 for(SceneMesh m : meshes) {
                     if(m instanceof ExtendedMesh) {
@@ -130,6 +132,19 @@ public class SceneExporter {
             } finally {
                 timeline.stop();
             }
+        }
+
+        private LinkedList<SceneMesh> filterMeshes(List<SceneMesh> meshes) {
+            final LinkedList<SceneMesh> res = new LinkedList<>();
+            meshes.forEach(m -> {
+                if(m instanceof ExtendedMesh) {
+                    res.add(m);
+                } else if(m instanceof MeshGroup) {
+                    res.addAll(((MeshGroup) m).getChildren());
+                }
+            });
+
+            return res;
         }
 
         private void writeToOutput(byte[] data, int offset, int len) throws IOException {

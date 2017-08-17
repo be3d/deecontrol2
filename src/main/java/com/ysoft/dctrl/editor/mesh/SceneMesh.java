@@ -7,4 +7,5 @@ import com.ysoft.dctrl.math.BoundingBox;
  */
 public interface SceneMesh extends Controllable, DrawableMesh {
     BoundingBox getBoundingBox();
+    MeshGroup getGroup();
 }
