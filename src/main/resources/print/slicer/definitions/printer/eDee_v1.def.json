@@ -23,6 +23,11 @@
          "value": 0
       },
       {
+         "id":"MACHINE_E0_NOZZLE_DIAMETER",
+         "type":"float",
+         "value":"0.4"
+      },
+      {
          "id":"RESOLUTION_LAYER_HEIGHT",
          "type":"float",
          "min":0.1,

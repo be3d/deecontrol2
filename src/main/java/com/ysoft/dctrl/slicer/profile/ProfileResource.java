@@ -10,6 +10,8 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 import com.ysoft.dctrl.utils.files.FilePath;
 import com.ysoft.dctrl.utils.files.FilePathResource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +25,7 @@ import java.util.List;
  */
 @Component
 public class ProfileResource extends AbstractConfigResource {
-
+    private final Logger logger = LogManager.getLogger(ProfileResource.class);
     private final PrinterResource printerResource;
     private final SlicerParams slicerParams;
     private final SlicerController slicerController;

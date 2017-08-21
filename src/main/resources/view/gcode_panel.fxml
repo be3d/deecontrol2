@@ -49,11 +49,12 @@
             <Label styleClass="control-menu-radioButton-info" wrapText="true" text="Comprehensive view which shows full details of the scene."></Label>
         </VBox>
         <VBox fx:id="detailViewControls" visible="false">
-            <CheckBoxInline fx:id="displayShell" text="Display shell" ></CheckBoxInline>
+            <CheckBoxInline fx:id="displayOuterWalls" text="Display outer shell"></CheckBoxInline>
+            <CheckBoxInline fx:id="displayInnerWalls" text="Display inner shell" ></CheckBoxInline>
             <CheckBoxInline fx:id="displayTravelMoves" text="Display travel moves" ></CheckBoxInline>
             <CheckBoxInline fx:id="displayInfill" text="Display infill"></CheckBoxInline>
             <CheckBoxInline fx:id="displaySupports" text="Display supports"></CheckBoxInline>
-            <CheckBoxInline fx:id="displayOuterWalls" text="Display outer walls"></CheckBoxInline>
+
             <!--<CheckBoxInline fx:id="viewOneLayer" text="View individual layer"></CheckBoxInline>-->
         </VBox>
     </VBox>
