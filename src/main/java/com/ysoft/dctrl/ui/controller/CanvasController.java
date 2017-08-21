@@ -82,6 +82,7 @@ public class CanvasController extends AbstractController implements Initializabl
         canvas.setOnMousePressed((e) -> {
             meshTransformControls.onMousePressed(e);
             controls.onMousePressed(e);
+            canvas.requestFocus();
         });
         canvas.setOnMouseDragged(controls::onMouseDragged);
         canvas.setOnMouseReleased(controls::onMouseReleased);
@@ -92,6 +93,7 @@ public class CanvasController extends AbstractController implements Initializabl
         keyEventPropagator.onKeyPressed(this::keyDown);
         eventBus.subscribe(EventType.ADD_MODEL.name(), this::addModel);
         eventBus.subscribe(EventType.RESET_VIEW.name(), (e) -> controls.resetCamera());
+        eventBus.subscribe(EventType.TOP_VIEW.name(), (e) -> controls.setTopView());
         eventBus.subscribe(EventType.TAKE_SCENE_SNAPSHOT.name(), (e) -> takeSnapShot((String) e.getData()));
     }
 

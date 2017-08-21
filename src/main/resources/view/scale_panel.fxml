@@ -29,7 +29,7 @@
   </HBox>
 
   <HBox styleClass="edit-panel-group, uniform">
-    <CheckBox fx:id="uniform" />
+    <CheckBox fx:id="uniform" selected="true" />
     <Label text="Uniform scaling" labelFor="$uniform" mnemonicParsing="true" />
   </HBox>
 

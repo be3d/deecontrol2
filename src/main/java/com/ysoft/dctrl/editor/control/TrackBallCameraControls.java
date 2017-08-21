@@ -78,10 +78,20 @@ public class TrackBallCameraControls {
 
     public void resetCamera() {
         alpha = Math.PI;
-        theta = 0;
+        theta = Math.toRadians(90 - initialCameraPosition.angle(0,0,1));
         camera.setRotationX(Math.toDegrees(-theta));
         camera.setRotationY(Math.toDegrees(alpha) + 180);
         setCameraPosition(Point3DUtils.copy(initialCameraPosition));
+        target = new Point3D(0,0,0);
+    }
+
+    public void setTopView() {
+        double z = target.distance(position);
+        setCameraPosition(new Point3D(target.getX(), target.getY(), target.getZ() + z));
+        alpha = Math.PI;
+        theta = Math.toRadians(90);
+        camera.setRotationX(Math.toDegrees(-theta));
+        camera.setRotationY(Math.toDegrees(alpha) + 180);
     }
 
     private void updatePosition() {
