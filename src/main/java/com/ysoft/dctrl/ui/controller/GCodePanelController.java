@@ -53,8 +53,7 @@ public class GCodePanelController extends LocalizableController implements Initi
     @FXML RadioButton optimizedViewRadio;
     @FXML RadioButton detailedViewRadio;
     @FXML VBox detailViewControls;
-    @FXML CheckBoxInline displayOuterWalls;
-    @FXML CheckBoxInline displayInnerWalls;
+    @FXML CheckBoxInline displayShell;
     @FXML CheckBoxInline displayTravelMoves;
     @FXML CheckBoxInline displayInfill;
     @FXML CheckBoxInline displaySupports;
@@ -96,16 +95,12 @@ public class GCodePanelController extends LocalizableController implements Initi
                     break;
             }
         });
-        displayOuterWalls.bindControlChanged(
-                (((observable, oldValue, newValue) -> {
-                    gcodeSceneGraph.showGCodeType(GCodeMoveType.WALL_OUTER, (boolean)newValue);
-                }))
-        );
-        displayInnerWalls.bindControlChanged(
+        displayShell.bindControlChanged(
                 (observable, oldValue, newValue) -> {
                     List<GCodeMoveType> shellTypes = Arrays.asList(
                             GCodeMoveType.NONE,
                             GCodeMoveType.WALL_INNER,
+                            GCodeMoveType.WALL_OUTER,
                             GCodeMoveType.SKIN
                     );
                     gcodeSceneGraph.showGCodeTypes(shellTypes, (boolean)newValue);
@@ -185,8 +180,7 @@ public class GCodePanelController extends LocalizableController implements Initi
     }
 
     private void switchToOptimizedView(){
-        displayInnerWalls.setValue(false);
-        displayOuterWalls.setValue(true);
+        displayShell.setValue(true);
         displayTravelMoves.setValue(false);
         displayInfill.setValue(false);
         displaySupports.setValue(true);
@@ -195,12 +189,11 @@ public class GCodePanelController extends LocalizableController implements Initi
     }
 
     private void switchToDetailedView(){
-        displayInnerWalls.setValue(true);
+        displayShell.setValue(true);
         displayTravelMoves.setValue(false);
         displayInfill.setValue(true);
         displaySupports.setValue(true);
         detailViewControls.setVisible(true);
-        displayOuterWalls.setVisible(true);
         gcodeSceneGraph.showDetailedView();
     }
 
@@ -208,11 +201,10 @@ public class GCodePanelController extends LocalizableController implements Initi
         optimizedViewRadio.setSelected(true);
         optimizedViewRadio.setDisable(true);
         detailedViewRadio.setDisable(true);
-        displayInnerWalls.setValue(false);
+        displayShell.setValue(true);
         displayTravelMoves.setValue(false);
         displayInfill.setValue(false);
         displaySupports.setValue(true);
-        displayOuterWalls.setValue(true);
         detailViewControls.setVisible(false);
     }
 }

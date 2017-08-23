@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class GCodeMeshProperties {
 
-    private static final Material DEFAULT_MATERIAL = new PhongMaterial(Color.GOLD);
-    private static final Material OUTER_WALL_MATERIAL = new PhongMaterial(Color.GREEN);
-    private static final Material FILL_MATERIAL = new PhongMaterial(Color.WHITESMOKE);
-    private static final Material TRAVEL_MATERIAL = new PhongMaterial(Color.RED);
-    private static final Material SUPPORT_MATERIAL = new PhongMaterial(Color.DIMGRAY);
-    private static final Material SKIRT_MATERIAL = new PhongMaterial(Color.BLUE);
+    private static final Material DEFAULT_MATERIAL = new PhongMaterial(Color.web("#2b7cf8"));
+    private static final Material OUTER_WALL_MATERIAL = new PhongMaterial(Color.web("#2b7cf8"));
+    private static final Material FILL_MATERIAL = new PhongMaterial(Color.web("#ff9f19"));
+    private static final Material TRAVEL_MATERIAL = new PhongMaterial(Color.web("#ff0000"));
+    private static final Material SUPPORT_MATERIAL = new PhongMaterial(Color.web("#acacac"));
+    private static final Material SKIRT_MATERIAL = new PhongMaterial(Color.web("#acacac"));
 
     private static float nozzleDiameter = 0.4f;
     private static float layerHeight = 0.20f;
