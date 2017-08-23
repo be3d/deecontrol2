@@ -29,7 +29,8 @@ public class BaseComponentFactory implements
         SlicerPanelFactory,
         GCodePanelFactory,
         GCodeLayerSliderFactory,
-        NotificationWrapperFactory
+        NotificationWrapperFactory,
+        ControlMenuTooltipFactory
 {
     private final SpringFXMLLoader loader;
 
@@ -51,7 +52,8 @@ public class BaseComponentFactory implements
     @Override
     public AnchorPane buildEditorCanvas() {
         AnchorPane canvas = (AnchorPane) loader.load("/view/editor_canvas.fxml");
-        canvas.getChildren().addAll(buildEditPanelWrapper(), buildControlPanel(), buildNoModelPanel());
+        canvas.getChildren().addAll(buildEditPanelWrapper(), buildControlPanel(), buildNoModelPanel(),
+                buildControlMenuTooltipWrapper());
         return canvas;
     }
 
@@ -97,5 +99,6 @@ public class BaseComponentFactory implements
         return (StackPane) loader.load("/view/notification_wrapper.fxml");
     }
 
-
+    @Override
+    public AnchorPane buildControlMenuTooltipWrapper() { return (AnchorPane) loader.load("/view/controlMenuTooltipWrapper.fxml"); }
 }

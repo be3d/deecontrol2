@@ -7,9 +7,6 @@ import com.ysoft.dctrl.slicer.param.SlicerParam;
  */
 public interface SlicerParamBindable<T extends SlicerParamBindable<T>> {
 
-    /**
-     *
-     */
     void updateView();
 
     T load(SlicerParam param);

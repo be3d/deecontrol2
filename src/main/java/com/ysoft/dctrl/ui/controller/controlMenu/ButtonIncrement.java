@@ -1,7 +1,10 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
+import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventHandler;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
+import com.ysoft.dctrl.ui.tooltip.ImageTooltip;
+import com.ysoft.dctrl.ui.tooltip.Tooltipable;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,7 +17,7 @@ import java.util.function.DoubleFunction;
 /**
  * Created by kuhn on 6/26/2017.
  */
-public class ButtonIncrement extends BaseCustomControl implements SlicerParamBindable<ButtonIncrement> {
+public class ButtonIncrement extends BaseTooltipControl implements SlicerParamBindable<ButtonIncrement> {
 
     @FXML Label label;
     @FXML Button minusBtn;

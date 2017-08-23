@@ -1,5 +1,6 @@
 package com.ysoft.dctrl.ui;
 
+import com.ysoft.dctrl.ui.controller.ControlMenuTooltipController;
 import com.ysoft.dctrl.ui.factory.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import javax.naming.ldap.Control;
 
 /**
  * Created by pilar on 29.3.2017.
@@ -81,14 +84,14 @@ public class BaseWindow {
         setAnchors(gcodePanel, 0.0, null, 0.0, 0.0);
         setAnchors(editorCanvas, 0.0, 0.0, 0.0, null);
         setAnchors(mainPanel, 0.0, 0.0, null, 0.0);
-       
         setAnchors(gCodeLayerControlPanel, 20.0, null, null, 305.0);
 
         editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
         editorCanvas.prefWidthProperty().bind(root.widthProperty().subtract(slicerPanel.widthProperty()));
 
 
-        ((AnchorPane) editorCanvas).getChildren().add(notificationManager.getNode());        canvasPane.getChildren().addAll(editorCanvas, slicerPanel, gcodePanel, gCodeLayerControlPanel);
+        ((AnchorPane) editorCanvas).getChildren().add(notificationManager.getNode());
+        canvasPane.getChildren().addAll(editorCanvas, slicerPanel, gcodePanel, gCodeLayerControlPanel);
         content.getChildren().addAll(menuBar, mainPanel, canvasPane);
 
         stage.setScene(scene);

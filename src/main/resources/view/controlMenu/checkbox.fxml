@@ -2,7 +2,10 @@
 <?import javafx.scene.layout.*?>
 
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu-component-container-checkbox ">
-    <Label fx:id="label" text="" styleClass="control-label"></Label>
+    <HBox fx:id="labelWrapper" styleClass="control-label-wrapper">
+        <Label fx:id="label" styleClass="control-label"></Label>
+        <Button fx:id="tooltipBtn"  visible="false" text="" styleClass="control-menu-tooltipBtn"></Button>
+    </HBox>
     <HBox spacing="0"  alignment="TOP_LEFT">
         <children>
             <Region styleClass="left-control-hpadding"></Region>

@@ -12,14 +12,12 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
  * Created by kuhn on 8/2/2017.
  */
-public class ToggleButtonGroup extends BaseCustomControl implements SlicerParamBindable {
+public class ToggleButtonGroup extends BaseTooltipControl implements SlicerParamBindable {
     @FXML ToggleGroup toggleGroup;
     @FXML HBox buttonsContainer;
 

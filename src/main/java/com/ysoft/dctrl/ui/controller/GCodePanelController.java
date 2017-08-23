@@ -27,10 +27,13 @@ import javafx.scene.text.Text;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
+import java.time.Duration;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by kuhn on 5/30/2017.
@@ -165,8 +168,13 @@ public class GCodePanelController extends LocalizableController implements Initi
 
     private void loadProjectInfo(){
         Project project = deeControlContext.getCurrentProject();
+
+        long sec = new Long(project.getPrintDuration());
+        long hr = TimeUnit.SECONDS.toHours(sec);
+        long min = TimeUnit.SECONDS.toMinutes(sec) - hr*60;
+
+        printTimeLabel.setText((hr > 0 ? hr + " hr " : "") + (min > 0 ? min + " min" : ""));
         jobNameLabel.setText(project.getName());
-        printTimeLabel.setText((new Long(project.getPrintDuration())).toString() + " min");
         filamentUsageLabel.setText(String.valueOf((project.getMaterialUsage().get("PLA")/1000f))+" m");
     }
 

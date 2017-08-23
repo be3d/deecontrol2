@@ -49,5 +49,6 @@ public enum EventType {
     JOB_FILE_DONE,
     JOB_SEND_DONE,
     JOB_EXPORT,
-    SHOW_NOTIFICATION
+    SHOW_NOTIFICATION,
+    SHOW_TOOLTIP
 }
