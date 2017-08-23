@@ -1,5 +1,7 @@
 package com.ysoft.dctrl.editor.mesh;
 
+import com.ysoft.dctrl.utils.ColorUtils;
+
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -26,16 +28,16 @@ public class PrintBed {
     private static final PhongMaterial BORDER = new PhongMaterial();
 
     static {
-        GLASS.setDiffuseMap(new Image("/img/glass.png"));
+        GLASS.setDiffuseMap(ColorUtils.getColorImage("#000000", 0.1));
         GLASS.setSpecularColor(Color.BLACK);
 
         GRID.setSpecularColor(Color.BLACK);
-        GRID.setDiffuseMap(new Image("/img/black.png"));
-        GRID.setSelfIlluminationMap(new Image("/img/white.png"));
+        GRID.setDiffuseMap(ColorUtils.getColorImage("#000000"));
+        GRID.setSelfIlluminationMap(ColorUtils.getColorImage("#ffffff"));
 
         BORDER.setSpecularColor(Color.BLACK);
-        BORDER.setDiffuseMap(new Image("/img/black.png"));
-        BORDER.setSelfIlluminationMap(new Image("/img/gray.png"));
+        BORDER.setDiffuseMap(ColorUtils.getColorImage("#000000"));
+        BORDER.setSelfIlluminationMap(ColorUtils.getTexture("edee_label"));
     }
 
     public PrintBed(float x, float y) {
@@ -51,8 +53,8 @@ public class PrintBed {
 
         float[] points = new float[48];
         for(int i = 0; i < 16; i++) {
-            points[i*3] = getSign(i, 3) * hx + ((hb + getSign(i, 0) * hb) * getSign(i, 3));
-            points[i*3+1] = getSign(i, 2) * hy + ((hb + getSign(i, 0) * hb) * getSign(i, 2));
+            points[i*3] = getSign(i, 3) * (hx + (hb * (1 + getSign(i,0))));
+            points[i*3+1] = getSign(i, 2) * (hy + (hb * (1 + getSign(i,0)) * (2.5f + (-1.5f * getSign(i, 2)))));
             points[i*3+2] = -hz + getSign(i, 1) * hz;
         }
 
@@ -65,10 +67,32 @@ public class PrintBed {
         addFaces(faces, bottom, 4*12);
         addFaces(faces, side, 8*12);
 
+        for(int i = 0; i < faces.length; i +=6) {
+            if(faces[i] != 2) { continue; }
+            if(faces[i+2] == 3 && faces[i+4] == 11) {
+                faces[i+1] = 3;
+                faces[i+2] = 16;
+                faces[i+3] = 4;
+                faces[i+4] = 17;
+                faces[i+5] = 5;
+            } else if(faces[i+2] == 11 && faces[i+4] == 10) {
+                faces[i+1] = 6;
+                faces[i+2] = 17;
+                faces[i+3] = 7;
+                faces[i+5] = 8;
+            }
+        }
+
         TriangleMesh mesh = new TriangleMesh();
         mesh.getPoints().addAll(points);
-        mesh.getTexCoords().addAll(0,0,0,1,1,1);
+        mesh.getPoints().addAll(-hx, -hy - (hb*8), 0, hx, -hy - (hb*8), 0);
+        mesh.getTexCoords().addAll(
+                0.5f,0,0.5f,1,1,1,
+                0   ,0,0   ,1,1,1,
+                0   ,0,1   ,1,1,0
+                );
         mesh.getFaces().addAll(faces);
+        mesh.getFaces().addAll(2,0,3,1,16,2,10,0,17,1,11,2);
 
         MeshView view = new MeshView(mesh);
         view.setMaterial(BORDER);
