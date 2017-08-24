@@ -9,26 +9,30 @@
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.control.Button?>
-<AnchorPane fx:id="root" xmlns:fx="http://javafx.com/fxml" fx:controller="com.ysoft.dctrl.ui.controller.ControlMenuTooltipController" AnchorPane.rightAnchor="20"
+<AnchorPane fx:id="root" xmlns:fx="http://javafx.com/fxml" fx:controller="com.ysoft.dctrl.ui.controller.ControlMenuTooltipController" AnchorPane.rightAnchor="5"
             styleClass="control-menu-tooltip-wrapper">
-    <VBox fx:id="wrapper" styleClass="tooltip-wrapper" visible="false" >
-        <HBox styleClass="title-wrapper">
-            <Label fx:id="title" text="Tooltip" styleClass="title"></Label>
-            <Region HBox.hgrow="ALWAYS" />
-            <VBox alignment="CENTER_RIGHT" styleClass="close-btn-box">
-                <Button fx:id="closeBtn" styleClass="close-btn" />
-            </VBox>
-        </HBox>
-        <HBox alignment="CENTER" styleClass="image-wrapper">
-            <ImageView fx:id="image" />
-        </HBox>
-        <HBox styleClass="text-wrapper">
-            <TextFlow  styleClass="text">
-                <Text fx:id="text" />
-            </TextFlow>
-        </HBox>
-        <stylesheets>
-            <URL value="@/css/tooltip_wrapper.css" />
-        </stylesheets>
-    </VBox>
+    <HBox fx:id="wrapper" styleClass="panel, tooltip-wrapper" visible="false" >
+        <VBox >
+            <HBox styleClass="title-wrapper">
+                <Label fx:id="title" text="Tooltip" styleClass="title"></Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <VBox alignment="CENTER_RIGHT" styleClass="close-btn-box">
+                    <Button fx:id="closeBtn" styleClass="close-btn" />
+                </VBox>
+            </HBox>
+            <HBox alignment="CENTER" styleClass="image-wrapper">
+                <ImageView fx:id="image" />
+            </HBox>
+            <HBox styleClass="text-wrapper">
+                <TextFlow  styleClass="text">
+                    <Text fx:id="text" />
+                </TextFlow>
+            </HBox>
+        </VBox>
+        <VBox fx:id="arrowWrapper" styleClass="arrow-wrapper, arrow-top" />
+
+    </HBox>
+    <stylesheets>
+        <URL value="@/css/tooltip_wrapper.css" />
+    </stylesheets>
 </AnchorPane>

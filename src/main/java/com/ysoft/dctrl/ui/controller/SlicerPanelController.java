@@ -334,7 +334,7 @@ public class SlicerPanelController extends LocalizableController implements Init
     private void initTooltips(){
         raftStructurePicker.attachTooltip(eventBus, "Raft structure", "/img/tooltip/model_supports.png", "Description1");
         supportsCheckBox.attachTooltip(eventBus, "Supports", "/img/tooltip/model_supports.png", "Description1");
-        layerHeightToggle.attachTooltip(eventBus, "Layer height", "/img/tooltip/model_supports.png", "Description1");
+        layerHeightToggle.attachTooltip(eventBus, "Layer height", "/img/tooltip/model_supports.png", "Description1 Description1 Description1 Description1 Description1Description1Description1Description1Description1Description1  Description1 Description1 Description1 ");
         roofThicknessIncrement.attachTooltip(eventBus, "Roof thickness", "/img/tooltip/layer_height.png", "Description1");
         bottomThicknessIncrement.attachTooltip(eventBus, "Layer height", "/img/tooltip/model_supports.png", "Description1");
         printSpeedSolidSlider.attachTooltip(eventBus, "Printspeed", "/img/tooltip/layer_height.png", "Description1");
