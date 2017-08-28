@@ -42,6 +42,7 @@ public class PrintBed {
 
     public PrintBed(float x, float y) {
         group = new Group();
+        group.setMouseTransparent(true);
         group.getChildren().addAll(getBorderMesh(x, y, 2.5f), getGridMesh(x, y, 5), getGlassMesh(x, y, 5));
     }
 

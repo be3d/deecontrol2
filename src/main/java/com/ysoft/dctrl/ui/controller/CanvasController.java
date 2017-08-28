@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.ysoft.dctrl.editor.EditSceneGraph;
 import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.control.MeshTransformControls;
 import com.ysoft.dctrl.editor.control.TrackBallCameraControls;
@@ -68,6 +69,8 @@ public class CanvasController extends AbstractController implements Initializabl
         subScene.setFill(Color.WHITESMOKE);
         subScene.setCamera(sceneGraph.getCamera());
 
+        sceneGraph.addHelpObject(meshTransformControls.getPlane());
+
         canvas.getChildren().addAll(subScene);
 
         canvas.prefWidthProperty().addListener((observable, oldValue, newValue) -> {
@@ -80,12 +83,16 @@ public class CanvasController extends AbstractController implements Initializabl
         TrackBallCameraControls controls = new TrackBallCameraControls(sceneGraph.getCamera(), new Point3D(0,-400,400));
         
         canvas.setOnMousePressed((e) -> {
-            meshTransformControls.onMousePressed(e);
-            controls.onMousePressed(e);
             canvas.requestFocus();
+            meshTransformControls.onMousePressed(e);
+            if(e.isConsumed()) { return; }
+            controls.onMousePressed(e);
         });
         canvas.setOnMouseDragged(controls::onMouseDragged);
-        canvas.setOnMouseReleased(controls::onMouseReleased);
+        canvas.setOnMouseReleased(e -> {
+            meshTransformControls.onMouseRelease(e);
+            controls.onMouseReleased(e);
+        });
         canvas.setOnScroll(controls::onScroll);
         canvas.setOnDragDropped(this::onDragDrop);
         canvas.setOnDragOver(this::onDragOver);

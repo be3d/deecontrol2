@@ -57,7 +57,7 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         this.view = view;
         view.setUserData(this);
         this.boundingBox = boundingBox;
-        boundingBox.setColor(ColorUtils.getColorImage("#aaaa00"));
+        boundingBox.setColor(ColorUtils.getColorImage("#0081ea"));
         isDirty = false;
         outOfBounds = false;
         group = null;
