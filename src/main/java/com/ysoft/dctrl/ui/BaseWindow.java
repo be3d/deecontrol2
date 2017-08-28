@@ -2,6 +2,7 @@ package com.ysoft.dctrl.ui;
 
 import com.ysoft.dctrl.ui.controller.ControlMenuTooltipController;
 import com.ysoft.dctrl.ui.factory.*;
+import javafx.scene.layout.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.ysoft.dctrl.utils.KeyEventPropagator;
@@ -10,10 +11,6 @@ import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import javax.naming.ldap.Control;
@@ -33,6 +30,7 @@ public class BaseWindow {
     private Region slicerPanel;
     private Region gcodePanel;
     private Region gCodeLayerControlPanel;
+    private Region tooltipWrapper;
 
     @Autowired
     public BaseWindow(KeyEventPropagator keyEventPropagator,
@@ -43,7 +41,8 @@ public class BaseWindow {
                       EditorCanvasFactory editorCanvasFactory,
                       SlicerPanelFactory slicerPanelFactory,
                       GCodePanelFactory gcodePanelFactory,
-                      GCodeLayerSliderFactory gCodeLayerSliderFactory
+                      GCodeLayerSliderFactory gCodeLayerSliderFactory,
+                      TooltipWrapperFactory tooltipWrapperFactory
     ) {
         this.keyEventPropagator = keyEventPropagator;
         this.dialogManager = dialogManager;
@@ -54,6 +53,7 @@ public class BaseWindow {
         slicerPanel = slicerPanelFactory.buildSlicerPanel();
         gcodePanel = gcodePanelFactory.buildGCodePanel();
         gCodeLayerControlPanel = gCodeLayerSliderFactory.buildGCodeLayerSlider();
+        tooltipWrapper = tooltipWrapperFactory.buildTooltipWrapper();
     }
 
     public void composeWindow(Stage stage) {
@@ -64,8 +64,10 @@ public class BaseWindow {
 
         setAnchors(content, 0.0, 0.0, 0.0, 0.0);
         setAnchors(dialogManager.getNode(), 0.0, 0.0, 0.0, 0.0);
+        setAnchors(tooltipWrapper, 0.0,0.0,0.0,300.0);
 
         root.getChildren().addAll(content, dialogManager.getNode());
+        root.getChildren().addAll(tooltipWrapper);
 
         content.setBackground(Background.EMPTY);
 
@@ -89,10 +91,12 @@ public class BaseWindow {
         editorCanvas.prefHeightProperty().bind(canvasPane.prefHeightProperty());
         editorCanvas.prefWidthProperty().bind(root.widthProperty().subtract(slicerPanel.widthProperty()));
 
-
         ((AnchorPane) editorCanvas).getChildren().add(notificationManager.getNode());
         canvasPane.getChildren().addAll(editorCanvas, slicerPanel, gcodePanel, gCodeLayerControlPanel);
         content.getChildren().addAll(menuBar, mainPanel, canvasPane);
+
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
 
         stage.setScene(scene);
 

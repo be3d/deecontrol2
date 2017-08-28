@@ -17,6 +17,8 @@ import com.ysoft.dctrl.slicer.profile.Profile;
 import com.ysoft.dctrl.slicer.profile.ProfileResource;
 import com.ysoft.dctrl.ui.controller.controlMenu.*;
 import com.ysoft.dctrl.ui.tooltip.ImageTooltip;
+import com.ysoft.dctrl.ui.tooltip.contract.TooltipData;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -121,6 +123,15 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        scrollPane.vvalueProperty().addListener(
+                (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+                    System.out.println( "Scrolling" + newValue.doubleValue() );
+                    eventBus.publish(new Event(EventType.SLICER_PANEL_SCROLLED.name()));
+                    if(newValue.doubleValue() == 0){
+                        System.out.println( "AT TOP" );
+                    }
+                });
 
         List<Profile> list = profileResource.getProfiles();
         ObservableList obList = FXCollections.observableList(list);
@@ -332,18 +343,18 @@ public class SlicerPanelController extends LocalizableController implements Init
     }
 
     private void initTooltips(){
-        raftStructurePicker.attachTooltip(eventBus, "Raft structure", "/img/tooltip/model_supports.png", "Description1");
-        supportsCheckBox.attachTooltip(eventBus, "Supports", "/img/tooltip/model_supports.png", "Description1");
-        layerHeightToggle.attachTooltip(eventBus, "Layer height", "/img/tooltip/model_supports.png", "Description1 Description1 Description1 Description1 Description1Description1Description1Description1Description1Description1  Description1 Description1 Description1 ");
-        roofThicknessIncrement.attachTooltip(eventBus, "Roof thickness", "/img/tooltip/layer_height.png", "Description1");
-        bottomThicknessIncrement.attachTooltip(eventBus, "Layer height", "/img/tooltip/model_supports.png", "Description1");
-        printSpeedSolidSlider.attachTooltip(eventBus, "Printspeed", "/img/tooltip/layer_height.png", "Description1");
-        shellThicknessIncrement.attachTooltip(eventBus, "Shell thickness", "/img/tooltip/model_supports.png", "Description1");
-        printSpeedShellSlider.attachTooltip(eventBus, "Print speed shell", "/img/tooltip/model_supports.png", "Description1");
-        infillPatternPicker.attachTooltip(eventBus, "Infill pattern", "/img/tooltip/model_supports.png", "Description1");
-        infillDensitySlider.attachTooltip(eventBus, "Infill density", "/img/tooltip/model_supports.png", "Description1");
-        supportDensitySlider.attachTooltip(eventBus, "Support density", "/img/tooltip/model_supports.png", "Description1");
-        supportPatternPicker.attachTooltip(eventBus, "Support pattern", "/img/tooltip/model_supports.png", "Description1");
-        supportAngleSlider.attachTooltip(eventBus, "Support angle", "/img/tooltip/model_supports.png", "Description1");;
+        raftStructurePicker.attachTooltip(eventBus, new TooltipData("Raft structure", "/img/tooltip/model_supports.png", "Description1"));
+        supportsCheckBox.attachTooltip(eventBus, new TooltipData("Supports", "/img/tooltip/model_supports.png", "Description1"));
+        layerHeightToggle.attachTooltip(eventBus, new TooltipData("Layer height", "/img/tooltip/model_supports.png", "Description1 Description1 Description1 Description1 Description1Description1Description1Description1Description1Description1  Description1 Description1 Description1 "));
+        roofThicknessIncrement.attachTooltip(eventBus, new TooltipData("Roof thickness", "/img/tooltip/layer_height.png", "Description1"));
+        bottomThicknessIncrement.attachTooltip(eventBus, new TooltipData("Layer height", "/img/tooltip/model_supports.png", "Description1"));
+        printSpeedSolidSlider.attachTooltip(eventBus, new TooltipData("Printspeed", "/img/tooltip/giphy.gif", " gif Description1"));
+        shellThicknessIncrement.attachTooltip(eventBus, new TooltipData("Shell thickness", "/img/tooltip/gif1.gif", "gif2Description1"));
+        printSpeedShellSlider.attachTooltip(eventBus, new TooltipData("Print speed shell", "/img/tooltip/gif2.gif", "Description1"));
+        infillPatternPicker.attachTooltip(eventBus, new TooltipData("Infill pattern", "/img/tooltip/model_supports.png", "Description1"));
+        infillDensitySlider.attachTooltip(eventBus, new TooltipData("Infill density", "/img/tooltip/model_supports.png", "Description1"));
+        supportDensitySlider.attachTooltip(eventBus, new TooltipData("Support density", "/img/tooltip/model_supports.png", "Description1"));
+        supportPatternPicker.attachTooltip(eventBus, new TooltipData("Support pattern", "/img/tooltip/model_supports.png", "Description1"));
+        supportAngleSlider.attachTooltip(eventBus, new TooltipData("Support angle", "/img/tooltip/model_supports.png", "Description1"));
     }
 }

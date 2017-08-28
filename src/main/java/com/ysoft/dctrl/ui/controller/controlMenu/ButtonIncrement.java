@@ -3,8 +3,6 @@ package com.ysoft.dctrl.ui.controller.controlMenu;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventHandler;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
-import com.ysoft.dctrl.ui.tooltip.ImageTooltip;
-import com.ysoft.dctrl.ui.tooltip.Tooltipable;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

@@ -2,6 +2,8 @@ package com.ysoft.dctrl.ui;
 
 import javax.annotation.PostConstruct;
 
+import com.ysoft.dctrl.event.Event;
+import com.ysoft.dctrl.ui.notification.ProgressNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
