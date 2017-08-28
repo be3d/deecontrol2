@@ -32,7 +32,7 @@ public class GCodeSceneGraph extends SubSceneGraph {
     private final static List<GCodeMoveType> DRAFT_RENDER_TYPES = Arrays.asList(GCodeMoveType.WALL_OUTER, GCodeMoveType.SUPPORT, GCodeMoveType.SKIN, GCodeMoveType.SKIRT);
 
     private enum ViewType {DETAILED, OPTIMIZED}
-    private ViewType activeView = null;
+    private ViewType activeView = ViewType.OPTIMIZED;
     private List<GCodeMoveType> currentlyRenderedTypes = new LinkedList<>();
     private int currentCutLayerIndex = 0;
 
@@ -106,7 +106,9 @@ public class GCodeSceneGraph extends SubSceneGraph {
     }
 
     public void loadGCodeLayerDetail(int index){
-        loadGCodeLayerDetail(layers.get(index));
+        if(layers.size()>0){
+            loadGCodeLayerDetail(layers.get(index));
+        }
     }
 
     public void unloadGCodeLayerDetail(GCodeLayer l) {
