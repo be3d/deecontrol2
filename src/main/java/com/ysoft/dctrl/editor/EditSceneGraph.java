@@ -1,8 +1,10 @@
 package com.ysoft.dctrl.editor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -34,23 +36,30 @@ public class EditSceneGraph extends SubSceneGraph {
     private static final Point3D PRINTER_SIZE = new Point3D(150,150,150);
     private static final Point3D PRINTER_HALF_SIZE = new Point3D(75,75,75);
 
-    public static final PhongMaterial material = new PhongMaterial(Color.web("#cccccc"));
-    public static final PhongMaterial selectedMaterial = new PhongMaterial(Color.web("#4dc824"));
+    private static PhongMaterial MATERIAL = new PhongMaterial(Color.web("#cccccc"));
+    private static PhongMaterial SELECTED_MATERIAL = new PhongMaterial(Color.web("#4dc824"));
+    private static PhongMaterial INVALID_MATERIAL = new PhongMaterial(Color.web("#ff0000"));
 
     static {
-        material.setSpecularColor(new Color(0.2,0.2,0.2,1));
-        material.setSpecularPower(10);
+        MATERIAL.setSpecularColor(Color.web("#333333"));
+        MATERIAL.setSpecularPower(10);
 
-        selectedMaterial.setSpecularColor(new Color(0.2,0.2,0.2,1));
-        selectedMaterial.setSpecularPower(10);
+        SELECTED_MATERIAL.setSpecularColor(Color.web("#333333"));
+        SELECTED_MATERIAL.setSpecularPower(10);
+
+        INVALID_MATERIAL.setSpecularColor(Color.web("#333333"));
+        INVALID_MATERIAL.setSpecularPower(10);
     }
 
     private List<SceneMesh> selected;
     private SceneMesh currentlyFixing;
 
+    private Set<SceneMesh> outOfBounds;
+
     public EditSceneGraph(EventBus eventBus) {
         super(eventBus);
         selected = new ArrayList<>();
+        outOfBounds = new HashSet<>();
         currentlyFixing = null;
     }
 
@@ -72,19 +81,22 @@ public class EditSceneGraph extends SubSceneGraph {
 
     public void addMesh(TriangleMesh mesh) {
         ExtendedMesh extendedMesh = new ExtendedMesh(mesh);
-        extendedMesh.setMaterial(material);
+        extendedMesh.setMaterial(MATERIAL);
+        extendedMesh.setBoundingBoxVisible(false);
         extendedMesh.translateToZero();
         extendedMesh.setPositionZ(extendedMesh.getBoundingBox().getHalfSize().getZ());
         extendedMesh.addOnMeshChangeListener(this::fixToBed);
         addMesh(extendedMesh);
-        extendedMesh.getNode().setOnMouseClicked((event -> {
-            if(event.getTarget() != extendedMesh.getNode()) { return; }
+        extendedMesh.getView().setOnMousePressed((event -> {
+            if(event.getTarget() != extendedMesh.getView()) { return; }
             if(event.isControlDown() && !selected.isEmpty()) {
                 addToSelection(extendedMesh);
             } else {
                 selectSingle(extendedMesh);
             }
         }));
+        extendedMesh.getBoundingBox().setOnChange(bb -> validatePosition(extendedMesh, bb));
+        validatePosition(extendedMesh);
     }
 
     public void centerSelected() {
@@ -183,11 +195,15 @@ public class EditSceneGraph extends SubSceneGraph {
     }
 
     private void selectSingle(SceneMesh mesh) {
-        selected.forEach(m -> m.setMaterial(material));
+        selected.forEach(m -> {
+            m.setMaterial(MATERIAL);
+            m.setBoundingBoxVisible(false);
+        });
         selected.clear();
         mesh = mesh.getGroup() != null ? mesh.getGroup() : mesh;
         selected.add(mesh);
-        mesh.setMaterial(selectedMaterial);
+        mesh.setMaterial(SELECTED_MATERIAL);
+        mesh.setBoundingBoxVisible(true);
         eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), mesh));
     }
 
@@ -195,19 +211,29 @@ public class EditSceneGraph extends SubSceneGraph {
         mesh = mesh.getGroup() != null ? mesh.getGroup() : mesh;
         if(selected.contains(mesh)) {
             selected.remove(mesh);
-            mesh.setMaterial(material);
+            mesh.setMaterial(MATERIAL);
+            mesh.setBoundingBoxVisible(false);
+            if(selected.size() == 1) { selected.get(0).setBoundingBoxVisible(true); }
         } else {
             selected.add(mesh);
-            mesh.setMaterial(selectedMaterial);
+            mesh.setMaterial(SELECTED_MATERIAL);
+            mesh.setBoundingBoxVisible(true);
             if(selected.size() == 2) { eventBus.publish(new Event(EventType.MODEL_MULTISELECTION.name())); }
         }
+        if(selected.size() > 1) { selected.forEach(m -> m.setBoundingBoxVisible(false)); }
     }
 
     private void groupModels() {
         if(selected.size() < 2) { return; }
         MeshGroup meshGroup = new MeshGroup(selected);
-        selected.forEach(this::removeMesh);
+        selected.forEach(m -> {
+            m.setBoundingBoxVisible(false);
+            m.getBoundingBox().setOnChange(null);
+            removeMesh(m);
+        });
         addMesh(meshGroup);
+        meshGroup.getBoundingBox().setOnChange(bb -> validatePosition(meshGroup, bb));
+        validatePosition(meshGroup);
         selected.clear();
         selectSingle(meshGroup);
     }
@@ -215,15 +241,41 @@ public class EditSceneGraph extends SubSceneGraph {
     private void ungroupModels() {
         SceneMesh m = getSelected();
         if(m == null || !(m instanceof MeshGroup)) { return; }
+        m.getBoundingBox().setOnChange(null);
         removeMesh(m);
         List<? extends SceneMesh> l = ((MeshGroup) m).getChildren();
         l.forEach((sm) -> {
             addMesh(sm);
-            sm.setMaterial(material);
+            sm.setMaterial(MATERIAL);
+            sm.setBoundingBoxVisible(false);
+            sm.getBoundingBox().setOnChange(bb -> validatePosition(sm, bb));
+            validatePosition(sm);
         });
         SceneMesh mesh = l.get(0);
         ((MeshGroup) m).dismiss();
         selectSingle(mesh);
+    }
+
+    private void validatePosition(SceneMesh mesh) {
+        validatePosition(mesh, mesh.getBoundingBox());
+    }
+
+    private void validatePosition(SceneMesh mesh, BoundingBox bb) {
+        boolean oob = !printerVolume.contains(bb);
+        mesh.setOutOfBounds(oob);
+        mesh.setMaterial(oob ? INVALID_MATERIAL : (selected.contains(mesh) ? SELECTED_MATERIAL : MATERIAL));
+
+        if(oob) {
+            if(outOfBounds.isEmpty()) {
+                eventBus.publish(new Event(EventType.EDIT_SCENE_INVALID.name()));
+            }
+            outOfBounds.add(mesh);
+        } else if(outOfBounds.contains(mesh)) {
+            outOfBounds.remove(mesh);
+            if(outOfBounds.isEmpty()) {
+                eventBus.publish(new Event(EventType.EDIT_SCENE_VALID.name()));
+            }
+        }
     }
 
     public SceneMesh getSelected() {

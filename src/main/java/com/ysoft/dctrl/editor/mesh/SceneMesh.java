@@ -7,5 +7,8 @@ import com.ysoft.dctrl.math.BoundingBox;
  */
 public interface SceneMesh extends Controllable, DrawableMesh {
     BoundingBox getBoundingBox();
+    void setBoundingBoxVisible(boolean visible);
     MeshGroup getGroup();
+    void setOutOfBounds(boolean outOfBounds);
+    boolean isOutOfBounds();
 }

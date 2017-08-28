@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import org.springframework.stereotype.Controller;
 
 import com.ysoft.dctrl.editor.EditSceneGraph;
+import com.ysoft.dctrl.editor.mesh.MeshGroup;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.math.TransformMatrix;
@@ -55,6 +56,17 @@ public class RotationPanelController extends AbstractEditPanelController {
     }
 
     public void refresh() {
+        SceneMesh mesh = sceneGraph.getSelected();
+        if(mesh != null) {
+            boolean isGroup = mesh instanceof MeshGroup;
+            counterX.setDisable(isGroup);
+            clockX.setDisable(isGroup);
+            x.setDisable(isGroup);
+            counterY.setDisable(isGroup);
+            clockY.setDisable(isGroup);
+            y.setDisable(isGroup);
+        }
+
         x.setValue(90);
         y.setValue(90);
         z.setValue(90);
