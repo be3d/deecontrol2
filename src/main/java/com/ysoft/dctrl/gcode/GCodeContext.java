@@ -4,10 +4,10 @@ import com.ysoft.dctrl.editor.mesh.GCodeMoveType;
 
 public class GCodeContext {
 
-    private static GCodeMoveType moveType = GCodeMoveType.NONE;
-    private static boolean isTravelMove = false;
-    private static double x, y, z = 0;
-    private static int layer;
+    private GCodeMoveType moveType = GCodeMoveType.NONE;
+    private boolean isTravelMove = false;
+    private double x, y, z = 0;
+    private int layer;
 
     public void setX(Double x) {
         if (x != null) this.x = x;
