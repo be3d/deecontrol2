@@ -15,8 +15,8 @@
       <Button fx:id="redo" text="?_main_redo" styleClass="main-panel-button, redo-button" />
     </HBox>
     <HBox styleClass="main-panel-group">
-      <Button fx:id="group" text="?_main_group" styleClass="main-panel-button, group-button" />
-      <Button fx:id="ungroup" text="?_main_ungroup" styleClass="main-panel-button, ungourp-button" />
+      <Button fx:id="group" text="?_main_group" styleClass="main-panel-button, group-button" disable="true" />
+      <Button fx:id="ungroup" text="?_main_ungroup" styleClass="main-panel-button, ungourp-button" disable="true" />
     </HBox>
     <HBox styleClass="main-panel-group">
       <Button fx:id="center" text="?_main_center" styleClass="main-panel-button, center-button" />
@@ -27,6 +27,7 @@
     </HBox>
     <HBox styleClass="main-panel-group">
       <Button fx:id="resetView" text="?_main_reset_view" styleClass="main-panel-button, reset-view-button" />
+      <Button fx:id="topView" text="?_main_top_view" styleClass="main-panel-button, top-view-button" visible="false" managed="false"/>
     </HBox>
   </HBox>
 

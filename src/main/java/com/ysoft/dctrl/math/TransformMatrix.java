@@ -42,6 +42,10 @@ public class TransformMatrix {
         });
     }
 
+    public static TransformMatrix fromEulerDeg(Point3D euler) {
+        return fromEuler(new Point3D(Math.toRadians(euler.getX()),Math.toRadians(euler.getY()),Math.toRadians(euler.getZ())));
+    }
+
     public static TransformMatrix fromEuler(Point3D euler) {
         return (new TransformMatrix()).applyEuler(euler);
     }
@@ -56,6 +60,10 @@ public class TransformMatrix {
         }
 
         return this;
+    }
+
+    public TransformMatrix applyEulerDeg(Point3D euler) {
+        return applyEuler(new Point3D(Math.toRadians(euler.getX()),Math.toRadians(euler.getY()),Math.toRadians(euler.getZ())));
     }
 
     public TransformMatrix applyEuler(Point3D euler) {
@@ -155,5 +163,10 @@ public class TransformMatrix {
         }
 
         return new Point3D(x,y,z);
+    }
+
+    public Point3D toEulerDeg() {
+        Point3D p = toEuler();
+        return new Point3D(Math.toDegrees(p.getX()),Math.toDegrees(p.getY()),Math.toDegrees(p.getZ()));
     }
 }

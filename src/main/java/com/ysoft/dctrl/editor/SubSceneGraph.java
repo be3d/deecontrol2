@@ -4,8 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.ysoft.dctrl.editor.mesh.DrawableMesh;
+import com.ysoft.dctrl.editor.mesh.PrinterVolume;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.event.EventBus;
+import com.ysoft.dctrl.math.BoundingBox;
 
 import javafx.scene.Group;
 import javafx.scene.shape.TriangleMesh;
@@ -17,6 +19,7 @@ public abstract class SubSceneGraph {
     private final LinkedList<SceneMesh> sceneMeshes;
     private final Group sceneGroup;
     protected final EventBus eventBus;
+    protected PrinterVolume printerVolume;
 
     public SubSceneGraph(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -38,5 +41,9 @@ public abstract class SubSceneGraph {
     protected final void removeMesh(SceneMesh mesh) {
         sceneMeshes.remove(mesh);
         sceneGroup.getChildren().remove(mesh.getNode());
+    }
+
+    protected final void setPrinterVolume(PrinterVolume printerVolume) {
+        this.printerVolume = printerVolume;
     }
 }

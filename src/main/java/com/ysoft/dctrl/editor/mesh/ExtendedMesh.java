@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.ysoft.dctrl.math.BoundingBox;
 import com.ysoft.dctrl.math.TransformMatrix;
+import com.ysoft.dctrl.utils.ColorUtils;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Material;
 import javafx.scene.shape.MeshView;
@@ -33,23 +35,34 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     private BoundingBox boundingBox;
     private boolean isDirty;
 
+    private boolean outOfBounds;
+
     private MeshView view;
+    private Group node;
+    private MeshGroup group;
 
     private List<OnMeshChange> onRotationChange;
     private List<OnMeshChange> onScaleChange;
     private List<OnMeshChange> onPositionChange;
 
     public ExtendedMesh() {
-        view = new MeshView();
-        boundingBox = new BoundingBox();
-        isDirty = false;
-        initTransforms();
+        this(new MeshView(), new BoundingBox());
     }
 
     public ExtendedMesh(TriangleMesh mesh) {
-        view = new MeshView(mesh);
-        boundingBox = new BoundingBox(mesh.getPoints().toArray(null));
+        this(new MeshView(mesh), new BoundingBox(mesh.getPoints().toArray(null)));
+    }
+
+    private ExtendedMesh(MeshView view, BoundingBox boundingBox) {
+        this.view = view;
+        view.setUserData(this);
+        this.boundingBox = boundingBox;
+        boundingBox.setColor(ColorUtils.getColorImage("#aaaa00"));
         isDirty = false;
+        outOfBounds = false;
+        group = null;
+        node = new Group();
+        node.getChildren().addAll(view, boundingBox.getNode());
         initTransforms();
     }
 
@@ -57,12 +70,6 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         onRotationChange = new LinkedList<>();
         onScaleChange = new LinkedList<>();
         onPositionChange = new LinkedList<>();
-
-        rotationX.setOnTransformChanged(this::handleRotationChange);
-        rotationY.setOnTransformChanged(this::handleRotationChange);
-        rotationZ.setOnTransformChanged(this::handleRotationChange);
-        scale.setOnTransformChanged(this::handleScaleChange);
-        position.setOnTransformChanged(this::handlePositionChange);
 
         view.getTransforms().addAll(position, rotationX, rotationY, rotationZ, scale);
     }
@@ -72,11 +79,15 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         return boundingBox;
     }
 
+    @Override
+    public void setBoundingBoxVisible(boolean visible) {
+        boundingBox.setNodeVisible(visible);
+    }
+
     private void checkBoundingBox() {
         if(!isDirty) { return; }
 
         boundingBox.update(((TriangleMesh) view.getMesh()).getPoints().toArray(null), getTransformMatrix());
-        System.err.println(boundingBox);
         isDirty = false;
     }
 
@@ -90,6 +101,8 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         this.scale.setY(scale.getY());
         this.scale.setZ(scale.getZ());
         isDirty = true;
+        if(boundingBox.isNodeVisible()) { checkBoundingBox(); }
+        handleScaleChange();
     }
 
     @Override
@@ -103,6 +116,8 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         this.rotationY.setAngle(normalizeRotation(rotation.getY()));
         this.rotationZ.setAngle(normalizeRotation(rotation.getZ()));
         isDirty = true;
+        if(boundingBox.isNodeVisible()) { checkBoundingBox(); }
+        handleRotationChange();
     }
 
     private double normalizeRotation(double value) {
@@ -124,6 +139,8 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         this.position.setY(position.getY());
         this.position.setZ(position.getZ());
         isDirty = true;
+        if(boundingBox.isNodeVisible()) { checkBoundingBox(); }
+        handlePositionChange();
     }
 
     @Override
@@ -133,6 +150,10 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
 
     @Override
     public Node getNode() {
+        return node;
+    }
+
+    public MeshView getView() {
         return view;
     }
 
@@ -145,15 +166,15 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         return (new TransformMatrix()).applyTranslate(getPosition()).applyEuler(getRadRotation()).applyScale(getScale());
     }
 
-    private void handleRotationChange(TransformChangedEvent event) {
+    private void handleRotationChange() {
         onRotationChange.forEach(h -> h.accept(this));
     }
 
-    private void handleScaleChange(TransformChangedEvent event) {
+    private void handleScaleChange() {
         onScaleChange.forEach(h -> h.accept(this));
     }
 
-    private void handlePositionChange(TransformChangedEvent event) {
+    private void handlePositionChange() {
         onPositionChange.forEach(h -> h.accept(this));
     }
 
@@ -173,5 +194,28 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         addOnPositionChangeListener(eventHandler);
         addOnRotationChangeListener(eventHandler);
         addOnScaleChangeListener(eventHandler);
+    }
+
+    void setGroup(MeshGroup group) {
+        this.group = group;
+    }
+
+    void removeGroup() {
+        group = null;
+    }
+
+    @Override
+    public MeshGroup getGroup() {
+        return group;
+    }
+
+    @Override
+    public void setOutOfBounds(boolean outOfBounds) {
+        this.outOfBounds = outOfBounds;
+    }
+
+    @Override
+    public boolean isOutOfBounds() {
+        return outOfBounds;
     }
 }

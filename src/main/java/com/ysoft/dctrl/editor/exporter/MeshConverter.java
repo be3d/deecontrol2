@@ -22,7 +22,7 @@ public class MeshConverter {
     private volatile double progress;
 
     public MeshConverter(ExtendedMesh extendedMesh, TransformMatrix transformMatrix) {
-        this.mesh = (TriangleMesh) ((MeshView) extendedMesh.getNode()).getMesh();
+        this.mesh = (TriangleMesh) extendedMesh.getView().getMesh();
         this.transformMatrix = transformMatrix;
     }
 
