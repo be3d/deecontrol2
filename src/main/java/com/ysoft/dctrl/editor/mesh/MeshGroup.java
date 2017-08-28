@@ -7,6 +7,8 @@ import java.util.List;
 import com.ysoft.dctrl.math.BoundingBox;
 import com.ysoft.dctrl.math.Point3DUtils;
 import com.ysoft.dctrl.math.TransformMatrix;
+import com.ysoft.dctrl.math.Utils;
+import com.ysoft.dctrl.utils.ColorUtils;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -27,12 +29,17 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
     private Translate position;
     private Scale scale;
 
+    private boolean outOfBounds;
+
     public MeshGroup() {
         group = new ArrayList<>();
         groupNode = new Group();
         boundingBox = new BoundingBox();
+        boundingBox.setColor(ColorUtils.getColorImage("#aaaa00"));
         position = new Translate(0,0,0);
         scale = new Scale(1,1,1);
+        groupNode.getChildren().add(boundingBox.getNode());
+        outOfBounds = false;
     }
 
     public MeshGroup(Collection<SceneMesh> meshes) {
@@ -113,13 +120,18 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
 
     @Override
     public void setRotation(Point3D rotation) {
-        TransformMatrix matrix = TransformMatrix.fromEulerDeg(rotation);
+        TransformMatrix posMatrix = TransformMatrix.fromEulerDeg(rotation);
+        Point3D axis = rotation.normalize();
+        double max = Utils.max(rotation.getX(), rotation.getY(), rotation.getZ());
+        double min = Utils.min(rotation.getX(), rotation.getY(), rotation.getZ());
+        double angle = (Math.abs(max) > Math.abs(min)) ? max : min;
 
         group.forEach(m -> {
             Point3D p = m.getPosition().subtract(position.getX(),position.getY(),position.getZ());
-            m.setPosition(matrix.applyTo(p).add(position.getX(),position.getY(),position.getZ()));
-            TransformMatrix mat = TransformMatrix.fromEulerDeg(m.getRotation()).multiply(matrix);
-            m.setRotation(mat.toEulerDeg());
+            m.setPosition(posMatrix.applyTo(p).add(position.getX(),position.getY(),position.getZ()));
+            TransformMatrix rotMatrix = TransformMatrix.getRotationAxis(axis, Math.toRadians(-angle));
+            rotMatrix.multiply(TransformMatrix.fromEulerDeg(m.getRotation()));
+            m.setRotation(rotMatrix.toEulerDeg());
         });
         refreshBoundingBox();
     }
@@ -154,6 +166,11 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         return boundingBox;
     }
 
+    @Override
+    public void setBoundingBoxVisible(boolean visible) {
+        boundingBox.setNodeVisible(visible);
+    }
+
     private void refreshBoundingBox() {
         boundingBox.reset();
         group.forEach(m -> boundingBox.extend(m.getBoundingBox()));
@@ -162,4 +179,14 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
 
     @Override
     public MeshGroup getGroup() { return null; }
+
+    @Override
+    public void setOutOfBounds(boolean outOfBounds) {
+        this.outOfBounds = outOfBounds;
+    }
+
+    @Override
+    public boolean isOutOfBounds() {
+        return outOfBounds;
+    }
 }

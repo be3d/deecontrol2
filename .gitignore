@@ -39,4 +39,4 @@ src/main/resources/print/slicer/definitions/printer/ignore/
 # jar2app
 jar2app
 
-java/
+/java/

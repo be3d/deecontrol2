@@ -157,7 +157,6 @@ public class ScalePanelController extends AbstractEditPanelController {
         mesh.setScaleX(ratio*mesh.getScaleX());
         mesh.setScaleY(ratio*mesh.getScaleY());
         mesh.setScaleZ(ratio*mesh.getScaleZ());
-        refresh();
     }
 
     public void onReset() {

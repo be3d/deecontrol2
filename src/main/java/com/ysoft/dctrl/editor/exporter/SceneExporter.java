@@ -96,7 +96,7 @@ public class SceneExporter {
                 for(SceneMesh m : meshes) {
                     if(m instanceof ExtendedMesh) {
                         totalMeshes++;
-                        facesNumber += ((TriangleMesh) ((MeshView) m.getNode()).getMesh()).getFaces().size()/9;
+                        facesNumber += ((TriangleMesh) ((ExtendedMesh) m).getView().getMesh()).getFaces().size()/9;
                     }
                 }
                 ByteBuffer bb = ByteBuffer.allocate(84);
@@ -115,8 +115,8 @@ public class SceneExporter {
                         TransformMatrix res = new TransformMatrix();
                         res.multiply(s);
                         res.multiply(p);
-                        res.multiply(a);
                         res.multiplyTranslation(new Point3D(-1,-1,1));
+                        res.multiply(a);
                         currentMeshConverter = new MeshConverter(mesh, res);
                         byte[] converted = currentMeshConverter.convertToStl();
                         try {
@@ -134,15 +134,18 @@ public class SceneExporter {
             }
         }
 
-        private LinkedList<SceneMesh> filterMeshes(List<SceneMesh> meshes) {
+        private LinkedList<SceneMesh> filterMeshes(List<SceneMesh> meshes) throws ModelOutOfBoundsException {
             final LinkedList<SceneMesh> res = new LinkedList<>();
-            meshes.forEach(m -> {
+            for(SceneMesh m : meshes) {
+                if(m.isOutOfBounds()) {
+                    throw new ModelOutOfBoundsException();
+                }
                 if(m instanceof ExtendedMesh) {
                     res.add(m);
                 } else if(m instanceof MeshGroup) {
                     res.addAll(((MeshGroup) m).getChildren());
                 }
-            });
+            }
 
             return res;
         }
