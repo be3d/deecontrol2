@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by kuhn on 5/30/2017.
@@ -53,8 +54,7 @@ public class GCodePanelController extends LocalizableController implements Initi
     @FXML RadioButton optimizedViewRadio;
     @FXML RadioButton detailedViewRadio;
     @FXML VBox detailViewControls;
-    @FXML CheckBoxInline displayOuterWalls;
-    @FXML CheckBoxInline displayInnerWalls;
+    @FXML CheckBoxInline displayShell;
     @FXML CheckBoxInline displayTravelMoves;
     @FXML CheckBoxInline displayInfill;
     @FXML CheckBoxInline displaySupports;
@@ -96,16 +96,12 @@ public class GCodePanelController extends LocalizableController implements Initi
                     break;
             }
         });
-        displayOuterWalls.bindControlChanged(
-                (((observable, oldValue, newValue) -> {
-                    gcodeSceneGraph.showGCodeType(GCodeMoveType.WALL_OUTER, (boolean)newValue);
-                }))
-        );
-        displayInnerWalls.bindControlChanged(
+        displayShell.bindControlChanged(
                 (observable, oldValue, newValue) -> {
                     List<GCodeMoveType> shellTypes = Arrays.asList(
                             GCodeMoveType.NONE,
                             GCodeMoveType.WALL_INNER,
+                            GCodeMoveType.WALL_OUTER,
                             GCodeMoveType.SKIN
                     );
                     gcodeSceneGraph.showGCodeTypes(shellTypes, (boolean)newValue);
@@ -165,8 +161,13 @@ public class GCodePanelController extends LocalizableController implements Initi
 
     private void loadProjectInfo(){
         Project project = deeControlContext.getCurrentProject();
+
+        long sec = new Long(project.getPrintDuration());
+        long hr = TimeUnit.SECONDS.toHours(sec);
+        long min = TimeUnit.SECONDS.toMinutes(sec) - hr*60;
+
+        printTimeLabel.setText((hr > 0 ? hr + " hr " : "") + (min > 0 ? min + " min" : ""));
         jobNameLabel.setText(project.getName());
-        printTimeLabel.setText((new Long(project.getPrintDuration())).toString() + " min");
         filamentUsageLabel.setText(String.valueOf((project.getMaterialUsage().get("PLA")/1000f))+" m");
     }
 
@@ -185,8 +186,7 @@ public class GCodePanelController extends LocalizableController implements Initi
     }
 
     private void switchToOptimizedView(){
-        displayInnerWalls.setValue(false);
-        displayOuterWalls.setValue(true);
+        displayShell.setValue(true);
         displayTravelMoves.setValue(false);
         displayInfill.setValue(false);
         displaySupports.setValue(true);
@@ -195,12 +195,11 @@ public class GCodePanelController extends LocalizableController implements Initi
     }
 
     private void switchToDetailedView(){
-        displayInnerWalls.setValue(true);
+        displayShell.setValue(true);
         displayTravelMoves.setValue(false);
         displayInfill.setValue(true);
         displaySupports.setValue(true);
         detailViewControls.setVisible(true);
-        displayOuterWalls.setVisible(true);
         gcodeSceneGraph.showDetailedView();
     }
 
@@ -208,11 +207,10 @@ public class GCodePanelController extends LocalizableController implements Initi
         optimizedViewRadio.setSelected(true);
         optimizedViewRadio.setDisable(true);
         detailedViewRadio.setDisable(true);
-        displayInnerWalls.setValue(false);
+        displayShell.setValue(true);
         displayTravelMoves.setValue(false);
         displayInfill.setValue(false);
         displaySupports.setValue(true);
-        displayOuterWalls.setValue(true);
         detailViewControls.setVisible(false);
     }
 }
