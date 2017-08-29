@@ -1,22 +1,22 @@
 package com.ysoft.dctrl.math;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
-
-import com.ysoft.dctrl.utils.ColorUtils;
+import java.util.function.Supplier;
 
 import javafx.collections.ObservableFloatArray;
 import javafx.geometry.Point3D;
-import javafx.scene.AmbientLight;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.DrawMode;
-import javafx.scene.shape.MeshView;
-import javafx.scene.shape.TriangleMesh;
-import javafx.scene.shape.VertexFormat;
+import javafx.scene.shape.Cylinder;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 
 /**
  * Created by pilar on 4.4.2017.
@@ -25,8 +25,13 @@ public class BoundingBox {
     private Point3D min;
     private Point3D max;
 
-    private MeshView node;
+    //private MeshView node;
     private ObservableFloatArray nodePoints;
+
+    private Group node;
+    private PhongMaterial material;
+    private List<Cylinder> lines;
+    private List<Triplet> triplets;
 
     private Consumer<BoundingBox> onChangeHandler;
 
@@ -53,8 +58,8 @@ public class BoundingBox {
     public void reset() {
         this.max = new Point3D(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
         this.min = new Point3D(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-        nodePoints.clear();
-        nodePoints.addAll(new float[8*3]);
+        //nodePoints.clear();
+        //nodePoints.addAll(new float[8*3]);
     }
 
     public void update(float[] vertices, TransformMatrix matrix) {
@@ -156,43 +161,74 @@ public class BoundingBox {
     }
 
     private void initNode() {
-        TriangleMesh mesh = new TriangleMesh();
-        mesh.getPoints().addAll(new float[8*3]);
-        mesh.getTexCoords().addAll(0,0);
-        mesh.getFaces().addAll(
-                0,0,1,0,0,0,
-                1,0,3,0,1,0,
-                3,0,2,0,3,0,
-                2,0,0,0,2,0,
-                4,0,5,0,4,0,
-                5,0,7,0,5,0,
-                7,0,6,0,7,0,
-                6,0,4,0,6,0,
-                0,0,4,0,0,0,
-                1,0,5,0,1,0,
-                3,0,7,0,3,0,
-                2,0,6,0,2,0
-        );
-        node = new MeshView(mesh);
-        node.setDrawMode(DrawMode.LINE);
-        PhongMaterial m = new PhongMaterial();
-        m.setDiffuseColor(Color.BLACK);
-        m.setSelfIlluminationMap(ColorUtils.getColorImage("#000000"));
-        node.setMaterial(m);
-        node.setPickOnBounds(false);
-        nodePoints = mesh.getPoints();
+        initTriplets();
+        node = new Group();
+        node.setMouseTransparent(true);
+        material = new PhongMaterial();
+        material.setDiffuseColor(Color.BLACK);
+        Rotate z90 = new Rotate(90, new Point3D(0,0,1));
+        Rotate x0 = new Rotate(0);
+        Rotate x90 = new Rotate(90, new Point3D(1,0,0));
+        List<Rotate> rotates = new LinkedList<>(Arrays.asList(
+                x90,z90,x90,z90,
+                x0,x0,x0,x0,
+                x90,z90,x90,z90
+        ));
+        lines = createCylinders(rotates);
+        node.getChildren().addAll(lines);
+    }
+
+    private void initTriplets() {
+        triplets = new LinkedList<>();
+        triplets.add(new Triplet(this::getMin, this::getMin, this::getCenter));
+        triplets.add(new Triplet(this::getCenter, this::getMin, this::getMin));
+        triplets.add(new Triplet(this::getMax, this::getMin, this::getCenter));
+        triplets.add(new Triplet(this::getCenter, this::getMin, this::getMax));
+        triplets.add(new Triplet(this::getMin, this::getCenter, this::getMin));
+        triplets.add(new Triplet(this::getMax, this::getCenter, this::getMin));
+        triplets.add(new Triplet(this::getMax, this::getCenter, this::getMax));
+        triplets.add(new Triplet(this::getMin, this::getCenter, this::getMax));
+        triplets.add(new Triplet(this::getMin, this::getMax, this::getCenter));
+        triplets.add(new Triplet(this::getCenter, this::getMax, this::getMin));
+        triplets.add(new Triplet(this::getMax, this::getMax, this::getCenter));
+        triplets.add(new Triplet(this::getCenter, this::getMax, this::getMax));
+    }
+
+    private List<Cylinder> createCylinders(Collection<Rotate> rotates) {
+        List<Cylinder> res = new LinkedList<>();
+        rotates.forEach((r) -> {
+            Cylinder c = new Cylinder(0.1,1);
+            c.setMaterial(material);
+            c.getTransforms().addAll(new Translate(0,0,0), r);
+            res.add(c);
+        });
+        return res;
     }
 
     private void updateNode() {
-        for(int i = 0; i < 8; i++) {
-            nodePoints.set(i*3  , (float) (getBit(i, 0) ? max.getX() : min.getX()));
-            nodePoints.set(i*3+1, (float) (getBit(i, 1) ? max.getY() : min.getY()));
-            nodePoints.set(i*3+2, (float) (getBit(i, 2) ? max.getZ() : min.getZ()));
+        for(int i = 0; i < 12; i++) {
+            Translate t = (Translate) lines.get(i).getTransforms().get(0);
+            t.setX(triplets.get(i).x.get().getX());
+            t.setY(triplets.get(i).y.get().getY());
+            t.setZ(triplets.get(i).z.get().getZ());
         }
+
+        lines.get(0).setHeight(getSize().getZ());
+        lines.get(1).setHeight(getSize().getX());
+        lines.get(2).setHeight(getSize().getZ());
+        lines.get(3).setHeight(getSize().getX());
+        lines.get(4).setHeight(getSize().getY());
+        lines.get(5).setHeight(getSize().getY());
+        lines.get(6).setHeight(getSize().getY());
+        lines.get(7).setHeight(getSize().getY());
+        lines.get(8).setHeight(getSize().getZ());
+        lines.get(9).setHeight(getSize().getX());
+        lines.get(10).setHeight(getSize().getZ());
+        lines.get(11).setHeight(getSize().getX());
     }
 
     public void setColor(Image colorImage) {
-        ((PhongMaterial) node.getMaterial()).setSelfIlluminationMap(colorImage);
+        material.setSelfIlluminationMap(colorImage);
     }
 
     private boolean getBit(int value, int bit) {
@@ -212,5 +248,19 @@ public class BoundingBox {
     @Override
     public String toString() {
         return "BoundingBox[\n" + min + "\n" + max + "\n]";
+    }
+
+    private class Triplet {
+        public final Supplier<Point3D> x;
+        public final Supplier<Point3D> y;
+        public final Supplier<Point3D> z;
+
+        Triplet(Supplier<Point3D> x, Supplier<Point3D> y, Supplier<Point3D> z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+
     }
 }
