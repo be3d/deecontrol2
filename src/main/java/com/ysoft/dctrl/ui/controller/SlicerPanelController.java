@@ -345,18 +345,18 @@ public class SlicerPanelController extends LocalizableController implements Init
     }
 
     private void initTooltips(){
-        raftStructurePicker.attachTooltip(eventBus, new TooltipData("Raft structure", "/img/tooltip/model_supports.png", "Description1"));
-        supportsCheckBox.attachTooltip(eventBus, new TooltipData("Supports", "/img/tooltip/model_supports.png", "Description1"));
-        layerHeightToggle.attachTooltip(eventBus, new TooltipData("Layer height", "/img/tooltip/model_supports.png", "Description1 Description1 Description1 Description1 Description1Description1Description1Description1Description1Description1  Description1 Description1 Description1 "));
-        roofThicknessIncrement.attachTooltip(eventBus, new TooltipData("Roof thickness", "/img/tooltip/layer_height.png", "Description1"));
-        bottomThicknessIncrement.attachTooltip(eventBus, new TooltipData("Layer height", "/img/tooltip/model_supports.png", "Description1"));
-        printSpeedSolidSlider.attachTooltip(eventBus, new TooltipData("Printspeed", "/img/tooltip/giphy.gif", " gif Description1"));
-        shellThicknessIncrement.attachTooltip(eventBus, new TooltipData("Shell thickness", "/img/tooltip/gif1.gif", "gif2Description1"));
-        printSpeedShellSlider.attachTooltip(eventBus, new TooltipData("Print speed shell", "/img/tooltip/gif2.gif", "Description1"));
-        infillPatternPicker.attachTooltip(eventBus, new TooltipData("Infill pattern", "/img/tooltip/model_supports.png", "Description1"));
-        infillDensitySlider.attachTooltip(eventBus, new TooltipData("Infill density", "/img/tooltip/model_supports.png", "Description1"));
-        supportDensitySlider.attachTooltip(eventBus, new TooltipData("Support density", "/img/tooltip/model_supports.png", "Description1"));
-        supportPatternPicker.attachTooltip(eventBus, new TooltipData("Support pattern", "/img/tooltip/model_supports.png", "Description1"));
-        supportAngleSlider.attachTooltip(eventBus, new TooltipData("Support angle", "/img/tooltip/model_supports.png", "Description1"));
+        raftStructurePicker.attachTooltip(eventBus, new TooltipData(getMessage("slicer_init_platform"), "", getMessage("slicer_init_platform_tooltip")));
+        supportsCheckBox.attachTooltip(eventBus, new TooltipData(getMessage("slicer_supports"),"", getMessage("slicer_supports_tooltip")));
+        layerHeightToggle.attachTooltip(eventBus, new TooltipData(getMessage("slicer_layer_height"), "",getMessage("slicer_layer_height_tooltip")));
+        roofThicknessIncrement.attachTooltip(eventBus, new TooltipData(getMessage("slicer_roof_thickness"), "", getMessage("slicer_roof_thickness_tooltip")));
+        bottomThicknessIncrement.attachTooltip(eventBus, new TooltipData(getMessage("slicer_bottom_thickness"), "", getMessage("slicer_bottom_thickness_tooltip")));
+        printSpeedSolidSlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_speed_solid"), "", getMessage("slicer_speed_solid_tooltip")));
+        shellThicknessIncrement.attachTooltip(eventBus, new TooltipData(getMessage("slicer_shell_thickness"), "", getMessage("slicer_shell_thickness_tooltip")));
+        printSpeedShellSlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_speed_shell"), "", getMessage("slicer_speed_shell_tooltip")));
+        infillPatternPicker.attachTooltip(eventBus, new TooltipData(getMessage("slicer_infill_pattern"), "",getMessage("slicer_infill_pattern_tooltip")));
+        infillDensitySlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_infill_density"), "", getMessage("slicer_infill_density_tooltip")));
+        supportDensitySlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_support_density"), "", getMessage("slicer_support_density_tooltip")));
+        supportPatternPicker.attachTooltip(eventBus, new TooltipData(getMessage("slicer_support_pattern"), "", getMessage("slicer_support_pattern_tooltip")));
+        supportAngleSlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_support_angle"), "", getMessage("slicer_support_angle_tooltip")));
     }
 }

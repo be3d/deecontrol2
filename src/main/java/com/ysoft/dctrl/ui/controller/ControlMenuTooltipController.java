@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,7 @@ public class ControlMenuTooltipController extends LocalizableController implemen
     @FXML AnchorPane overlay;
     @FXML RightAlignedTooltipPane wrapper;
     @FXML Label title;
+    @FXML HBox imageWrapper;
     @FXML ImageView image;
     @FXML Text text;
     @FXML Button closeBtn;
@@ -71,7 +73,16 @@ public class ControlMenuTooltipController extends LocalizableController implemen
 
     private void insertContent(TooltipData data){
         title.setText(data.getTitle());
-        image.setImage(new Image(data.getImagePath()));
         text.setText(data.getDescription());
+
+        String path = data.getImagePath();
+        if(path != null && !path.isEmpty()){
+            image.setImage(new Image(path));
+            imageWrapper.getStyleClass().clear();
+            imageWrapper.getStyleClass().addAll("image-wrapper");
+        } else {
+            image.setImage(null);
+            imageWrapper.getStyleClass().add("image-wrapper-collapsed");
+        }
     }
 }

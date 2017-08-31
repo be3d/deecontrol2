@@ -23,7 +23,7 @@
                             <Button fx:id="closeBtn" styleClass="close-btn" />
                         </VBox>
                     </HBox>
-                    <HBox alignment="CENTER" styleClass="image-wrapper">
+                    <HBox fx:id="imageWrapper" alignment="CENTER" styleClass="image-wrapper">
                         <ImageView fx:id="image" />
                     </HBox>
                     <HBox styleClass="text-wrapper">
