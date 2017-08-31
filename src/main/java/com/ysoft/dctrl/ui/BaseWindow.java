@@ -1,6 +1,5 @@
 package com.ysoft.dctrl.ui;
 
-import com.ysoft.dctrl.ui.controller.ControlMenuTooltipController;
 import com.ysoft.dctrl.ui.factory.*;
 import javafx.scene.layout.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.stage.Stage;
-
-import javax.naming.ldap.Control;
 
 /**
  * Created by pilar on 29.3.2017.

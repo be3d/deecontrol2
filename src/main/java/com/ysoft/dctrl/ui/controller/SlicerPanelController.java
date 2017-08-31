@@ -126,11 +126,7 @@ public class SlicerPanelController extends LocalizableController implements Init
 
         scrollPane.vvalueProperty().addListener(
                 (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-                    System.out.println( "Scrolling" + newValue.doubleValue() );
                     eventBus.publish(new Event(EventType.SLICER_PANEL_SCROLLED.name()));
-                    if(newValue.doubleValue() == 0){
-                        System.out.println( "AT TOP" );
-                    }
                 });
 
         List<Profile> list = profileResource.getProfiles();
