@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Created by kuhn on 8/25/2017.
  */
 @Component
-public class RightAlignedTooltipPane extends HBox  {
+public class RightPanelTooltipPane extends HBox  {
 
     @FXML VBox arrowWrapper;
 

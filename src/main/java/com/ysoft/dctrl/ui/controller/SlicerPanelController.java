@@ -16,7 +16,6 @@ import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.slicer.profile.Profile;
 import com.ysoft.dctrl.slicer.profile.ProfileResource;
 import com.ysoft.dctrl.ui.controller.controlMenu.*;
-import com.ysoft.dctrl.ui.tooltip.ImageTooltip;
 import com.ysoft.dctrl.ui.tooltip.contract.TooltipData;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;

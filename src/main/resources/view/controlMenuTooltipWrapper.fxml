@@ -9,11 +9,11 @@
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.control.Button?>
-<?import com.ysoft.dctrl.ui.tooltip.RightAlignedTooltipPane?>
+<?import com.ysoft.dctrl.ui.tooltip.RightPanelTooltipPane?>
 <AnchorPane fx:id="overlay" xmlns:fx="http://javafx.com/fxml" fx:controller="com.ysoft.dctrl.ui.controller.ControlMenuTooltipController"
             styleClass="tooltip-overlay" visible="false">
     <AnchorPane fx:id="root" AnchorPane.rightAnchor="5">
-        <RightAlignedTooltipPane fx:id="wrapper" styleClass="panel, tooltip-wrapper" alignment="TOP_RIGHT">
+        <RightPanelTooltipPane fx:id="wrapper" styleClass="panel, tooltip-wrapper" alignment="TOP_RIGHT">
             <children>
                 <VBox >
                     <HBox styleClass="title-wrapper">
@@ -36,7 +36,7 @@
             </children>
 
 
-        </RightAlignedTooltipPane>
+        </RightPanelTooltipPane>
 
     </AnchorPane>
     <stylesheets>

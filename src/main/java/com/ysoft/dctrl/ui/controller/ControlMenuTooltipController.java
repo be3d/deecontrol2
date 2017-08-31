@@ -1,10 +1,9 @@
 package com.ysoft.dctrl.ui.controller;
 
-import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
-import com.ysoft.dctrl.ui.tooltip.RightAlignedTooltipPane;
+import com.ysoft.dctrl.ui.tooltip.RightPanelTooltipPane;
 import com.ysoft.dctrl.ui.tooltip.contract.TooltipData;
 import com.ysoft.dctrl.utils.DeeControlContext;
 import javafx.fxml.FXML;
@@ -30,7 +29,8 @@ import java.util.ResourceBundle;
 public class ControlMenuTooltipController extends LocalizableController implements Initializable {
 
     @FXML AnchorPane overlay;
-    @FXML RightAlignedTooltipPane wrapper;
+    @FXML
+    RightPanelTooltipPane wrapper;
     @FXML Label title;
     @FXML HBox imageWrapper;
     @FXML ImageView image;
