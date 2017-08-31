@@ -9,7 +9,7 @@ import javafx.scene.control.CheckBox;
 /**
  * Created by kuhn on 6/27/2017.
  */
-public abstract class BaseCheckBox extends BaseCustomControl implements SlicerParamBindable<BaseCheckBox> {
+public abstract class BaseCheckBox extends BaseTooltipControl implements SlicerParamBindable<BaseCheckBox> {
     @FXML
     private CheckBox checkBox;
 

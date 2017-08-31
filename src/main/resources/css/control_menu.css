@@ -114,11 +114,13 @@
     -fx-cursor: hand;
 }
 
-.control-label {
-    -fx-pref-width: 200px;
-    -fx-max-width: 200px;
-    -fx-min-width: 200px;
+.control-label-wrapper {
     -fx-padding: 20 0 8 20;
+    -fx-spacing: 5;
+}
+
+.control-label {
+    -fx-max-width: 200px;
     -fx-font-weight: 500;
     -fx-font-size: 14px;
 }
@@ -240,7 +242,7 @@
 }
 
 .control-checkBox:selected .mark {
-    -fx-background-image: url("../img/control_menu/checkmark.png");;
+    -fx-background-image: url("../img/control_menu/checkmark.png");
     -fx-background-position: center;
     -fx-background-repeat: stretch;
     -fx-background-insets: 0;
@@ -449,12 +451,27 @@
     -fx-font-weight: bold;
 }
 
-.control-menu-radioButton-info{
+.control-menu-radioButton-info {
     -fx-padding: 2 0 0 21px;
     -fx-font-size: 12px;
     -fx-text-fill: #9b9ea0 ;
     -fx-max-width: 224px;
 }
+
+.control-menu-tooltipBtn {
+    -fx-background-color: #ffffff;
+    -fx-background-image: url("../img/control_menu/tooltip.png");
+    -fx-background-size: 16 16px;
+    -fx-background-repeat: no-repeat;
+    -fx-border-width: 0;
+    -fx-padding: 25 5 5 5;
+    -fx-min-height: 20px;
+    -fx-max-height: 20px;
+    -fx-min-width: 20px;
+    -fx-max-width: 20px;
+    -fx-cursor: hand;
+}
+
 
 /* DIVIDER REGIONS */
 .top-label-padding {

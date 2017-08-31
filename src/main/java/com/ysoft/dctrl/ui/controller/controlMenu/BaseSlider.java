@@ -11,7 +11,7 @@ import javafx.scene.control.Slider;
 /**
  * Created by kuhn on 5/19/2017.
  */
-public class BaseSlider extends BaseCustomControl implements SlicerParamBindable{
+public class BaseSlider extends BaseTooltipControl implements SlicerParamBindable {
 
     @FXML   private Slider slider;
     @FXML   private ProgressBar progress;

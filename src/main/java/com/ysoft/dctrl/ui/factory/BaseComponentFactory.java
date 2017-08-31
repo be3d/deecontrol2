@@ -7,7 +7,6 @@ import com.ysoft.dctrl.utils.SpringFXMLLoader;
 
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -29,7 +28,8 @@ public class BaseComponentFactory implements
         SlicerPanelFactory,
         GCodePanelFactory,
         GCodeLayerSliderFactory,
-        NotificationWrapperFactory
+        NotificationWrapperFactory,
+        TooltipWrapperFactory
 {
     private final SpringFXMLLoader loader;
 
@@ -97,5 +97,6 @@ public class BaseComponentFactory implements
         return (StackPane) loader.load("/view/notification_wrapper.fxml");
     }
 
-
+    @Override
+    public AnchorPane buildTooltipWrapper() { return (AnchorPane) loader.load("/view/controlMenuTooltipWrapper.fxml"); }
 }

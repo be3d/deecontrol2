@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Button?>
+<?import com.ysoft.dctrl.ui.tooltip.RightPanelTooltipPane?>
+<AnchorPane fx:id="overlay" xmlns:fx="http://javafx.com/fxml" fx:controller="com.ysoft.dctrl.ui.controller.ControlMenuTooltipController"
+            styleClass="tooltip-overlay" visible="false">
+    <AnchorPane fx:id="root" AnchorPane.rightAnchor="5">
+        <RightPanelTooltipPane fx:id="wrapper" styleClass="panel, tooltip-wrapper" alignment="TOP_RIGHT">
+            <children>
+                <VBox >
+                    <HBox styleClass="title-wrapper">
+                        <Label fx:id="title" text="Tooltip" styleClass="title"></Label>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <VBox alignment="CENTER_RIGHT" styleClass="close-btn-box">
+                            <Button fx:id="closeBtn" styleClass="close-btn" />
+                        </VBox>
+                    </HBox>
+                    <HBox fx:id="imageWrapper" alignment="CENTER" styleClass="image-wrapper">
+                        <ImageView fx:id="image" />
+                    </HBox>
+                    <HBox styleClass="text-wrapper">
+                        <TextFlow  styleClass="text">
+                            <Text fx:id="text" />
+                        </TextFlow>
+                    </HBox>
+                </VBox>
+                <!--<VBox fx:id="arrowWrapper" styleClass="arrow-wrapper, arrow-top" />-->
+            </children>
+
+
+        </RightPanelTooltipPane>
+
+    </AnchorPane>
+    <stylesheets>
+        <URL value="@/css/tooltip.css" />
+    </stylesheets>
+</AnchorPane>

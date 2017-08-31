@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
  * Created by kuhn on 5/5/2017.
  */
 @Controller
-public class Picker extends BaseCustomControl {
+public class Picker extends BaseTooltipControl {
 
     @FXML
     private Label label;

@@ -16,6 +16,8 @@ import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.slicer.profile.Profile;
 import com.ysoft.dctrl.slicer.profile.ProfileResource;
 import com.ysoft.dctrl.ui.controller.controlMenu.*;
+import com.ysoft.dctrl.ui.tooltip.contract.TooltipData;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -121,6 +123,11 @@ public class SlicerPanelController extends LocalizableController implements Init
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        scrollPane.vvalueProperty().addListener(
+                (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+                    eventBus.publish(new Event(EventType.SLICER_PANEL_SCROLLED.name()));
+                });
+
         List<Profile> list = profileResource.getProfiles();
         ObservableList obList = FXCollections.observableList(list);
 
@@ -170,7 +177,6 @@ public class SlicerPanelController extends LocalizableController implements Init
                 .load(slicerParams.get(SlicerParamType.SHELL_TOP_LAYERS.name()))
                 .bindParamChanged()
                 .bindControlChanged((observable, oldValue, newValue) -> setEdited(newValue != oldValue));
-
 
         bottomThicknessIncrement
                 .bindRecalculation((e) -> (double)slicerParams.get(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name()).getValue() * e)
@@ -292,6 +298,7 @@ public class SlicerPanelController extends LocalizableController implements Init
         eventBus.subscribe(EventType.EDIT_SCENE_VALID.name(), (e) -> sliceButton.setDisable(false));
         eventBus.subscribe(EventType.EDIT_SCENE_INVALID.name(), (e) -> sliceButton.setDisable(true));
 
+        initTooltips();
         super.initialize(location, resources);
     }
 
@@ -332,5 +339,19 @@ public class SlicerPanelController extends LocalizableController implements Init
         editedLabel.setVisible(value);
     }
 
-
+    private void initTooltips(){
+        raftStructurePicker.attachTooltip(eventBus, new TooltipData(getMessage("slicer_init_platform"), "", getMessage("slicer_init_platform_tooltip")));
+        supportsCheckBox.attachTooltip(eventBus, new TooltipData(getMessage("slicer_supports"),"", getMessage("slicer_supports_tooltip")));
+        layerHeightToggle.attachTooltip(eventBus, new TooltipData(getMessage("slicer_layer_height"), "",getMessage("slicer_layer_height_tooltip")));
+        roofThicknessIncrement.attachTooltip(eventBus, new TooltipData(getMessage("slicer_roof_thickness"), "", getMessage("slicer_roof_thickness_tooltip")));
+        bottomThicknessIncrement.attachTooltip(eventBus, new TooltipData(getMessage("slicer_bottom_thickness"), "", getMessage("slicer_bottom_thickness_tooltip")));
+        printSpeedSolidSlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_speed_solid"), "", getMessage("slicer_speed_solid_tooltip")));
+        shellThicknessIncrement.attachTooltip(eventBus, new TooltipData(getMessage("slicer_shell_thickness"), "", getMessage("slicer_shell_thickness_tooltip")));
+        printSpeedShellSlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_speed_shell"), "", getMessage("slicer_speed_shell_tooltip")));
+        infillPatternPicker.attachTooltip(eventBus, new TooltipData(getMessage("slicer_infill_pattern"), "",getMessage("slicer_infill_pattern_tooltip")));
+        infillDensitySlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_infill_density"), "", getMessage("slicer_infill_density_tooltip")));
+        supportDensitySlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_support_density"), "", getMessage("slicer_support_density_tooltip")));
+        supportPatternPicker.attachTooltip(eventBus, new TooltipData(getMessage("slicer_support_pattern"), "", getMessage("slicer_support_pattern_tooltip")));
+        supportAngleSlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_support_angle"), "", getMessage("slicer_support_angle_tooltip")));
+    }
 }

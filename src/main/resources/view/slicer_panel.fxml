@@ -41,7 +41,7 @@
       <Region styleClass="control-menu-section-header-right-padding"></Region>
   </HBox>
 
-  <ScrollPane styleClass="control-menu-scrollBar" AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+  <ScrollPane fx:id="scrollPane" styleClass="control-menu-scrollBar" AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
     <content>
       <VBox fx:id="panelControlsContainer" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 

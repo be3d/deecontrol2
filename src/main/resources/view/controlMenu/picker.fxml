@@ -3,7 +3,10 @@
 
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu-component-container">
     <Region styleClass="top-label-padding" />
-    <Label fx:id="label" text="" styleClass="control-label" />
+    <HBox fx:id="labelWrapper" styleClass="control-label-wrapper">
+        <Label fx:id="label" styleClass="control-label"></Label>
+        <Button fx:id="tooltipBtn"  visible="false" text="" styleClass="control-menu-tooltipBtn"></Button>
+    </HBox>
     <HBox>
         <Region styleClass="left-control-hpadding" />
         <ComboBox fx:id="comboBox" value="" styleClass="control-comboBox" />
