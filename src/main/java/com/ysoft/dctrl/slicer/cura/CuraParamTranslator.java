@@ -60,34 +60,13 @@ public class CuraParamTranslator {
         dictionary.put(SlicerParamType.INFILL_DENSITY, value -> {
             Map<String, Object> out = new HashMap<>();
             Double infillLineWidth = (Double)slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
-            Double k = 2.0; // pattern coefficient
-            switch((String)slicerParams.get(SlicerParamType.INFILL_PATTERN.name()).getValue()) {
-                case "grid":
-                case "tetrahedral":
-                    k = 2.0;
-                    break;
-                case "triangles":
-                case "cubic":
-                case "cubicsubdiv":
-                    k = 3.0;
-                    break;
-            }
-            out.put("infill_line_distance", infillLineWidth+(infillLineWidth*100)/(value*k));
+            out.put("infill_line_distance", infillLineWidth*100/value);
             return out;
         });
         dictionary.put(SlicerParamType.SUPPORT_DENSITY, value -> {
             Map<String, Object> out = new HashMap<>();
             Double supportLineWidth = (Double)slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
-            Double k = 1.0; // pattern coefficient
-            switch((String)slicerParams.get(SlicerParamType.SUPPORT_PATTERN.name()).getValue()) {
-                case "grid":
-                    k = 2.0;
-                    break;
-                case "triangles":
-                    k = 3.0;
-                    break;
-            }
-            out.put("support_line_distance", (supportLineWidth*100)/(value*k));
+            out.put("support_line_distance", supportLineWidth*100/value);
             return out;
         });
     }
