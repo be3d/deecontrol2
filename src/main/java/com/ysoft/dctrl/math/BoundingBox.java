@@ -129,9 +129,17 @@ public class BoundingBox {
     }
 
     public boolean contains(Point3D point) {
-        return min.getX() <= point.getX() && max.getX() >= point.getX() &&
-                min.getY() <= point.getY() && max.getY() >= point.getY() &&
-                min.getZ() <= point.getZ() && max.getZ() >= point.getZ();
+        return compareWithDeviation(min.getX(), point.getX()) && compareWithDeviation(point.getX(), max.getX()) &&
+                compareWithDeviation(min.getY(), point.getY()) && compareWithDeviation(point.getY(), max.getY()) &&
+                compareWithDeviation(min.getZ(), point.getZ()) && compareWithDeviation(point.getZ(), max.getZ());
+    }
+
+    private boolean compareWithDeviation(double low, double high) {
+        return compareWithDeviation(low, high, 1E-5);
+    }
+
+    private boolean compareWithDeviation(double low, double high, double deviation) {
+        return high > low || Math.abs(high-low) < deviation;
     }
 
     public boolean contains(BoundingBox bb) {
