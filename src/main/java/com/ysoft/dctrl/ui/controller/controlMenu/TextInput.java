@@ -1,6 +1,7 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
@@ -35,18 +36,11 @@ public class TextInput extends BaseCustomControl {
     public void setLabel(String value) { labelProperty().set(value);}
     public StringProperty labelProperty() {return label.textProperty();}
 
-
-
-    @Override
-    public void addChangeListener(javafx.beans.value.ChangeListener listener){
-        //text.getSelectionModel().selectedItemProperty().addListener(listener);
-        text.addEventFilter(KeyEvent.KEY_TYPED, (e) -> {
-            e.getEventType().getName();
-            e.consume();
-        });
+    public void addChangeListener(ChangeListener<? super String> listener){
+        text.textProperty().addListener(listener);
     }
 
-    public void addFocusChangedListener(javafx.beans.value.ChangeListener listener){
+    public void addFocusChangedListener(ChangeListener<? super Boolean> listener){
         text.focusedProperty().addListener(listener);
     }
 }
