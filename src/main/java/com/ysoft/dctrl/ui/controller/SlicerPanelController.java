@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.ysoft.dctrl.editor.EditSceneGraph;
 import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.SceneMode;
 import com.ysoft.dctrl.editor.exporter.SceneExporter;
@@ -54,13 +55,13 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     private final String sceneSTL;
     private final String sceneImage;
-    private boolean edited = false;
 
     private final SceneExporter sceneExporter;
     private final SlicerController slicerController;
     private final SlicerParams slicerParams;
     private final ProfileResource profileResource;
     private final GCodeMeshProperties gCodeMeshProperties;
+    private final EditSceneGraph editSceneGraph;
 
     private final ProgressNotification slicingProgressNotification;
     private final SuccessNotification slicingDoneNotification;
@@ -77,6 +78,7 @@ public class SlicerPanelController extends LocalizableController implements Init
     @FXML Picker raftStructurePicker;
     @FXML CheckBoxLabelled supportsCheckBox;
     @FXML TextInput printJobNameInput;
+    private boolean userChangedJobName;
 
     // Adv settings
     @FXML ToggleButtonGroup layerHeightToggle;
@@ -105,6 +107,7 @@ public class SlicerPanelController extends LocalizableController implements Init
             SlicerController slicerController,
             SlicerParams slicerParams,
             GCodeMeshProperties gCodeMeshProperties,
+            EditSceneGraph editSceneGraph,
             ProfileResource profileResource) {
 
         super(localizationService, eventBus, deeControlContext);
@@ -113,6 +116,7 @@ public class SlicerPanelController extends LocalizableController implements Init
         this.slicerParams = slicerParams;
         this.profileResource = profileResource;
         this.gCodeMeshProperties = gCodeMeshProperties;
+        this.editSceneGraph = editSceneGraph;
         this.sceneSTL = filePathResource.getPath(FilePath.SCENE_EXPORT_FILE);
         this.sceneImage = filePathResource.getPath(FilePath.SCENE_IMAGE_FILE);
 
@@ -299,8 +303,29 @@ public class SlicerPanelController extends LocalizableController implements Init
         eventBus.subscribe(EventType.EDIT_SCENE_INVALID.name(), (e) -> sliceButton.setDisable(true));
 
         initTooltips();
+
+        printJobNameInput.addChangeListener((obs, o, n) -> {
+            if(!n.equals(editSceneGraph.getCurrentSceneName())) {
+                setUserChangedJobName(true);
+            }
+        });
+        printJobNameInput.addFocusChangedListener((obs, o, n) -> {
+            if(n) { return; }
+            if(printJobNameInput.getText().equals("")) {
+                setUserChangedJobName(false);
+                printJobNameInput.setText(editSceneGraph.getCurrentSceneName());
+            }
+        });
+
+        eventBus.subscribe(EventType.EDIT_SCENE_MODEL_STACK_CHANGED.name(), (e) -> {
+            if(!isUserChangedJobName()) { printJobNameInput.setText(editSceneGraph.getCurrentSceneName()); }
+        });
+
         super.initialize(location, resources);
     }
+
+    private boolean isUserChangedJobName() { return userChangedJobName; }
+    private void setUserChangedJobName(boolean userChangedJobName) { this.userChangedJobName = userChangedJobName; }
 
     private void exportScene(){
         sceneExporter.exportScene(sceneSTL);

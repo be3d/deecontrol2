@@ -67,8 +67,6 @@ public abstract class BaseCustomControl extends VBox {
         }
     }
 
-    public void addChangeListener(javafx.beans.value.ChangeListener listener){}
-
     protected DecimalFormat getDecimalFormat(int decimals){
         DecimalFormat df;
         if (decimals > 0){
