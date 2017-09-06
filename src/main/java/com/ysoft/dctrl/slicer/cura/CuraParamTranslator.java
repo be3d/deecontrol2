@@ -57,16 +57,32 @@ public class CuraParamTranslator {
      * Expresses indirect relationships between slicer parameters DCTRL->CURA.
      */
     private void initDictionary(){
-        dictionary.put(SlicerParamType.INFILL_DENSITY, value -> {
+        dictionary.put(SlicerParamType.INFILL_DENSITY, x -> {
             Map<String, Object> out = new HashMap<>();
-            Double infillLineWidth = (Double)slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
-            out.put("infill_line_distance", infillLineWidth*100/value);
+
+            double max = 1.143; // infill line distance when slider set to 100
+            double a = 5.0; // slope adjustment constant
+            double infillLineWidth = (double)slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
+            double hyperbolicComponent = (infillLineWidth*100/x)-infillLineWidth;
+            double linearComponent = (a + max) - a*(0.01*x);
+
+            System.out.println(hyperbolicComponent+linearComponent);
+
+            out.put("infill_line_distance", hyperbolicComponent + linearComponent);
             return out;
         });
-        dictionary.put(SlicerParamType.SUPPORT_DENSITY, value -> {
+        dictionary.put(SlicerParamType.SUPPORT_DENSITY, x -> {
             Map<String, Object> out = new HashMap<>();
-            Double supportLineWidth = (Double)slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
-            out.put("support_line_distance", supportLineWidth*100/value);
+
+            double max = 1.143; // infill line distance when slider set to 100
+            double a = 10.0; // slope adjustment constant
+            double supportLineWidth = (double)slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
+            double hyperbolicComponent = (supportLineWidth*100/x)-supportLineWidth;
+            double linearComponent = (a + max) - a*(0.01*x);
+
+            System.out.println(hyperbolicComponent+linearComponent);
+
+            out.put("support_line_distance", hyperbolicComponent + linearComponent);
             return out;
         });
     }
