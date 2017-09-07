@@ -7,14 +7,12 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.ysoft.dctrl.editor.EditSceneGraph;
-import com.ysoft.dctrl.editor.SceneGraph;
+import com.ysoft.dctrl.action.ActionStack;
 import com.ysoft.dctrl.editor.SceneMode;
 import com.ysoft.dctrl.editor.mesh.MeshGroup;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
-import com.ysoft.dctrl.ui.control.NumberField;
 import com.ysoft.dctrl.ui.dialog.RetentionFileChooser;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
@@ -22,8 +20,6 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 /**
@@ -32,10 +28,18 @@ import javafx.stage.FileChooser;
 
 @Controller
 public class MainPanelController extends LocalizableController implements Initializable {
+    private static final int GROUP_BIT = 0;
+    private static final int UNGROUP_BIT = 1;
+    private static final int UNDO_BIT = 2;
+    private static final int REDO_BIT = 3;
+
     @FXML Button add;
 
     @FXML Button group;
     @FXML Button ungroup;
+
+    @FXML Button undo;
+    @FXML Button redo;
 
     @FXML Button center;
     @FXML Button left;
@@ -46,12 +50,21 @@ public class MainPanelController extends LocalizableController implements Initia
     @FXML Button resetView;
     @FXML Button topView;
 
-    private RetentionFileChooser retentionFileChooser;
+    private int disabledMap;
+
+    private final RetentionFileChooser retentionFileChooser;
+    private final ActionStack actionStack;
 
     @Autowired
-    public MainPanelController(LocalizationService localizationService, EventBus eventBus, DeeControlContext context, RetentionFileChooser retentionFileChooser) {
+    public MainPanelController(LocalizationService localizationService,
+                               EventBus eventBus,
+                               DeeControlContext context,
+                               RetentionFileChooser retentionFileChooser,
+                               ActionStack actionStack) {
         super(localizationService, eventBus, context);
         this.retentionFileChooser = retentionFileChooser;
+        this.actionStack = actionStack;
+        this.disabledMap = 0xff;
     }
 
     @Override
@@ -63,6 +76,7 @@ public class MainPanelController extends LocalizableController implements Initia
         });
 
         resetView.setOnAction(event -> eventBus.publish(new Event(EventType.RESET_VIEW.name())));
+        topView.setOnAction(event -> eventBus.publish(new Event(EventType.TOP_VIEW.name())));
 
         center.setOnAction(event -> eventBus.publish(new Event(EventType.CENTER_SELECTED_MODEL.name())));
         left.setOnAction(event -> eventBus.publish(new Event(EventType.ALIGN_LEFT_SELECTED_MODEL.name())));
@@ -74,18 +88,63 @@ public class MainPanelController extends LocalizableController implements Initia
         ungroup.setOnAction(event -> eventBus.publish(new Event(EventType.EDIT_UNGROUP.name())));
 
         eventBus.subscribe(EventType.MODEL_SELECTED.name(), (e) -> {
-            ungroup.setDisable(!(e.getData() instanceof MeshGroup));
-            group.setDisable(true);
+            setDisabledBit(true, GROUP_BIT);
+            setDisabledBit(!(e.getData() instanceof MeshGroup), UNGROUP_BIT);
+            ungroup.setDisable(getDisabledBit(UNGROUP_BIT));
+            group.setDisable(getDisabledBit(GROUP_BIT));
         });
         eventBus.subscribe(EventType.MODEL_MULTISELECTION.name(), (e) -> {
-            ungroup.setDisable(true);
-            group.setDisable(false);
+            setDisabledBit(true, UNGROUP_BIT);
+            setDisabledBit(false, GROUP_BIT);
+
+            ungroup.setDisable(getDisabledBit(UNGROUP_BIT));
+            group.setDisable(getDisabledBit(GROUP_BIT));
         });
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
-            topView.setVisible(e.getData() == SceneMode.GCODE);
-            topView.setManaged(e.getData() == SceneMode.GCODE);
+            boolean gcodeMode = e.getData() == SceneMode.GCODE;
+            topView.setVisible(gcodeMode);
+            topView.setManaged(gcodeMode);
+            add.setDisable(gcodeMode);
+            center.setDisable(gcodeMode);
+            left.setDisable(gcodeMode);
+            right.setDisable(gcodeMode);
+            front.setDisable(gcodeMode);
+            back.setDisable(gcodeMode);
+
+            group.setDisable(gcodeMode || getDisabledBit(GROUP_BIT));
+            ungroup.setDisable(gcodeMode || getDisabledBit(UNGROUP_BIT));
+            undo.setDisable(gcodeMode || getDisabledBit(UNDO_BIT));
+            redo.setDisable(gcodeMode || getDisabledBit(REDO_BIT));
+        });
+
+        undo.setOnAction(event -> actionStack.undo());
+        redo.setOnAction(event -> actionStack.redo());
+
+        eventBus.subscribe(EventType.UNDO_EMPTY.name(), (e) -> {
+            setDisabledBit(true, UNDO_BIT);
+            undo.setDisable(getDisabledBit(UNDO_BIT));
+        });
+        eventBus.subscribe(EventType.UNDO_NOT_EMPTY.name(), (e) -> {
+            setDisabledBit(false, UNDO_BIT);
+            undo.setDisable(getDisabledBit(UNDO_BIT));
+        });
+        eventBus.subscribe(EventType.REDO_EMPTY.name(), (e) -> {
+            setDisabledBit(true, REDO_BIT);
+            redo.setDisable(getDisabledBit(REDO_BIT));
+        });
+        eventBus.subscribe(EventType.REDO_NOT_EMPTY.name(), (e) -> {
+            setDisabledBit(false, REDO_BIT);
+            redo.setDisable(getDisabledBit(REDO_BIT));
         });
 
         super.initialize(location, resources);
+    }
+
+    private void setDisabledBit(boolean value, int bit) {
+        disabledMap = (value) ? disabledMap | (1<<bit) : disabledMap & ~(1<<bit);
+    }
+
+    private boolean getDisabledBit(int bit) {
+        return (disabledMap & (1<<bit)) > 0;
     }
 }

@@ -10,12 +10,16 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Component;
 
+import com.ysoft.dctrl.editor.action.AddModelAction;
+import com.ysoft.dctrl.editor.action.DeleteModelAction;
 import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
 import com.ysoft.dctrl.editor.mesh.MeshGroup;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
+import com.ysoft.dctrl.editor.utils.ModelInsertionStack;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.event.dto.ModelLoadedDTO;
 import com.ysoft.dctrl.math.BoundingBox;
 import com.ysoft.dctrl.math.Point3DUtils;
 import com.ysoft.dctrl.math.Utils;
@@ -24,7 +28,6 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.TriangleMesh;
 
 /**
  * Created by pilar on 20.7.2017.
@@ -55,17 +58,19 @@ public class EditSceneGraph extends SubSceneGraph {
     private SceneMesh currentlyFixing;
 
     private Set<SceneMesh> outOfBounds;
+    private ModelInsertionStack modelInsertionStack;
 
-    public EditSceneGraph(EventBus eventBus) {
+    public EditSceneGraph(EventBus eventBus, ModelInsertionStack modelInsertionStack) {
         super(eventBus);
         selected = new ArrayList<>();
         outOfBounds = new HashSet<>();
         currentlyFixing = null;
+        this.modelInsertionStack = modelInsertionStack;
     }
 
     @PostConstruct
     public void init() {
-        eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> addMesh((TriangleMesh) e.getData()));
+        eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> addMesh((ModelLoadedDTO) e.getData()));
         eventBus.subscribe(EventType.CENTER_SELECTED_MODEL.name(), (e) -> centerSelected());
         eventBus.subscribe(EventType.ALIGN_LEFT_SELECTED_MODEL.name(), (e) -> alignSelectedToLeft());
         eventBus.subscribe(EventType.ALIGN_RIGHT_SELECTED_MODEL.name(), (e) -> alignSelectedToRight());
@@ -79,10 +84,8 @@ public class EditSceneGraph extends SubSceneGraph {
         eventBus.subscribe(EventType.EDIT_UNGROUP.name(), (e) -> ungroupModels());
     }
 
-    public void addMesh(TriangleMesh mesh) {
-        ExtendedMesh extendedMesh = new ExtendedMesh(mesh);
-        extendedMesh.setMaterial(MATERIAL);
-        extendedMesh.setBoundingBoxVisible(false);
+    public void addMesh(ModelLoadedDTO modelLoaded) {
+        ExtendedMesh extendedMesh = new ExtendedMesh(modelLoaded.getName(), modelLoaded.getMesh());
         extendedMesh.translateToZero();
         extendedMesh.setPositionZ(extendedMesh.getBoundingBox().getHalfSize().getZ());
         extendedMesh.addOnMeshChangeListener(this::fixToBed);
@@ -97,6 +100,15 @@ public class EditSceneGraph extends SubSceneGraph {
         }));
         extendedMesh.getBoundingBox().setOnChange(bb -> validatePosition(extendedMesh, bb));
         validatePosition(extendedMesh);
+        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new AddModelAction(this, extendedMesh)));
+    }
+
+    public void addMesh(SceneMesh sceneMesh) {
+        super.addMesh(sceneMesh);
+        sceneMesh.setBoundingBoxVisible(false);
+        sceneMesh.setMaterial(MATERIAL);
+        modelInsertionStack.addSceneMesh(sceneMesh);
+        selectSingle(sceneMesh);
     }
 
     public void centerSelected() {
@@ -165,8 +177,18 @@ public class EditSceneGraph extends SubSceneGraph {
     public void deleteSelected() {
         SceneMesh s = getSelected();
         if(s == null) { return; }
-        removeMesh(s);
-        selected.remove(s);
+        deleteModel(s);
+        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new DeleteModelAction(this, s)));
+    }
+
+    public void deleteModel(SceneMesh mesh) {
+        removeMesh(mesh);
+        selected.remove(mesh);
+        handleOOB(false, mesh);
+        modelInsertionStack.removeSceneMesh(mesh);
+        if(outOfBounds.isEmpty()) {
+            eventBus.publish(new Event(EventType.EDIT_SCENE_VALID.name()));
+        }
         selectNext();
     }
 
@@ -229,9 +251,9 @@ public class EditSceneGraph extends SubSceneGraph {
         selected.forEach(m -> {
             m.setBoundingBoxVisible(false);
             m.getBoundingBox().setOnChange(null);
-            removeMesh(m);
+            super.removeMesh(m);
         });
-        addMesh(meshGroup);
+        super.addMesh(meshGroup);
         meshGroup.getBoundingBox().setOnChange(bb -> validatePosition(meshGroup, bb));
         validatePosition(meshGroup);
         selected.clear();
@@ -242,10 +264,10 @@ public class EditSceneGraph extends SubSceneGraph {
         SceneMesh m = getSelected();
         if(m == null || !(m instanceof MeshGroup)) { return; }
         m.getBoundingBox().setOnChange(null);
-        removeMesh(m);
+        super.removeMesh(m);
         List<? extends SceneMesh> l = ((MeshGroup) m).getChildren();
         l.forEach((sm) -> {
-            addMesh(sm);
+            super.addMesh(sm);
             sm.setMaterial(MATERIAL);
             sm.setBoundingBoxVisible(false);
             sm.getBoundingBox().setOnChange(bb -> validatePosition(sm, bb));
@@ -265,6 +287,10 @@ public class EditSceneGraph extends SubSceneGraph {
         mesh.setOutOfBounds(oob);
         mesh.setMaterial(oob ? INVALID_MATERIAL : (selected.contains(mesh) ? SELECTED_MATERIAL : MATERIAL));
 
+        handleOOB(oob, mesh);
+    }
+
+    private void handleOOB(boolean oob, SceneMesh mesh) {
         if(oob) {
             if(outOfBounds.isEmpty()) {
                 eventBus.publish(new Event(EventType.EDIT_SCENE_INVALID.name()));
@@ -280,5 +306,13 @@ public class EditSceneGraph extends SubSceneGraph {
 
     public SceneMesh getSelected() {
         return selected.size() == 1 ? selected.get(0) : null;
+    }
+
+    public void setSelected(SceneMesh mesh) {
+        selectSingle(mesh);
+    }
+
+    public String getCurrentSceneName() {
+        return modelInsertionStack.getFirstName();
     }
 }
