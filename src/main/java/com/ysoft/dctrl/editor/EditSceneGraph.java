@@ -316,3 +316,4 @@ public class EditSceneGraph extends SubSceneGraph {
         return modelInsertionStack.getFirstName();
     }
 }
+

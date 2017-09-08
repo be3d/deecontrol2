@@ -19,6 +19,7 @@ import com.ysoft.dctrl.editor.importer.StlImporter;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.event.dto.ModelLoadedDTO;
 import com.ysoft.dctrl.ui.notification.ProgressNotification;
 import com.ysoft.dctrl.utils.DeeControlContext;
 import com.ysoft.dctrl.utils.KeyEventPropagator;
@@ -131,13 +132,15 @@ public class CanvasController extends AbstractController implements Initializabl
             progressNotification.setProgress(((double) e.getData())/100);
         });
 
+        String modelName = (new File(modelPath)).getName().replaceAll("\\.([^.])*$", "");
+
         eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), progressNotification));
 
         StlImporter stlImporter = new StlImporter();
         ImportRunner importRunner = new ImportRunner(eventBus, stlImporter, modelPath);
         importRunner.setOnSucceeded(e -> {
             progressNotification.hide();
-            eventBus.publish(new Event(EventType.MODEL_LOADED.name(), importRunner.getValue()));
+            eventBus.publish(new Event(EventType.MODEL_LOADED.name(), new ModelLoadedDTO(importRunner.getValue(), modelName)));
             eventBus.unsubscribe(hd);
         });
 

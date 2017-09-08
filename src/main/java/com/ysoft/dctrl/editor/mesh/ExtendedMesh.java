@@ -99,6 +99,7 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
 
     public void translateToZero() {
         MeshUtils.translateVertexesAndUpdateBoundingBox((TriangleMesh) view.getMesh(), boundingBox);
+        checkBoundingBox();
     }
 
     @Override
