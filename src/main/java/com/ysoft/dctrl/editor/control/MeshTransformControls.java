@@ -51,9 +51,10 @@ public class MeshTransformControls {
 
     @PostConstruct
     public void init() {
-        eventBus.subscribe(EventType.CONTROL_MOVE_MODEL_CLICK.name(), (e) -> setMode(Mode.MOVE));
-        eventBus.subscribe(EventType.CONTROL_SCALE_MODEL_CLICK.name(), (e) -> setMode(Mode.SCALE));
-        eventBus.subscribe(EventType.CONTROL_ROTATE_MODEL_CLICK.name(), (e) -> setMode(Mode.ROTATE));
+        // These subscribes are prepared for future usages of mouse control during model transformation
+        //eventBus.subscribe(EventType.CONTROL_MOVE_MODEL_CLICK.name(), (e) -> setMode(Mode.MOVE));
+        //eventBus.subscribe(EventType.CONTROL_SCALE_MODEL_CLICK.name(), (e) -> setMode(Mode.SCALE));
+        //eventBus.subscribe(EventType.CONTROL_ROTATE_MODEL_CLICK.name(), (e) -> setMode(Mode.ROTATE));
 
         sceneGraph.getSceneGroup().setOnMouseDragged(this::onMouseDragged);
         plane.setMaterial(new PhongMaterial(Color.BLUE));
