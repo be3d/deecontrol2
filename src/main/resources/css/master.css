@@ -242,7 +242,8 @@ DialogPane HeaderBox Button:pressed {
 }
 
 .notification .notification-icon-spinner {
-    -fx-background-image: url("../img/notification/spinner.gif");
+    -fx-background-image: url("../img/notification/loader2.gif");
+    -fx-background-size: contain;
 }
 
 .notification .close {
