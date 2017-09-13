@@ -26,6 +26,9 @@
                     <HBox fx:id="imageWrapper" alignment="CENTER" styleClass="image-wrapper">
                         <ImageView fx:id="image" />
                     </HBox>
+                    <HBox HBox.hgrow="ALWAYS" styleClass="image-label">
+                        <Label fx:id="imageLabel"  />
+                    </HBox>
                     <HBox styleClass="text-wrapper">
                         <TextFlow  styleClass="text">
                             <Text fx:id="text" />
