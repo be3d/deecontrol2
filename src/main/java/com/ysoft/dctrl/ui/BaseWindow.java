@@ -61,7 +61,7 @@ public class BaseWindow {
 
         setAnchors(content, 0.0, 0.0, 0.0, 0.0);
         setAnchors(dialogManager.getNode(), 0.0, 0.0, 0.0, 0.0);
-        setAnchors(tooltipWrapper, 0.0,0.0,0.0,300.0);
+        setAnchors(tooltipWrapper, 0.0,0.0,0.0,282.0);
 
         root.getChildren().addAll(content, dialogManager.getNode());
         root.getChildren().addAll(tooltipWrapper);

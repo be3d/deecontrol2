@@ -26,13 +26,15 @@
                     <HBox fx:id="imageWrapper" alignment="CENTER" styleClass="image-wrapper">
                         <ImageView fx:id="image" />
                     </HBox>
+                    <HBox fx:id="imageLabelWrapper" HBox.hgrow="ALWAYS" styleClass="image-label-wrapper">
+                        <Label fx:id="imageLabel"  />
+                    </HBox>
                     <HBox styleClass="text-wrapper">
                         <TextFlow  styleClass="text">
                             <Text fx:id="text" />
                         </TextFlow>
                     </HBox>
                 </VBox>
-                <!--<VBox fx:id="arrowWrapper" styleClass="arrow-wrapper, arrow-top" />-->
             </children>
 
 

@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.ysoft.dctrl.editor.EditSceneGraph;
-import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.SceneMode;
 import com.ysoft.dctrl.editor.exporter.SceneExporter;
-import com.ysoft.dctrl.editor.mesh.GCodeMeshData;
 import com.ysoft.dctrl.editor.mesh.GCodeMeshProperties;
 import com.ysoft.dctrl.slicer.SlicerController;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
@@ -17,12 +15,12 @@ import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.slicer.profile.Profile;
 import com.ysoft.dctrl.slicer.profile.ProfileResource;
 import com.ysoft.dctrl.ui.controller.controlMenu.*;
-import com.ysoft.dctrl.ui.tooltip.contract.TooltipData;
+import com.ysoft.dctrl.ui.tooltip.TooltipDefinition;
+import com.ysoft.dctrl.ui.tooltip.Tooltip;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -35,7 +33,6 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
-import com.ysoft.dctrl.ui.notification.Notification;
 import com.ysoft.dctrl.ui.notification.ProgressNotification;
 import com.ysoft.dctrl.ui.notification.SuccessNotification;
 import com.ysoft.dctrl.utils.DeeControlContext;
@@ -365,18 +362,18 @@ public class SlicerPanelController extends LocalizableController implements Init
     }
 
     private void initTooltips(){
-        raftStructurePicker.attachTooltip(eventBus, new TooltipData(getMessage("slicer_init_platform"), "", getMessage("slicer_init_platform_tooltip")));
-        supportsCheckBox.attachTooltip(eventBus, new TooltipData(getMessage("slicer_supports"),"", getMessage("slicer_supports_tooltip")));
-        layerHeightToggle.attachTooltip(eventBus, new TooltipData(getMessage("slicer_layer_height"), "",getMessage("slicer_layer_height_tooltip")));
-        roofThicknessIncrement.attachTooltip(eventBus, new TooltipData(getMessage("slicer_roof_thickness"), "", getMessage("slicer_roof_thickness_tooltip")));
-        bottomThicknessIncrement.attachTooltip(eventBus, new TooltipData(getMessage("slicer_bottom_thickness"), "", getMessage("slicer_bottom_thickness_tooltip")));
-        printSpeedSolidSlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_speed_solid"), "", getMessage("slicer_speed_solid_tooltip")));
-        shellThicknessIncrement.attachTooltip(eventBus, new TooltipData(getMessage("slicer_shell_thickness"), "", getMessage("slicer_shell_thickness_tooltip")));
-        printSpeedShellSlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_speed_shell"), "", getMessage("slicer_speed_shell_tooltip")));
-        infillPatternPicker.attachTooltip(eventBus, new TooltipData(getMessage("slicer_infill_pattern"), "",getMessage("slicer_infill_pattern_tooltip")));
-        infillDensitySlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_infill_density"), "", getMessage("slicer_infill_density_tooltip")));
-        supportDensitySlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_support_density"), "", getMessage("slicer_support_density_tooltip")));
-        supportPatternPicker.attachTooltip(eventBus, new TooltipData(getMessage("slicer_support_pattern"), "", getMessage("slicer_support_pattern_tooltip")));
-        supportAngleSlider.attachTooltip(eventBus, new TooltipData(getMessage("slicer_support_angle"), "", getMessage("slicer_support_angle_tooltip")));
+        raftStructurePicker.attachTooltip(eventBus, new Tooltip(TooltipDefinition.RAFT));
+        supportsCheckBox.attachTooltip(eventBus, new Tooltip(TooltipDefinition.SUPPORT));
+        layerHeightToggle.attachTooltip(eventBus, new Tooltip(TooltipDefinition.LAYER_HEIGHT));
+        roofThicknessIncrement.attachTooltip(eventBus, new Tooltip(TooltipDefinition.ROOF_THICKNESS));
+        bottomThicknessIncrement.attachTooltip(eventBus, new Tooltip(TooltipDefinition.BOTTOM_THICKNESS));
+        printSpeedSolidSlider.attachTooltip(eventBus, new Tooltip(TooltipDefinition.PRINT_SPEED_SOLID));
+        shellThicknessIncrement.attachTooltip(eventBus, new Tooltip(TooltipDefinition.SHELL_THICKNESS));
+        printSpeedShellSlider.attachTooltip(eventBus, new Tooltip(TooltipDefinition.PRINT_SPEED_SHELL));
+        infillPatternPicker.attachTooltip(eventBus, new Tooltip(TooltipDefinition.INFILL_PATTERN));
+        infillDensitySlider.attachTooltip(eventBus, new Tooltip(TooltipDefinition.INFILL_DENSITY));
+        supportDensitySlider.attachTooltip(eventBus, new Tooltip(TooltipDefinition.SUPPORT_DENSITY));
+        supportPatternPicker.attachTooltip(eventBus, new Tooltip(TooltipDefinition.SUPPORT_PATTERN));
+        supportAngleSlider.attachTooltip(eventBus, new Tooltip(TooltipDefinition.SUPPORT_ANGLE));
     }
 }
