@@ -343,12 +343,6 @@
             {
                "grid": "Grid",
                "lines": "Lines",
-               "triangles": "Triangles",
-               "cubic": "Cubic",
-               "cubicsubdiv": "Cubic Subdivision",
-               "tetrahedral": "Tetrahedral",
-               "concentric": "Concentric",
-               "concentric_3d": "Concentric 3D",
                "zigzag": "Zig Zag"
             },
             "default":"grid"
