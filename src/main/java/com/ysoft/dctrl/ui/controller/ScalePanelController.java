@@ -7,9 +7,13 @@ import java.util.function.BiConsumer;
 import org.springframework.stereotype.Controller;
 
 import com.ysoft.dctrl.editor.EditSceneGraph;
+import com.ysoft.dctrl.editor.action.ModelScaleAction;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
+import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
+import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.math.BoundingBox;
+import com.ysoft.dctrl.math.Point3DUtils;
 import com.ysoft.dctrl.ui.control.NumberField;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
@@ -47,9 +51,9 @@ public class ScalePanelController extends AbstractEditPanelController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
-        xSize.textProperty().addListener((observable, oldValue, newValue) -> onSizeChange(this::onXSizeChange, xSize.getValue()));
-        ySize.textProperty().addListener((observable, oldValue, newValue) -> onSizeChange(this::onYSizeChange, ySize.getValue()));
-        zSize.textProperty().addListener((observable, oldValue, newValue) -> onSizeChange(this::onZSizeChange, zSize.getValue()));
+        initNumberFieldListener(xSize, Item.X, this::onSizeChange);
+        initNumberFieldListener(ySize, Item.Y, this::onSizeChange);
+        initNumberFieldListener(zSize, Item.Z, this::onSizeChange);
 
         toMax.setOnAction((e) -> {
             sceneGraph.scaleSelectedToMax();
@@ -72,11 +76,21 @@ public class ScalePanelController extends AbstractEditPanelController {
         refreshInProgress = false;
     }
 
-    public void onSizeChange(BiConsumer<SceneMesh, Double> consumer, double newValue) {
+    public void onSizeChange(double newValue, Item item) {
         if(refreshInProgress) { return; }
         SceneMesh mesh = sceneGraph.getSelected();
         if(mesh == null) { return; }
-        consumer.accept(mesh, newValue);
+        switch (item) {
+            case X:
+                onXSizeChange(mesh, newValue);
+                break;
+            case Y:
+                onYSizeChange(mesh, newValue);
+                break;
+            case Z:
+                onZSizeChange(mesh, newValue);
+                break;
+        }
 
         refresh();
     }
@@ -87,7 +101,7 @@ public class ScalePanelController extends AbstractEditPanelController {
         if(uniform.isSelected()) {
             scaleByRatio(mesh, newValue/mesh.getScaleX());
         } else {
-            mesh.setScaleX(newValue);
+            setScale(mesh, Point3DUtils.setX(mesh.getScale(), newValue));
         }
         refresh();
     }
@@ -101,7 +115,7 @@ public class ScalePanelController extends AbstractEditPanelController {
         if(uniform.isSelected()) {
             scaleByRatio(mesh, ratio/mesh.getScaleX());
         } else {
-            mesh.setScaleX(ratio);
+            setScale(mesh, Point3DUtils.setX(mesh.getScale(), ratio));
         }
     }
 
@@ -111,7 +125,7 @@ public class ScalePanelController extends AbstractEditPanelController {
         if(uniform.isSelected()) {
             scaleByRatio(mesh, newValue/mesh.getScaleY());
         } else {
-            mesh.setScaleY(newValue);
+            setScale(mesh, Point3DUtils.setY(mesh.getScale(), newValue));
         }
         refresh();
     }
@@ -125,7 +139,7 @@ public class ScalePanelController extends AbstractEditPanelController {
         if(uniform.isSelected()) {
             scaleByRatio(mesh, ratio/mesh.getScaleY());
         } else {
-            mesh.setScaleY(ratio);
+            setScale(mesh, Point3DUtils.setY(mesh.getScale(), ratio));
         }
     }
 
@@ -135,7 +149,7 @@ public class ScalePanelController extends AbstractEditPanelController {
         if(uniform.isSelected()) {
             scaleByRatio(mesh, newValue/mesh.getScaleZ());
         } else {
-            mesh.setScaleZ(newValue);
+            setScale(mesh, Point3DUtils.setZ(mesh.getScale(), newValue));
         }
         refresh();
     }
@@ -149,14 +163,20 @@ public class ScalePanelController extends AbstractEditPanelController {
         if(uniform.isSelected()) {
             scaleByRatio(mesh, ratio/mesh.getScaleZ());
         } else {
-            mesh.setScaleZ(ratio);
+            setScale(mesh, Point3DUtils.setZ(mesh.getScale(), ratio));
         }
     }
 
     public void scaleByRatio(SceneMesh mesh, double ratio) {
-        mesh.setScaleX(ratio*mesh.getScaleX());
-        mesh.setScaleY(ratio*mesh.getScaleY());
-        mesh.setScaleZ(ratio*mesh.getScaleZ());
+        Point3D s = new Point3D(ratio*mesh.getScaleX(), ratio*mesh.getScaleY(), ratio*mesh.getScaleZ());
+        setScale(mesh, s);
+    }
+
+    public void setScale(SceneMesh mesh, Point3D scale) {
+        Point3D oldScale = mesh.getScale();
+        if(oldScale.equals(scale)) { return; }
+        mesh.setScale(scale);
+        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new ModelScaleAction(mesh, oldScale, scale)));
     }
 
     public void onReset() {

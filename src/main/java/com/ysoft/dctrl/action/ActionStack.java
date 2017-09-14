@@ -56,7 +56,7 @@ public class ActionStack {
         if(undoStack.size() == 1) { eventBus.publish(UNDO_NOT_EMPTY); }
     }
 
-    public void addAction(Action action) {
+    private void addAction(Action action) {
         int redoSize = redoStack.size();
         undoStack.add(action);
         redoStack.clear();

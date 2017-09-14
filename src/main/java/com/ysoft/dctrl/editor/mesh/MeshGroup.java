@@ -68,7 +68,6 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         groupNode.getChildren().add(mesh.getNode());
     }
 
-
     public List<ExtendedMesh> getChildren() { return group; }
 
     public void dismiss() {

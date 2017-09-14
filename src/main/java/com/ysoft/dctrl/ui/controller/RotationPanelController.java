@@ -6,9 +6,12 @@ import java.util.ResourceBundle;
 import org.springframework.stereotype.Controller;
 
 import com.ysoft.dctrl.editor.EditSceneGraph;
+import com.ysoft.dctrl.editor.action.ModelRotationAction;
 import com.ysoft.dctrl.editor.mesh.MeshGroup;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
+import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
+import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.math.TransformMatrix;
 import com.ysoft.dctrl.ui.control.NumberField;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
@@ -80,11 +83,11 @@ public class RotationPanelController extends AbstractEditPanelController {
 
     public void rotate(Point3D axis, double angle) {
         SceneMesh mesh = sceneGraph.getSelected();
-        if(mesh == null) { return; }
+        if(mesh == null || angle == 0) { return; }
         angle = Math.toRadians(angle);
-        Point3D rotation = TransformMatrix.getRotationAxis(axis, angle).multiply(TransformMatrix.fromEuler(getRadRotation(mesh.getRotation()))).toEuler();
-
-        mesh.setRotation(getDegRotation(rotation));
+        Point3D rotation = getDegRotation(TransformMatrix.getRotationAxis(axis, angle).multiply(TransformMatrix.fromEuler(getRadRotation(mesh.getRotation()))).toEuler());
+        mesh.setRotation(rotation);
+        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new ModelRotationAction(mesh, axis, angle)));
     }
 
     public Point3D getDegRotation(Point3D rotation) {

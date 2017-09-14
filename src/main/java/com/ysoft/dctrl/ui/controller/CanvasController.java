@@ -35,6 +35,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -92,7 +93,10 @@ public class CanvasController extends AbstractController implements Initializabl
         canvas.setOnMouseDragged(controls::onMouseDragged);
         canvas.setOnMouseReleased(e -> {
             meshTransformControls.onMouseRelease(e);
+            if(e.isConsumed()) { return; }
             controls.onMouseReleased(e);
+            if(e.isConsumed() || e.getButton() != MouseButton.PRIMARY) { return; }
+            eventBus.publish(new Event(EventType.EDIT_CLEAR_SELECTION.name()));
         });
         canvas.setOnScroll(controls::onScroll);
         canvas.setOnDragDropped(this::onDragDrop);

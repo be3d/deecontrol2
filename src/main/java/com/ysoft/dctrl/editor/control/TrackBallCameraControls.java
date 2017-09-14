@@ -36,6 +36,8 @@ public class TrackBallCameraControls {
     private State currentState;
     private State previousState;
 
+    private boolean changed;
+
     public TrackBallCameraControls(ExtendedPerspectiveCamera camera) {
         this(camera, new Point3D(0, -100, 0));
     }
@@ -54,6 +56,7 @@ public class TrackBallCameraControls {
         setCameraPosition(new Point3D(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ()));
         camera.setRotationX(Math.toDegrees(-theta));
         camera.setRotationY(Math.toDegrees(alpha) + 180);
+        changed = false;
     }
 
     private enum State {
@@ -100,6 +103,7 @@ public class TrackBallCameraControls {
 
     public void onMousePressed(MouseEvent event) {
         if(currentState != State.ENABLED) { return; }
+        changed = false;
         switch (event.getButton()) {
             case NONE:
                 return;
@@ -131,10 +135,12 @@ public class TrackBallCameraControls {
                 panCamera(p);
                 break;
         }
+        changed = true;
     }
 
     public void onMouseReleased(MouseEvent event) {
         setState(State.ENABLED);
+        if(changed) { event.consume(); }
     }
 
     public void onScroll(ScrollEvent event) {
