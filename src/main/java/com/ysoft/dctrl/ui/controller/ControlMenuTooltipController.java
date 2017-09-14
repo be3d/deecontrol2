@@ -36,6 +36,7 @@ public class ControlMenuTooltipController extends LocalizableController implemen
     @FXML Label title;
     @FXML HBox imageWrapper;
     @FXML Label imageLabel;
+    @FXML HBox imageLabelWrapper;
     @FXML ImageView image;
     @FXML Text text;
     @FXML Button closeBtn;
@@ -56,6 +57,9 @@ public class ControlMenuTooltipController extends LocalizableController implemen
         wrapper.addEventHandler(MouseEvent.ANY, javafx.event.Event::consume);
         overlay.setOnMouseClicked(event -> hideTooltip());
         closeBtn.setOnAction(e -> hideTooltip());
+
+        imageLabelWrapper.managedProperty().bind(imageLabelWrapper.visibleProperty());
+        imageWrapper.managedProperty().bind(imageWrapper.visibleProperty());
 
         eventBus.subscribe(EventType.SHOW_TOOLTIP.name(), (e) -> {
             showTooltip((Tooltip)e.getData());
@@ -85,19 +89,25 @@ public class ControlMenuTooltipController extends LocalizableController implemen
         title.setText(getMessage(data.getTitle()));
         text.setText(getMessage(data.getDescription()));
 
-        String[] paths = data.getImgPaths();
-        if(paths != null && paths.length > 0){
-            image.setImage(new Image(paths[0]));
-            imageLabel.setText(getMessage(data.getImgLabels()[0]));
-            if(paths.length > 1) {
+        String[] imgPaths = data.getImgPaths();
+        String[] imgLabels = data.getImgLabels();
+
+        boolean hasImage = imgPaths != null && imgPaths.length > 0;
+        boolean hasImageLabel = imgLabels != null && imgLabels.length > 0;
+
+        if(hasImage){
+            image.setImage(new Image(imgPaths[0]));
+            if(imgPaths.length > 1) {
                 attachAnimation(data.getImgPaths(), data.getImgLabels());
             }
-            imageWrapper.getStyleClass().clear();
-            imageWrapper.getStyleClass().addAll("image-wrapper");
-        } else {
-            image.setImage(null);
-            imageWrapper.getStyleClass().add("image-wrapper-collapsed");
         }
+        if(hasImageLabel){
+            imageLabel.setText(getMessage(imgLabels[0]));
+        }
+
+        imageWrapper.setVisible(hasImage);
+        imageLabelWrapper.setVisible(hasImageLabel);
+
     }
 
     private void attachAnimation(String[] imgs, String[] labels){

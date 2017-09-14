@@ -29,11 +29,7 @@
     -fx-background-color: white;
 }
 
-.image-wrapper-collapsed {
-    -fx-padding: 0px;
-}
-
-.image-label {
+.image-label-wrapper {
     -fx-padding: 10 15 0 15px;
     -fx-background-color: white;
     -fx-font-size: 12;
