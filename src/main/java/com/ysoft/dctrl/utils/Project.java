@@ -52,4 +52,9 @@ public class Project {
     public TransformMatrix getPrinterTransformMatrix() {
         return printerTransformMatrix;
     }
+
+    public void resetPrintInfo(){
+        materialUsage.clear();
+        printDuration = 0;
+    }
 }

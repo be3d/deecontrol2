@@ -120,6 +120,7 @@ public class GCodePanelController extends LocalizableController implements Initi
 
         backToEditBtn.setOnAction(event -> {
             eventBus.publish(new Event(EventType.SCENE_SET_MODE.name(), SceneMode.EDIT));
+            deeControlContext.getCurrentProject().resetPrintInfo();
         });
 
         jobSendDoneNotification.setLabelText("Print job successfully sent to YSoft SafeQ");
