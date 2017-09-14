@@ -10,9 +10,8 @@
   <Menu text="?_menu_bar_file">
     <items>
       <MenuItem text="?_menu_bar_new_project" styleClass="menu-item" disable="true"/>
-      <MenuItem fx:id="add" text="?_menu_bar_open_file" styleClass="menu-item"/>
-      <!--<MenuItem text="Open recent" styleClass="menu-item" />-->
-      <Menu fx:id="openRecent" text="?_menu_bar_open_recent" styleClass="menu-item">
+      <MenuItem fx:id="openFile" text="?_menu_bar_open_file" styleClass="menu-item"/>
+      <Menu fx:id="openRecent" text="?_menu_bar_open_recent" styleClass="menu-item" disable="true">
         <items>
           <MenuItem text="box1.stl" styleClass="menu-item"/>
         </items>
@@ -24,7 +23,7 @@
       <SeparatorMenuItem />
       <MenuItem fx:id="settings" text="?_menu_bar_settings" styleClass="menu-item" />
       <SeparatorMenuItem />
-      <MenuItem text="?_menu_bar_quit" styleClass="menu-item"/>
+      <MenuItem fx:id="quit" text="?_menu_bar_quit" styleClass="menu-item"/>
     </items>
   </Menu>
   <Menu text="?_menu_bar_edit">
@@ -35,9 +34,9 @@
       <MenuItem text="?_menu_bar_copy" styleClass="menu-item" disable="true"/>
       <MenuItem text="?_menu_bar_paste" styleClass="menu-item" disable="true"/>
       <MenuItem text="Duplicate" styleClass="menu-item" disable="true"/>
-      <MenuItem text="?_menu_bar_select_all" styleClass="menu-item"/>
+      <MenuItem fx:id="selectAll" text="?_menu_bar_select_all" styleClass="menu-item"/>
       <SeparatorMenuItem />
-      <MenuItem text="?_menu_bar_delete" styleClass="menu-item"/>
+      <MenuItem fx:id="delete" text="?_menu_bar_delete" styleClass="menu-item"/>
     </items>
   </Menu>
   <Menu text="?_menu_bar_view">
@@ -52,7 +51,7 @@
   </Menu>
   <Menu text="?_menu_bar_help">
     <items>
-      <MenuItem fx:id="about" text="About" styleClass="menu-item"/>
+      <MenuItem fx:id="about" text="?_menu_bar_about" styleClass="menu-item"/>
       <SeparatorMenuItem />
       <MenuItem text="?_menu_bar_getting_started" styleClass="menu-item" disable="true"/>
     </items>

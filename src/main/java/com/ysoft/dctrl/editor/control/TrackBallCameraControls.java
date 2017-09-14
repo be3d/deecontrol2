@@ -14,7 +14,8 @@ import javafx.scene.input.ScrollEvent;
  */
 public class TrackBallCameraControls {
     private static final double ROTATE_SPEED = 0.01;
-    private static final double ZOOM_SPEED = 10;
+    private static final double ZOOM_SCROLL_SPEED = 10;
+    private static final double ZOOM_KEY_SPEED = 50;
     private static final double PAN_SPEED = 0.2;
 
     private static final double MAX_ZOOM = 20;
@@ -138,7 +139,19 @@ public class TrackBallCameraControls {
     }
 
     public void onScroll(ScrollEvent event) {
-        double d = Math.signum(event.getDeltaY()) * ZOOM_SPEED;
+        double d = Math.signum(event.getDeltaY()) * ZOOM_SCROLL_SPEED;
+        zoomCamera(d);
+    }
+
+    public void zoomInCamera(){
+        zoomCamera(ZOOM_KEY_SPEED);
+    }
+
+    public void zoomOutCamera(){
+        zoomCamera(-ZOOM_KEY_SPEED);
+    }
+
+    public void zoomCamera(double d){
         Point3D normal = getLookAtVector().multiply(-1);
         Point3D newPosition = position.add(normal.normalize().multiply(d));
         Point3D diff = getDiff3D(target, newPosition);

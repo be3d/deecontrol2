@@ -1,6 +1,9 @@
 .main-panel {
     -fx-padding: 7px 10px 7px 10px;
     -fx-spacing: 60px;
+    -fx-border-color: white;
+    -fx-border-width: 0px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.0, 0, 6);
 }
 
 .main-panel-group {

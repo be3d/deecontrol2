@@ -6,14 +6,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
-import com.sun.javafx.application.HostServicesDelegate;
-import javafx.application.Application;
-import javafx.application.HostServices;
-import javafx.scene.input.KeyCharacterCombination;
+import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -44,16 +39,37 @@ import javafx.stage.FileChooser;
 public class MenuBarController extends LocalizableController implements Initializable {
     private static final String GCODE_EXTENSION = "*.gcode";
     private static final String JOB_EXTENSION = "*.3djob";
+    private static final String ABOUT_URL = "https://www.ysoft.com/en/support-and-download";
 
     private static final FileChooser.ExtensionFilter gcodeFilter = new FileChooser.ExtensionFilter("GCode file", GCODE_EXTENSION);
     private static final FileChooser.ExtensionFilter jobFilter = new FileChooser.ExtensionFilter("3D print job", JOB_EXTENSION);
 //    private final HostServicesDelegate hostServices = HostServicesFactory.getInstance();
 
+    private enum Shortcuts{
+        UNDO(new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN)),
+        REDO(new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN)),
+        SELECT_ALL(new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN)),
+        ZOOM_IN(new KeyCodeCombination(KeyCode.ADD, KeyCombination.CONTROL_DOWN)),
+        ZOOM_OUT(new KeyCodeCombination(KeyCode.SUBTRACT, KeyCombination.CONTROL_DOWN))
+        ;
 
+
+        private KeyCodeCombination k;
+        Shortcuts(KeyCodeCombination k){ this.k = k; }
+
+        public KeyCodeCombination get() {
+            return k;
+        }
+    }
+
+    @FXML MenuItem openFile;
+    @FXML MenuItem quit;
     @FXML MenuItem settings;
     @FXML MenuItem exportAs;
     @FXML MenuItem undo;
     @FXML MenuItem redo;
+    @FXML MenuItem delete;
+    @FXML MenuItem selectAll;
     @FXML MenuItem zoomIn;
     @FXML MenuItem zoomOut;
     @FXML MenuItem resetCamera;
@@ -69,33 +85,30 @@ public class MenuBarController extends LocalizableController implements Initiali
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        openFile.setOnAction(this::onOpenFile);
         settings.setOnAction(this::onSettings);
+        quit.setOnAction( this::onQuit);
 
         exportAs.setOnAction(this::onExportAs);
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
             exportAs.setDisable(e.getData() != SceneMode.GCODE);
         });
 
-        undo.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN));
-        undo.setOnAction( e -> System.out.println("UNDO"));
-        redo.setAccelerator(new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN));
-        redo.setOnAction( e -> System.out.println("REDO"));
-        zoomIn.setAccelerator(new KeyCodeCombination(KeyCode.ADD, KeyCombination.CONTROL_DOWN));
-        zoomIn.setOnAction( e -> System.out.println("zoomin"));
-        zoomOut.setAccelerator(new KeyCodeCombination(KeyCode.SUBTRACT, KeyCombination.CONTROL_DOWN));
-        zoomOut.setOnAction( e -> System.out.println("zoomOUT"));
-//        resetCamera.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
-        resetCamera.setOnAction( e -> System.out.println("resetcam"));
-        about.setOnAction( e -> {
-            try {
-                Desktop.getDesktop().browse(new URI("https://www.ysoft.com/en/support-and-download"));
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (URISyntaxException e1) {
-                e1.printStackTrace();
-            }
-        });
+        undo.setAccelerator(Shortcuts.UNDO.get());
+        undo.setOnAction(this::onUndo);
+        redo.setAccelerator(Shortcuts.REDO.get());
+        redo.setOnAction(this::onRedo);
 
+        delete.setOnAction(this::onDelete);
+        selectAll.setAccelerator(Shortcuts.SELECT_ALL.get());
+        selectAll.setOnAction(this::onSelectAll);
+
+        zoomIn.setAccelerator(Shortcuts.ZOOM_IN.get());
+        zoomIn.setOnAction(this::onZoomIn);
+        zoomOut.setAccelerator(Shortcuts.ZOOM_OUT.get());
+        zoomOut.setOnAction(this::onZoomOut);
+        resetCamera.setOnAction(this::onResetCamera);
+        about.setOnAction(this::onAbout);
 
         super.initialize(location, resources);
     }
@@ -118,5 +131,53 @@ public class MenuBarController extends LocalizableController implements Initiali
                 eventBus.publish(new Event(EventType.JOB_EXPORT.name(), f.getAbsolutePath()));
                 break;
         }
+    }
+
+    private void onOpenFile(ActionEvent event){
+        File f = retentionFileChooser.showOpenDialog(root.getScene().getWindow(), new FileChooser.ExtensionFilter("3D models", "*.STL", "*.stl"));
+        if(f == null) return;
+        eventBus.publish(new Event(EventType.ADD_MODEL.name(), f.getAbsolutePath()));
+    }
+
+    private void onQuit(ActionEvent event){
+        Platform.exit();
+    }
+
+    private void onUndo(ActionEvent event){
+        //eventBus.publish(new Event(EventType.SHOW_DIALOG.name());
+    }
+
+    private void onRedo(ActionEvent event){
+        //eventBus.publish(new Event(EventType.SHOW_DIALOG.name());
+    }
+
+    private void onZoomIn(ActionEvent event){
+        eventBus.publish(new Event(EventType.ZOOM_IN_VIEW.name()));
+    }
+
+    private void onZoomOut(ActionEvent event){
+        eventBus.publish(new Event(EventType.ZOOM_OUT_VIEW.name()));
+    }
+
+    private void onResetCamera(ActionEvent event){
+        eventBus.publish(new Event(EventType.RESET_VIEW.name()));
+    }
+
+    private void onAbout(ActionEvent event){
+        try {
+            Desktop.getDesktop().browse(new URI(ABOUT_URL));
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (URISyntaxException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    private void onDelete(ActionEvent event){
+        eventBus.publish(new Event(EventType.EDIT_DELETE_SELECTED.name()));
+    }
+
+    private void onSelectAll(ActionEvent event){
+        eventBus.publish(new Event(EventType.EDIT_SELECT_ALL.name()));
     }
 }

@@ -305,7 +305,7 @@ public class SlicerPanelController extends LocalizableController implements Init
         initTooltips();
 
         printJobNameInput.addChangeListener((obs, o, n) -> {
-            if(!n.equals(editSceneGraph.getCurrentSceneName())) {
+            if(n!= null && !n.equals(editSceneGraph.getCurrentSceneName())) {
                 setUserChangedJobName(true);
             }
         });

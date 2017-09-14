@@ -103,6 +103,8 @@ public class CanvasController extends AbstractController implements Initializabl
         eventBus.subscribe(EventType.RESET_VIEW.name(), (e) -> controls.resetCamera());
         eventBus.subscribe(EventType.TOP_VIEW.name(), (e) -> controls.setTopView());
         eventBus.subscribe(EventType.TAKE_SCENE_SNAPSHOT.name(), (e) -> takeSnapShot((String) e.getData()));
+        eventBus.subscribe(EventType.ZOOM_IN_VIEW.name(), (e) -> controls.zoomInCamera());
+        eventBus.subscribe(EventType.ZOOM_OUT_VIEW.name(), (e) -> controls.zoomOutCamera());
     }
 
     private void onDragOver(DragEvent dragEvent) {
