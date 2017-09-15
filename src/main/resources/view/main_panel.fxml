@@ -11,8 +11,8 @@
       <Button fx:id="add" text="?_main_add" styleClass="main-panel-button, add-button" />
     </HBox>
     <HBox styleClass="main-panel-group">
-      <Button fx:id="undo" text="?_main_undo" styleClass="main-panel-button, undo-button" />
-      <Button fx:id="redo" text="?_main_redo" styleClass="main-panel-button, redo-button" />
+      <Button fx:id="undo" text="?_main_undo" styleClass="main-panel-button, undo-button" disable="true" />
+      <Button fx:id="redo" text="?_main_redo" styleClass="main-panel-button, redo-button" disable="true" />
     </HBox>
     <HBox styleClass="main-panel-group">
       <Button fx:id="group" text="?_main_group" styleClass="main-panel-button, group-button" disable="true" />

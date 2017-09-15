@@ -124,7 +124,7 @@ public class GCodePanelController extends LocalizableController implements Initi
         });
 
         jobSendDoneNotification.setLabelText("Print job successfully sent to YSoft SafeQ");
-        jobSendProgressNotification.setLabelText("File transfer in progress…");
+        jobSendProgressNotification.setLabelText(getMessage("file_transfer_in_progress"));
 
         sendJobBtn.setOnAction(event -> {
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), jobSendProgressNotification));

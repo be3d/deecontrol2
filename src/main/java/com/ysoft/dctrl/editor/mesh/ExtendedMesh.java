@@ -23,7 +23,11 @@ import javafx.scene.transform.Translate;
  * Created by pilar on 4.4.2017.
  */
 public class ExtendedMesh extends AbstractControllable implements SceneMesh {
+    private static int NEXT_ID = 0;
     private static final double PI_2 = 360;
+
+    private final int id;
+    private final String name;
 
     private Rotate rotationX = new Rotate(0, Rotate.X_AXIS);
     private Rotate rotationY = new Rotate(0, Rotate.Y_AXIS);
@@ -45,15 +49,17 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     private List<OnMeshChange> onScaleChange;
     private List<OnMeshChange> onPositionChange;
 
-    public ExtendedMesh() {
-        this(new MeshView(), new BoundingBox());
+    public ExtendedMesh(String name) {
+        this(name, new MeshView(), new BoundingBox());
     }
 
-    public ExtendedMesh(TriangleMesh mesh) {
-        this(new MeshView(mesh), new BoundingBox(mesh.getPoints().toArray(null)));
+    public ExtendedMesh(String name, TriangleMesh mesh) {
+        this(name, new MeshView(mesh), new BoundingBox(mesh.getPoints().toArray(null)));
     }
 
-    private ExtendedMesh(MeshView view, BoundingBox boundingBox) {
+    private ExtendedMesh(String name, MeshView view, BoundingBox boundingBox) {
+        this.id = NEXT_ID++;
+        this.name = name;
         this.view = view;
         view.setUserData(this);
         this.boundingBox = boundingBox;
@@ -219,4 +225,8 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     public boolean isOutOfBounds() {
         return outOfBounds;
     }
+
+    public int getID() { return id; }
+
+    public String getName() { return name; }
 }

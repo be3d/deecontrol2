@@ -35,7 +35,7 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         group = new ArrayList<>();
         groupNode = new Group();
         boundingBox = new BoundingBox();
-        boundingBox.setColor(ColorUtils.getColorImage("#aaaa00"));
+        boundingBox.setColor(ColorUtils.getColorImage("#0081ea"));
         position = new Translate(0,0,0);
         scale = new Scale(1,1,1);
         groupNode.getChildren().add(boundingBox.getNode());
@@ -51,7 +51,7 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         if(mesh instanceof ExtendedMesh) {
             addMesh((ExtendedMesh) mesh);
         } else if(mesh instanceof MeshGroup) {
-            ((MeshGroup) mesh).getMeshes().forEach(this::addMesh);
+            ((MeshGroup) mesh).getChildren().forEach(this::addMesh);
         }
     }
 
@@ -68,9 +68,7 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         groupNode.getChildren().add(mesh.getNode());
     }
 
-    private List<ExtendedMesh> getMeshes() { return group; }
-
-    public List<? extends SceneMesh> getChildren() { return group; }
+    public List<ExtendedMesh> getChildren() { return group; }
 
     public void dismiss() {
         groupNode.getChildren().clear();

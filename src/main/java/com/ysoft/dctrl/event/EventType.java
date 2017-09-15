@@ -4,6 +4,12 @@ package com.ysoft.dctrl.event;
  * Created by pilar on 30.3.2017.
  */
 public enum EventType {
+    UNDO_EMPTY,
+    UNDO_NOT_EMPTY,
+    REDO_EMPTY,
+    REDO_NOT_EMPTY,
+    ADD_ACTION,
+
     OPEN_MODEL,
     CHANGE_LANGUAGE,
     ADD_MODEL,
@@ -13,6 +19,7 @@ public enum EventType {
     SCENE_EXPORTED,
     SCENE_SET_MODE,
 
+    EDIT_CLEAR_SELECTION,
     EDIT_SELECT_NEXT,
     EDIT_SELECT_PREV,
     EDIT_DELETE_SELECTED,

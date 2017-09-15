@@ -33,12 +33,12 @@ public abstract class SubSceneGraph {
 
     public final LinkedList<SceneMesh> getSceneMeshes() { return sceneMeshes; }
 
-    protected final void addMesh(SceneMesh mesh) {
+    protected void addMesh(SceneMesh mesh) {
         sceneMeshes.add(mesh);
         sceneGroup.getChildren().add(mesh.getNode());
     }
 
-    protected final void removeMesh(SceneMesh mesh) {
+    protected void removeMesh(SceneMesh mesh) {
         sceneMeshes.remove(mesh);
         sceneGroup.getChildren().remove(mesh.getNode());
     }

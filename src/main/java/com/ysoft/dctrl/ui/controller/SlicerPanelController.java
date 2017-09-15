@@ -255,21 +255,16 @@ public class SlicerPanelController extends LocalizableController implements Init
             exportScene();
         });
 
-        saveProfile.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
+        saveProfile.addEventHandler(MouseEvent.MOUSE_CLICKED, (event) -> {
                 Profile savedProfile = profileResource.saveNewProfile("SAVED_USER_PROFILE");
 
-                List<Profile> list = profileResource.getProfiles();
-                ObservableList obList = FXCollections.observableList(list);
-
-                profilePicker.setItems(obList);
+                ObservableList profiles = FXCollections.observableList(profileResource.getProfiles());
+                profilePicker.setItems(profiles);
                 profilePicker.addItem(savedProfile);
                 profilePicker.selectItem(savedProfile);
                 profileResource.applyProfile(savedProfile);
 
                 event.consume();
-            }
         });
 
         advSettingsToggle.setOnMouseClicked(event -> {
@@ -302,7 +297,7 @@ public class SlicerPanelController extends LocalizableController implements Init
         initTooltips();
 
         printJobNameInput.addChangeListener((obs, o, n) -> {
-            if(!n.equals(editSceneGraph.getCurrentSceneName())) {
+            if(n != null && !n.equals(editSceneGraph.getCurrentSceneName())) {
                 setUserChangedJobName(true);
             }
         });
