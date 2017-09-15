@@ -120,10 +120,11 @@ public class GCodePanelController extends LocalizableController implements Initi
 
         backToEditBtn.setOnAction(event -> {
             eventBus.publish(new Event(EventType.SCENE_SET_MODE.name(), SceneMode.EDIT));
+            deeControlContext.getCurrentProject().resetPrintInfo();
         });
 
         jobSendDoneNotification.setLabelText("Print job successfully sent to YSoft SafeQ");
-        jobSendProgressNotification.setLabelText("File transfer in progress…");
+        jobSendProgressNotification.setLabelText(getMessage("file_transfer_in_progress"));
 
         sendJobBtn.setOnAction(event -> {
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), jobSendProgressNotification));

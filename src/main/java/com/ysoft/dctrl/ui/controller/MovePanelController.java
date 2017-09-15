@@ -6,8 +6,12 @@ import java.util.ResourceBundle;
 import org.springframework.stereotype.Controller;
 
 import com.ysoft.dctrl.editor.EditSceneGraph;
+import com.ysoft.dctrl.editor.action.ModelTranslateAction;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
+import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
+import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.math.Point3DUtils;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
@@ -32,20 +36,27 @@ public class MovePanelController extends AbstractEditPanelController {
         SceneMesh mesh = sceneGraph.getSelected();
         if(mesh == null) { return; }
         Point3D position = mesh.getPosition();
-        x.setText(String.valueOf(position.getX()));
-        y.setText(String.valueOf(position.getY()));
+        x.setValue(position.getX());
+        y.setValue(position.getY());
     }
 
     public void onXChange(SceneMesh mesh, double newValue) {
-        mesh.setPositionX(newValue);
+        setPosition(mesh, Point3DUtils.setX(mesh.getPosition(), newValue));
     }
 
     public void onYChange(SceneMesh mesh, double newValue) {
-        mesh.setPositionY(newValue);
+        setPosition(mesh, Point3DUtils.setY(mesh.getPosition(), newValue));
     }
 
     public void onZChange(SceneMesh mesh, double newValue) {
-        mesh.setPositionZ(newValue);
+        setPosition(mesh, Point3DUtils.setZ(mesh.getPosition(), newValue));
+    }
+
+    private void setPosition(SceneMesh mesh, Point3D position) {
+        Point3D oldPosition = mesh.getPosition();
+        if(oldPosition.equals(position)) { return; }
+        mesh.setPosition(position);
+        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new ModelTranslateAction(mesh,oldPosition, position)));
     }
 
     public void onReset() {

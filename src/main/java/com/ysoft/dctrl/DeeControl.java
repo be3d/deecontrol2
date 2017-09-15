@@ -1,9 +1,14 @@
 package com.ysoft.dctrl;
 
+import java.util.List;
+
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.ysoft.dctrl.event.Event;
+import com.ysoft.dctrl.event.EventBus;
+import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.log.DeeControlConfigurationFactory;
 import com.ysoft.dctrl.ui.BaseWindow;
 import com.ysoft.dctrl.utils.DeeControlConfig;
@@ -32,7 +37,7 @@ public class DeeControl extends Application {
     public void start(Stage primaryStage) throws Exception {
         applicationContext = new AnnotationConfigApplicationContext(DeeControlConfig.class);
 
-        DeeControlContext deeControlContext = applicationContext.getBean(DeeControlContext.class);
+        EventBus eventBus = applicationContext.getBean(EventBus.class);
 
         BaseWindow baseWindow = applicationContext.getBean(BaseWindow.class);
         baseWindow.composeWindow(primaryStage);
@@ -44,5 +49,15 @@ public class DeeControl extends Application {
                 new Image(getClass().getResourceAsStream("/img/ico/icon-256.png"))
         );
         primaryStage.show();
+
+        List<String> args = getParameters().getRaw();
+        if(args.size() > 0) {
+           for(String p : args){
+                if(p.endsWith(".stl")) {
+                    eventBus.publish(new Event(EventType.ADD_MODEL.name(), p));
+                    break;
+                }
+           }
+        }
     }
 }

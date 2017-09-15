@@ -1,12 +1,9 @@
 package com.ysoft.dctrl.editor.utils;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-import javax.annotation.PostConstruct;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,8 +20,9 @@ import com.ysoft.dctrl.event.EventType;
  */
 
 @Component
-public class ModelInsertionStack extends LinkedHashMap<ExtendedMesh, String> {
+public class ModelInsertionStack extends ArrayList<ExtendedMesh> {
     private final EventBus eventBus;
+    private final Comparator<ExtendedMesh> comparator = Comparator.comparingInt(ExtendedMesh::getID);
 
     @Autowired
     public ModelInsertionStack(EventBus eventBus) {
@@ -36,6 +34,16 @@ public class ModelInsertionStack extends LinkedHashMap<ExtendedMesh, String> {
             ((MeshGroup) sceneMesh).getChildren().forEach(this::remove);
         } else {
             remove(sceneMesh);
+        }
+
+        onChange();
+    }
+
+    public void addSceneMesh(SceneMesh sceneMesh) {
+        if(sceneMesh instanceof MeshGroup) {
+            ((MeshGroup) sceneMesh).getChildren().forEach(this::add);
+        } else {
+            add((ExtendedMesh) sceneMesh);
         }
 
         onChange();
@@ -54,82 +62,33 @@ public class ModelInsertionStack extends LinkedHashMap<ExtendedMesh, String> {
             throw new IndexOutOfBoundsException("Index out of bounds (" + index + "/" + size() + ")");
         }
 
-        return (new ArrayList<>(values())).get(index);
+        return get(index).getName();
     }
 
     @Override
-    public String put(ExtendedMesh key, String value) {
-        String res = super.put(key, value);
-        onChange();
+    public boolean add(ExtendedMesh mesh) {
+        int index = Collections.binarySearch(this, mesh, comparator);
+        super.add(-index - 1, mesh);
+        return true;
+    }
+
+    @Override
+    public void add(int index, ExtendedMesh element) {
+        throw new UnsupportedOperationException("Inserting to index is not supported");
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends ExtendedMesh> c) {
+        boolean res = true;
+        for(ExtendedMesh e : c) {
+            res = res && add(e);
+        }
+
         return res;
     }
 
     @Override
-    public void putAll(Map<? extends ExtendedMesh, ? extends String> m) {
-        super.putAll(m);
-        onChange();
-    }
-
-    @Override
-    public String remove(Object key) {
-        String res = super.remove(key);
-        onChange();
-        return res;
-    }
-
-    @Override
-    public String putIfAbsent(ExtendedMesh key, String value) {
-        String res = super.putIfAbsent(key, value);
-        onChange();
-        return res;
-    }
-
-    @Override
-    public boolean remove(Object key, Object value) {
-        boolean res = super.remove(key, value);
-        onChange();
-        return res;
-    }
-
-    @Override
-    public boolean replace(ExtendedMesh key, String oldValue, String newValue) {
-        boolean res = super.replace(key, oldValue, newValue);
-        onChange();
-        return res;
-    }
-
-    @Override
-    public String replace(ExtendedMesh key, String value) {
-        String res = super.replace(key, value);
-        onChange();
-        return res;
-    }
-
-    @Override
-    public String computeIfAbsent(ExtendedMesh key, Function<? super ExtendedMesh, ? extends String> mappingFunction) {
-        String res = super.computeIfAbsent(key, mappingFunction);
-        onChange();
-        return res;
-    }
-
-    @Override
-    public String computeIfPresent(ExtendedMesh key, BiFunction<? super ExtendedMesh, ? super String, ? extends String> remappingFunction) {
-        String res = super.computeIfPresent(key, remappingFunction);
-        onChange();
-        return res;
-    }
-
-    @Override
-    public String compute(ExtendedMesh key, BiFunction<? super ExtendedMesh, ? super String, ? extends String> remappingFunction) {
-        String res = super.compute(key, remappingFunction);
-        onChange();
-        return res;
-    }
-
-    @Override
-    public String merge(ExtendedMesh key, String value, BiFunction<? super String, ? super String, ? extends String> remappingFunction) {
-        String res = super.merge(key, value, remappingFunction);
-        onChange();
-        return res;
+    public boolean addAll(int index, Collection<? extends ExtendedMesh> c) {
+        throw new UnsupportedOperationException("Inserting to index is not supported");
     }
 }

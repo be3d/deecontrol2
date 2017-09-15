@@ -49,10 +49,11 @@ public class RightPanelTooltipPane extends HBox  {
 
         double canvasMaxY = this.getParent().getParent().getBoundsInParent().getMaxY();
         double tooltipMaxY = this.getBoundsInParent().getMaxY();
+        double aboveLabelTooltipY = targetElementYPos - this.getBoundsInParent().getHeight() + bottomOffset;
 
-        if (tooltipMaxY > canvasMaxY - bottomOffscreen) {
+        if (tooltipMaxY > canvasMaxY - bottomOffscreen && aboveLabelTooltipY > 0) {
             //Tooltip is outside the window, move it so it is aligned above the label
-            this.setTranslateY(targetElementYPos - this.getBoundsInParent().getHeight() + bottomOffset);
+            this.setTranslateY(aboveLabelTooltipY);
             setTooltipStyle(TooltipAlignment.BOTTOM);
         } else {
             //Normally it's aligned below the label

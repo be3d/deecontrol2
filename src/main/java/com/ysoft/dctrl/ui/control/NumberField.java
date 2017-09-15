@@ -1,5 +1,8 @@
 package com.ysoft.dctrl.ui.control;
 
+import java.util.function.Consumer;
+
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -16,6 +19,12 @@ public class NumberField extends TextField {
     private DoubleProperty step;
     private IntegerProperty precision;
 
+    private Consumer<Double> limit;
+
+    private BooleanProperty invalid;
+
+    private double value;
+
     public NumberField() {
         this("");
     }
@@ -25,6 +34,7 @@ public class NumberField extends TextField {
         unit = new SimpleStringProperty("");
         step = new SimpleDoubleProperty(1.0);
         precision = new SimpleIntegerProperty(1);
+        limit = (v) -> {};
 
         unit.addListener((ob, o, n) -> {
             setText((o == null) ? getText() + n : getText().replace(o, n));
@@ -37,10 +47,12 @@ public class NumberField extends TextField {
             } else if(e.getCode() == KeyCode.DOWN) {
                 setValue(getValue() - getStep());
                 e.consume();
+            } else if(e.getCode() == KeyCode.ENTER) {
+                validate();
             }
         });
 
-        setTextFormatter(getNumberFormatter());
+        focusedProperty().addListener((ob, o, n) -> validate());
     }
 
     public String getUnit() {
@@ -56,22 +68,38 @@ public class NumberField extends TextField {
     public void setStep(Double step) { this.step.setValue(step);}
 
     public double getValue() {
-        String val = textProperty().getValue().replace(unit.getValue(), "");
-        if(val.startsWith(".")) { val = "0" + val; }
-        return Double.parseDouble(val);
+        return value;
     }
 
-    public void setValue(double val) {
-        setText(String.format("%." + precision.getValue() + "f", val).replace(",", ".") + unit.getValue());
+    public void setValue(double value) {
+        this.value = value;
+        setText(String.format("%." + precision.getValue() + "f", value).replace(",", ".") + unit.getValue());
     }
 
-    private TextFormatter<String> getNumberFormatter() {
-        return new TextFormatter<String>((change) -> {
-            String u = unit.getValue();
-            if(change.getControlNewText().matches("^-?\\d*\\.?\\d*" + (u == null ? "" : u))) {
-                return change;
-            }
-            return null;
-        });
+    private void validate() {
+        String text = getText().trim().replaceAll("\\s\\s", " ");
+        String u = unit.getValue();
+        if(!text.matches("^-?\\d*\\.?\\d*" + ((u == null ? "" : u) + "$"))) {
+            double newValue = Double.parseDouble(text);
+            setValue(newValue);
+            return;
+        }
+
+        setText(text);
+        setValue(Double.parseDouble(text.replace(unit.getValue(), "")));
+    }
+
+    public void setLimit(Consumer<Double> limit) {
+        this.limit = limit;
+    }
+
+    @Override
+    public void nextWord() {
+        super.endOfNextWord();
+    }
+
+    @Override
+    public void selectNextWord() {
+        super.selectEndOfNextWord();
     }
 }

@@ -3,7 +3,7 @@ package com.ysoft.dctrl.ui.controller.controlMenu;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
-import com.ysoft.dctrl.ui.tooltip.contract.TooltipData;
+import com.ysoft.dctrl.ui.tooltip.Tooltip;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
@@ -17,7 +17,7 @@ public abstract class BaseTooltipControl extends BaseCustomControl {
     @FXML   HBox labelWrapper;
     @FXML   Button tooltipBtn;
 
-    public void attachTooltip(EventBus eventBus, TooltipData data){
+    public void attachTooltip(EventBus eventBus, Tooltip data){
         if(tooltipBtn == null){ return; }
         data.setTarget(this);
 

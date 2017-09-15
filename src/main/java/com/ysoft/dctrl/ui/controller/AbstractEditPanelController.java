@@ -2,6 +2,7 @@ package com.ysoft.dctrl.ui.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.BiConsumer;
 
 import com.ysoft.dctrl.editor.EditSceneGraph;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
@@ -13,12 +14,13 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyCode;
 
 /**
  * Created by pilar on 10.4.2017.
  */
 public abstract class AbstractEditPanelController extends LocalizableController {
-    private enum Item { X,Y,Z }
+    protected enum Item { X,Y,Z }
 
     protected EditSceneGraph sceneGraph;
 
@@ -37,15 +39,24 @@ public abstract class AbstractEditPanelController extends LocalizableController 
             if(newValue) refresh();
         });
 
-        x.textProperty().addListener((observable, oldValue, newValue) -> onChange(x.getValue(), Item.X));
-        y.textProperty().addListener((observable, oldValue, newValue) -> onChange(y.getValue(), Item.Y));
-        z.textProperty().addListener((observable, oldValue, newValue) -> onChange(z.getValue(), Item.Z));
+        initNumberFieldListener(x, Item.X, this::onChange);
+        initNumberFieldListener(y, Item.Y, this::onChange);
+        initNumberFieldListener(z, Item.Z, this::onChange);
 
         root.setOnMousePressed(Event::consume);
 
         eventBus.subscribe(EventType.MODEL_SELECTED.name(), (e) -> refresh());
 
         super.initialize(location, resources);
+    }
+
+    protected void initNumberFieldListener(NumberField field, Item item, BiConsumer<Double, Item> consumer) {
+        field.focusedProperty().addListener((ob, o, n) -> {
+            if(!n) { consumer.accept(field.getValue(), item); }
+        });
+        field.setOnKeyPressed(e -> {
+            if(e.getCode() == KeyCode.ENTER) { consumer.accept(field.getValue(), item); }
+        });
     }
 
     public abstract void refresh();
