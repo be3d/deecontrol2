@@ -77,12 +77,5 @@ public class CuraParamTranslator {
                 put("support_line_distance", hyperbolicComponent + linearComponent);
             }};
         });
-        dictionary.put(SlicerParamType.SUPPORT_INTERFACE_DENSITY, x -> {
-            double nzlD = (double) slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
-            return new HashMap<String, Object>(){{
-                put("support_roof_line_distance", x * nzlD / 100);
-                put("support_bottom_line_distance", x * nzlD / 100);
-            }};
-        });
     }
 }

@@ -85,6 +85,8 @@ public class CuraParamMap extends EnumMap<SlicerParamType, String>{
         put(SlicerParamType.SUPPORT_BOTTOM_THICKNESS,"support_bottom_height");
         put(SlicerParamType.SUPPORT_INTERFACE_RESOLUTION,"support_interface_skip_height");
         put(SlicerParamType.SUPPORT_INTERFACE_DENSITY,"support_interface_density");
+        put(SlicerParamType.SUPPORT_INTERFACE_ROOF_LINE_DISTANCE,"support_roof_line_distance");
+        put(SlicerParamType.SUPPORT_INTERFACE_BOTTOM_LINE_DISTANCE,"support_bottom_line_distance");
         put(SlicerParamType.SUPPORT_TOWER_DIAMETER,"support_tower_diameter");
         put(SlicerParamType.SUPPORT_MINIMUM_DIAMETER,"support_minimal_diameter");
     }
