@@ -56,39 +56,26 @@ public class CuraParamTranslator {
     /**
      * Expresses indirect relationships between slicer parameters DCTRL->CURA.
      */
-    private void initDictionary(){
-        dictionary.put(SlicerParamType.INFILL_DENSITY, value -> {
-            Map<String, Object> out = new HashMap<>();
-            Double infillLineWidth = (Double)slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
-            Double k = 2.0; // pattern coefficient
-            switch((String)slicerParams.get(SlicerParamType.INFILL_PATTERN.name()).getValue()) {
-                case "grid":
-                case "tetrahedral":
-                    k = 2.0;
-                    break;
-                case "triangles":
-                case "cubic":
-                case "cubicsubdiv":
-                    k = 3.0;
-                    break;
-            }
-            out.put("infill_line_distance", infillLineWidth+(infillLineWidth*100)/(value*k));
-            return out;
+    private void initDictionary() {
+        dictionary.put(SlicerParamType.INFILL_DENSITY, x -> {
+            double max = 1.143; // infill line distance when slider set to 100
+            double a = 5.0; // slope adjustment constant
+            double nzlD = (double) slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
+            double hyperbolicComponent = (nzlD * 100 / x) - nzlD;
+            double linearComponent = (a + max) - a * (0.01 * x);
+            return new HashMap<String, Object>(){{
+                put("infill_line_distance", hyperbolicComponent + linearComponent);
+            }};
         });
-        dictionary.put(SlicerParamType.SUPPORT_DENSITY, value -> {
-            Map<String, Object> out = new HashMap<>();
-            Double supportLineWidth = (Double)slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
-            Double k = 1.0; // pattern coefficient
-            switch((String)slicerParams.get(SlicerParamType.SUPPORT_PATTERN.name()).getValue()) {
-                case "grid":
-                    k = 2.0;
-                    break;
-                case "triangles":
-                    k = 3.0;
-                    break;
-            }
-            out.put("support_line_distance", (supportLineWidth*100)/(value*k));
-            return out;
+        dictionary.put(SlicerParamType.SUPPORT_DENSITY, x -> {
+            double max = 1.143; // infill line distance when slider set to 100
+            double a = 5.0; // slope adjustment constant
+            double nzlD = (double) slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
+            double hyperbolicComponent = (nzlD * 100 / x) - nzlD;
+            double linearComponent = (a + max) - a * (0.01 * x);
+            return new HashMap<String, Object>(){{
+                put("support_line_distance", hyperbolicComponent + linearComponent);
+            }};
         });
     }
 }

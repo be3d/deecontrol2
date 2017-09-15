@@ -57,7 +57,7 @@ public class CuraParamMap extends EnumMap<SlicerParamType, String>{
         put(SlicerParamType.MATERIAL_RETRACT_AT_LAYER_CHANGE,"retract_at_layer_change");
         put(SlicerParamType.MATERIAL_FLOW,"material_flow");
         put(SlicerParamType.MATERIAL_RETRACTION_DISTANCE,"retraction_amount");
-        put(SlicerParamType.MATERIAL_RETRACTION_SPEED,"retraction_speed");
+        put(SlicerParamType.MATERIAL_RETRACTION_SPEED,"retraction_retract_speed");
         put(SlicerParamType.MATERIAL_RETRACTION_PRIME_SPEED,"retraction_prime_speed");
         put(SlicerParamType.MATERIAL_RETRACTION_MINIMUM_TRAVEL,"retraction_min_travel");
 
@@ -79,11 +79,14 @@ public class CuraParamMap extends EnumMap<SlicerParamType, String>{
         put(SlicerParamType.SUPPORT_XY_DISTANCE,"support_xy_distance");
         put(SlicerParamType.SUPPORT_STAIR_STEP_HEIGHT,"support_bottom_stair_step_height");
         put(SlicerParamType.SUPPORT_HORIZONTAL_EXPANSION,"support_offset");
-        put(SlicerParamType.SUPPORT_INTERFACE_ENABLE,"support_interface_enable");
+        put(SlicerParamType.SUPPORT_ROOF_ENABLE,"support_roof_enable");
         put(SlicerParamType.SUPPORT_ROOF_THICKNESS,"support_roof_height");
+        put(SlicerParamType.SUPPORT_BOTTOM_ENABLE,"support_bottom_enable");
         put(SlicerParamType.SUPPORT_BOTTOM_THICKNESS,"support_bottom_height");
         put(SlicerParamType.SUPPORT_INTERFACE_RESOLUTION,"support_interface_skip_height");
         put(SlicerParamType.SUPPORT_INTERFACE_DENSITY,"support_interface_density");
+        put(SlicerParamType.SUPPORT_INTERFACE_ROOF_LINE_DISTANCE,"support_roof_line_distance");
+        put(SlicerParamType.SUPPORT_INTERFACE_BOTTOM_LINE_DISTANCE,"support_bottom_line_distance");
         put(SlicerParamType.SUPPORT_TOWER_DIAMETER,"support_tower_diameter");
         put(SlicerParamType.SUPPORT_MINIMUM_DIAMETER,"support_minimal_diameter");
     }

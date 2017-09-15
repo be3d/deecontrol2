@@ -289,7 +289,7 @@
       {
          "id":"SUPPORT_XY_DISTANCE",
          "type":"float",
-         "value":0.5
+         "value":0.8
       },
       {
          "id":"SUPPORT_STAIR_STEP_HEIGHT",
@@ -302,7 +302,12 @@
          "value":0.4
       },
       {
-         "id":"SUPPORT_INTERFACE_ENABLE",
+         "id":"SUPPORT_ROOF_ENABLE",
+         "type":"bool",
+         "value":true
+      },
+      {
+         "id":"SUPPORT_BOTTOM_ENABLE",
          "type":"bool",
          "value":true
       },
@@ -320,6 +325,16 @@
          "id":"SUPPORT_INTERFACE_DENSITY",
          "type":"float",
          "value":85
+      },
+      {
+         "id":"SUPPORT_INTERFACE_ROOF_LINE_DISTANCE",
+         "type":"float",
+         "value":0.5
+      },
+      {
+         "id":"SUPPORT_INTERFACE_BOTTOM_LINE_DISTANCE",
+         "type":"float",
+         "value":0.5
       },
       {
          "id":"SUPPORT_TOWER_DIAMETER",
