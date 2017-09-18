@@ -113,34 +113,40 @@ public class StlImporter extends AbstractModelImporter {
     }
 
     private void loadFace(String faceData) {
-        float[] norm = new float[3];
-        float[] vertexes = new float[9];
-        NORMAL_MATCHER.reset(faceData);
-        if(NORMAL_MATCHER.find()) {
-            for(int i = 0; i < 3; i++) { norm[i] = Float.parseFloat(NORMAL_MATCHER.group(2*i + 1)); }
-        }
+        //float[] norm = new float[3];
+        float[] vertices = new float[9];
+        //NORMAL_MATCHER.reset(faceData);
+        //if(NORMAL_MATCHER.find()) {
+        //    for(int i = 0; i < 3; i++) { norm[i] = Float.parseFloat(NORMAL_MATCHER.group(2*i + 1)); }
+        //}
 
         VERTEX_MATCHER.reset(faceData);
         for(int i = 0; i < 3; i++) {
             if(VERTEX_MATCHER.find()) {
                 for (int j = 0; j < 3; j++) {
-                    vertexes[i * 3 + j] = Float.parseFloat(VERTEX_MATCHER.group(2*j + 1));
+                    vertices[i * 3 + j] = Float.parseFloat(VERTEX_MATCHER.group(2*j + 1));
                 }
             }
         }
-
-        int normalIndex = addNormal(norm[0], norm[1], norm[2]);
-        int v1 = addVertex(vertexes[0], vertexes[1], vertexes[2]);
-        int v2 = addVertex(vertexes[3], vertexes[4], vertexes[5]);
-        int v3 = addVertex(vertexes[6], vertexes[7], vertexes[8]);
+        float[] normal = computeNormalVector(vertices);
+        int normalIndex = addNormal(normal[0], normal[1], normal[2]);
+        int v1 = addVertex(vertices[0], vertices[1], vertices[2]);
+        int v2 = addVertex(vertices[3], vertices[4], vertices[5]);
+        int v3 = addVertex(vertices[6], vertices[7], vertices[8]);
         addFace(v1, v2, v3, normalIndex);
     }
 
     private void loadFace(byte[] faceData) {
-        int normalIndex = addNormal(getFloat(faceData, 0, 4), getFloat(faceData, 4, 4), getFloat(faceData, 8, 4));
-        int v1 = addVertex(getFloat(faceData, 12, 4), getFloat(faceData, 16, 4), getFloat(faceData, 20, 4));
-        int v2 = addVertex(getFloat(faceData, 24, 4), getFloat(faceData, 28, 4), getFloat(faceData, 32, 4));
-        int v3 = addVertex(getFloat(faceData, 36, 4), getFloat(faceData, 40, 4), getFloat(faceData, 44, 4));
+        float[] vertices = new float[] {
+                getFloat(faceData, 12, 4), getFloat(faceData, 16, 4), getFloat(faceData, 20, 4),
+                getFloat(faceData, 24, 4), getFloat(faceData, 28, 4), getFloat(faceData, 32, 4),
+                getFloat(faceData, 36, 4), getFloat(faceData, 40, 4), getFloat(faceData, 44, 4)
+        };
+        float[] normal = computeNormalVector(vertices);
+        int normalIndex = addNormal(normal[0], normal[1], normal[2]);
+        int v1 = addVertex(vertices[0], vertices[1], vertices[2]);
+        int v2 = addVertex(vertices[3], vertices[4], vertices[5]);
+        int v3 = addVertex(vertices[6], vertices[7], vertices[8]);
         addFace(v1, v2, v3, normalIndex);
     }
 
@@ -153,6 +159,30 @@ public class StlImporter extends AbstractModelImporter {
         mesh.getPoints().addAll(x, y, z);
         vertexMap.put(vertexHash, nextVertexIndex);
         return nextVertexIndex++;
+    }
+
+    private float[] computeNormalVector(float[] vertices) {
+        if(vertices.length != 9) { throw new IllegalArgumentException("Not triangle vertices"); }
+        return computeNormalVector(
+                vertices[0], vertices[1], vertices[2],
+                vertices[3], vertices[4], vertices[5],
+                vertices[6], vertices[7], vertices[8]
+        );
+    }
+
+    private float[] computeNormalVector(float x0, float y0, float z0, float x1, float y1, float z1, float x2, float y2, float z2) {
+        float[] normal = new float[3];
+        float[] u = new float[]{x1 - x0, y1 - y0, z1 - z0};
+        float[] v = new float[]{x2 - x0, y2 - y0, z2 - z0};
+        normal[0] = (u[1]*v[2]) - (u[2]*v[1]);
+        normal[1] = (u[2]*v[0]) - (u[0]*v[2]);
+        normal[2] = (u[0]*v[1]) - (u[1]*v[0]);
+        return normal;
+    }
+
+    private int addNormal(float[] normal) {
+        if(normal.length != 3) { throw new IllegalArgumentException("Not a normal vector"); }
+        return addNormal(normal[0], normal[1], normal[2]);
     }
 
     private int addNormal(float x, float y, float z) {
