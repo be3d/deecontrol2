@@ -3,6 +3,7 @@ package com.ysoft.dctrl.ui.controller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
@@ -48,9 +49,9 @@ import javafx.scene.paint.Color;
 public class CanvasController extends AbstractController implements Initializable {
     @FXML AnchorPane canvas;
 
-    private SceneGraph sceneGraph;
-    private KeyEventPropagator keyEventPropagator;
-    private MeshTransformControls meshTransformControls;
+    private final SceneGraph sceneGraph;
+    private final KeyEventPropagator keyEventPropagator;
+    private final MeshTransformControls meshTransformControls;
 
     @Autowired
     public CanvasController(EventBus eventBus,
@@ -163,9 +164,6 @@ public class CanvasController extends AbstractController implements Initializabl
                         eventBus.publish(new Event(EventType.EDIT_SELECT_NEXT.name()));
                     }
                 }
-                break;
-            case DELETE:
-                eventBus.publish(new Event(EventType.EDIT_DELETE_SELECTED.name()));
                 break;
         }
     }

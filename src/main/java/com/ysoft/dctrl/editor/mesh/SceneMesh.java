@@ -11,4 +11,5 @@ public interface SceneMesh extends Controllable, DrawableMesh {
     MeshGroup getGroup();
     void setOutOfBounds(boolean outOfBounds);
     boolean isOutOfBounds();
+    SceneMesh clone();
 }

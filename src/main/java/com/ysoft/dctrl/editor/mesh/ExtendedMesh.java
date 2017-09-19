@@ -7,7 +7,6 @@ import com.ysoft.dctrl.math.BoundingBox;
 import com.ysoft.dctrl.math.TransformMatrix;
 import com.ysoft.dctrl.utils.ColorUtils;
 
-import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -16,7 +15,6 @@ import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
-import javafx.scene.transform.TransformChangedEvent;
 import javafx.scene.transform.Translate;
 
 /**
@@ -70,6 +68,13 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         node = new Group();
         node.getChildren().addAll(view, boundingBox.getNode());
         initTransforms();
+    }
+
+    private ExtendedMesh(ExtendedMesh other) {
+        this(other.getName(), (TriangleMesh) other.getView().getMesh());
+        setPosition(other.getPosition());
+        setRotation(other.getRotation());
+        setScale(other.getScale());
     }
 
     private void initTransforms() {
@@ -229,4 +234,9 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     public int getID() { return id; }
 
     public String getName() { return name; }
+
+    @Override
+    public SceneMesh clone() {
+        return new ExtendedMesh(this);
+    }
 }

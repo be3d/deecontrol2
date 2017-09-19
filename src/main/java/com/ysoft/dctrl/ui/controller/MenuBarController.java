@@ -6,9 +6,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import com.ysoft.dctrl.action.ActionStack;
+import com.ysoft.dctrl.editor.EditSceneGraph;
+import com.ysoft.dctrl.editor.mesh.SceneMesh;
+import com.ysoft.dctrl.utils.Clipboard;
 import com.ysoft.dctrl.utils.settings.ShortcutKeys;
 import javafx.application.Platform;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCodeCombination;
 import javafx.stage.FileChooser;
 
 /**
@@ -40,8 +45,8 @@ public class MenuBarController extends LocalizableController implements Initiali
     private static final String JOB_EXTENSION = "*.3djob";
     private static final String ABOUT_URL = "";
 
-    private static final FileChooser.ExtensionFilter gcodeFilter = new FileChooser.ExtensionFilter("GCode file", GCODE_EXTENSION);
-    private static final FileChooser.ExtensionFilter jobFilter = new FileChooser.ExtensionFilter("3D print job", JOB_EXTENSION);
+    private static final FileChooser.ExtensionFilter GCODE_FILTER = new FileChooser.ExtensionFilter("GCode file", GCODE_EXTENSION);
+    private static final FileChooser.ExtensionFilter JOB_FILTER = new FileChooser.ExtensionFilter("3D print job", JOB_EXTENSION);
 
     @FXML MenuItem openFile;
     @FXML MenuItem quit;
@@ -49,6 +54,9 @@ public class MenuBarController extends LocalizableController implements Initiali
     @FXML MenuItem exportAs;
     @FXML MenuItem undo;
     @FXML MenuItem redo;
+    @FXML MenuItem copy;
+    @FXML MenuItem paste;
+    @FXML MenuItem duplicate;
     @FXML MenuItem delete;
     @FXML MenuItem selectAll;
     @FXML MenuItem zoomIn;
@@ -58,15 +66,21 @@ public class MenuBarController extends LocalizableController implements Initiali
 
     private final RetentionFileChooser retentionFileChooser;
     private final ActionStack actionStack;
+    private final EditSceneGraph editSceneGraph;
+    private final Clipboard clipboard;
 
     @Autowired
     public MenuBarController(LocalizationService localizationService,
                              EventBus eventBus, DeeControlContext deeControlContext,
                              RetentionFileChooser retentionFileChooser,
-                             ActionStack actionStack) {
+                             ActionStack actionStack,
+                             EditSceneGraph editSceneGraph,
+                             Clipboard clipboard) {
         super(localizationService, eventBus, deeControlContext);
         this.retentionFileChooser = retentionFileChooser;
         this.actionStack = actionStack;
+        this.editSceneGraph = editSceneGraph;
+        this.clipboard = clipboard;
     }
 
     @Override
@@ -82,6 +96,7 @@ public class MenuBarController extends LocalizableController implements Initiali
 
 
         delete.setOnAction(this::onDelete);
+        delete.setAccelerator(ShortcutKeys.DELETE);
         selectAll.setAccelerator(ShortcutKeys.SELECT_ALL);
         selectAll.setOnAction(this::onSelectAll);
 
@@ -95,6 +110,13 @@ public class MenuBarController extends LocalizableController implements Initiali
         undo.setOnAction(this::onUndo);
         redo.setOnAction(this::onRedo);
 
+        copy.setOnAction(this::onCopy);
+        copy.setAccelerator(ShortcutKeys.COPY);
+        paste.setOnAction(this::onPaste);
+        paste.setAccelerator(ShortcutKeys.PASTE);
+        duplicate.setOnAction(this::onDuplicate);
+        duplicate.setAccelerator(ShortcutKeys.DUPLICATE);
+
         super.initialize(location, resources);
     }
 
@@ -107,7 +129,7 @@ public class MenuBarController extends LocalizableController implements Initiali
     }
 
     private void onExportAs(ActionEvent event) {
-        File f = retentionFileChooser.showSaveDialog(root.getScene().getWindow(), gcodeFilter, jobFilter);
+        File f = retentionFileChooser.showSaveDialog(root.getScene().getWindow(), GCODE_FILTER, JOB_FILTER);
         switch (retentionFileChooser.getSelectedExtensionFilter().getExtensions().get(0)) {
             case GCODE_EXTENSION:
                 eventBus.publish(new Event(EventType.GCODE_EXPORT.name(), f.getAbsolutePath()));
@@ -136,6 +158,26 @@ public class MenuBarController extends LocalizableController implements Initiali
         actionStack.redo();
     }
 
+    private void onCopy(ActionEvent event) {
+        List<SceneMesh> cloned = editSceneGraph.cloneSelection();
+        if(!cloned.isEmpty()) { clipboard.addModels(cloned); }
+    }
+
+    private void onPaste(ActionEvent event) {
+        if(clipboard.hasModels()) {
+            List<SceneMesh> models = clipboard.getModels();
+            models.forEach(editSceneGraph::cloneMesh);
+        } else if(clipboard.hasModelFiles()) {
+            List<File> modelFiles = clipboard.getModelFiles();
+            eventBus.publish(new Event(EventType.ADD_MODEL.name(), modelFiles.get(0).getAbsolutePath()));
+        }
+    }
+
+    private void onDuplicate(ActionEvent event) {
+        List<SceneMesh> cloned = editSceneGraph.cloneSelection();
+        if(!cloned.isEmpty()) { cloned.forEach(editSceneGraph::cloneMesh); }
+    }
+
     private void onZoomIn(ActionEvent event){
         eventBus.publish(new Event(EventType.ZOOM_IN_VIEW.name()));
     }
@@ -150,12 +192,9 @@ public class MenuBarController extends LocalizableController implements Initiali
 
     private void onAbout(ActionEvent event){
         if(ABOUT_URL.isEmpty()) { return; }
-
         try {
             Desktop.getDesktop().browse(new URI(ABOUT_URL));
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        } catch (URISyntaxException e1) {
+        } catch (IOException | URISyntaxException e1) {
             e1.printStackTrace();
         }
     }
