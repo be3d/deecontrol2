@@ -47,6 +47,15 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         meshes.forEach(this::addMesh);
     }
 
+    private MeshGroup(MeshGroup other) {
+        this();
+        setPosition(other.getPosition());
+        setScale(other.getScale());
+        other.getChildren().forEach(ch -> {
+            addMesh(ch.clone());
+        });
+    }
+
     public void addMesh(SceneMesh mesh) {
         if(mesh instanceof ExtendedMesh) {
             addMesh((ExtendedMesh) mesh);
@@ -59,6 +68,7 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         mesh.setGroup(this);
         group.add(mesh);
         addMeshNode(mesh);
+        mesh.setBoundingBoxVisible(false);
         boundingBox.extend(mesh.getBoundingBox());
         updatePosition(boundingBox.getCenter());
         updateScale(new Point3D(1,1,1));
@@ -186,5 +196,10 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
     @Override
     public boolean isOutOfBounds() {
         return outOfBounds;
+    }
+
+    @Override
+    public SceneMesh clone() {
+        return new MeshGroup(this);
     }
 }

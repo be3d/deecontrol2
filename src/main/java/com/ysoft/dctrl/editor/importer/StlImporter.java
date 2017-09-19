@@ -49,9 +49,9 @@ public class StlImporter extends AbstractModelImporter {
     @Override
     public TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException {
         try (BufferedInputStream bis = new BufferedInputStream(stream)){
-            byte[] data = new byte[100];
+            byte[] data = new byte[1024];
             bis.mark(100);
-            bis.read(data, 0, data.length);
+            int res = bis.read(data, 0, data.length);
             bis.reset();
             TriangleMesh mesh;
             if(isAscii(data)) {
@@ -66,11 +66,18 @@ public class StlImporter extends AbstractModelImporter {
 
     private boolean isAscii(byte[] data) {
         String head = new String(data, StandardCharsets.UTF_8);
-        return head.startsWith(ASCII_START) && isAsciiString(head);
+        return isAsciiHead(head);
     }
 
-    private boolean isAsciiString(String s) {
-        return StandardCharsets.US_ASCII.newEncoder().canEncode(s);
+    private final static Matcher whitespaceMatcher = Pattern.compile("\\s").matcher("");
+    private boolean isAsciiHead(String s) {
+        if(!s.startsWith(ASCII_START)) { return false; }
+        s = s.replace(ASCII_START, "");
+        whitespaceMatcher.reset(s);
+        if(!whitespaceMatcher.find()) { return false; }
+        int i = whitespaceMatcher.start();
+        return StandardCharsets.UTF_8.newEncoder().canEncode(s.substring(0, i)) &&
+                StandardCharsets.US_ASCII.newEncoder().canEncode(s.substring(i+1));
     }
 
     private TriangleMesh loadBinary(BufferedInputStream stream) throws IllegalArgumentException, IOException {

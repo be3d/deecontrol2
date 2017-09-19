@@ -3,8 +3,6 @@ package com.ysoft.dctrl.editor.action;
 import java.util.function.Consumer;
 
 import com.ysoft.dctrl.action.Action;
-import com.ysoft.dctrl.editor.EditSceneGraph;
-import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 
 /**
@@ -13,9 +11,9 @@ import com.ysoft.dctrl.editor.mesh.SceneMesh;
 public class AddModelAction implements Action {
     private final Consumer<SceneMesh> addModel;
     private final Consumer<SceneMesh> deleteModel;
-    private final ExtendedMesh mesh;
+    private final SceneMesh mesh;
 
-    public AddModelAction(Consumer<SceneMesh> addModel, Consumer<SceneMesh> deleteModel, ExtendedMesh mesh) {
+    public AddModelAction(Consumer<SceneMesh> addModel, Consumer<SceneMesh> deleteModel, SceneMesh mesh) {
         this.addModel = addModel;
         this.deleteModel = deleteModel;
         this.mesh = mesh;

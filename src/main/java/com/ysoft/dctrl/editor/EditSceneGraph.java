@@ -96,8 +96,27 @@ public class EditSceneGraph extends SubSceneGraph {
 
     public void addMesh(ModelLoadedDTO modelLoaded) {
         ExtendedMesh extendedMesh = new ExtendedMesh(modelLoaded.getName(), modelLoaded.getMesh());
+        initMesh(extendedMesh);
         extendedMesh.translateToZero();
         extendedMesh.setPositionZ(extendedMesh.getBoundingBox().getHalfSize().getZ());
+        addMesh(extendedMesh);
+        extendedMesh.getBoundingBox().setOnChange(bb -> validatePosition(extendedMesh, bb));
+        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new AddModelAction(this::addMesh, this::deleteModel, extendedMesh)));
+    }
+
+    public void cloneMesh(SceneMesh original) {
+        SceneMesh mesh = original.clone();
+        if(mesh instanceof MeshGroup) {
+            ((MeshGroup) mesh).getChildren().forEach(this::initMesh);
+        } else {
+            initMesh((ExtendedMesh) mesh);
+        }
+        addMesh(mesh);
+        mesh.getBoundingBox().setOnChange(bb -> validatePosition(mesh, bb));
+        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new AddModelAction(this::addMesh, this::deleteModel, mesh)));
+    }
+
+    private void initMesh(ExtendedMesh extendedMesh) {
         extendedMesh.addOnMeshChangeListener(this::fixToBed);
         extendedMesh.getView().setOnMousePressed((event -> {
             if(event.getTarget() != extendedMesh.getView()) { return; }
@@ -117,8 +136,6 @@ public class EditSceneGraph extends SubSceneGraph {
             )));
         }));
         extendedMesh.getBoundingBox().setOnChange(bb -> validatePosition(extendedMesh, bb));
-        addMesh(extendedMesh);
-        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new AddModelAction(this::addMesh, this::deleteModel, extendedMesh)));
     }
 
     public void addMesh(SceneMesh sceneMesh) {
@@ -414,6 +431,12 @@ public class EditSceneGraph extends SubSceneGraph {
 
     public String getCurrentSceneName() {
         return modelInsertionStack.getFirstName();
+    }
+
+    public List<SceneMesh> cloneSelection() {
+        List<SceneMesh> cloned = new LinkedList<>();
+        selected.forEach(cloned::add);
+        return cloned;
     }
 }
 
