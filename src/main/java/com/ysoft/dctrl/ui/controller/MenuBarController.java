@@ -8,10 +8,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.ysoft.dctrl.action.ActionStack;
+import com.ysoft.dctrl.utils.settings.ShortcutKeys;
 import javafx.application.Platform;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -39,28 +38,10 @@ import javafx.stage.FileChooser;
 public class MenuBarController extends LocalizableController implements Initializable {
     private static final String GCODE_EXTENSION = "*.gcode";
     private static final String JOB_EXTENSION = "*.3djob";
-    private static final String ABOUT_URL = "https://www.ysoft.com/en/support-and-download";
+    private static final String ABOUT_URL = "";
 
     private static final FileChooser.ExtensionFilter gcodeFilter = new FileChooser.ExtensionFilter("GCode file", GCODE_EXTENSION);
     private static final FileChooser.ExtensionFilter jobFilter = new FileChooser.ExtensionFilter("3D print job", JOB_EXTENSION);
-//    private final HostServicesDelegate hostServices = HostServicesFactory.getInstance();
-
-    private enum Shortcuts{
-        UNDO(new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN)),
-        REDO(new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN)),
-        SELECT_ALL(new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN)),
-        ZOOM_IN(new KeyCodeCombination(KeyCode.ADD, KeyCombination.CONTROL_DOWN)),
-        ZOOM_OUT(new KeyCodeCombination(KeyCode.SUBTRACT, KeyCombination.CONTROL_DOWN))
-        ;
-
-
-        private KeyCodeCombination k;
-        Shortcuts(KeyCodeCombination k){ this.k = k; }
-
-        public KeyCodeCombination get() {
-            return k;
-        }
-    }
 
     @FXML MenuItem openFile;
     @FXML MenuItem quit;
@@ -75,12 +56,17 @@ public class MenuBarController extends LocalizableController implements Initiali
     @FXML MenuItem resetCamera;
     @FXML MenuItem about;
 
-    private RetentionFileChooser retentionFileChooser;
+    private final RetentionFileChooser retentionFileChooser;
+    private final ActionStack actionStack;
 
     @Autowired
-    public MenuBarController(LocalizationService localizationService, EventBus eventBus, DeeControlContext deeControlContext, RetentionFileChooser retentionFileChooser) {
+    public MenuBarController(LocalizationService localizationService,
+                             EventBus eventBus, DeeControlContext deeControlContext,
+                             RetentionFileChooser retentionFileChooser,
+                             ActionStack actionStack) {
         super(localizationService, eventBus, deeControlContext);
         this.retentionFileChooser = retentionFileChooser;
+        this.actionStack = actionStack;
     }
 
     @Override
@@ -94,21 +80,20 @@ public class MenuBarController extends LocalizableController implements Initiali
             exportAs.setDisable(e.getData() != SceneMode.GCODE);
         });
 
-        undo.setAccelerator(Shortcuts.UNDO.get());
-        undo.setOnAction(this::onUndo);
-        redo.setAccelerator(Shortcuts.REDO.get());
-        redo.setOnAction(this::onRedo);
 
         delete.setOnAction(this::onDelete);
-        selectAll.setAccelerator(Shortcuts.SELECT_ALL.get());
+        selectAll.setAccelerator(ShortcutKeys.SELECT_ALL);
         selectAll.setOnAction(this::onSelectAll);
 
-        zoomIn.setAccelerator(Shortcuts.ZOOM_IN.get());
+        zoomIn.setAccelerator(ShortcutKeys.ZOOM_IN);
         zoomIn.setOnAction(this::onZoomIn);
-        zoomOut.setAccelerator(Shortcuts.ZOOM_OUT.get());
+        zoomOut.setAccelerator(ShortcutKeys.ZOOM_OUT);
         zoomOut.setOnAction(this::onZoomOut);
         resetCamera.setOnAction(this::onResetCamera);
         about.setOnAction(this::onAbout);
+
+        undo.setOnAction(this::onUndo);
+        redo.setOnAction(this::onRedo);
 
         super.initialize(location, resources);
     }
@@ -144,11 +129,11 @@ public class MenuBarController extends LocalizableController implements Initiali
     }
 
     private void onUndo(ActionEvent event){
-        //eventBus.publish(new Event(EventType.SHOW_DIALOG.name());
+        actionStack.undo();
     }
 
     private void onRedo(ActionEvent event){
-        //eventBus.publish(new Event(EventType.SHOW_DIALOG.name());
+        actionStack.redo();
     }
 
     private void onZoomIn(ActionEvent event){
@@ -164,6 +149,8 @@ public class MenuBarController extends LocalizableController implements Initiali
     }
 
     private void onAbout(ActionEvent event){
+        if(ABOUT_URL.isEmpty()) { return; }
+
         try {
             Desktop.getDesktop().browse(new URI(ABOUT_URL));
         } catch (IOException e1) {
