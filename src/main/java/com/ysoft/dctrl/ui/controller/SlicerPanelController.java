@@ -124,7 +124,6 @@ public class SlicerPanelController extends LocalizableController implements Init
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        scrollBox.init();
         scrollBox.vvalueProperty().addListener(
                 (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
                     eventBus.publish(new Event(EventType.SLICER_PANEL_SCROLLED.name()));

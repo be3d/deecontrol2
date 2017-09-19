@@ -1,7 +1,10 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.css.PseudoClass;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 
 import java.util.LinkedHashMap;
@@ -26,12 +29,13 @@ public class ScrollBox extends ScrollPane {
             (ObservableValue<? extends Number> obs, Number oldValue, Number newValue) -> {
                 decideScrollState((double)newValue);
             });
-    }
-
-    public void init() {
-        this.getContent().layoutBoundsProperty().addListener((obs, o, n) -> {
-            scrollable = this.getViewportBounds().getHeight() < this.getContent().getLayoutBounds().getHeight();
+        ChangeListener<Bounds> l = (ob, o, n) -> {
+            scrollable = getViewportBounds().getHeight() < getContent().getLayoutBounds().getHeight();
             decideScrollState(getVvalue());
+        };
+        contentProperty().addListener((ob, o, n) -> {
+            if(o != null) { o.layoutBoundsProperty().removeListener(l); }
+            if(n != null) { n.layoutBoundsProperty().addListener(l); }
         });
     }
 
