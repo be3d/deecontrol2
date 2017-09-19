@@ -6,50 +6,54 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 
 <?import java.net.URL?>
-<MenuBar xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.MenuBarController" useSystemMenuBar="true">
+<MenuBar xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.MenuBarController" useSystemMenuBar="true" styleClass="menu-bar">
   <Menu text="?_menu_bar_file">
     <items>
-      <MenuItem text="?_menu_bar_new_project" styleClass="menu-item"/>
-      <MenuItem fx:id="add" text="?_menu_bar_open_file" styleClass="menu-item"/>
-      <MenuItem text="Open recent" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_new_project" styleClass="menu-item" disable="true"/>
+      <MenuItem fx:id="openFile" text="?_menu_bar_open_file" styleClass="menu-item"/>
+      <Menu fx:id="openRecent" text="?_menu_bar_open_recent" styleClass="menu-item" disable="true">
+        <items>
+          <MenuItem text="box1.stl" styleClass="menu-item"/>
+        </items>
+      </Menu>
       <SeparatorMenuItem />
-      <MenuItem text="Save" styleClass="menu-item"/>
-      <MenuItem text="Save as…" styleClass="menu-item"/>
-      <MenuItem fx:id="exportAs" text="Export as…" styleClass="menu-item" disable="true"/>
+      <MenuItem text="?_menu_bar_save" styleClass="menu-item" disable="true"/>
+      <MenuItem text="?_menu_bar_save_as" styleClass="menu-item" disable="true"/>
+      <MenuItem fx:id="exportAs" text="?_menu_bar_export_gcode" styleClass="menu-item" disable="true"/>
       <SeparatorMenuItem />
-      <MenuItem fx:id="settings" text="Settings" styleClass="menu-item" />
+      <MenuItem fx:id="settings" text="?_menu_bar_settings" styleClass="menu-item" />
       <SeparatorMenuItem />
-      <MenuItem text="Quit" styleClass="menu-item"/>
+      <MenuItem fx:id="quit" text="?_menu_bar_quit" styleClass="menu-item"/>
     </items>
   </Menu>
   <Menu text="?_menu_bar_edit">
     <items>
-      <MenuItem text="?_menu_bar_undo" styleClass="menu-item"/>
-      <MenuItem text="?_menu_bar_redo" styleClass="menu-item"/>
+      <MenuItem fx:id="undo" text="?_menu_bar_undo" styleClass="menu-item"/>
+      <MenuItem fx:id="redo" text="?_menu_bar_redo" styleClass="menu-item"/>
       <SeparatorMenuItem />
-      <MenuItem text="?_menu_bar_copy" styleClass="menu-item"/>
-      <MenuItem text="?_menu_bar_paste" styleClass="menu-item"/>
-      <MenuItem text="Duplicate" styleClass="menu-item" />
-      <MenuItem text="?_menu_bar_select_all" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_copy" styleClass="menu-item" disable="true"/>
+      <MenuItem text="?_menu_bar_paste" styleClass="menu-item" disable="true"/>
+      <MenuItem text="Duplicate" styleClass="menu-item" disable="true"/>
+      <MenuItem fx:id="selectAll" text="?_menu_bar_select_all" styleClass="menu-item"/>
       <SeparatorMenuItem />
-      <MenuItem text="?_menu_bar_delete" styleClass="menu-item"/>
+      <MenuItem fx:id="delete" text="?_menu_bar_delete" styleClass="menu-item"/>
     </items>
   </Menu>
   <Menu text="?_menu_bar_view">
     <items>
-      <MenuItem text="?_menu_bar_zoom_in" styleClass="menu-item"/>
-      <MenuItem text="?_menu_bar_zoom_out" styleClass="menu-item"/>
+      <MenuItem fx:id="zoomIn" text="?_menu_bar_zoom_in" styleClass="menu-item"/>
+      <MenuItem fx:id="zoomOut" text="?_menu_bar_zoom_out" styleClass="menu-item"/>
       <SeparatorMenuItem />
-      <MenuItem text="?_menu_bar_reset_camera_view" styleClass="menu-item"/>
+      <MenuItem fx:id="resetCamera" text="?_menu_bar_reset_camera_view" styleClass="menu-item"/>
       <SeparatorMenuItem />
-      <MenuItem text="Turn perspective off" styleClass="menu-item"/>
+      <MenuItem text="Turn perspective off" styleClass="menu-item" disable="true"/>
     </items>
   </Menu>
   <Menu text="?_menu_bar_help">
     <items>
-      <MenuItem text="About" styleClass="menu-item"/>
+      <MenuItem fx:id="about" text="?_menu_bar_about" styleClass="menu-item"/>
       <SeparatorMenuItem />
-      <MenuItem text="?_menu_bar_getting_started" styleClass="menu-item"/>
+      <MenuItem text="?_menu_bar_getting_started" styleClass="menu-item" disable="true"/>
     </items>
   </Menu>
 

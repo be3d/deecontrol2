@@ -1,5 +1,9 @@
 .menu-item {
-    -fx-min-width: 120px;
-    -fx-pref-width: 120px;
+    -fx-min-width: 160px;
+    -fx-padding: 5 20 5 10px;
     -fx-wrap-text: true;
+}
+
+.menu-bar {
+    -fx-background-color: #f9f9f9;
 }

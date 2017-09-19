@@ -87,6 +87,7 @@ public class EditSceneGraph extends SubSceneGraph {
         eventBus.subscribe(EventType.SCALE_MAX_SELECTED_MODEL.name(), (e) -> scaleSelectedToMax());
         eventBus.subscribe(EventType.EDIT_SELECT_PREV.name(), (e) -> selectPrevious());
         eventBus.subscribe(EventType.EDIT_SELECT_NEXT.name(), (e) -> selectNext());
+        eventBus.subscribe(EventType.EDIT_SELECT_ALL.name(), (e) -> selectAll());
         eventBus.subscribe(EventType.EDIT_DELETE_SELECTED.name(), (e) -> deleteSelected());
         eventBus.subscribe(EventType.EDIT_GROUP.name(), (e) -> groupSelected());
         eventBus.subscribe(EventType.EDIT_UNGROUP.name(), (e) -> ungroupSelected());
@@ -269,6 +270,16 @@ public class EditSceneGraph extends SubSceneGraph {
         mesh.setMaterial(SELECTED_MATERIAL);
         mesh.setBoundingBoxVisible(true);
         eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), mesh));
+    }
+
+    private void selectAll(){
+        LinkedList<SceneMesh> sm = getSceneMeshes();
+        selected.clear();
+        sm.forEach(m -> {
+            selected.add(m);
+            m.setMaterial(SELECTED_MATERIAL);
+            m.setBoundingBoxVisible(true);
+        });
     }
 
     private void addToSelection(SceneMesh mesh) {
