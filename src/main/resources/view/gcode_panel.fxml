@@ -11,8 +11,6 @@
 
 <?import com.ysoft.dctrl.ui.controller.controlMenu.Header?>
 <?import com.ysoft.dctrl.ui.controller.controlMenu.CheckBoxInline?>
-<?import javafx.scene.text.TextFlow?>
-<?import javafx.scene.text.Text?>
 
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Label?>
@@ -43,12 +41,12 @@
                          styleClass="control-menu-radioButton" selected="true" disable="true"></RadioButton>
             <Label styleClass="control-menu-radioButton-info" wrapText="true" text="Hybrid view which shows how the scene will be printed." ></Label>
         </VBox>
-        <VBox styleClass="control-menu-keyValueText-container">
+        <VBox styleClass="control-menu-radioButton-container">
             <RadioButton fx:id="detailedViewRadio" toggleGroup="$viewToggleGroup" text="Detailed view" userData="detailedView"
                          styleClass="control-menu-radioButton" disable="true"></RadioButton>
             <Label styleClass="control-menu-radioButton-info" wrapText="true" text="Comprehensive view which shows full details of the scene."></Label>
         </VBox>
-        <VBox fx:id="detailViewControls" visible="false">
+        <VBox fx:id="detailViewControls" styleClass="control-menu-checkBox-container" visible="false">
             <CheckBoxInline fx:id="displayShell" text="Display shell"></CheckBoxInline>
             <CheckBoxInline fx:id="displayTravelMoves" text="Display travel moves" ></CheckBoxInline>
             <CheckBoxInline fx:id="displayInfill" text="Display infill"></CheckBoxInline>
@@ -57,9 +55,9 @@
     </VBox>
 
     <VBox alignment="CENTER" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10"  >
-        <Button fx:id="backToEditBtn" styleClass="control-button-back" text="BACK TO EDIT" />
+        <Button fx:id="backToEditBtn" styleClass="control-button" text="BACK TO EDIT" />
         <Region prefHeight="10"></Region>
-        <Button fx:id="sendJobBtn" styleClass="control-button" text="SEND TO SAFEQ" />
+        <Button fx:id="sendJobBtn" styleClass="blue,control-button" text="SEND TO SAFEQ" />
     </VBox>
 
     <stylesheets>

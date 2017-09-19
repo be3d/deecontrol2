@@ -5,41 +5,12 @@
     -fx-min-width: 284px;
 }
 
-.control-menu-scrollBar {
-    -fx-focus-color: transparent;
-    -fx-background-color: transparent;
-    -fx-fit-to-height: true;
-    -fx-fit-to-width: true;
-}
-
-.control-menu-scrollBar > .viewport {
-    -fx-background-color: rgba(255,255,255,1);
-}
-
-.control-menu-scrollBar .scroll-bar {
-    -fx-background-color: transparent;
-    -fx-pref-width: 10px;
-}
-
-.control-menu-scrollBar .scroll-bar:vertical .thumb {
-    -fx-background-color: #9b9b9b;
-    -fx-background-radius: 5px;
-}
-
-.control-menu-scrollBar .increment-arrow, .control-menu-scrollBar .decrement-arrow {
-    -fx-pref-height: 0px;
-}
-
 .control-menu-section-header {
     -fx-background-color: #f9f9f9;
-}
-
-.control-menu-section-header-left-padding {
-    -fx-pref-width: 3px;
-}
-
-.control-menu-section-header-right-padding {
-    -fx-pref-width: 15px;
+    -fx-padding: 0 15 0 14px;
+    -fx-spacing: 11px;
+    -fx-alignment: center-left;
+    -fx-pref-height: 50px;
 }
 
 .control-menu-section-header-text {
@@ -79,35 +50,10 @@
 }
 
 .control-button {
-    -fx-border-style: none;
-    -fx-background-color: #337ab7;
-    -fx-border-radius: 0;
     -fx-pref-width: 200px;
     -fx-pref-height: 46px;
     -fx-min-height:46px;
-    -fx-text-fill: #ffffff;
     -fx-font-weight: 800;
-}
-
-.control-button:disabled {
-    -fx-background-color: #bfbfbf;
-    -fx-text-fill: #ffffff;
-    -fx-opacity: 1;
-}
-
-.control-button-back {
-    -fx-border-style: solid;
-    -fx-border-color: #bfbfbf;
-    -fx-border-width: 1px;
-    -fx-border-radius: 2;
-    -fx-pref-width: 200px;
-    -fx-pref-height: 46px;
-    -fx-min-height:46px;
-    -fx-text-fill: #337ab7;
-    -fx-font-weight: 800;
-    -fx-background-insets: 0;
-    -fx-background-color: #ffffff;
-
 }
 
 .control-button:hover {
@@ -432,7 +378,7 @@
 }
 
 .control-menu-keyValueText-container {
-    -fx-padding:18 0 20 19px;
+    -fx-padding:18 0 20 12px;
     -fx-spacing: 7px;
 }
 .control-menu-keyValueText-key {
@@ -447,12 +393,33 @@
     -fx-padding: 20 20 0 19px;
 }
 
+.control-menu-checkBox-container {
+    -fx-padding: 30 20 0 0px;
+}
+
 .control-menu-radioButton {
     -fx-font-weight: bold;
 }
 
+.control-menu-radioButton .radio {
+    -fx-border-width: 2px;
+    -fx-border-radius: 15px;
+    -fx-padding:2px;
+    -fx-border-color: #00bff0;
+    -fx-background-color: white;
+}
+
+
+.control-menu-radioButton .dot {
+    -fx-mark-highlight-color: #00bff0 ;
+    -fx-mark-color: #00bff0 ;
+    -fx-background-radius: 15px;
+    -fx-background-insets:2px ;
+    -fx-padding: 7px;
+}
+
 .control-menu-radioButton-info {
-    -fx-padding: 2 0 0 21px;
+    -fx-padding: 5 0 0 30px;
     -fx-font-size: 12px;
     -fx-text-fill: #9b9ea0 ;
     -fx-max-width: 224px;

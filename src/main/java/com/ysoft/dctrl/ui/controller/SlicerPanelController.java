@@ -65,7 +65,7 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     // Layout
     @FXML AnchorPane anchorPane;
-    @FXML ScrollPane scrollPane;
+    @FXML ScrollBox scrollBox;
     @FXML VBox panelControlsContainer;
     @FXML Label advSettingsToggle;
     @FXML VBox advSettingsBox;
@@ -124,7 +124,7 @@ public class SlicerPanelController extends LocalizableController implements Init
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        scrollPane.vvalueProperty().addListener(
+        scrollBox.vvalueProperty().addListener(
                 (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
                     eventBus.publish(new Event(EventType.SLICER_PANEL_SCROLLED.name()));
                 });

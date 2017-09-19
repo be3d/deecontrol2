@@ -20,13 +20,13 @@
 <?import com.ysoft.dctrl.ui.controller.controlMenu.ButtonIncrement?>
 <?import com.ysoft.dctrl.ui.controller.controlMenu.ToggleButtonGroup?>
 
+<?import com.ysoft.dctrl.ui.controller.controlMenu.ScrollBox?>
 <AnchorPane fx:id="anchorPane" fx:controller="com.ysoft.dctrl.ui.controller.SlicerPanelController" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu">
 
-  <HBox spacing="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0"  AnchorPane.rightAnchor="0" minHeight="50" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
-      <Region styleClass="control-menu-section-header-left-padding" ></Region>
-      <ImageView  fitHeight="32" fitWidth="32" >
+  <HBox AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0"  AnchorPane.rightAnchor="0" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
+      <ImageView  >
         <image>
-          <Image url="@/img/control_menu/print_settings-full.png"></Image>
+          <Image url="@/img/control_menu/settings-full.png"></Image>
         </image>
       </ImageView>
 
@@ -38,10 +38,9 @@
           <Image url="@/img/control_menu/save.png"></Image>
         </image>
       </ImageView>
-      <Region styleClass="control-menu-section-header-right-padding"></Region>
   </HBox>
 
-  <ScrollPane fx:id="scrollPane" styleClass="control-menu-scrollBar" AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+  <ScrollBox fx:id="scrollBox" styleClass="scrollBox" AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
     <content>
       <VBox fx:id="panelControlsContainer" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
@@ -83,11 +82,11 @@
       </VBox>
 
     </content>
-  </ScrollPane>
+  </ScrollBox>
 
 
   <HBox alignment="CENTER" AnchorPane.bottomAnchor="10"  AnchorPane.leftAnchor="10"  AnchorPane.rightAnchor="10"  >
-    <Button fx:id="sliceButton" styleClass="control-button" disable="true" text="PREPARE FOR PRINT" />
+    <Button fx:id="sliceButton" styleClass="blue,control-button" disable="true" text="PREPARE FOR PRINT" />
   </HBox>
 
   <stylesheets>
