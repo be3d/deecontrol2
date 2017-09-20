@@ -61,8 +61,9 @@ public class Notification extends VBox {
         close.addEventHandler(ActionEvent.ACTION, eventHandler);
     }
 
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
+
+    public void setTimeout(int seconds) {
+        this.timeout = seconds;
     }
 
     public int getTimeout() {

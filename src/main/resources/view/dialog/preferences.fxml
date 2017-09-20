@@ -19,7 +19,7 @@
 
 <DialogPane xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.dialog.PreferencesController" text="Preferences" StackPane.alignment="CENTER">
   <VBox>
-    <TabPane tabClosingPolicy="UNAVAILABLE">
+    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
       <Tab text="GENERAL" styleClass="general-preferences" >
         <VBox styleClass="settings-wrapper">
           <Picker fx:id="language" labelText="Language" placeholderText="Select language…">

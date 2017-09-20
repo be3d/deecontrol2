@@ -20,6 +20,7 @@ import com.ysoft.dctrl.utils.settings.Settings;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TabPane;
 
 /**
  * Created by pilar on 16.5.2017.
@@ -29,15 +30,17 @@ import javafx.scene.control.Button;
 public class PreferencesController extends DialogController {
     @FXML private DialogPane root;
 
+    @FXML private TabPane tabPane;
+
     /* GENERAL */
-    @FXML public Picker language;
+    @FXML private Picker language;
 
     /* NETWORK */
-    @FXML public TextInput flexiSpoolerAddress;
-    @FXML public TextInput flexiSpoolerPort;
+    @FXML private TextInput flexiSpoolerAddress;
+    @FXML private TextInput flexiSpoolerPort;
 
-    @FXML public Button save;
-    @FXML public Button cancel;
+    @FXML private Button save;
+    @FXML private Button cancel;
 
     public PreferencesController(LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
         super(localizationService, eventBus, context);
@@ -86,6 +89,24 @@ public class PreferencesController extends DialogController {
         SafeQSettings safeQSettings = settings.getSafeQSettings();
         flexiSpoolerAddress.setText(safeQSettings.getSpoolerAddress());
         flexiSpoolerPort.setText(safeQSettings.getSpoolerPort());
+
+        int tabIndex;
+        PreferencesTab tab = data == null ? PreferencesTab.GENERAL : (PreferencesTab) data;
+        switch (tab) {
+            case GENERAL:
+                tabIndex = 0;
+                break;
+            case NETWORK:
+                tabIndex = 1;
+                break;
+            case PROFILES:
+                tabIndex = 2;
+                break;
+            default:
+                tabIndex = 0;
+                break;
+        }
+        tabPane.getSelectionModel().select(tabIndex);
     }
 
     public Locale localeFromString(String s) {

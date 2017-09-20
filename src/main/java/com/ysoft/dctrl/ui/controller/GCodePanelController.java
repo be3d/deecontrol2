@@ -9,7 +9,11 @@ import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.safeq.SafeQSender;
 import com.ysoft.dctrl.safeq.job.JobCreator;
 import com.ysoft.dctrl.ui.controller.controlMenu.CheckBoxInline;
+import com.ysoft.dctrl.ui.controller.dialog.PreferencesTab;
+import com.ysoft.dctrl.ui.dialog.contract.DialogEventData;
+import com.ysoft.dctrl.ui.factory.dialog.DialogType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
+import com.ysoft.dctrl.ui.notification.AlertLinkNotification;
 import com.ysoft.dctrl.ui.notification.SpinnerNotification;
 import com.ysoft.dctrl.ui.notification.SuccessNotification;
 import com.ysoft.dctrl.utils.DeeControlContext;
@@ -31,6 +35,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 
 /**
  * Created by kuhn on 5/30/2017.
@@ -126,7 +132,24 @@ public class GCodePanelController extends LocalizableController implements Initi
         jobSendDoneNotification.setLabelText("Print job successfully sent to YSoft SafeQ");
         jobSendProgressNotification.setLabelText(getMessage("file_transfer_in_progress"));
 
+        AlertLinkNotification safeqNotSetNotification = new AlertLinkNotification();
+        safeqNotSetNotification.setLabelText(getMessage("notification_safeq_settings_not_set"));
+        safeqNotSetNotification.setLinkText(getMessage("notification_safeq_settings_show"));
+        safeqNotSetNotification.setOnLinkAction((e) -> {
+            eventBus.publish(new Event(EventType.SHOW_DIALOG.name(), new DialogEventData(DialogType.PREFERENCES, PreferencesTab.NETWORK)));
+        });
+        safeqNotSetNotification.setTimeout(5);
+
+        BooleanSupplier checkSafeQSettings = () -> {
+            if(!deeControlContext.getSettings().getSafeQSettings().isSet()) {
+                eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), safeqNotSetNotification));
+                return false;
+            }
+            return true;
+        };
+
         sendJobBtn.setOnAction(event -> {
+            if(!checkSafeQSettings.getAsBoolean()) { return; }
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), jobSendProgressNotification));
             sendJobBtn.setDisable(true);
             jobCreator.createJobFile();
@@ -157,6 +180,8 @@ public class GCodePanelController extends LocalizableController implements Initi
         });
 
         super.initialize(location, resources);
+
+        checkSafeQSettings.getAsBoolean();
     }
 
     private void loadProjectInfo(){
