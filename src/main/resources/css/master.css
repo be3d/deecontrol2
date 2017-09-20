@@ -72,6 +72,21 @@ Button.blue:disabled {
     -fx-text-fill: white;
 }
 
+Button.transparent {
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+    -fx-text-fill: #337ab7;
+}
+
+Button.transparent:hover {
+    -fx-text-fill: #102068;
+    -fx-background-color: rgba(0,0,0,0.1);
+}
+
+Button.transparent:disabled {
+    -fx-text-fill: #bfbfbf;
+}
+
 DialogPane {
     -fx-background-color: white;
     -fx-border-radius: 5px;
@@ -239,6 +254,12 @@ DialogPane HeaderBox Button:pressed {
     -fx-border-color: #e6e6e6;
 }
 
+.notification .base-row .space {
+    -fx-max-width: 10px;
+    -fx-min-width: 10px;
+    -fx-pref-width: 10px;
+}
+
 .notification .notification-icon {
     -fx-background-color: transparent;
     -fx-background-position: left;
@@ -295,12 +316,16 @@ DialogPane HeaderBox Button:pressed {
     -fx-background-image: url("../img/notification/success.png");
 }
 
+.notification .notification-icon-alert {
+    -fx-background-image: url("../img/notification/alert.png");
+}
+
 .notification .notification-icon-error {
     -fx-background-image: url("../img/notification/error.png");
 }
 
 .notification .notification-icon-spinner {
-    -fx-background-image: url("../img/notification/loader2.gif");
+    -fx-background-image: url("../img/notification/spinner.gif");
     -fx-background-size: contain;
 }
 

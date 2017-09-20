@@ -5,13 +5,10 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Region;
 
-/**
- * Created by pilar on 30.5.2017.
- */
-public class InfoLinkNotification extends InfoNotification {
+public class AlertLinkNotification extends AlertNotification {
     private Button link;
 
-    public InfoLinkNotification() {
+    public AlertLinkNotification() {
         super();
         link = new Button();
         link.getStyleClass().addAll("link", "transparent");
@@ -23,5 +20,9 @@ public class InfoLinkNotification extends InfoNotification {
 
     public void setOnLinkAction(EventHandler<ActionEvent> eventHandler) {
         link.setOnAction(eventHandler);
+    }
+
+    public void setLinkText(String linkText) {
+        link.setText(linkText);
     }
 }

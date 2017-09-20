@@ -14,6 +14,8 @@ public class SafeQSettings {
     @JsonIgnore private Consumer<SafeQSettings> onSaveHandler = null;
 
     public SafeQSettings() {
+        spoolerAddress = null;
+        spoolerPort = null;
     }
 
     public String getSpoolerAddress() {
@@ -32,6 +34,16 @@ public class SafeQSettings {
     public SafeQSettings setSpoolerPort(String spoolerPort) {
         this.spoolerPort = spoolerPort;
         return this;
+    }
+
+    @JsonIgnore
+    public boolean isSet() {
+        return isSet(spoolerAddress) && isSet(spoolerPort);
+    }
+
+    @JsonIgnore
+    private boolean isSet(String s) {
+        return s != null && !s.equals("");
     }
 
     public void save() {
