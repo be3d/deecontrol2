@@ -85,7 +85,7 @@
   </ScrollBox>
 
 
-  <HBox alignment="CENTER" AnchorPane.bottomAnchor="10"  AnchorPane.leftAnchor="10"  AnchorPane.rightAnchor="10"  >
+  <HBox styleClass="control-menu-footer-container" alignment="CENTER" AnchorPane.bottomAnchor="10"  AnchorPane.leftAnchor="10"  AnchorPane.rightAnchor="10">
     <Button fx:id="sliceButton" styleClass="blue,control-button" disable="true" text="PREPARE FOR PRINT" />
   </HBox>
 
