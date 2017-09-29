@@ -20,15 +20,19 @@ public class RangeSliderVertical extends StackPane {
     private final Pane track;
     private final Pane trackBackground;
 
-    private double minRange = 1.0;
-    private double min = 1.0;
-    private double max = 100.0;
+    private double minRange;
+    private double min;
+    private double max;
 
     public RangeSliderVertical() {
         bottomSlider = createSlider();
         topSlider = createSlider();
         track = createPane("track");
         trackBackground = createPane("track-background");
+
+        minRange = 1.0;
+        min = 1.0;
+        max = 100.0;
 
         bottomSlider.setMin(min);
         bottomSlider.setMax(max);
@@ -38,20 +42,13 @@ public class RangeSliderVertical extends StackPane {
         topSlider.setValue(max);
 
         topSlider.valueProperty().addListener((obs, o, n) -> {
-            if((double)n <= bottomSlider.getValue()){ bottomSlider.setValue((double)n-minRange); }
+            if((double)n-minRange <= bottomSlider.getValue()){ bottomSlider.setValue((double)n-minRange); }
             updateTrack();
 
         });
         bottomSlider.valueProperty().addListener((obs, o, n) -> {
-            if((double)n >= topSlider.getValue()){ topSlider.setValue((double)n+minRange); }
+            if((double)n+minRange >= topSlider.getValue()){ topSlider.setValue((double)n+minRange); }
             updateTrack();
-        });
-
-        track.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("clicked");
-            }
         });
 
         getChildren().addAll(trackBackground,track, bottomSlider, topSlider );
