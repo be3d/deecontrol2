@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.AnchorPane?>
-
 <?import java.net.URL?>
-
-<?import javafx.scene.control.Slider?>
+<?import com.ysoft.dctrl.ui.controller.controlMenu.RangeSliderVertical?>
 
 <AnchorPane fx:id="gCodeLayerPickerPane" fx:controller="com.ysoft.dctrl.ui.controller.GCodeLayerSliderController"
             xmlns:fx="http://javafx.com/fxml" visible="false" styleClass="mainPane">
 
-
-    <Slider fx:id="layerSlider" orientation="VERTICAL" styleClass="layerSlider"></Slider>
+    <RangeSliderVertical fx:id="layerSlider" styleClass="layerSlider" />
 
     <stylesheets>
         <URL value="@/css/master.css" />
