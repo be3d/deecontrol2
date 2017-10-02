@@ -26,13 +26,17 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
     private final Pattern TRAVEL_MOVE_TYPE_PATTERN = Pattern.compile(";TYPE:.+");
     private final Pattern LAYER_NUMBER_PATTERN = Pattern.compile(";LAYER:-?[0-9]+");
 
-    private GCodeLayer gCodeLayer = new GCodeLayer(Integer.MIN_VALUE);
-    private ArrayList<GCodeLayer> layers = new ArrayList<>();
-    private GCodeContext gCodeContext = new GCodeContext();
+    private GCodeLayer gCodeLayer;
+    private ArrayList<GCodeLayer> layers;
+    private GCodeContext gCodeContext;
 
     public GCodeImporter(EventBus eventBus){
         super();
         this.eventBus = eventBus;
+
+        gCodeLayer = new GCodeLayer(Integer.MIN_VALUE);
+        layers = new ArrayList<>();
+        gCodeContext = new GCodeContext();
     }
 
     @Override
@@ -71,8 +75,8 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
             e.printStackTrace();
         }
 
-        int layerCount = layers.size();
-        eventBus.publish(new Event(EventType.GCODE_IMPORT_COMPLETED.name(), layerCount));
+        eventBus.publish(new Event(EventType.GCODE_IMPORT_COMPLETED.name(), layers.size()));
+        clear();
         return null;
     }
 
@@ -146,7 +150,11 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
         } catch (NumberFormatException e) {
             logger.warn("Gcode line corrupt: {}", line, e);
         }
-
     }
 
+    private void clear(){
+        layers.clear();
+        gCodeLayer = null;
+        gCodeContext = null;
+    }
 }
