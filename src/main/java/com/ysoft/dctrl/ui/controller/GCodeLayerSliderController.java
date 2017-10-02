@@ -2,21 +2,17 @@ package com.ysoft.dctrl.ui.controller;
 
 import com.ysoft.dctrl.editor.GCodeSceneGraph;
 import com.ysoft.dctrl.editor.SceneMode;
-import com.ysoft.dctrl.editor.mesh.GCodeLayer;
-import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
+import com.ysoft.dctrl.ui.controller.controlMenu.RangeSliderVertical;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -26,10 +22,8 @@ import java.util.ResourceBundle;
 public class GCodeLayerSliderController extends LocalizableController implements Initializable {
     private GCodeSceneGraph gcodeSceneGraph;
 
-    @FXML
-    AnchorPane gCodeLayerPickerPane;
-    @FXML
-    Slider layerSlider;
+    @FXML    AnchorPane gCodeLayerPickerPane;
+    @FXML    RangeSliderVertical layerSlider;
 
     public GCodeLayerSliderController(LocalizationService localizationService,
                                       EventBus eventBus, DeeControlContext context,
@@ -51,11 +45,11 @@ public class GCodeLayerSliderController extends LocalizableController implements
     private void initSlider(Integer layerCount){
         layerSlider.setMin(0);
         layerSlider.setMax(layerCount-1);
-        layerSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+        layerSlider.topValueProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue.intValue() == newValue.intValue()) { return; }
             gcodeSceneGraph.cutViewAtLayer(newValue.intValue());
         });
-        layerSlider.setValue(layerCount+1);
+        layerSlider.setTopValue(layerCount);
     }
 
     private void setVisible(boolean value){

@@ -121,6 +121,13 @@ DialogPane HeaderBox Button:pressed {
     -fx-background-color: transparent;
 }
 
+RangeSliderVertical {
+    -fx-background-color: null;
+}
+RangeSliderVertical Slider {
+    -fx-background-color: null;
+}
+
 .scrollBox {
     -fx-focus-color: transparent;
     -fx-background-color: transparent;

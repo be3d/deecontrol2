@@ -1,17 +1,33 @@
 .mainPane {
     -fx-background-color: #ffffff;
     -fx-pref-height: 300px;
-    -fx-pref-width: 120px;
-    -fx-max-width: 60px;
-    -fx-height: 300px;
-    -fx-width: 120px;
-    -fx-border-color: #f9f9f9;
+    -fx-pref-width: 60px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.0, 0, 0);
 }
 
 .layerSlider {
     -fx-pref-width: 36px;
     -fx-pref-height: 300px;
-    -fx-padding: 20px ;
+    -fx-padding: 20 20 20 23px ;
+}
+
+.layerSlider .track {
+    -fx-pref-width: 3px;
+    -fx-max-width: 3px;
+    -fx-background-color: #00bff0;
+    -fx-background-radius: 4px;
+    -fx-border-width: 0;
+}
+
+.layerSlider .track-background{
+    -fx-pref-width: 3px;
+    -fx-max-width: 3px;
+    -fx-background-color: #bfbfbf;
+}
+
+.layerSlider .thumb {
+    -fx-background-color: #00bff0;
+    -fx-border-insets: 5;
 }
