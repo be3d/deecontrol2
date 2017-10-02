@@ -1,5 +1,7 @@
 package com.ysoft.dctrl.editor.mesh;
 
+import java.util.function.Consumer;
+
 import com.ysoft.dctrl.math.BoundingBox;
 
 /**
@@ -12,4 +14,7 @@ public interface SceneMesh extends Controllable, DrawableMesh {
     void setOutOfBounds(boolean outOfBounds);
     boolean isOutOfBounds();
     SceneMesh clone();
+
+    void addOnMeshChangeListener(Consumer<SceneMesh> consumer);
+    void removeOnMeshChangeListener(Consumer<SceneMesh> consumer);
 }

@@ -3,6 +3,7 @@ package com.ysoft.dctrl.ui.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
+import java.util.function.DoubleFunction;
 
 import org.springframework.stereotype.Controller;
 
@@ -51,20 +52,31 @@ public class ScalePanelController extends AbstractEditPanelController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
+
+        DoubleFunction<Boolean> validator = ((v) -> v > 0);
+
+        x.setValidator(validator);
+        y.setValidator(validator);
+        z.setValidator(validator);
+        xSize.setValidator(validator);
+        ySize.setValidator(validator);
+        zSize.setValidator(validator);
+
         initNumberFieldListener(xSize, Item.X, this::onSizeChange);
         initNumberFieldListener(ySize, Item.Y, this::onSizeChange);
         initNumberFieldListener(zSize, Item.Z, this::onSizeChange);
 
         toMax.setOnAction((e) -> {
             sceneGraph.scaleSelectedToMax();
-            refresh();
+            refresh(sceneGraph.getSelected());
         });
     }
 
-    public void refresh() {
-        refreshInProgress = true;
-        SceneMesh mesh = sceneGraph.getSelected();
+    @Override
+    public void refresh(SceneMesh mesh) {
+        associate(mesh != null);
         if(mesh == null) { return; }
+        refreshInProgress = true;
         Point3D scale = mesh.getScale();
         x.setValue(scale.getX() * 100);
         y.setValue(scale.getY() * 100);
@@ -74,6 +86,15 @@ public class ScalePanelController extends AbstractEditPanelController {
         ySize.setValue(bb.getSize().getY());
         zSize.setValue(bb.getSize().getZ());
         refreshInProgress = false;
+    }
+
+    private void associate(boolean associated) {
+        x.setAssociated(associated);
+        y.setAssociated(associated);
+        z.setAssociated(associated);
+        xSize.setAssociated(associated);
+        ySize.setAssociated(associated);
+        zSize.setAssociated(associated);
     }
 
     public void onSizeChange(double newValue, Item item) {
@@ -91,19 +112,14 @@ public class ScalePanelController extends AbstractEditPanelController {
                 onZSizeChange(mesh, newValue);
                 break;
         }
-
-        refresh();
     }
 
     public void onXChange(SceneMesh mesh, double newValue) {
         if(refreshInProgress) { return; }
         newValue /= 100;
-        if(uniform.isSelected()) {
-            scaleByRatio(mesh, newValue/mesh.getScaleX());
-        } else {
-            setScale(mesh, Point3DUtils.setX(mesh.getScale(), newValue));
+        if((uniform.isSelected() ? scaleByRatio(mesh, newValue/mesh.getScaleX()) : setScale(mesh, Point3DUtils.setX(mesh.getScale(), newValue)))) {
+            refresh(mesh);
         }
-        refresh();
     }
 
     public void onXSizeChange(SceneMesh mesh, double newValue) {
@@ -112,22 +128,17 @@ public class ScalePanelController extends AbstractEditPanelController {
         double scale = mesh.getScaleX();
         double def = bb.getSize().getX() / scale;
         double ratio = newValue / def;
-        if(uniform.isSelected()) {
-            scaleByRatio(mesh, ratio/mesh.getScaleX());
-        } else {
-            setScale(mesh, Point3DUtils.setX(mesh.getScale(), ratio));
+        if((uniform.isSelected() ? scaleByRatio(mesh, ratio/mesh.getScaleX()) : setScale(mesh, Point3DUtils.setX(mesh.getScale(), ratio)))) {
+            refresh(mesh);
         }
     }
 
     public void onYChange(SceneMesh mesh, double newValue) {
         if(refreshInProgress) { return; }
         newValue /= 100;
-        if(uniform.isSelected()) {
-            scaleByRatio(mesh, newValue/mesh.getScaleY());
-        } else {
-            setScale(mesh, Point3DUtils.setY(mesh.getScale(), newValue));
+        if((uniform.isSelected() ? scaleByRatio(mesh, newValue/mesh.getScaleY()) : setScale(mesh, Point3DUtils.setY(mesh.getScale(), newValue)))) {
+            refresh(mesh);
         }
-        refresh();
     }
 
     public void onYSizeChange(SceneMesh mesh, double newValue) {
@@ -136,22 +147,17 @@ public class ScalePanelController extends AbstractEditPanelController {
         double scale = mesh.getScaleY();
         double def = bb.getSize().getY() / scale;
         double ratio = newValue / def;
-        if(uniform.isSelected()) {
-            scaleByRatio(mesh, ratio/mesh.getScaleY());
-        } else {
-            setScale(mesh, Point3DUtils.setY(mesh.getScale(), ratio));
+        if((uniform.isSelected() ? scaleByRatio(mesh, ratio/mesh.getScaleY()) : setScale(mesh, Point3DUtils.setY(mesh.getScale(), ratio)))) {
+            refresh(mesh);
         }
     }
 
     public void onZChange(SceneMesh mesh, double newValue) {
         if(refreshInProgress) { return; }
         newValue /= 100;
-        if(uniform.isSelected()) {
-            scaleByRatio(mesh, newValue/mesh.getScaleZ());
-        } else {
-            setScale(mesh, Point3DUtils.setZ(mesh.getScale(), newValue));
+        if((uniform.isSelected() ? scaleByRatio(mesh, newValue/mesh.getScaleZ()) : setScale(mesh, Point3DUtils.setZ(mesh.getScale(), newValue)))) {
+            refresh(mesh);
         }
-        refresh();
     }
 
     public void onZSizeChange(SceneMesh mesh, double newValue) {
@@ -160,30 +166,28 @@ public class ScalePanelController extends AbstractEditPanelController {
         double scale = mesh.getScaleZ();
         double def = bb.getSize().getZ() / scale;
         double ratio = newValue / def;
-        if(uniform.isSelected()) {
-            scaleByRatio(mesh, ratio/mesh.getScaleZ());
-        } else {
-            setScale(mesh, Point3DUtils.setZ(mesh.getScale(), ratio));
+        if((uniform.isSelected() ? scaleByRatio(mesh, ratio/mesh.getScaleZ()) : setScale(mesh, Point3DUtils.setZ(mesh.getScale(), ratio)))) {
+            refresh(mesh);
         }
     }
 
-    public void scaleByRatio(SceneMesh mesh, double ratio) {
+    public boolean scaleByRatio(SceneMesh mesh, double ratio) {
         Point3D s = new Point3D(ratio*mesh.getScaleX(), ratio*mesh.getScaleY(), ratio*mesh.getScaleZ());
-        setScale(mesh, s);
+        return setScale(mesh, s);
     }
 
-    public void setScale(SceneMesh mesh, Point3D scale) {
+    public boolean setScale(SceneMesh mesh, Point3D scale) {
         Point3D oldScale = mesh.getScale();
-        if(oldScale.equals(scale)) { return; }
+        if(oldScale.equals(scale)) { return false; }
         mesh.setScale(scale);
         eventBus.publish(new Event(EventType.ADD_ACTION.name(), new ModelScaleAction(mesh, oldScale, scale)));
+        return true;
     }
 
     public void onReset() {
         SceneMesh mesh = sceneGraph.getSelected();
         if(mesh == null) { return; }
-
         mesh.setScale(new Point3D(1,1,1));
-        refresh();
+        refresh(mesh);
     }
 }

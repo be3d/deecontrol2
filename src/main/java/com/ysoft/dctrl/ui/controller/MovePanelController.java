@@ -32,12 +32,19 @@ public class MovePanelController extends AbstractEditPanelController {
         super.initialize(location, resources);
     }
 
-    public void refresh() {
-        SceneMesh mesh = sceneGraph.getSelected();
+    @Override
+    public void refresh(SceneMesh mesh) {
+        associate(mesh != null);
         if(mesh == null) { return; }
         Point3D position = mesh.getPosition();
         x.setValue(position.getX());
         y.setValue(position.getY());
+    }
+
+    private void associate(boolean associated) {
+        x.setAssociated(associated);
+        y.setAssociated(associated);
+        z.setAssociated(associated);
     }
 
     public void onXChange(SceneMesh mesh, double newValue) {
@@ -64,6 +71,6 @@ public class MovePanelController extends AbstractEditPanelController {
         if(mesh == null) { return; }
 
         mesh.setPosition(new Point3D(0,0,0));
-        refresh();
+        refresh(mesh);
     }
 }

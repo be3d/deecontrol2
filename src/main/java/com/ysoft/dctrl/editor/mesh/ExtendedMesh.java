@@ -2,6 +2,7 @@ package com.ysoft.dctrl.editor.mesh;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.ysoft.dctrl.math.BoundingBox;
 import com.ysoft.dctrl.math.TransformMatrix;
@@ -43,9 +44,9 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     private Group node;
     private MeshGroup group;
 
-    private List<OnMeshChange> onRotationChange;
-    private List<OnMeshChange> onScaleChange;
-    private List<OnMeshChange> onPositionChange;
+    private List<Consumer<SceneMesh>> onRotationChange;
+    private List<Consumer<SceneMesh>> onScaleChange;
+    private List<Consumer<SceneMesh>> onPositionChange;
 
     public ExtendedMesh(String name) {
         this(name, new MeshView(), new BoundingBox());
@@ -190,22 +191,42 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         onPositionChange.forEach(h -> h.accept(this));
     }
 
-    public void addOnRotationChangeListener(OnMeshChange eventHandler) {
+    public void addOnRotationChangeListener(Consumer<SceneMesh> eventHandler) {
         onRotationChange.add(eventHandler);
     }
 
-    public void addOnScaleChangeListener(OnMeshChange eventHandler) {
+    public void addOnScaleChangeListener(Consumer<SceneMesh> eventHandler) {
         onScaleChange.add(eventHandler);
     }
 
-    public void addOnPositionChangeListener(OnMeshChange eventHandler) {
+    public void addOnPositionChangeListener(Consumer<SceneMesh> eventHandler) {
         onPositionChange.add(eventHandler);
     }
 
-    public void addOnMeshChangeListener(OnMeshChange eventHandler) {
+    @Override
+    public void addOnMeshChangeListener(Consumer<SceneMesh> eventHandler) {
         addOnPositionChangeListener(eventHandler);
         addOnRotationChangeListener(eventHandler);
         addOnScaleChangeListener(eventHandler);
+    }
+
+    public void removeOnRotationChangeListener(Consumer<SceneMesh> eventHandler) {
+        onRotationChange.remove(eventHandler);
+    }
+
+    public void removeOnScaleChangeListener(Consumer<SceneMesh> eventHandler) {
+        onScaleChange.remove(eventHandler);
+    }
+
+    public void removeOnPositionChangeListener(Consumer<SceneMesh> eventHandler) {
+        onPositionChange.remove(eventHandler);
+    }
+
+    @Override
+    public void removeOnMeshChangeListener(Consumer<SceneMesh> consumer) {
+        removeOnPositionChangeListener(consumer);
+        removeOnRotationChangeListener(consumer);
+        removeOnScaleChangeListener(consumer);
     }
 
     void setGroup(MeshGroup group) {
