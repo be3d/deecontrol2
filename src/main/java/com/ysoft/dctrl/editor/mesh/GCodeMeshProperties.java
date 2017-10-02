@@ -53,6 +53,8 @@ public class GCodeMeshProperties {
                 break;
             case WALL_OUTER: material = OUTER_WALL_MATERIAL;
                 break;
+            case NONE: material = SUPPORT_MATERIAL;
+                break;
         }
         return material;
     }

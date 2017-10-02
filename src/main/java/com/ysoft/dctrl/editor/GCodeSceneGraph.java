@@ -29,7 +29,13 @@ import javafx.scene.shape.MeshView;
 @Component
 @SubSceneMode(SceneMode.GCODE)
 public class GCodeSceneGraph extends SubSceneGraph {
-    private final static List<GCodeMoveType> DRAFT_RENDER_TYPES = Arrays.asList(GCodeMoveType.WALL_OUTER, GCodeMoveType.SUPPORT, GCodeMoveType.SKIN, GCodeMoveType.SKIRT);
+    private final static List<GCodeMoveType> DRAFT_RENDER_TYPES = Arrays.asList(
+            GCodeMoveType.WALL_OUTER,
+            GCodeMoveType.SUPPORT,
+            GCodeMoveType.SKIN,
+            GCodeMoveType.SKIRT,
+            GCodeMoveType.NONE
+    );
 
     private enum ViewType {DETAILED, OPTIMIZED}
     private ViewType activeView = ViewType.OPTIMIZED;
@@ -46,9 +52,7 @@ public class GCodeSceneGraph extends SubSceneGraph {
         gcodeFile = filePathResource.getPath(FilePath.SLICER_GCODE_FILE);
         layers = new LinkedList<>();
 
-        eventBus.subscribe(EventType.GCODE_IMPORT_COMPLETED.name(), (e) -> {
-            this.layerCount = ((List<GCodeLayer>)e.getData()).size() - 1;
-        });
+        eventBus.subscribe(EventType.GCODE_IMPORT_COMPLETED.name(), (e) -> layerCount = (int)e.getData());
         eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), (e) -> {
             currentlyRenderedTypes.clear();
             DRAFT_RENDER_TYPES.forEach((v) -> currentlyRenderedTypes.add(v));
@@ -69,9 +73,8 @@ public class GCodeSceneGraph extends SubSceneGraph {
         importRunner.setOnYield((l)-> {
             loadGCodeLayerDraft(l);
 
-            // Check for last layer (first layer has index -1)
-            if (l.getNumber() == this.layerCount-1){
-                eventBus.publish(new Event(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), l.getNumber()));
+            if (l.getNumber() == layerCount-1){
+                eventBus.publish(new Event(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), layerCount));
             }
         });
 
@@ -80,11 +83,6 @@ public class GCodeSceneGraph extends SubSceneGraph {
 
     public void loadGCodeLayerDraft(GCodeLayer l) {
         layers.add(l);
-        if(l.getNumber() < 2) {
-            // todo consider adding array of layers instead of one
-            getSceneGroup().getChildren().addAll(l.getMeshViews().values());
-            return;
-        }
 
         DRAFT_RENDER_TYPES.forEach((t) -> {
             MeshView v = l.getMeshViews().get(t.name());
@@ -94,7 +92,6 @@ public class GCodeSceneGraph extends SubSceneGraph {
     }
 
     public void loadGCodeLayerDetail(GCodeLayer l) {
-        if(l.getNumber() < 2) { return; }
         ObservableList<Node> ch = getSceneGroup().getChildren();
         for (GCodeMoveType t : GCodeMoveType.values()){
             if (!currentlyRenderedTypes.contains(t)){
@@ -112,7 +109,6 @@ public class GCodeSceneGraph extends SubSceneGraph {
     }
 
     public void unloadGCodeLayerDetail(GCodeLayer l) {
-        if(l.getNumber() < 2) { return; }
         ObservableList<Node> ch = getSceneGroup().getChildren();
         for (GCodeMoveType t : GCodeMoveType.values()){
             if(!currentlyRenderedTypes.contains(t)){
@@ -199,7 +195,7 @@ public class GCodeSceneGraph extends SubSceneGraph {
             }
                 break;
         }
-        layers.forEach((l) -> l.setVisible(l.getNumber() < number));
+        layers.forEach((l) -> l.setVisible(l.getNumber() <= number));
     }
 
     public void showOptimizedView(){
