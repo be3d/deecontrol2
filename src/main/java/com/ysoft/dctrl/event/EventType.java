@@ -52,6 +52,7 @@ public enum EventType {
     MODEL_SELECTED,
     MODEL_LOAD_PROGRESS,
     MODEL_LOADED,
+    MODEL_CHANGED,
     RESET_VIEW,
     TOP_VIEW,
     ZOOM_IN_VIEW,

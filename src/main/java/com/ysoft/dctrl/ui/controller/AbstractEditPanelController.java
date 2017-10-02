@@ -36,7 +36,7 @@ public abstract class AbstractEditPanelController extends LocalizableController 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         root.visibleProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue) refresh();
+            if(newValue) refresh(sceneGraph.getSelected());
         });
 
         initNumberFieldListener(x, Item.X, this::onChange);
@@ -45,21 +45,21 @@ public abstract class AbstractEditPanelController extends LocalizableController 
 
         root.setOnMousePressed(Event::consume);
 
-        eventBus.subscribe(EventType.MODEL_SELECTED.name(), (e) -> refresh());
+        eventBus.subscribe(EventType.MODEL_SELECTED.name(), (e) -> refresh((SceneMesh) e.getData()));
 
         super.initialize(location, resources);
     }
 
     protected void initNumberFieldListener(NumberField field, Item item, BiConsumer<Double, Item> consumer) {
         field.focusedProperty().addListener((ob, o, n) -> {
-            if(!n) { consumer.accept(field.getValue(), item); }
+            if(!n && !field.isInvalid()) { consumer.accept(field.getValue(), item); }
         });
         field.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.ENTER) { consumer.accept(field.getValue(), item); }
         });
     }
 
-    public abstract void refresh();
+    public abstract void refresh(SceneMesh mesh);
 
     private void onChange(double newValue, Item item) {
         SceneMesh mesh = sceneGraph.getSelected();

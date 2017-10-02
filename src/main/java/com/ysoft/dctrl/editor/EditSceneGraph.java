@@ -68,6 +68,8 @@ public class EditSceneGraph extends SubSceneGraph {
     private Set<SceneMesh> outOfBounds;
     private ModelInsertionStack modelInsertionStack;
 
+    private Consumer<SceneMesh> onMeshChnageConsumer;
+
     public EditSceneGraph(EventBus eventBus, ModelInsertionStack modelInsertionStack) {
         super(eventBus);
         selected = new ArrayList<>();
@@ -92,6 +94,10 @@ public class EditSceneGraph extends SubSceneGraph {
         eventBus.subscribe(EventType.EDIT_GROUP.name(), (e) -> groupSelected());
         eventBus.subscribe(EventType.EDIT_UNGROUP.name(), (e) -> ungroupSelected());
         eventBus.subscribe(EventType.EDIT_CLEAR_SELECTION.name(), (e) -> clearSelection());
+
+        onMeshChnageConsumer = (mesh) -> {
+            eventBus.publish(new Event(EventType.MODEL_CHANGED.name(), mesh));
+        };
     }
 
     public void addMesh(ModelLoadedDTO modelLoaded) {

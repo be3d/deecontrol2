@@ -58,8 +58,8 @@ public class RotationPanelController extends AbstractEditPanelController {
         clockZ.setOnAction((e) -> rotate(Z_AXIS, -z.getValue()));
     }
 
-    public void refresh() {
-        SceneMesh mesh = sceneGraph.getSelected();
+    @Override
+    public void refresh(SceneMesh mesh) {
         if(mesh != null) {
             boolean isGroup = mesh instanceof MeshGroup;
             counterX.setDisable(isGroup);
@@ -70,9 +70,9 @@ public class RotationPanelController extends AbstractEditPanelController {
             y.setDisable(isGroup);
         }
 
-        x.setValue(90);
-        y.setValue(90);
-        z.setValue(90);
+        x.setValue(90d);
+        y.setValue(90d);
+        z.setValue(90d);
     }
 
     public void onXChange(SceneMesh mesh, double newValue) {}
@@ -101,8 +101,7 @@ public class RotationPanelController extends AbstractEditPanelController {
     public void onReset() {
         SceneMesh mesh = sceneGraph.getSelected();
         if(mesh == null) { return; }
-
         mesh.setRotation(new Point3D(0,0,0));
-        refresh();
+        refresh(mesh);
     }
 }

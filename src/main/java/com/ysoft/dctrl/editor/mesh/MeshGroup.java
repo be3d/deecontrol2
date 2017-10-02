@@ -2,7 +2,9 @@ package com.ysoft.dctrl.editor.mesh;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.ysoft.dctrl.math.BoundingBox;
 import com.ysoft.dctrl.math.Point3DUtils;
@@ -29,9 +31,12 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
     private Translate position;
     private Scale scale;
 
+    private List<Consumer<SceneMesh>> onChangeListeners;
+
     private boolean outOfBounds;
 
     public MeshGroup() {
+        onChangeListeners = new LinkedList<>();
         group = new ArrayList<>();
         groupNode = new Group();
         boundingBox = new BoundingBox();
@@ -119,6 +124,7 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
 
         refreshBoundingBox();
         updateScale(scale);
+        onChange();
     }
 
     @Override
@@ -142,6 +148,7 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
             m.setRotation(rotMatrix.toEulerDeg());
         });
         refreshBoundingBox();
+        onChange();
     }
 
     @Override
@@ -162,6 +169,7 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         group.forEach((m) -> m.setPosition(new Point2D(m.getPositionX()+diffX, m.getPositionY()+diffY)));
         refreshBoundingBox();
         updatePosition(position);
+        onChange();
     }
 
     @Override
@@ -201,5 +209,19 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
     @Override
     public SceneMesh clone() {
         return new MeshGroup(this);
+    }
+
+    private void onChange() {
+        onChangeListeners.forEach(c -> c.accept(this));
+    }
+
+    @Override
+    public void addOnMeshChangeListener(Consumer<SceneMesh> consumer) {
+        onChangeListeners.add(consumer);
+    }
+
+    @Override
+    public void removeOnMeshChangeListener(Consumer<SceneMesh> consumer) {
+        onChangeListeners.remove(consumer);
     }
 }

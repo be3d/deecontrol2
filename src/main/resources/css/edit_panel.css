@@ -32,42 +32,6 @@
     -fx-background-color: white;
 }
 
-.edit-panel Button {
-    -fx-pref-height: 36px;
-    -fx-pref-width: 50px;
-    -fx-padding: 0;
-    -fx-text-fill: #337ab7;
-}
-
-.edit-panel Button:pressed {
-    -fx-background-color: transparent;
-}
-
-.edit-panel CheckBox {
-    -fx-padding: 8px;
-}
-
-.edit-panel CheckBox .box {
-    -fx-pref-width: 20px;
-    -fx-pref-height: 20px;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
-    -fx-border-width: 2px;
-    -fx-border-style: solid;
-    -fx-border-color: #bfbfbf;
-    -fx-background-color: transparent;
-}
-
-.edit-panel CheckBox .box .mark {
-    -fx-background-color: transparent;
-    -fx-shape: none;
-}
-
-.edit-panel CheckBox:selected .box {
-    -fx-background-color: #00bff0;
-    -fx-border-color: #00bff0;
-}
-
 .arrow-ear {
     -fx-pref-height: 1px;
     -fx-pref-width: 1px;
@@ -91,20 +55,22 @@
     -fx-max-width: 90px;
 }
 
-.scale-panel Button {
-    -fx-pref-height: 36px;
-    -fx-max-width: Infinity;
-    -fx-border-width: 0;
-    -fx-text-alignment: center;
-}
-
-.scale-panel Button:hover {
-    -fx-background-color: transparent;
-}
-
 .scale-panel .edit-panel-group.uniform {
     -fx-padding: 0 0 0 19px;
     -fx-spacing: 8px;
+}
+
+.scale-panel .edit-panel-group.uniform CheckBox {
+    -fx-padding: 0;
+}
+
+.scale-panel .edit-panel-group.scaleMax {
+    -fx-padding: 0 0 0 19px;
+}
+
+.scale-panel .edit-panel-group.scaleMax Button {
+    -fx-pref-width: 100%;
+    -fx-max-width: Infinity;
 }
 
 .rotation-panel {

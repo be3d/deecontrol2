@@ -45,7 +45,8 @@ public class ControlPanelController extends LocalizableController implements Ini
         rotate.setOnAction(event -> handleClick(rotate, EventType.CONTROL_ROTATE_MODEL_CLICK));
 
         eventBus.subscribe(EventType.MODEL_SELECTED.name(), e -> {
-           if(selected == null) { handleClick(move, EventType.CONTROL_MOVE_MODEL_CLICK); }
+            if(e.getData() == null) { selectTool(null); }
+            else if(selected == null) { handleClick(move, EventType.CONTROL_MOVE_MODEL_CLICK); }
         });
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), e -> root.setVisible(e.getData() == SceneMode.EDIT));
 
