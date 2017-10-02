@@ -4,10 +4,20 @@ import com.ysoft.dctrl.editor.mesh.GCodeMoveType;
 
 public class GCodeContext {
 
-    private GCodeMoveType moveType = GCodeMoveType.NONE;
-    private boolean isTravelMove = false;
-    private double x, y, z = 0;
-    private int layer;
+    private GCodeMoveType moveType;
+    private boolean isTravelMove;
+    private double x, y, z;
+    private int layerIndex;
+
+    public GCodeContext() {
+        x = 0;
+        y = 0;
+        z = 0;
+
+        moveType = GCodeMoveType.NONE;
+        isTravelMove = false;
+        layerIndex = -1;
+    }
 
     public void setX(Double x) {
         if (x != null) this.x = x;
@@ -26,9 +36,15 @@ public class GCodeContext {
         return res;
     }
 
-    public void setLayer(int layer) {
-        this.layer = layer;
+    public void setLayerIndex(int index) {
+        this.layerIndex = index;
     }
+
+    public int getLayerIndex() {
+        return layerIndex;
+    }
+
+    public int setNextLayerIndex(){ return ++layerIndex; }
 
     public double getX() {
         return x;
@@ -40,10 +56,6 @@ public class GCodeContext {
 
     public double getZ() {
         return z;
-    }
-
-    public int getLayer() {
-        return layer;
     }
 
     public boolean isTravelMove() {

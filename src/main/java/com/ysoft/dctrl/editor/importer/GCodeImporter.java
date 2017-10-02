@@ -24,15 +24,19 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
     private final Pattern TRAVEL_MOVE_PATTERN = Pattern.compile("G0\\s.+");
     private final Pattern LINEAR_MOVE_PATTERN = Pattern.compile("G1\\s.+");
     private final Pattern TRAVEL_MOVE_TYPE_PATTERN = Pattern.compile(";TYPE:.+");
-    private final Pattern LAYER_NUMBER_PATTERN = Pattern.compile(";LAYER:[0-9]+");
+    private final Pattern LAYER_NUMBER_PATTERN = Pattern.compile(";LAYER:-?[0-9]+");
 
-    private GCodeLayer gCodeLayer = new GCodeLayer(-1); // in CURA it can start with negative layers !! change this
-    private ArrayList<GCodeLayer> layers = new ArrayList<>();
-    private GCodeContext gCodeContext = new GCodeContext();
+    private GCodeLayer gCodeLayer;
+    private ArrayList<GCodeLayer> layers;
+    private GCodeContext gCodeContext;
 
     public GCodeImporter(EventBus eventBus){
         super();
         this.eventBus = eventBus;
+
+        gCodeLayer = new GCodeLayer(Integer.MIN_VALUE);
+        layers = new ArrayList<>();
+        gCodeContext = new GCodeContext();
     }
 
     @Override
@@ -70,7 +74,9 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
         catch(Exception e){
             e.printStackTrace();
         }
-        eventBus.publish(new Event(EventType.GCODE_IMPORT_COMPLETED.name(), layers));
+
+        eventBus.publish(new Event(EventType.GCODE_IMPORT_COMPLETED.name(), layers.size()));
+        clear();
         return null;
     }
 
@@ -87,7 +93,7 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
     }
 
     private void finalizeLayer(GCodeLayer layer){
-        if (layer != null){
+        if (layer != null && layer.getNumber()>Integer.MIN_VALUE){
             layer.finalizeSegment();
             layer.finalizeLayer();
             layers.add(layer);
@@ -97,10 +103,7 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
 
     private void handleNewLayer(String line){
         finalizeLayer(gCodeLayer);
-
-        int layerNumber = Integer.parseInt(line.substring(7));
-        gCodeContext.setLayer(layerNumber);
-        gCodeLayer = new GCodeLayer(layerNumber);
+        gCodeLayer = new GCodeLayer(gCodeContext.setNextLayerIndex());
     }
 
     private void handleMoveTypeChange(String line){
@@ -147,7 +150,11 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
         } catch (NumberFormatException e) {
             logger.warn("Gcode line corrupt: {}", line, e);
         }
-
     }
 
+    private void clear(){
+        layers.clear();
+        gCodeLayer = null;
+        gCodeContext = null;
+    }
 }

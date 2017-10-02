@@ -211,7 +211,7 @@ public class GCodePanelController extends LocalizableController implements Initi
     }
 
     private void switchToOptimizedView(){
-        displayShell.setValue(true);
+        displayShell.setValue(false);
         displayTravelMoves.setValue(false);
         displayInfill.setValue(false);
         displaySupports.setValue(true);
@@ -232,7 +232,7 @@ public class GCodePanelController extends LocalizableController implements Initi
         optimizedViewRadio.setSelected(true);
         optimizedViewRadio.setDisable(true);
         detailedViewRadio.setDisable(true);
-        displayShell.setValue(true);
+        displayShell.setValue(false);
         displayTravelMoves.setValue(false);
         displayInfill.setValue(false);
         displaySupports.setValue(true);

@@ -43,13 +43,13 @@ public class GCodeLayerSliderController extends LocalizableController implements
     }
 
     private void initSlider(Integer layerCount){
-        layerSlider.setMin(1);
-        layerSlider.setMax(layerCount+1);
+        layerSlider.setMin(0);
+        layerSlider.setMax(layerCount-1);
         layerSlider.topValueProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue.intValue() == newValue.intValue()) { return; }
             gcodeSceneGraph.cutViewAtLayer(newValue.intValue());
         });
-        layerSlider.setTopValue(layerCount+1);
+        layerSlider.setTopValue(layerCount);
     }
 
     private void setVisible(boolean value){
