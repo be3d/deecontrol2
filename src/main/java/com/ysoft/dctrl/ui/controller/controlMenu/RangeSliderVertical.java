@@ -31,7 +31,7 @@ public class RangeSliderVertical extends StackPane {
         trackBackground = createPane("track-background");
 
         minRange = 1.0;
-        min = 1.0;
+        min = 0.0;
         max = 100.0;
 
         bottomSlider.setMin(min);
@@ -91,10 +91,6 @@ public class RangeSliderVertical extends StackPane {
         bottomSlider.setPickOnBounds(false);
         getChildByClass(topSlider, "track").setVisible(false);
         getChildByClass(bottomSlider, "track").setVisible(false);
-
-        // After GCode viewer ready, delete this line
-        getChildByClass(bottomSlider, "thumb").setVisible(false);
-
     }
 
     public double getMinRange() {

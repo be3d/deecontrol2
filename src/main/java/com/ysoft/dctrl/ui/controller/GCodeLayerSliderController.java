@@ -34,7 +34,7 @@ public class GCodeLayerSliderController extends LocalizableController implements
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources){
 
         eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), (e) -> initSlider((Integer) e.getData()));
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> setVisible(e.getData() == SceneMode.GCODE));
@@ -45,14 +45,22 @@ public class GCodeLayerSliderController extends LocalizableController implements
     private void initSlider(Integer layerCount){
         layerSlider.setMin(0);
         layerSlider.setMax(layerCount-1);
+        layerSlider.bottomValueProperty().addListener((observable, oldValue, newValue) -> {
+            if (oldValue.intValue() == newValue.intValue()) { return; }
+            updateGCodeCuts();
+        });
         layerSlider.topValueProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue.intValue() == newValue.intValue()) { return; }
-            gcodeSceneGraph.cutViewAtLayer(newValue.intValue());
+            updateGCodeCuts();
         });
         layerSlider.setTopValue(layerCount);
     }
 
     private void setVisible(boolean value){
         gCodeLayerPickerPane.setVisible(value);
+    }
+
+    private void updateGCodeCuts(){
+        gcodeSceneGraph.cutViewAtLayer((int) layerSlider.getBottomValue(), (int) layerSlider.getTopValue());
     }
 }

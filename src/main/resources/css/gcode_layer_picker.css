@@ -31,3 +31,10 @@
     -fx-background-color: #00bff0;
     -fx-border-insets: 5;
 }
+
+.layerSlider .thumb:pressed {
+    -fx-background-color: #f9f9f9;
+    -fx-pref-height: 20px;
+    -fx-pref-width: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,1), 10, 0.0, 0, 0);
+}
