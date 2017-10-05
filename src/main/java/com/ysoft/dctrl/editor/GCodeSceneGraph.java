@@ -40,7 +40,8 @@ public class GCodeSceneGraph extends SubSceneGraph {
     private enum ViewType {DETAILED, OPTIMIZED}
     private ViewType activeView = ViewType.OPTIMIZED;
     private List<GCodeMoveType> currentlyRenderedTypes = new LinkedList<>();
-    private int currentCutLayerIndex = 0;
+    private int currentCutBottomLayerIndex = 0;
+    private int currentCutTopLayerIndex = 0;
 
     private final String gcodeFile;
     private List<GCodeLayer> layers;
@@ -126,7 +127,7 @@ public class GCodeSceneGraph extends SubSceneGraph {
     public void showGCodeType(GCodeMoveType type, boolean value) {
         ObservableList<Node> ch = getSceneGroup().getChildren();
         layers.forEach((l) -> {
-            l.setVisible(l.getNumber() <= currentCutLayerIndex);
+            l.setVisible(l.getNumber() >= currentCutBottomLayerIndex && l.getNumber() <= currentCutTopLayerIndex);
             MeshView v = l.getMeshViews().get(type.name());
             boolean contains = ch.contains(v);
             if(value){
@@ -145,7 +146,7 @@ public class GCodeSceneGraph extends SubSceneGraph {
     public void showGCodeTypes(Collection<GCodeMoveType> types, boolean value){
         ObservableList<Node> ch = getSceneGroup().getChildren();
         layers.forEach((l) -> {
-            l.setVisible(l.getNumber() <= currentCutLayerIndex);
+            l.setVisible(l.getNumber() >= currentCutBottomLayerIndex && l.getNumber() <= currentCutTopLayerIndex);
             for(GCodeMoveType t : types) {
                 MeshView v = l.getMeshViews().get(t.name());
                 boolean contains = ch.contains(v);
@@ -169,7 +170,7 @@ public class GCodeSceneGraph extends SubSceneGraph {
     public void showJustGCodeTypes(Collection<GCodeMoveType> types, boolean value) {
         ObservableList<Node> ch = getSceneGroup().getChildren();
         layers.forEach((l) -> {
-            l.setVisible(l.getNumber() <= currentCutLayerIndex);
+            l.setVisible(l.getNumber() >= currentCutBottomLayerIndex && l.getNumber() <= currentCutTopLayerIndex);
             for(GCodeMoveType t : GCodeMoveType.values()){
                 MeshView v = l.getMeshViews().get(t.name());
                 if(v == null) { continue; }
@@ -184,29 +185,35 @@ public class GCodeSceneGraph extends SubSceneGraph {
         currentlyRenderedTypes.addAll(types);
     }
 
-    public void cutViewAtLayer(int number) {
-        int oldCutLayer = currentCutLayerIndex;
-        currentCutLayerIndex = number;
+    public void cutViewAtLayer(int bottom, int top) {
+        int oldCutBottomLayer = currentCutBottomLayerIndex;
+        int oldCutTopLayer = currentCutTopLayerIndex;
+        currentCutTopLayerIndex = top;
+        currentCutBottomLayerIndex = bottom;
 
         switch(activeView){
             case OPTIMIZED: {
-                unloadGCodeLayerDetail(layers.get(oldCutLayer));
-                loadGCodeLayerDetail(layers.get(currentCutLayerIndex));
+                unloadGCodeLayerDetail(layers.get(oldCutBottomLayer));
+                unloadGCodeLayerDetail(layers.get(oldCutTopLayer));
+                loadGCodeLayerDetail(layers.get(currentCutBottomLayerIndex));
+                loadGCodeLayerDetail(layers.get(currentCutTopLayerIndex));
             }
                 break;
         }
-        layers.forEach((l) -> l.setVisible(l.getNumber() <= number));
+        layers.forEach((l) -> l.setVisible(l.getNumber() >= bottom && l.getNumber() <= top));
     }
 
     public void showOptimizedView(){
         showJustGCodeTypes(DRAFT_RENDER_TYPES, true);
-        loadGCodeLayerDetail(currentCutLayerIndex);
+        loadGCodeLayerDetail(currentCutBottomLayerIndex);
+        loadGCodeLayerDetail(currentCutTopLayerIndex);
         setActiveView(ViewType.OPTIMIZED);
     }
 
     public void showDetailedView(){
         // The geometry to show is already defined by selected checkboxes (GCodePanelController)
-        unloadGCodeLayerDetail(currentCutLayerIndex);
+        unloadGCodeLayerDetail(currentCutBottomLayerIndex);
+        unloadGCodeLayerDetail(currentCutTopLayerIndex);
         setActiveView(ViewType.DETAILED);
     }
 
@@ -216,7 +223,8 @@ public class GCodeSceneGraph extends SubSceneGraph {
 
     private void resetGraph(){
         currentlyRenderedTypes = new LinkedList<>();
-        currentCutLayerIndex = 0;
+        currentCutTopLayerIndex = 0;
+        currentCutBottomLayerIndex = 0;
         layerCount = Integer.MIN_VALUE;
         layers.clear();
         getSceneGroup().getChildren().clear();
