@@ -15,6 +15,7 @@ import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.slicer.profile.Profile;
 import com.ysoft.dctrl.slicer.profile.ProfileResource;
 import com.ysoft.dctrl.ui.controller.controlMenu.*;
+import com.ysoft.dctrl.ui.notification.ErrorNotification;
 import com.ysoft.dctrl.ui.tooltip.TooltipDefinition;
 import com.ysoft.dctrl.ui.tooltip.Tooltip;
 import javafx.beans.value.ObservableValue;
@@ -251,7 +252,7 @@ public class SlicerPanelController extends LocalizableController implements Init
             eventBus.publish(new Event(EventType.TAKE_SCENE_SNAPSHOT.name(), sceneImage));
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingProgressNotification));
             deeControlContext.getCurrentProject().setName(printJobNameInput.getText());
-            setControlsEnabled(false);
+            disableControls();
             exportScene();
         });
 
@@ -286,6 +287,9 @@ public class SlicerPanelController extends LocalizableController implements Init
 
         slicingDoneNotification.setLabelText(getMessage("slicing_completed"));
 
+        ErrorNotification slicingFailedNotification = new ErrorNotification();
+        slicingFailedNotification.setLabelText(getMessage("slicing_failed"));
+
         eventBus.subscribe(EventType.SCENE_EXPORT_PROGRESS.name(), this::onSceneExportProgress);
         eventBus.subscribe(EventType.SLICER_PROGRESS.name(), this::onSlicerProgress);
         eventBus.subscribe(EventType.SLICER_FINISHED.name(), this::onSlicerFinished);
@@ -293,6 +297,11 @@ public class SlicerPanelController extends LocalizableController implements Init
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), this::onEditModeActivate);
         eventBus.subscribe(EventType.EDIT_SCENE_VALID.name(), (e) -> sliceButton.setDisable(false));
         eventBus.subscribe(EventType.EDIT_SCENE_INVALID.name(), (e) -> sliceButton.setDisable(true));
+        eventBus.subscribe(EventType.SLICER_FAILED.name(), (e) -> {
+            slicingProgressNotification.hide();
+            enableControls();
+            eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingFailedNotification));
+        });
 
         initTooltips();
 
@@ -339,8 +348,16 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     private void onEditModeActivate(Event e){
         if(e.getData() == SceneMode.EDIT){
-            setControlsEnabled(true);
+            enableControls();
         }
+    }
+
+    private void enableControls() {
+        setControlsEnabled(true);
+    }
+
+    private void disableControls() {
+        setControlsEnabled(false);
     }
 
     private void setControlsEnabled(boolean value){

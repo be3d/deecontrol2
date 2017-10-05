@@ -49,11 +49,9 @@ public class SlicerRunner extends Task<Slicer> {
 
         try {
             slicer.run(slicerParams, scene);
-        } catch (IOException e) {
-            logger.warn("Slicer error ", e);
+        } finally {
+            timeline.stop();
         }
-
-        timeline.stop();
 
         return null;
     }
@@ -70,7 +68,6 @@ public class SlicerRunner extends Task<Slicer> {
 
     @Override protected void failed(){
         super.failed();
-
     }
 
     public void stopTask(Event e){

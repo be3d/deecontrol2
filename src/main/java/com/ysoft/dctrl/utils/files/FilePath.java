@@ -9,6 +9,7 @@ public enum FilePath {
     BIN_DIR(Path.getFolderPath(Path.PWD + Path.SEP + "bin")),
     TMP_DIR(Path.getFolderPath(Path.USER_DIR + Path.SEP + "tmp")),
     SLICER_DIR(TMP_DIR.path.extendAsDir("slicer")),
+    CURA_DEF_DIR(TMP_DIR.path.extendAsDir("cura_def")),
     PROFILE_DIR(SLICER_DIR.path.extendAsDir("profiles")),
 
     RESOURCE_SLICER_DEF_DIR(Path.getResourceFolderPath("classpath:print/slicer/definitions")),

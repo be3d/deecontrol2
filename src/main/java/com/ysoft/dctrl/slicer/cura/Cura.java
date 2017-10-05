@@ -8,6 +8,7 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 import com.ysoft.dctrl.utils.OSVersion;
 import com.ysoft.dctrl.utils.files.FilePath;
 import com.ysoft.dctrl.utils.files.FilePathResource;
+import com.ysoft.dctrl.utils.files.FileUtils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,9 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Created by kuhn on 4/4/2017.
@@ -29,7 +35,8 @@ public class Cura implements Slicer {
     private static final String CURA_FOLDER = "cura" + File.separator;
     private static final String WIN_BINARY = "CuraEngine.exe";
     private static final String MAC_BINARY = "CuraEngine";
-    private static final String CONFIG_FILE = "def" + File.separator + "printer.def.json";
+    private static final String DEF_SOURCE_DIR = "def" + File.separator;
+    private static final String CONFIG_FILE = "printer.def.json";
     private static final String LOG_FILE = "cura.log";
 
     private static final Matcher durationMatcher = Pattern.compile("^;TIME:(?<time>\\d+)").matcher("");
@@ -41,6 +48,8 @@ public class Cura implements Slicer {
     private final String configFile;
     private final String logFile;
     private final String outputFile;
+    private final String definitionDir;
+    private final String definitionSourceDir;
 
     private final DeeControlContext deeControlContext;
 
@@ -54,9 +63,11 @@ public class Cura implements Slicer {
     @Autowired
     public Cura(FilePathResource filePathResource, DeeControlContext deeControlContext) throws IOException {
         this.deeControlContext = deeControlContext;
+        definitionDir = filePathResource.getPath(FilePath.CURA_DEF_DIR);
+        configFile = definitionDir + File.separator + CONFIG_FILE;
         String binPath = filePathResource.getPath(FilePath.BIN_DIR) + File.separator + CURA_FOLDER;
+        definitionSourceDir = binPath + DEF_SOURCE_DIR;
         binFile = binPath + (OSVersion.is(OSVersion.WIN) ? WIN_BINARY : MAC_BINARY);
-        configFile = binPath + CONFIG_FILE;
         logFile = filePathResource.getPath(FilePath.SLICER_DIR) + File.separator + LOG_FILE;
         outputFile = filePathResource.getPath(FilePath.SLICER_GCODE_FILE);
     }
@@ -174,9 +185,10 @@ public class Cura implements Slicer {
                     layerCount = Integer.parseInt(layerCountMatcher.group("count"));
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Cura exception.");
-            e.printStackTrace();
+        }
+
+        if(process.exitValue() > 0) {
+            throw new IOException("Cura process failed");
         }
     }
 
@@ -193,10 +205,16 @@ public class Cura implements Slicer {
             }
         });
 
+
         try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(configFile))){
+            FileUtils.clearFolder(definitionDir);
+            Stream<Path> configs = Files.list(Paths.get(definitionSourceDir));
+            for(Path p : configs.toArray(Path[]::new)) {
+                Files.copy(p, Paths.get(definitionDir + File.separator + p.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            }
             deeControlContext.getObjectMapper().writeValue(os, printerProfile);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Unable to create config files", e);
         }
     }
 
@@ -212,7 +230,7 @@ public class Cura implements Slicer {
                 if(p.getValue() == null) { continue; }
                 value = value.replace("{" + paramName + "}", p.getValue().toString());
             } catch (IllegalArgumentException e) {
-                System.err.println("Unknown pramaeter");
+                logger.warn("Unknown parameter", paramName);
             }
         }
 
