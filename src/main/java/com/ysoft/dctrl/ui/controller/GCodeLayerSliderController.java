@@ -45,6 +45,9 @@ public class GCodeLayerSliderController extends LocalizableController implements
     private void initSlider(Integer layerCount){
         layerSlider.setMin(0);
         layerSlider.setMax(layerCount-1);
+        layerSlider.setTopValue(layerSlider.getMax());
+        layerSlider.setBottomValue(layerSlider.getMin());
+
         layerSlider.bottomValueProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue.intValue() == newValue.intValue()) { return; }
             updateGCodeCuts();
@@ -53,7 +56,8 @@ public class GCodeLayerSliderController extends LocalizableController implements
             if (oldValue.intValue() == newValue.intValue()) { return; }
             updateGCodeCuts();
         });
-        layerSlider.setTopValue(layerCount);
+
+        updateGCodeCuts();
     }
 
     private void setVisible(boolean value){
