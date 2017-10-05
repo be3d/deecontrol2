@@ -2,6 +2,7 @@ package com.ysoft.dctrl.utils.files;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,6 +24,19 @@ public class FileUtils {
             }
 
             bos.flush();
+        }
+    }
+
+    public static void clearFolder(String folder) {
+        clearFolder(new File(folder));
+    }
+
+    public static void clearFolder(File folder) {
+        File[] content = folder.listFiles();
+        if(content == null) { return; }
+        for(File f : content) {
+            if(f.isDirectory()) { clearFolder(f); }
+            f.delete();
         }
     }
 }

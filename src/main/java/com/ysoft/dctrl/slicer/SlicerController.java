@@ -1,20 +1,19 @@
 package com.ysoft.dctrl.slicer;
 
+import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.utils.DeeControlContext;
-import javafx.scene.control.ProgressBar;
-import com.ysoft.dctrl.slicer.cura.Cura;
 import com.ysoft.dctrl.utils.Project;
 import com.ysoft.dctrl.utils.files.FilePath;
 import com.ysoft.dctrl.utils.files.FilePathResource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -28,6 +27,7 @@ import javax.annotation.PostConstruct;
  */
 @Component
 public class SlicerController {
+    private final Logger logger = LogManager.getLogger(SlicerController.class);
 
     private final SlicerParams slicerParams;
     private final Map<String, Slicer> slicerMap;
@@ -57,11 +57,9 @@ public class SlicerController {
     }
 
     private void startSlice(String stlPath) {
-        System.err.println("path> " + stlPath);
         runner = new SlicerRunner(eventBus, currentSlicer, slicerParams.getAllParams(), stlPath);
 
         runner.setOnSucceeded((e) -> {
-            System.err.println("slice done");
             Project project = deeControlContext.getCurrentProject();
             project.setPrintDuration(runner.getDuration());
             for(Long m : runner.getMaterialUsage()) {
@@ -72,8 +70,8 @@ public class SlicerController {
         });
 
         runner.setOnFailed((e) -> {
-            System.err.println("fail");
-            runner.getException().printStackTrace();
+            logger.error("Slicing failed", runner.getException());
+            eventBus.publish(new Event(EventType.SLICER_FAILED.name()));
         });
 
         new Thread(runner).start();
