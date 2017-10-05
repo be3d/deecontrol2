@@ -104,6 +104,7 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
     private void handleNewLayer(String line){
         finalizeLayer(gCodeLayer);
         gCodeLayer = new GCodeLayer(gCodeContext.setNextLayerIndex());
+        gCodeContext.setMoveType(GCodeMoveType.NONE);
     }
 
     private void handleMoveTypeChange(String line){
