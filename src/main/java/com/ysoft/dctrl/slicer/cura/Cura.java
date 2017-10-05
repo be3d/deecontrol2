@@ -204,10 +204,9 @@ public class Cura implements Slicer {
                 });
             }
         });
-
-
+        
+        FileUtils.clearFolder(definitionDir);
         try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(configFile))){
-            FileUtils.clearFolder(definitionDir);
             Stream<Path> configs = Files.list(Paths.get(definitionSourceDir));
             for(Path p : configs.toArray(Path[]::new)) {
                 Files.copy(p, Paths.get(definitionDir + File.separator + p.getFileName()), StandardCopyOption.REPLACE_EXISTING);
