@@ -237,7 +237,6 @@
          "id":"SUPPORT_BUILDPLATE_TYPE",
          "type":"enum",
          "options":{
-            "skirt":"Skirt",
             "brim":"Brim",
             "raft":"Raft",
             "none":"None"
@@ -358,7 +357,7 @@
             {
                "grid": "Grid",
                "lines": "Lines",
-               "zigzag": "Zig Zag"
+               "cubic": "Cubic"
             },
             "default":"grid"
       },
