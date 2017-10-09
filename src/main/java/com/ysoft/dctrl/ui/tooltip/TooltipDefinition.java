@@ -32,7 +32,7 @@ public enum TooltipDefinition {
     SHELL_THICKNESS(
             "slicer_shell_thickness", "slicer_shell_thickness_tooltip",
             new String[]{"img/tooltip/shell-thickness-0-4.png", "img/tooltip/shell-thickness-2-0.png","img/tooltip/shell-thickness-4-0.png"},
-            new String[]{"slicer_shell_thickness_tooltip_thick", "slicer_shell_thickness_tooltip_medium","slicer_shell_thickness_tooltip_thin"}
+            new String[]{"slicer_shell_thickness_tooltip_thin", "slicer_shell_thickness_tooltip_medium","slicer_shell_thickness_tooltip_thick"}
     ),
     PRINT_SPEED_SHELL(
             "slicer_speed_shell", "slicer_speed_shell_tooltip"
