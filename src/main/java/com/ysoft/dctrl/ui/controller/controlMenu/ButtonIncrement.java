@@ -153,11 +153,6 @@ public class ButtonIncrement extends BaseTooltipControl implements SlicerParamBi
         plusBtn.onActionProperty().addListener(listener);
     }
 
-    public void bindOnAction(javafx.event.EventHandler<javafx.event.ActionEvent> handler){
-        minusBtn.addEventHandler(javafx.event.ActionEvent.ACTION, handler);
-        plusBtn.addEventHandler(javafx.event.ActionEvent.ACTION, handler);
-    }
-
     public void updateParam(){
         boundParam.setValue(getValue());
     }

@@ -14,12 +14,12 @@
       {
          "id":"SHELL_TOP_LAYERS",
          "type":"float",
-         "value":12.0
+         "value":10.0
       },
       {
          "id":"SHELL_BOTTOM_LAYERS",
          "type":"float",
-         "value":12.0
+         "value":10.0
       },
       {
          "id":"SHELL_OUTER_WALL_INSET",

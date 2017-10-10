@@ -81,27 +81,11 @@
         "value":0.2
       },
       {
-         "id":"SUPPORT_INTERFACE_ENABLE",
-         "type":"bool",
-         "value":true
-      },
-      {
-         "id":"SUPPORT_ROOF_THICKNESS",
-         "type":"float",
-         "value":0.8
-      },
-      {
-        "id":"SUPPORT_BOTTOM_THICKNESS",
-        "type":"float",
-        "value":0.8
-      },
-      {
          "id":"SUPPORT_INTERFACE_DENSITY",
          "type":"float",
          "value":80
       },
-
-       {
+      {
          "id":"SUPPORT_BUILDPLATE_TYPE",
          "type":"enum",
          "value":"none"

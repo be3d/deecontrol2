@@ -69,7 +69,7 @@ public class SlicerParam implements Cloneable {
         this.max = max;
         this.step = step;
         this.options = options;
-        this.defaultValue = defaultValue;
+        this.defaultValue = (defaultValue == null) ? value : defaultValue;
         this.value = (value == null) ? defaultValue : value;
 
         if(type != null){
@@ -123,8 +123,8 @@ public class SlicerParam implements Cloneable {
             }
         }
         this.value = value;
-        this.setValueProperty(value);
         System.out.println("Setting " + this.id + " to " + value.toString());
+        this.setValueProperty(value);
     }
 
     private void publishChanged(){
