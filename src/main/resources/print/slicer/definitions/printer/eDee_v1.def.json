@@ -230,7 +230,7 @@
       },
       {
          "id":"SUPPORT_PLACEMENT",
-         "type":"enum",
+         "type":"string",
          "value":"everywhere"
       },
       {

@@ -123,7 +123,6 @@ public class SlicerParam implements Cloneable {
             }
         }
         this.value = value;
-        System.out.println("Setting " + this.id + " to " + value.toString());
         this.setValueProperty(value);
     }
 
@@ -203,11 +202,6 @@ public class SlicerParam implements Cloneable {
     public void resetToDefault(){
         if (this.defaultValue != null){
             this.setValue(this.defaultValue);
-//            try{
-//                this.setValueProperty((double)this.defaultValue);
-//            }catch(ClassCastException e){
-//                System.out.println("Value cannot be cast to double.");
-//            }
         }
     }
 
@@ -216,13 +210,4 @@ public class SlicerParam implements Cloneable {
         // todo get from language
         return id;
     }
-
-
-//   // public Object getProfile_default() {
-//        return profile_default;
-//    }
-//
-//    public void setProfile_default(Object profile_default) {
-//        this.profile_default = profile_default;
-//    }
 }
