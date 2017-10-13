@@ -18,9 +18,6 @@ public class Printer {
     @JsonProperty("PRINTER_FAMILY")
     public String printerFamily;
 
-//    @JsonProperty("SLICER_PARAMS")
-//    public Map<String, SlicerParam> paramsd;
-
     @JsonProperty("SLICER_PARAMS")
     public ArrayList<SlicerParam> params;
 
