@@ -46,6 +46,7 @@ public abstract class AbstractEditPanelController extends LocalizableController 
         root.setOnMousePressed(Event::consume);
 
         eventBus.subscribe(EventType.MODEL_SELECTED.name(), (e) -> refresh((SceneMesh) e.getData()));
+        eventBus.subscribe(EventType.MODEL_CHANGED.name(), (e) -> refresh((SceneMesh) e.getData()));
 
         super.initialize(location, resources);
     }
