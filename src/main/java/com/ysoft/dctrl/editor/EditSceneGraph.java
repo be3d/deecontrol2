@@ -68,7 +68,7 @@ public class EditSceneGraph extends SubSceneGraph {
     private Set<SceneMesh> outOfBounds;
     private ModelInsertionStack modelInsertionStack;
 
-    private Consumer<SceneMesh> onMeshChnageConsumer;
+    private Consumer<SceneMesh> onMeshChangeConsumer;
 
     public EditSceneGraph(EventBus eventBus, ModelInsertionStack modelInsertionStack) {
         super(eventBus);
@@ -95,7 +95,7 @@ public class EditSceneGraph extends SubSceneGraph {
         eventBus.subscribe(EventType.EDIT_UNGROUP.name(), (e) -> ungroupSelected());
         eventBus.subscribe(EventType.EDIT_CLEAR_SELECTION.name(), (e) -> clearSelection());
 
-        onMeshChnageConsumer = (mesh) -> {
+        onMeshChangeConsumer = (mesh) -> {
             eventBus.publish(new Event(EventType.MODEL_CHANGED.name(), mesh));
         };
     }
@@ -107,6 +107,7 @@ public class EditSceneGraph extends SubSceneGraph {
         extendedMesh.setPositionZ(extendedMesh.getBoundingBox().getHalfSize().getZ());
         addMesh(extendedMesh);
         extendedMesh.getBoundingBox().setOnChange(bb -> validatePosition(extendedMesh, bb));
+        extendedMesh.addOnMeshChangeListener(onMeshChangeConsumer);
         eventBus.publish(new Event(EventType.ADD_ACTION.name(), new AddModelAction(this::addMesh, this::deleteModel, extendedMesh)));
     }
 
@@ -149,6 +150,7 @@ public class EditSceneGraph extends SubSceneGraph {
         sceneMesh.setBoundingBoxVisible(false);
         sceneMesh.setMaterial(MATERIAL);
         modelInsertionStack.addSceneMesh(sceneMesh);
+
         validatePosition(sceneMesh);
         selectSingle(sceneMesh);
     }
@@ -359,9 +361,11 @@ public class EditSceneGraph extends SubSceneGraph {
         models.forEach(m -> {
             m.setBoundingBoxVisible(false);
             m.getBoundingBox().setOnChange(null);
+            m.removeOnMeshChangeListener(onMeshChangeConsumer);
             super.removeMesh(m);
         });
         super.addMesh(meshGroup);
+        meshGroup.addOnMeshChangeListener(onMeshChangeConsumer);
         meshGroup.getBoundingBox().setOnChange(bb -> validatePosition(meshGroup, bb));
         validatePosition(meshGroup);
         selected.clear();
@@ -384,6 +388,7 @@ public class EditSceneGraph extends SubSceneGraph {
 
     private void ungroupModels(MeshGroup meshGroup, boolean selectAll) {
         meshGroup.getBoundingBox().setOnChange(null);
+        meshGroup.removeOnMeshChangeListener(onMeshChangeConsumer);
         super.removeMesh(meshGroup);
         List<SceneMesh> l = new LinkedList<>(meshGroup.getChildren());
         l.forEach((sm) -> {
@@ -391,6 +396,7 @@ public class EditSceneGraph extends SubSceneGraph {
             sm.setMaterial(MATERIAL);
             sm.setBoundingBoxVisible(false);
             sm.getBoundingBox().setOnChange(bb -> validatePosition(sm, bb));
+            sm.addOnMeshChangeListener(onMeshChangeConsumer);
             validatePosition(sm);
         });
         meshGroup.dismiss();
