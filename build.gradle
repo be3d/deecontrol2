@@ -30,7 +30,11 @@ task zip(dependsOn: jar, type: Zip) {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.ysoft.dctrl.DeeControl'
+        attributes(
+        	'Main-Class': 'com.ysoft.dctrl.DeeControl',
+        	'Implementation-Title':'DeeControl2',
+        	'Implementation-Version':version
+        )
     }
 
     from {
