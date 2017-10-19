@@ -358,7 +358,12 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     private void onSaveProfile(String name){
 
-        if(name.isEmpty()){ throw new IllegalArgumentException("empty name"); }
+        if(name.isEmpty()){ throw new IllegalArgumentException(getMessage("dialog_slicer_profile_empty")); }
+        for(Profile p : profileResource.getProfiles()){
+            if(p.getName().equals(name)){
+                throw new IllegalArgumentException(getMessage("dialog_slicer_profile_collision"));
+            }
+        }
 
         Profile savedProfile = profileResource.saveNewProfile(name);
         ObservableList profiles = FXCollections.observableList(profileResource.getProfiles());

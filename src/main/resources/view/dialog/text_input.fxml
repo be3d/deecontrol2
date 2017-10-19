@@ -11,14 +11,16 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<DialogPane xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.dialog.TextInputController"
+<DialogPane xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.dialog.TextInputDialogController"
             text="" StackPane.alignment="CENTER" >
   <VBox styleClass="content-wrapper">
     <Label fx:id="label" styleClass="label" />
     <TextField fx:id="input" styleClass="text-input"/>
+    <Label fx:id="warning" styleClass="description,warning" visible="false" managed="false" wrapText="true" />
     <Label fx:id="description" styleClass="description" wrapText="true" />
   </VBox>
 
+  <Region VBox.vgrow="ALWAYS" />
   <HBox styleClass="footer">
     <Region HBox.hgrow="ALWAYS" />
     <Button fx:id="cancel" text="CANCEL" />
