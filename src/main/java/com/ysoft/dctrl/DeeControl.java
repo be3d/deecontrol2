@@ -1,8 +1,10 @@
 package com.ysoft.dctrl;
 
-import java.io.File;
 import java.util.List;
 
+import javafx.application.Platform;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -29,6 +31,7 @@ import javafx.stage.Stage;
 public class DeeControl extends Application {
     private ConfigurableApplicationContext applicationContext;
     private InstanceMonitor instanceMonitor;
+    private static Logger logger;
 
     public static void main(String[] args) {
         initLogger();
@@ -37,11 +40,14 @@ public class DeeControl extends Application {
 
     private static void initLogger() {
         ConfigurationFactory.setConfigurationFactory(new DeeControlConfigurationFactory());
+        logger = LogManager.getLogger(DeeControl.class);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> Platform.runLater(() -> showError(t, e)));
+        Thread.currentThread().setUncaughtExceptionHandler(this::showError);
 
         applicationContext = new AnnotationConfigApplicationContext(DeeControlConfig.class);
         applicationContext.registerShutdownHook();
@@ -89,8 +95,6 @@ public class DeeControl extends Application {
                }
             }
         }
-
-
     }
 
     @Override
@@ -98,4 +102,9 @@ public class DeeControl extends Application {
         super.stop();
         instanceMonitor.destroy();
     }
+
+    private void showError(Thread t, Throwable e){
+        logger.error("Unhandled exception", e);
+    }
+
 }

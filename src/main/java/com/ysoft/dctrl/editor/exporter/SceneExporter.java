@@ -8,6 +8,8 @@ import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +39,7 @@ import javafx.util.Duration;
 
 @Component
 public class SceneExporter {
+    private final Logger logger = LogManager.getLogger(SceneExporter.class);
     private final EventBus eventBus;
     private final DeeControlContext deeControlContext;
     private final EditSceneGraph sceneGraph;
@@ -56,8 +59,7 @@ public class SceneExporter {
         });
 
         exportTask.setOnFailed((e) -> {
-            System.err.println("ou snap, something went wrong");
-            exportTask.getException().printStackTrace();
+            logger.error("Scene export error", exportTask.getException());
         });
 
         new Thread(exportTask).start();

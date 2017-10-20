@@ -10,11 +10,15 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by pilar on 8.6.2017.
  */
 public abstract class YieldTask<T, R> extends Task<T> {
+    private final Logger logger = LogManager.getLogger(YieldTask.class);
+
     private Consumer<R> onYield;
     private Timeline timeline;
     private Queue<R> queue;
@@ -32,6 +36,8 @@ public abstract class YieldTask<T, R> extends Task<T> {
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+
+        setOnFailed((t) -> logger.error("YieldTask failed", t.getSource().getException()));
     }
 
     private synchronized void yielding() {
