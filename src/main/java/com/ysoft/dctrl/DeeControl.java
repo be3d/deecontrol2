@@ -5,6 +5,8 @@ import java.util.List;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.sun.javafx.application.LauncherImpl;
+import javafx.application.Preloader;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -35,7 +37,7 @@ public class DeeControl extends Application {
 
     public static void main(String[] args) {
         initLogger();
-        launch(args);
+        LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
     }
 
     private static void initLogger() {
@@ -95,6 +97,8 @@ public class DeeControl extends Application {
                }
             }
         }
+
+        notifyPreloader(new Preloader.ProgressNotification(1.0));
     }
 
     @Override
