@@ -1,0 +1,14 @@
+.content {
+    -fx-background-image: url("../img/splash.png");
+    -fx-background-insets: 0;
+    -fx-background-position: -14 -10px;
+    -fx-background-insets: 0 0 0 0px;
+    -fx-border-width: 0;
+}
+
+.version {
+    -fx-background-color: transparent;
+    -fx-padding: 0 9 5 0 px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #535353;
+}
