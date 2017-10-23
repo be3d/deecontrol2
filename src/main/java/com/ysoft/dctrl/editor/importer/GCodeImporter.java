@@ -41,7 +41,6 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
 
     @Override
     public TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException {
-
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -69,10 +68,6 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
 
             // Append last layer
             finalizeLayer(gCodeLayer);
-
-        }
-        catch(Exception e){
-            e.printStackTrace();
         }
 
         eventBus.publish(new Event(EventType.GCODE_IMPORT_COMPLETED.name(), layers.size()));

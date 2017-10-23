@@ -7,6 +7,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import javafx.fxml.FXMLLoader;
 @Service
 public class SpringFXMLLoader {
     private final ApplicationContext applicationContext;
+    private final Logger logger = LogManager.getLogger();
 
     @Autowired
     public SpringFXMLLoader(ApplicationContext applicationContext) {
@@ -32,6 +35,7 @@ public class SpringFXMLLoader {
             loader.setControllerFactory(applicationContext::getBean);
             return loader.load(is);
         } catch (IOException e) {
+            logger.error("FXMLloader error",e);
             throw new RuntimeException(e);
         }
     }
