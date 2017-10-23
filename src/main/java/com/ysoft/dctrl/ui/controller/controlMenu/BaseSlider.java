@@ -91,6 +91,7 @@ public class BaseSlider extends BaseTooltipControl implements SlicerParamBindabl
      * @return
      */
     public BaseSlider bindParamChanged(ChangeListener listener){
+        bindParamChanged();
         boundParam.getDoubleProperty().addListener(listener);
         return this;
     }

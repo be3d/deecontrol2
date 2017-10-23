@@ -29,7 +29,7 @@ public class Profile {
                    String slicerID, String printerGroup, String printerID,
                    //Map<String, SlicerParam> params){
                    ArrayList<SlicerParam > params){
-        this.id = "id123456";
+        this.id = id;
         this.name = name;
         this.description = description;
         this.slicerID = slicerID;

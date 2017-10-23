@@ -86,6 +86,7 @@ public class ToggleButtonGroup extends BaseTooltipControl implements SlicerParam
 
     @Override
     public SlicerParamBindable bindParamChanged(ChangeListener listener) {
+        bindParamChanged();
         boundParam.getDoubleProperty().addListener(listener);
         return this;
     }

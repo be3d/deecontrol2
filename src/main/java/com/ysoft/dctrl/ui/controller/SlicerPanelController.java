@@ -15,12 +15,16 @@ import com.ysoft.dctrl.slicer.param.SlicerParams;
 import com.ysoft.dctrl.slicer.profile.Profile;
 import com.ysoft.dctrl.slicer.profile.ProfileResource;
 import com.ysoft.dctrl.ui.controller.controlMenu.*;
+import com.ysoft.dctrl.ui.dialog.contract.DialogEventData;
+import com.ysoft.dctrl.ui.dialog.contract.TextInputDialogData;
+import com.ysoft.dctrl.ui.factory.dialog.DialogType;
 import com.ysoft.dctrl.ui.notification.ErrorNotification;
 import com.ysoft.dctrl.ui.tooltip.TooltipDefinition;
 import com.ysoft.dctrl.ui.tooltip.Tooltip;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -257,15 +261,15 @@ public class SlicerPanelController extends LocalizableController implements Init
         });
 
         saveProfile.addEventHandler(MouseEvent.MOUSE_CLICKED, (event) -> {
-                Profile savedProfile = profileResource.saveNewProfile("SAVED_USER_PROFILE");
+            TextInputDialogData dialogData = new TextInputDialogData();
 
-                ObservableList profiles = FXCollections.observableList(profileResource.getProfiles());
-                profilePicker.setItems(profiles);
-                profilePicker.addItem(savedProfile);
-                profilePicker.selectItem(savedProfile);
-                profileResource.applyProfile(savedProfile);
+            dialogData.setHeader(getMessage("dialog_save_slicer_profile"));
+            dialogData.setLabel(getMessage("dialog_slicer_profile_name"));
+            dialogData.setDescription(getMessage("dialog_slicer_profile_desc"));
+            dialogData.setConsumer(this::onSaveProfile);
 
-                event.consume();
+            eventBus.publish(new Event(EventType.SHOW_DIALOG.name(), new DialogEventData(DialogType.TEXT_INPUT, dialogData)));
+            event.consume();
         });
 
         advSettingsToggle.setOnMouseClicked(event -> {
@@ -350,6 +354,25 @@ public class SlicerPanelController extends LocalizableController implements Init
         if(e.getData() == SceneMode.EDIT){
             enableControls();
         }
+    }
+
+    private void onSaveProfile(String name){
+
+        if(name.isEmpty()){ throw new IllegalArgumentException(getMessage("dialog_slicer_profile_empty")); }
+        for(Profile p : profileResource.getProfiles()){
+            if(p.getName().equals(name)){
+                throw new IllegalArgumentException(getMessage("dialog_slicer_profile_collision"));
+            }
+        }
+
+        Profile savedProfile = profileResource.saveNewProfile(name);
+        ObservableList profiles = FXCollections.observableList(profileResource.getProfiles());
+        profilePicker.setItems(profiles);
+        profilePicker.addItem(savedProfile);
+        profilePicker.selectItem(savedProfile);
+        profileResource.applyProfile(savedProfile);
+
+        setEdited(false);
     }
 
     private void enableControls() {

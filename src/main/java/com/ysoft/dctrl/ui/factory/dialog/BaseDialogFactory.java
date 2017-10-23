@@ -15,7 +15,8 @@ import javafx.scene.layout.Pane;
 @Component
 public class BaseDialogFactory implements
         DialogWrapperFactory,
-        PreferencesFactory
+        PreferencesFactory,
+        TextInputFactory
 {
     private final SpringFXMLLoader loader;
 
@@ -37,4 +38,8 @@ public class BaseDialogFactory implements
     public Dialog buildPreferences() {
         return createDialog("/view/dialog/preferences.fxml");
     }
+
+    @Override
+    public Dialog buildTextInput() { return createDialog("/view/dialog/text_input.fxml"); }
+
 }

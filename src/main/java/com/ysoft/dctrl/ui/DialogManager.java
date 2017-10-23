@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 
+import com.ysoft.dctrl.ui.factory.dialog.TextInputFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,12 +34,14 @@ public class DialogManager {
     @Autowired
     public DialogManager(EventBus eventBus,
                          DialogWrapperFactory dialogWrapperFactory,
-                         PreferencesFactory preferencesFactory
+                         PreferencesFactory preferencesFactory,
+                         TextInputFactory textInputFactory
     ) {
         this.eventBus = eventBus;
         wrapper = dialogWrapperFactory.buildWrapper();
         dialogs = new ConcurrentHashMap<>();
         dialogs.put(DialogType.PREFERENCES, preferencesFactory.buildPreferences());
+        dialogs.put(DialogType.TEXT_INPUT, textInputFactory.buildTextInput());
     }
 
     @PostConstruct

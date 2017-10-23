@@ -25,6 +25,8 @@ import java.util.List;
  */
 @Component
 public class ProfileResource extends AbstractConfigResource {
+    private static final String PROFILE_EXTENSION = ".def.json";
+
     private final Logger logger = LogManager.getLogger(ProfileResource.class);
     private final PrinterResource printerResource;
     private final SlicerParams slicerParams;
@@ -130,19 +132,19 @@ public class ProfileResource extends AbstractConfigResource {
      */
     public Profile saveNewProfile(String name){
 
-        // Copy the parameters from context
-        ArrayList<SlicerParam> slicerParamsCopy = new ArrayList<SlicerParam>();
+        ArrayList<SlicerParam> slicerParamsCopy = new ArrayList<>();
         for (SlicerParam param : this.slicerParams.getAllParams().values()){
             slicerParamsCopy.add( new SlicerParam(param) );
         }
 
-        Profile profile = new Profile("usernameid", name, "",
-                this.slicerController.selectedSlicerID,
-                //(this.printerResource.getPrinter()).printerGroup,
-                "",
-                (this.printerResource.getPrinter()).id,
-                slicerParamsCopy);
-
+        Profile profile = new Profile(
+                java.util.UUID.randomUUID().toString(),
+                name, "",
+                slicerController.selectedSlicerID,
+                printerResource.getPrinter().printerFamily,
+                printerResource.getPrinter().id,
+                slicerParamsCopy
+        );
 
         this.saveProfile(profile);
         return profile;
@@ -154,7 +156,8 @@ public class ProfileResource extends AbstractConfigResource {
      */
     private void saveProfile(Profile profile){
         try {
-            deeControlContext.getObjectMapper().writeValue(new File(profileFolder + File.separator + profile.getId() + ".json"), profile);
+            deeControlContext.getObjectMapper().writeValue(
+                    new File(profileFolder + File.separator + profile.getId() + PROFILE_EXTENSION), profile);
         } catch(IOException e){
             e.printStackTrace();
         }

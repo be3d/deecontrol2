@@ -63,6 +63,7 @@ public class Picker extends BaseTooltipControl {
     }
 
     public Picker bindParamChanged(javafx.beans.value.ChangeListener listener){
+        bindParamChanged();
         boundParam.getStringProperty().addListener(listener);
         return this;
     }

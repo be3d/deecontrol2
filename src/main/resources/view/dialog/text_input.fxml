@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.ysoft.dctrl.ui.control.DialogPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.Button?>
+
+<?import java.net.URL?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<DialogPane xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.dialog.TextInputDialogController"
+            text="" StackPane.alignment="CENTER" >
+  <VBox styleClass="content-wrapper">
+    <Label fx:id="label" styleClass="label" />
+    <TextField fx:id="input" styleClass="text-input"/>
+    <Label fx:id="warning" styleClass="description,warning" visible="false" managed="false" wrapText="true" />
+    <Label fx:id="description" styleClass="description" wrapText="true" />
+  </VBox>
+
+  <Region VBox.vgrow="ALWAYS" />
+  <HBox styleClass="footer">
+    <Region HBox.hgrow="ALWAYS" />
+    <Button fx:id="cancel" text="CANCEL" />
+    <Button fx:id="save" text="SAVE" styleClass="blue" />
+  </HBox>
+  <stylesheets>
+    <URL value="@/css/master.css" />
+    <URL value="@/css/dialog_text_input.css" />
+  </stylesheets>
+</DialogPane>

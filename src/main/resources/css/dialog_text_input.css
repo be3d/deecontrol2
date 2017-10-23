@@ -1,0 +1,40 @@
+DialogPane {
+    -fx-max-width: 350px;
+    -fx-max-height: 250px;
+}
+
+.content-wrapper {
+    -fx-padding: 20 20 20 20px;
+    -fx-min-height: 140px;
+}
+
+.label {
+    -fx-padding: 0 0 8 0px;
+}
+
+.text-input {
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+}
+
+.description {
+    -fx-padding: 8 0 0 0px;
+    -fx-font-size: 12px;
+    -fx-text-fill: #9b9ea0;
+}
+
+.warning {
+    -fx-text-fill: #fb4a46;
+}
+
+.footer {
+    -fx-pref-height: 66px;
+    -fx-max-height: 66px;
+    -fx-spacing: 15px;
+    -fx-padding: 15px;
+}
+
+.footer Button {
+    -fx-pref-height: 36px;
+    -fx-pref-width: 80px;
+}
