@@ -14,6 +14,7 @@ import com.ysoft.dctrl.ui.dialog.contract.DialogEventData;
 import com.ysoft.dctrl.ui.factory.dialog.DialogType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.ui.notification.AlertLinkNotification;
+import com.ysoft.dctrl.ui.notification.ErrorNotification;
 import com.ysoft.dctrl.ui.notification.SpinnerNotification;
 import com.ysoft.dctrl.ui.notification.SuccessNotification;
 import com.ysoft.dctrl.utils.DeeControlContext;
@@ -70,6 +71,7 @@ public class GCodePanelController extends LocalizableController implements Initi
     @FXML Label filamentUsageLabel;
 
     private SuccessNotification jobSendDoneNotification;
+    private ErrorNotification jobSendFailedNotification;
     private SpinnerNotification jobSendProgressNotification;
 
     public GCodePanelController(
@@ -86,6 +88,7 @@ public class GCodePanelController extends LocalizableController implements Initi
         this.safeQSender = safeQSender;
 
         this.jobSendDoneNotification = new SuccessNotification();
+        this.jobSendFailedNotification = new ErrorNotification();
         this.jobSendProgressNotification = new SpinnerNotification();
     }
 
@@ -129,7 +132,8 @@ public class GCodePanelController extends LocalizableController implements Initi
             deeControlContext.getCurrentProject().resetPrintInfo();
         });
 
-        jobSendDoneNotification.setLabelText("Print job successfully sent to YSoft SafeQ");
+        jobSendDoneNotification.setLabelText(getMessage("print_job_send_succes"));
+        jobSendFailedNotification.setLabelText(getMessage("print_job_send_fail"));
         jobSendProgressNotification.setLabelText(getMessage("file_transfer_in_progress"));
 
         AlertLinkNotification safeqNotSetNotification = new AlertLinkNotification();
@@ -162,6 +166,12 @@ public class GCodePanelController extends LocalizableController implements Initi
             jobSendProgressNotification.hide();
             sendJobBtn.setDisable(false);
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), jobSendDoneNotification));
+        });
+
+        eventBus.subscribe(EventType.JOB_SEND_FAILED.name(), (e) -> {
+            jobSendProgressNotification.hide();
+            sendJobBtn.setDisable(false);
+            eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), jobSendFailedNotification));
         });
 
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
