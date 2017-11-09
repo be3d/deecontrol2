@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'maven'
 
 group 'com.ysoft.be3d'
 version '1.0.0-SNAPSHOT'
@@ -6,6 +7,7 @@ version '1.0.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -26,6 +28,24 @@ dependencies {
 task zip(dependsOn: jar, type: Zip) {
     from configurations.runtime.allArtifacts.files
     from configurations.runtime
+}
+
+artifacts {
+    archives(file(zip.archivePath)) {
+        name 'deecontrol-libs'
+        type 'zip'
+        builtBy zip
+    }
+}
+
+configurations.archives.artifacts.with { archives ->
+    def jarArtifact
+    archives.each {
+        if(it.file =~ 'jar') {
+            jarArtifact = it
+        }
+    }
+    remove(jarArtifact)
 }
 
 jar {

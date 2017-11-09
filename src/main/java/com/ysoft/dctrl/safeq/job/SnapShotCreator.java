@@ -125,7 +125,7 @@ public class SnapShotCreator {
         camera.setPosition(cameraPosition);
     }
 
-    private class DataCarrier {
+    private static class DataCarrier {
         private SceneMesh mesh;
         private boolean boundingBoxVisible;
         private javafx.scene.paint.Material material;
