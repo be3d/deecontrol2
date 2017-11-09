@@ -109,12 +109,13 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
         return mesh;
     }
 
-    private TriangleMesh loadAscii(InputStream stream) throws IOException {
+    private TriangleMesh loadAscii(InputStream stream) throws IOException, RunningOutOfMemoryException, OutOfMemoryError {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
         StringBuilder builder = new StringBuilder();
         char[] buffer = new char[8192];
         int read = 0;
         while((read = reader.read(buffer)) != -1) {
+            MemoryManager.checkMemory();
             addBytesRead(read);
             builder.append(buffer, 0, read);
             FACET_MATCHER.reset(builder);
