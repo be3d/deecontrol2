@@ -1,5 +1,6 @@
 package com.ysoft.dctrl.ui;
 
+import com.ysoft.dctrl.safeq.job.SnapShotCreator;
 import com.ysoft.dctrl.ui.factory.*;
 import javafx.scene.layout.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class BaseWindow {
     private KeyEventPropagator keyEventPropagator;
     private DialogManager dialogManager;
     private NotificationManager notificationManager;
+    private SnapShotCreator snapShotCreator;
 
     private Region menuBar;
     private Region editorCanvas;
@@ -33,6 +35,7 @@ public class BaseWindow {
     public BaseWindow(KeyEventPropagator keyEventPropagator,
                       DialogManager dialogManager,
                       NotificationManager notificationManager,
+                      SnapShotCreator snapShotCreator,
                       MenuBarFactory menuBarFactory,
                       MainPanelFactory mainPanelFactory,
                       EditorCanvasFactory editorCanvasFactory,
@@ -44,6 +47,7 @@ public class BaseWindow {
         this.keyEventPropagator = keyEventPropagator;
         this.dialogManager = dialogManager;
         this.notificationManager = notificationManager;
+        this.snapShotCreator = snapShotCreator;
         menuBar = menuBarFactory.buildMenuBar();
         mainPanel = mainPanelFactory.buildMainPanel();
         editorCanvas = editorCanvasFactory.buildEditorCanvas();
@@ -63,7 +67,7 @@ public class BaseWindow {
         setAnchors(dialogManager.getNode(), 0.0, 0.0, 0.0, 0.0);
         setAnchors(tooltipWrapper, 0.0,0.0,0.0,282.0);
 
-        root.getChildren().addAll(content, dialogManager.getNode());
+        root.getChildren().addAll(content, dialogManager.getNode(), snapShotCreator.getNode());
         root.getChildren().addAll(tooltipWrapper);
 
         content.setBackground(Background.EMPTY);

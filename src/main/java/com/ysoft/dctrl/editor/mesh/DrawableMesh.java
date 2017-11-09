@@ -9,4 +9,5 @@ import javafx.scene.paint.Material;
 public interface DrawableMesh {
     Node getNode();
     void setMaterial(Material material);
+    Material getMaterial();
 }
