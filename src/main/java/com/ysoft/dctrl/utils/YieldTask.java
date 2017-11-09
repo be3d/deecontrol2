@@ -16,12 +16,12 @@ import org.apache.logging.log4j.Logger;
 /**
  * Created by pilar on 8.6.2017.
  */
-public abstract class YieldTask<T, R> extends Task<T> {
+public abstract class YieldTask<Y,R> extends Task<R> {
     private final Logger logger = LogManager.getLogger(YieldTask.class);
 
-    private Consumer<R> onYield;
+    private Consumer<Y> onYield;
     private Timeline timeline;
-    private Queue<R> queue;
+    private Queue<Y> queue;
 
     public YieldTask() {
         super();
@@ -56,11 +56,11 @@ public abstract class YieldTask<T, R> extends Task<T> {
         onYield.accept(queue.poll());
     }
 
-    public void setOnYield(Consumer<R> consumer) {
+    public void setOnYield(Consumer<Y> consumer) {
         onYield = consumer;
     }
 
-    protected void yield(R object) {
+    protected void yield(Y object) {
         queue.add(object);
     }
 }

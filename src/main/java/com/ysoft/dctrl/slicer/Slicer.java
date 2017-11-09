@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public interface Slicer {
 
-    void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws IOException;
+    void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws IOException, InterruptedException;
 
     Map<String,SlicerParam> filterSupportedParams(Map<String, SlicerParam> allParams);
 

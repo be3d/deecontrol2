@@ -61,7 +61,7 @@ public class Cura implements Slicer {
     private volatile int layerCount;
 
     @Autowired
-    public Cura(FilePathResource filePathResource, DeeControlContext deeControlContext) throws IOException {
+    public Cura(FilePathResource filePathResource, DeeControlContext deeControlContext) {
         this.deeControlContext = deeControlContext;
         definitionDir = filePathResource.getPath(FilePath.CURA_DEF_DIR);
         configFile = definitionDir + File.separator + CONFIG_FILE;
@@ -116,7 +116,7 @@ public class Cura implements Slicer {
     }
 
     @Override
-    public void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws IOException {
+    public void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws IOException, InterruptedException {
         duration = 0;
         materialUsage = new Long[16];
         layerCount = 0;
@@ -146,10 +146,9 @@ public class Cura implements Slicer {
             while ((s = stdInput.readLine()) != null) {
                 System.err.println(s);
 
-                // Check for cancel command
                 if (Thread.currentThread().isInterrupted()) {
-                    System.out.println("Exiting gracefully");
-                    break;
+                    process.destroy();
+                    throw new InterruptedException();
                 }
 
                 // Log the console output of Cura to file

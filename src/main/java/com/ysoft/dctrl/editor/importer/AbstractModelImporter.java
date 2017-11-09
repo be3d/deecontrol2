@@ -7,12 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.ysoft.dctrl.event.EventBus;
+import com.ysoft.dctrl.utils.exceptions.RunningOutOfMemoryException;
 import javafx.scene.shape.TriangleMesh;
 
 /**
  * Created by pilar on 28.3.2017.
  */
-public abstract class AbstractModelImporter implements ModelImporter {
+public abstract class AbstractModelImporter<R> implements ModelImporter<R> {
     private volatile long size;
     private volatile long bytesRead;
 
@@ -22,22 +23,22 @@ public abstract class AbstractModelImporter implements ModelImporter {
     }
 
     @Override
-    public TriangleMesh load(String path) throws IOException {
+    public R load(String path) throws IOException, RunningOutOfMemoryException, InterruptedException {
         return load(new File(path));
     }
 
     @Override
-    public TriangleMesh load(File file) throws IOException {
+    public R load(File file) throws IOException, RunningOutOfMemoryException, InterruptedException {
         if(!file.exists()) { throw new FileNotFoundException("File does not exist [" + file.getAbsolutePath() + "]"); }
         size = file.length();
-        TriangleMesh mesh;
+        R result;
         try (InputStream is = new FileInputStream(file)){
-            mesh = load(is);
+            result = load(is);
         }
-        return mesh;
+        return result;
     }
 
-    public abstract TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException;
+    public abstract R load(InputStream stream) throws IOException, IllegalArgumentException, RunningOutOfMemoryException, InterruptedException;
 
     protected void addBytesRead(long bytesRead) {
         this.bytesRead += bytesRead;

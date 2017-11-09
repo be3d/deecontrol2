@@ -1,11 +1,21 @@
 package com.ysoft.dctrl.editor;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.ysoft.dctrl.editor.importer.ImportRunner;
+
+import com.ysoft.dctrl.utils.MemoryManager;
+import com.ysoft.dctrl.utils.exceptions.RunningOutOfMemoryException;
+import javafx.scene.Group;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +39,8 @@ import javafx.scene.shape.MeshView;
 @Component
 @SubSceneMode(SceneMode.GCODE)
 public class GCodeSceneGraph extends SubSceneGraph {
+    private final Logger logger = LogManager.getLogger(GCodeSceneGraph.class);
+
     private final static List<GCodeMoveType> DRAFT_RENDER_TYPES = Arrays.asList(
             GCodeMoveType.WALL_OUTER,
             GCodeMoveType.SUPPORT,
@@ -46,19 +58,21 @@ public class GCodeSceneGraph extends SubSceneGraph {
     private final String gcodeFile;
     private List<GCodeLayer> layers;
     private int layerCount = Integer.MIN_VALUE;
+    private volatile boolean interrupted;
+
+    Thread importRunnerThread;
 
     @Autowired
     public GCodeSceneGraph(EventBus eventBus, FilePathResource filePathResource) {
         super(eventBus);
         gcodeFile = filePathResource.getPath(FilePath.SLICER_GCODE_FILE);
         layers = new LinkedList<>();
+        interrupted = false;
 
         eventBus.subscribe(EventType.GCODE_IMPORT_COMPLETED.name(), (e) -> layerCount = (int)e.getData());
-        eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), (e) -> {
-            currentlyRenderedTypes.clear();
-            DRAFT_RENDER_TYPES.forEach((v) -> currentlyRenderedTypes.add(v));
-            activeView = ViewType.OPTIMIZED;
-        });
+        eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), this::onDraftRenderFinished);
+        eventBus.subscribe(EventType.GCODE_RENDER_CANCEL.name(), this::setRenderInterrupted);
+
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
             if(e.getData() != SceneMode.GCODE){
                 resetGraph();
@@ -68,23 +82,85 @@ public class GCodeSceneGraph extends SubSceneGraph {
 
     public void loadGCode() {
         resetGraph();
+        System.gc();
 
         GCodeImporter gCodeImporter = new GCodeImporter(eventBus);
-        YieldImportRunner<GCodeLayer> importRunner = new YieldImportRunner<>(eventBus, gCodeImporter, gcodeFile);
-        importRunner.setOnYield((l)-> {
-            loadGCodeLayerDraft(l);
+        ImportRunner gCodeImportRunner = new ImportRunner<ArrayList<GCodeLayer>>(eventBus, gCodeImporter, gcodeFile);
+        gCodeImportRunner.setOnSucceeded(e -> {
+            layers = (ArrayList<GCodeLayer>)gCodeImportRunner.getValue();
 
-            if (l.getNumber() == layerCount-1){
-                eventBus.publish(new Event(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), layerCount));
+            for(GCodeLayer l : layers){
+                if(interrupted){
+                    onRenderInterrupted();
+                    return;
+                }
+
+                try {
+                    MemoryManager.checkMemory();
+                    l.generateMeshViews();
+                } catch (RunningOutOfMemoryException ex) {
+                    onRunningOutOfMemory(ex);
+                    return;
+                } catch (OutOfMemoryError er) {
+                    onRunningOutOfMemory(er);
+                    return;
+                }
+            }
+
+            loadGCodeLayers();
+        });
+
+        gCodeImportRunner.setOnFailed((e) -> {
+            logger.warn("GCode Import runner failed", e);
+            Throwable ex = ((ImportRunner)e.getSource()).getException();
+
+            if(ex instanceof RunningOutOfMemoryException || ex instanceof OutOfMemoryError){
+                onRunningOutOfMemory(ex);
+            } else if(ex instanceof InterruptedException){
+                onRenderInterrupted();
             }
         });
 
-        new Thread(importRunner).start();
+        importRunnerThread = new Thread(gCodeImportRunner);
+        importRunnerThread.start();
+    }
+
+    private void loadGCodeLayers() {
+        Group group = new Group();
+
+        for(GCodeLayer l : layers) {
+            if(interrupted){
+                onRenderInterrupted();
+                return;
+            }
+            try {
+                MemoryManager.checkMemory();
+
+                DRAFT_RENDER_TYPES.forEach((t) -> {
+                    MeshView v = l.getMeshViews().get(t.name());
+                    if(v == null) { return; }
+                    group.getChildren().add(v);
+                });
+            }
+            catch (RunningOutOfMemoryException e) {
+                onRunningOutOfMemory(e);
+                return;
+            }
+            catch (OutOfMemoryError e) {
+                onRunningOutOfMemory(e);
+                return;
+            }
+        }
+        getSceneGroup().getChildren().add(group);
+
+        eventBus.publish(new Event(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), layerCount));
+    }
+
+    private void loadGCodeLayer (GCodeLayer l){
+        loadGCodeLayerDraft(l);
     }
 
     public void loadGCodeLayerDraft(GCodeLayer l) {
-        layers.add(l);
-
         DRAFT_RENDER_TYPES.forEach((t) -> {
             MeshView v = l.getMeshViews().get(t.name());
             if(v == null) { return; }
@@ -221,13 +297,36 @@ public class GCodeSceneGraph extends SubSceneGraph {
         activeView = view;
     }
 
-    private void resetGraph(){
+    private void setRenderInterrupted(Event e){
+        importRunnerThread.interrupt();
+        interrupted = true;
+    }
+
+    private void onRenderInterrupted(){
+        resetGraph();
+    }
+
+    private void onRunningOutOfMemory(Throwable t){
+        logger.warn("RCodeImporter run out of memory ", t);
+        resetGraph();
+        eventBus.publish(new Event(EventType.GCODE_RENDER_OUTTA_MEMORY.name()));
+    }
+
+    private void onDraftRenderFinished(Event e ){
+        currentlyRenderedTypes.clear();
+        DRAFT_RENDER_TYPES.forEach((v) -> currentlyRenderedTypes.add(v));
+        activeView = ViewType.OPTIMIZED;
+    }
+
+    public void resetGraph(){
         currentlyRenderedTypes = new LinkedList<>();
         currentCutTopLayerIndex = 0;
         currentCutBottomLayerIndex = 0;
         layerCount = Integer.MIN_VALUE;
         layers.clear();
         getSceneGroup().getChildren().clear();
+        importRunnerThread = null;
+        interrupted = false;
     }
 
 }

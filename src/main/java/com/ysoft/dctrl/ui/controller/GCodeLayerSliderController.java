@@ -37,7 +37,7 @@ public class GCodeLayerSliderController extends LocalizableController implements
     public void initialize(URL location, ResourceBundle resources){
 
         eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), (e) -> initSlider((Integer) e.getData()));
-        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> setVisible(e.getData() == SceneMode.GCODE));
+        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> setVisible(false));
 
         super.initialize(location, resources);
     }
@@ -58,6 +58,7 @@ public class GCodeLayerSliderController extends LocalizableController implements
         });
 
         updateGCodeCuts();
+        setVisible(true);
     }
 
     private void setVisible(boolean value){

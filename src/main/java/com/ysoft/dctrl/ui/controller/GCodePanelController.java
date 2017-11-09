@@ -13,23 +13,21 @@ import com.ysoft.dctrl.ui.controller.dialog.PreferencesTab;
 import com.ysoft.dctrl.ui.dialog.contract.DialogEventData;
 import com.ysoft.dctrl.ui.factory.dialog.DialogType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
-import com.ysoft.dctrl.ui.notification.AlertLinkNotification;
-import com.ysoft.dctrl.ui.notification.SpinnerNotification;
-import com.ysoft.dctrl.ui.notification.SuccessNotification;
+import com.ysoft.dctrl.ui.notification.*;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import com.ysoft.dctrl.utils.Project;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +41,7 @@ import java.util.function.Function;
  */
 @Controller
 public class GCodePanelController extends LocalizableController implements Initializable {
+    private final Logger logger = LogManager.getLogger(GCodePanelController.class);
 
     private GCodeSceneGraph gcodeSceneGraph;
     private SafeQSender safeQSender;
@@ -71,6 +70,9 @@ public class GCodePanelController extends LocalizableController implements Initi
 
     private SuccessNotification jobSendDoneNotification;
     private SpinnerNotification jobSendProgressNotification;
+    private SpinnerNotification gCodeRenderingNotification;
+    private SuccessNotification gCodeRenderingFailed;
+    private SuccessNotification printReadyNotification;
 
     public GCodePanelController(
             GCodeSceneGraph gcodeSceneGraph,
@@ -85,8 +87,16 @@ public class GCodePanelController extends LocalizableController implements Initi
         this.jobCreator = jobCreator;
         this.safeQSender = safeQSender;
 
-        this.jobSendDoneNotification = new SuccessNotification();
-        this.jobSendProgressNotification = new SpinnerNotification();
+        jobSendDoneNotification = new SuccessNotification();
+        jobSendProgressNotification = new SpinnerNotification();
+        gCodeRenderingNotification = new SpinnerNotification();
+        gCodeRenderingNotification.setLabelText(getMessage("notification_gcode_rendering_in_progress"));
+        gCodeRenderingFailed = new SuccessNotification();
+        gCodeRenderingFailed.setLabelText(getMessage("notification_gcode_rendering_done_no_preview"));
+        gCodeRenderingFailed.setTimeout(0);
+        printReadyNotification = new SuccessNotification();
+        printReadyNotification.setLabelText(getMessage("notification_slicing_completed"));
+        printReadyNotification.setTimeout(0);
     }
 
     @Override
@@ -129,8 +139,8 @@ public class GCodePanelController extends LocalizableController implements Initi
             deeControlContext.getCurrentProject().resetPrintInfo();
         });
 
-        jobSendDoneNotification.setLabelText("Print job successfully sent to YSoft SafeQ");
-        jobSendProgressNotification.setLabelText(getMessage("file_transfer_in_progress"));
+        jobSendDoneNotification.setLabelText(getMessage("notification_file_transfer_success"));
+        jobSendProgressNotification.setLabelText(getMessage("notification_file_transfer_in_progress"));
 
         AlertLinkNotification safeqNotSetNotification = new AlertLinkNotification();
         safeqNotSetNotification.setLabelText(getMessage("notification_safeq_settings_not_set"));
@@ -165,23 +175,48 @@ public class GCodePanelController extends LocalizableController implements Initi
         });
 
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
-            if(e.getData() == SceneMode.GCODE) {
-                resetControlsToDefault();
-                gcodeSceneGraph.loadGCode();
+            if(e.getData() == SceneMode.GCODE){
+                startGCodeLoading();
                 show();
             } else {
                 hide();
             }
         });
 
-        eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), (e) -> {
-            optimizedViewRadio.setDisable(false);
-            detailedViewRadio.setDisable(false);
-        });
-
+        eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), this::onGCRenderFinished);
+        eventBus.subscribe(EventType.GCODE_RENDER_OUTTA_MEMORY.name(), this::onNotEnoughMemory);
         super.initialize(location, resources);
 
         checkSafeQSettings.getAsBoolean();
+    }
+
+    private void startGCodeLoading(){
+        eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), gCodeRenderingNotification));
+
+        gCodeRenderingNotification.addOnCloseAction(e -> {
+            eventBus.publish(new Event(EventType.GCODE_RENDER_CANCEL.name()));
+        });
+
+        resetControlsToDefault();
+        gcodeSceneGraph.loadGCode();
+    }
+
+    private void onNotEnoughMemory(){
+        gCodeRenderingNotification.hide();
+        eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), gCodeRenderingFailed));
+    }
+
+    private void onNotEnoughMemory(Event e){
+        onNotEnoughMemory();
+    }
+
+    private void onGCRenderFinished(Event e){
+        gCodeRenderingNotification.hide();
+
+        eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), printReadyNotification));
+
+        optimizedViewRadio.setDisable(false);
+        detailedViewRadio.setDisable(false);
     }
 
     private void loadProjectInfo(){
@@ -198,12 +233,12 @@ public class GCodePanelController extends LocalizableController implements Initi
 
     private void show(){
         resetControlsToDefault();
-        this.setVisible(true);
+        setVisible(true);
         loadProjectInfo();
     }
 
     private void hide(){
-        this.setVisible(false);
+        setVisible(false);
     }
 
     private void setVisible(boolean value){

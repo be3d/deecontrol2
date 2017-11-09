@@ -1,25 +1,26 @@
 package com.ysoft.dctrl.editor.importer;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import com.ysoft.dctrl.editor.mesh.GCodeLayer;
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 
+import com.ysoft.dctrl.utils.exceptions.RunningOutOfMemoryException;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import com.ysoft.dctrl.utils.YieldTask;
-import javafx.scene.shape.TriangleMesh;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by pilar on 13.4.2017.
  */
-public class ImportRunner extends YieldTask<TriangleMesh, GCodeLayer> {
+public class ImportRunner<R> extends YieldTask<Void,R> {
+    private final Logger logger = LogManager.getLogger(YieldImportRunner.class);
+
     private final ModelImporter modelImporter;
     private final String path;
     private final EventBus eventBus;
@@ -31,22 +32,21 @@ public class ImportRunner extends YieldTask<TriangleMesh, GCodeLayer> {
     }
 
     @Override
-    protected TriangleMesh call() {
+    protected R call() throws RunningOutOfMemoryException, OutOfMemoryError, InterruptedException {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), (e) -> {
             eventBus.publish(new Event(EventType.MODEL_LOAD_PROGRESS.name(), modelImporter.getProgress()));
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
-        TriangleMesh mesh = null;
+        R result = null;
         try {
-            mesh = modelImporter.load(path);
+            result = (R)modelImporter.load(path);
         } catch (IOException e) {
-
-            System.err.println("fuck");
-            e.printStackTrace();
+            logger.warn(e);
+        } finally {
+            timeline.stop();
         }
 
-        timeline.stop();
-        return mesh;
+        return result;
     }
 }

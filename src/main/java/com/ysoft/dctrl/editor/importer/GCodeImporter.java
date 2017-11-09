@@ -5,6 +5,8 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.gcode.GCodeContext;
+import com.ysoft.dctrl.utils.MemoryManager;
+import com.ysoft.dctrl.utils.exceptions.RunningOutOfMemoryException;
 import javafx.scene.shape.TriangleMesh;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +19,7 @@ import java.util.regex.Pattern;
 /**
  * Created by kuhn on 5/22/2017.
  */
-public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
+public class GCodeImporter extends AbstractModelImporter<ArrayList<GCodeLayer>> {
     private final Logger logger = LogManager.getLogger(GCodeImporter.class);
     private final EventBus eventBus;
 
@@ -29,6 +31,7 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
     private GCodeLayer gCodeLayer;
     private ArrayList<GCodeLayer> layers;
     private GCodeContext gCodeContext;
+    private volatile double progress;
 
     public GCodeImporter(EventBus eventBus){
         super();
@@ -37,12 +40,19 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
         gCodeLayer = new GCodeLayer(Integer.MIN_VALUE);
         layers = new ArrayList<>();
         gCodeContext = new GCodeContext();
+        progress = 0;
     }
 
     @Override
-    public TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException {
+    public ArrayList<GCodeLayer> load(String fileName) throws IOException, RunningOutOfMemoryException, InterruptedException {
+        return load(new FileInputStream(fileName));
+    }
+
+    public ArrayList<GCodeLayer> load(InputStream stream) throws IOException, RunningOutOfMemoryException, InterruptedException {
+
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"))) {
             String line;
+
             while ((line = br.readLine()) != null) {
 
                 if (LAYER_NUMBER_PATTERN.matcher(line).matches()) {
@@ -64,6 +74,11 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
                     handlePrintMove(line);
                     continue;
                 }
+
+                MemoryManager.checkMemory();
+                if (Thread.currentThread().isInterrupted()) {
+                    throw new InterruptedException();
+                }
             }
 
             // Append last layer
@@ -71,8 +86,7 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
         }
 
         eventBus.publish(new Event(EventType.GCODE_IMPORT_COMPLETED.name(), layers.size()));
-        clear();
-        return null;
+        return layers;
     }
 
     private Double extractGCodeParam(String line, String paramTag) throws NumberFormatException {
@@ -92,7 +106,6 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
             layer.finalizeSegment();
             layer.finalizeLayer();
             layers.add(layer);
-            yield(layer);
         }
     }
 
@@ -148,9 +161,15 @@ public class GCodeImporter extends YieldModelImporter<GCodeLayer> {
         }
     }
 
-    private void clear(){
+    @Override
+    public void reset() {
         layers.clear();
         gCodeLayer = null;
         gCodeContext = null;
+    }
+
+    @Override
+    public double getProgress() {
+        return progress;
     }
 }
