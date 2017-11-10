@@ -67,6 +67,7 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     private final ProgressNotification slicingProgressNotification;
     private final SuccessNotification slicingDoneNotification;
+    private final ErrorNotification slicingFailedNotification;
 
     // Layout
     @FXML AnchorPane anchorPane;
@@ -122,8 +123,14 @@ public class SlicerPanelController extends LocalizableController implements Init
         this.sceneSTL = filePathResource.getPath(FilePath.SCENE_EXPORT_FILE);
         this.sceneImage = filePathResource.getPath(FilePath.SCENE_IMAGE_FILE);
 
-        this.slicingProgressNotification = new ProgressNotification();
-        this.slicingDoneNotification = new SuccessNotification();
+        slicingProgressNotification = new ProgressNotification();
+        slicingDoneNotification = new SuccessNotification();
+        slicingFailedNotification = new ErrorNotification();
+
+        slicingProgressNotification.setLabelText(getMessage("notification_slicing_objects"));
+        slicingProgressNotification.addOnCloseAction((e) -> slicerController.stopSlice());
+        slicingDoneNotification.setLabelText(getMessage("notification_slicing_completed"));
+        slicingFailedNotification.setLabelText(getMessage("notification_slicing_failed"));
     }
 
     @Override
@@ -276,36 +283,23 @@ public class SlicerPanelController extends LocalizableController implements Init
             if (advSettingsBox.isVisible()){
                 advSettingsBox.setManaged(false);
                 advSettingsBox.setVisible(false);
-                advSettingsToggle.setText(getMessage("show_advanced_settings"));
+                advSettingsToggle.setText(getMessage("slicer_show_advanced_settings"));
             } else {
                 advSettingsBox.setManaged(true);
                 advSettingsBox.setVisible(true);
-                advSettingsToggle.setText(getMessage("hide_advanced_settings"));
+                advSettingsToggle.setText(getMessage("slicer_hide_advanced_settings"));
             }
         });
 
-        slicingProgressNotification.setLabelText(getMessage("slicing_objects"));
-        slicingProgressNotification.addOnCloseAction((e) -> {
-            slicerController.stopSlice();
-        });
-
-        slicingDoneNotification.setLabelText(getMessage("slicing_completed"));
-
-        ErrorNotification slicingFailedNotification = new ErrorNotification();
-        slicingFailedNotification.setLabelText(getMessage("slicing_failed"));
-
         eventBus.subscribe(EventType.SCENE_EXPORT_PROGRESS.name(), this::onSceneExportProgress);
         eventBus.subscribe(EventType.SLICER_PROGRESS.name(), this::onSlicerProgress);
+        eventBus.subscribe(EventType.SLICER_CANCELLED.name(), this::onSlicerCancelled);
         eventBus.subscribe(EventType.SLICER_FINISHED.name(), this::onSlicerFinished);
+        eventBus.subscribe(EventType.SLICER_FAILED.name(), this::onSlicerFailed);
         eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> setSliceEnabled(true));
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), this::onEditModeActivate);
         eventBus.subscribe(EventType.EDIT_SCENE_VALID.name(), (e) -> sliceButton.setDisable(false));
         eventBus.subscribe(EventType.EDIT_SCENE_INVALID.name(), (e) -> sliceButton.setDisable(true));
-        eventBus.subscribe(EventType.SLICER_FAILED.name(), (e) -> {
-            slicingProgressNotification.hide();
-            enableControls();
-            eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingFailedNotification));
-        });
 
         initTooltips();
 
@@ -344,10 +338,21 @@ public class SlicerPanelController extends LocalizableController implements Init
         slicingProgressNotification.setProgress(0.2 + 0.8 * (double) e.getData());
     }
 
+    private void onSlicerCancelled(Event e){
+        slicingProgressNotification.hide();
+        enableControls();
+    }
+
     private void onSlicerFinished(Event e){
         slicingProgressNotification.hide();
         eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingDoneNotification));
         eventBus.publish(new Event(EventType.SCENE_SET_MODE.name(), SceneMode.GCODE));
+    }
+
+    private void onSlicerFailed(Event e ){
+        slicingProgressNotification.hide();
+        enableControls();
+        eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingFailedNotification));
     }
 
     private void onEditModeActivate(Event e){

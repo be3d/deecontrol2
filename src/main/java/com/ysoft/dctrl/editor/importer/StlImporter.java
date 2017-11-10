@@ -15,13 +15,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ysoft.dctrl.utils.MemoryManager;
+import com.ysoft.dctrl.utils.exceptions.RunningOutOfMemoryException;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.shape.VertexFormat;
 
 /**
  * Created by pilar on 28.3.2017.
  */
-public class StlImporter extends AbstractModelImporter {
+public class StlImporter extends AbstractModelImporter<TriangleMesh> {
     private static final String ASCII_START = "solid ";
 
     private static final String FLOAT_FORMAT = "([+-]?[0-9]+\\.?[0-9]*([eE][+-]?[0-9]+)?)";
@@ -33,21 +35,26 @@ public class StlImporter extends AbstractModelImporter {
     private TriangleMesh mesh;
     private Map<String, Integer> vertexMap;
     private Integer nextVertexIndex;
+    private Integer nextFaceIndex;
+    private Integer nextNormalIndex;
 
     public StlImporter() {
         super();
         reset();
     }
 
-    private void reset() {
+    @Override
+    public void reset() {
         mesh = new TriangleMesh();
         mesh.setVertexFormat(VertexFormat.POINT_NORMAL_TEXCOORD);
         vertexMap = new HashMap<>();
         nextVertexIndex = 0;
+        nextFaceIndex = 0;
+        nextNormalIndex = 0;
     }
 
     @Override
-    public TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException {
+    public TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException, RunningOutOfMemoryException, OutOfMemoryError {
         try (BufferedInputStream bis = new BufferedInputStream(stream)){
             byte[] data = new byte[1024];
             bis.mark(100);
@@ -80,7 +87,7 @@ public class StlImporter extends AbstractModelImporter {
                 StandardCharsets.US_ASCII.newEncoder().canEncode(s.substring(i+1));
     }
 
-    private TriangleMesh loadBinary(BufferedInputStream stream) throws IllegalArgumentException, IOException {
+    private TriangleMesh loadBinary(BufferedInputStream stream) throws IllegalArgumentException, IOException, RunningOutOfMemoryException, OutOfMemoryError {
         byte[] data = new byte[80];
         if(stream.read(data) != 80) { throw new IllegalArgumentException("Not a valid stl file"); }
         addBytesRead(80);
@@ -91,6 +98,7 @@ public class StlImporter extends AbstractModelImporter {
         int facesRead = 0;
         data = new byte[50];
         while (stream.read(data) == 50) {
+            MemoryManager.checkMemory();
             addBytesRead(50);
             loadFace(data);
             facesRead++;
@@ -101,12 +109,13 @@ public class StlImporter extends AbstractModelImporter {
         return mesh;
     }
 
-    private TriangleMesh loadAscii(InputStream stream) throws IOException {
+    private TriangleMesh loadAscii(InputStream stream) throws IOException, RunningOutOfMemoryException, OutOfMemoryError {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
         StringBuilder builder = new StringBuilder();
         char[] buffer = new char[8192];
         int read = 0;
         while((read = reader.read(buffer)) != -1) {
+            MemoryManager.checkMemory();
             addBytesRead(read);
             builder.append(buffer, 0, read);
             FACET_MATCHER.reset(builder);

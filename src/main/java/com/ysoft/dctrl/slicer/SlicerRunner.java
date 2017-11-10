@@ -49,6 +49,11 @@ public class SlicerRunner extends Task<Slicer> {
 
         try {
             slicer.run(slicerParams, scene);
+        } catch (IOException e) {
+            logger.warn(e);
+            eventBus.publish(new Event(EventType.SLICER_FAILED.name()));
+        } catch (InterruptedException e){
+            eventBus.publish(new Event(EventType.SLICER_CANCELLED.name()));
         } finally {
             timeline.stop();
         }

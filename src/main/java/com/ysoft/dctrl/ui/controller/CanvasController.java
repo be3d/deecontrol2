@@ -9,6 +9,12 @@ import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
+import com.ysoft.dctrl.ui.notification.ErrorNotification;
+import com.ysoft.dctrl.utils.exceptions.RunningOutOfMemoryException;
+import javafx.scene.shape.TriangleMesh;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -48,21 +54,25 @@ import javafx.scene.paint.Color;
  */
 
 @Controller
-public class CanvasController extends AbstractController implements Initializable {
+public class CanvasController extends LocalizableController implements Initializable {
     @FXML AnchorPane canvas;
 
+    private final Logger logger = LogManager.getLogger(CanvasController.class);
     private final SceneGraph sceneGraph;
     private final KeyEventPropagator keyEventPropagator;
     private final MeshTransformControls meshTransformControls;
 
+    private Thread importRunnerThread;
+
     @Autowired
     public CanvasController(EventBus eventBus,
                             DeeControlContext deeControlContext,
+                            LocalizationService localizationService,
                             SceneGraph sceneGraph,
                             KeyEventPropagator keyEventPropagator,
                             MeshTransformControls meshTransformControls
     ) {
-        super(eventBus, deeControlContext);
+        super(localizationService, eventBus, deeControlContext);
         this.sceneGraph = sceneGraph;
         this.keyEventPropagator = keyEventPropagator;
         this.meshTransformControls = meshTransformControls;
@@ -135,24 +145,45 @@ public class CanvasController extends AbstractController implements Initializabl
 
     public void addModel(String modelPath) {
         ProgressNotification progressNotification = new ProgressNotification();
-        progressNotification.setLabelText("Inserting objects...");
+        progressNotification.setLabelText(getMessage("notification_inserting_objects"));
+        progressNotification.addOnCloseAction(e -> importRunnerThread.interrupt());
         String hd = eventBus.subscribe(EventType.MODEL_LOAD_PROGRESS.name(), e -> {
             progressNotification.setProgress(((double) e.getData())/100);
         });
+        ErrorNotification addModelFailedNotification = new ErrorNotification();
+        addModelFailedNotification.setLabelText(getMessage("notification_too_big_to_insert"));
 
         String modelName = (new File(modelPath)).getName().replaceAll("\\.([^.])*$", "");
 
         eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), progressNotification));
 
         StlImporter stlImporter = new StlImporter();
-        ImportRunner importRunner = new ImportRunner(eventBus, stlImporter, modelPath);
+        ImportRunner importRunner = new ImportRunner<TriangleMesh>(eventBus, stlImporter, modelPath);
         importRunner.setOnSucceeded(e -> {
             progressNotification.hide();
-            eventBus.publish(new Event(EventType.MODEL_LOADED.name(), new ModelLoadedDTO(importRunner.getValue(), modelName)));
             eventBus.unsubscribe(hd);
+
+            TriangleMesh mesh = (TriangleMesh)importRunner.getValue();
+            if(mesh != null){
+                eventBus.publish(new Event(EventType.MODEL_LOADED.name(), new ModelLoadedDTO((TriangleMesh)importRunner.getValue(), modelName)));
+            } else {
+                logger.warn("Model import failed: {}",modelPath);
+                eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), addModelFailedNotification));
+            }
+        });
+        importRunner.setOnFailed(e -> {
+            progressNotification.hide();
+            eventBus.unsubscribe(hd);
+
+            Throwable t = ((ImportRunner)e.getSource()).getException();
+            if((t instanceof RunningOutOfMemoryException) || (t instanceof OutOfMemoryError)){
+                logger.warn("Model import failed (out of memory): {}",modelPath);
+                eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), addModelFailedNotification));
+            }
         });
 
-        new Thread(importRunner).start();
+        importRunnerThread = new Thread(importRunner);
+        importRunnerThread.start();
     }
 
     public void keyDown(KeyEvent keyEvent) {

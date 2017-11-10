@@ -15,16 +15,24 @@ import java.util.*;
  */
 public class GCodeLayer {
 
-    private int number = 0;
-    private LinkedList<GCodeMove> moveBuffer = new LinkedList<>();
-    private LinkedHashMap<String,MeshView> meshViewsMap = new LinkedHashMap<>();
-    private LinkedHashMap<String, LinkedList<GCodeMeshData>> meshDataMap = new LinkedHashMap<>();
+    private int number;
+    private LinkedList<GCodeMove> moveBuffer;
+    private LinkedHashMap<String,MeshView> meshViewsMap;
+    private LinkedHashMap<String, LinkedList<GCodeMeshData>> meshDataMap;
 
-    private final GCodeMeshProperties gCodeMeshProperties = new GCodeMeshProperties();
-    private final GCodeMeshGenerator gCodeMeshGenerator = new GCodeMeshGenerator(new GCodeMeshProperties());
+    private static final GCodeMeshProperties gCodeMeshProperties;
+    private static final GCodeMeshGenerator gCodeMeshGenerator;
+
+    static {
+        gCodeMeshProperties = new GCodeMeshProperties();
+        gCodeMeshGenerator = new GCodeMeshGenerator(gCodeMeshProperties);
+    }
 
     public GCodeLayer(int number) {
         this.number = number;
+        moveBuffer = new LinkedList<>();
+        meshViewsMap = new LinkedHashMap<>();
+        meshDataMap = new LinkedHashMap<>();
     }
 
     public int getNumber() {
@@ -114,22 +122,18 @@ public class GCodeLayer {
         meshViewsMap.put(type.name(), null);
     }
 
+    public void clearMeshViews(){
+        meshViewsMap.clear();
+    }
+
     public void setVisible(boolean value){
         for (MeshView view : meshViewsMap.values()){
             if(view != null) view.setVisible(value);
         }
     }
 
-    // todo refactor to GCodeViewer
-    public void setVisibleOne(GCodeMoveType type){
-        meshViewsMap.forEach((k,v) -> {
-            v.setVisible(k.equals(type.name()));
-        });
-    }
-
-
     public void finalizeLayer(){
-        generateMeshViews();
+        //generateMeshViews();
     }
 
     public void finalizeSegment() {

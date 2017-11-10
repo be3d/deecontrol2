@@ -5,14 +5,16 @@ import java.io.IOException;
 
 import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
 
+import com.ysoft.dctrl.utils.exceptions.RunningOutOfMemoryException;
 import javafx.scene.shape.TriangleMesh;
 
 /**
  * Created by pilar on 28.3.2017.
  */
-public interface ModelImporter {
-    TriangleMesh load(String path) throws IOException, IllegalArgumentException;
-    TriangleMesh load(File file) throws IOException, IllegalArgumentException;
+public interface ModelImporter<R> {
+    R load(String path) throws IOException, IllegalArgumentException, RunningOutOfMemoryException, InterruptedException;
+    R load(File file) throws IOException, IllegalArgumentException, RunningOutOfMemoryException, InterruptedException;
+    void reset();
 
     double getProgress();
 }
