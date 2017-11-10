@@ -69,6 +69,7 @@ public class GCodePanelController extends LocalizableController implements Initi
     @FXML Label filamentUsageLabel;
 
     private SuccessNotification jobSendDoneNotification;
+    private ErrorNotification jobSendFailedNotification;
     private SpinnerNotification jobSendProgressNotification;
     private SpinnerNotification gCodeRenderingNotification;
     private SuccessNotification gCodeRenderingFailed;
@@ -89,6 +90,7 @@ public class GCodePanelController extends LocalizableController implements Initi
 
         jobSendDoneNotification = new SuccessNotification();
         jobSendProgressNotification = new SpinnerNotification();
+        jobSendFailedNotification = new ErrorNotification();
         gCodeRenderingNotification = new SpinnerNotification();
         gCodeRenderingNotification.setLabelText(getMessage("notification_gcode_rendering_in_progress"));
         gCodeRenderingFailed = new SuccessNotification();
@@ -141,6 +143,7 @@ public class GCodePanelController extends LocalizableController implements Initi
 
         jobSendDoneNotification.setLabelText(getMessage("notification_file_transfer_success"));
         jobSendProgressNotification.setLabelText(getMessage("notification_file_transfer_in_progress"));
+        jobSendFailedNotification.setLabelText(getMessage("notification_print_job_send_fail"));
 
         AlertLinkNotification safeqNotSetNotification = new AlertLinkNotification();
         safeqNotSetNotification.setLabelText(getMessage("notification_safeq_settings_not_set"));
@@ -172,6 +175,12 @@ public class GCodePanelController extends LocalizableController implements Initi
             jobSendProgressNotification.hide();
             sendJobBtn.setDisable(false);
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), jobSendDoneNotification));
+        });
+
+        eventBus.subscribe(EventType.JOB_SEND_FAILED.name(), (e) -> {
+            jobSendProgressNotification.hide();
+            sendJobBtn.setDisable(false);
+            eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), jobSendFailedNotification));
         });
 
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {

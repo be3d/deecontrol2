@@ -44,16 +44,17 @@ public class SafeQSender {
                 try (FileInputStream fis = new FileInputStream(f = new File(jobPath))) {
                     DefaultLprSender sender = new DefaultLprSender(safeQSettings.getSpoolerAddress(), InetAddress.getByName(safeQSettings.getSpoolerAddress()).getHostName(), Integer.valueOf(safeQSettings.getSpoolerPort()));
                     sender.send(username, "YSoft.be3D", deeControlContext.getCurrentProject().getName(), fis, f.length());
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-
                 return null;
             }
         };
 
         task.setOnSucceeded((e) -> {
             eventBus.publish(new Event(EventType.JOB_SEND_DONE.name()));
+        });
+
+        task.setOnFailed((e) -> {
+            eventBus.publish(new Event(EventType.JOB_SEND_FAILED.name()));
         });
 
         new Thread(task).start();

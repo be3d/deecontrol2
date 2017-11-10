@@ -101,6 +101,9 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         group.forEach(mesh -> mesh.setMaterial(material));
     }
 
+    @Override
+    public Material getMaterial() { return group.get(0).getMaterial(); }
+
     private void updateScale(Point3D scale) {
         this.scale.setX(scale.getX());
         this.scale.setY(scale.getY());
@@ -186,6 +189,9 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
     public void setBoundingBoxVisible(boolean visible) {
         boundingBox.setNodeVisible(visible);
     }
+
+    @Override
+    public boolean isBoundingBoxVisible() { return boundingBox.isNodeVisible(); }
 
     private void refreshBoundingBox() {
         boundingBox.reset();

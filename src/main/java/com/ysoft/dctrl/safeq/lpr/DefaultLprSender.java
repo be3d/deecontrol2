@@ -100,8 +100,15 @@ public class DefaultLprSender implements LprSender {
         if(!waitForResponse) { return; }
 
         InputStream is = printJob.getClientInput();
-        int res = is.read();
-        //TODO response check should be done here
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(is.available() > 0 && is.read() != 0) {
+            throw new IOException("LPR transfer failed");
+        }
+
         is.skip(is.available());
     }
 
