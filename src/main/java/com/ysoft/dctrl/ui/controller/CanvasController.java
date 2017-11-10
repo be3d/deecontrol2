@@ -109,7 +109,6 @@ public class CanvasController extends AbstractController implements Initializabl
         eventBus.subscribe(EventType.ADD_MODEL.name(), this::addModel);
         eventBus.subscribe(EventType.RESET_VIEW.name(), (e) -> controls.resetCamera());
         eventBus.subscribe(EventType.TOP_VIEW.name(), (e) -> controls.setTopView());
-        eventBus.subscribe(EventType.TAKE_SCENE_SNAPSHOT.name(), (e) -> takeSnapShot((String) e.getData()));
         eventBus.subscribe(EventType.ZOOM_IN_VIEW.name(), (e) -> controls.zoomInCamera());
         eventBus.subscribe(EventType.ZOOM_OUT_VIEW.name(), (e) -> controls.zoomOutCamera());
     }
@@ -168,21 +167,5 @@ public class CanvasController extends AbstractController implements Initializabl
                 }
                 break;
         }
-    }
-
-    public void takeSnapShot(String path) {
-        List<Node> visibleNodes = new LinkedList<>();
-        canvas.getChildren().forEach(n -> {
-            if(!n.isVisible() || n instanceof SubScene) { return; }
-            visibleNodes.add(n);
-            n.setVisible(false);
-        });
-        WritableImage image = canvas.snapshot(new SnapshotParameters(), null);
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", new File(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        visibleNodes.forEach(n -> n.setVisible(true));
     }
 }

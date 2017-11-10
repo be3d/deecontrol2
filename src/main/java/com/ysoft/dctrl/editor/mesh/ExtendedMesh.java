@@ -96,6 +96,9 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         boundingBox.setNodeVisible(visible);
     }
 
+    @Override
+    public boolean isBoundingBoxVisible() { return boundingBox.isNodeVisible(); }
+
     private void checkBoundingBox() {
         if(!isDirty) { return; }
 
@@ -174,6 +177,9 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     public void setMaterial(Material material) {
         view.setMaterial(material);
     }
+
+    @Override
+    public Material getMaterial() { return view.getMaterial(); }
 
     public TransformMatrix getTransformMatrix() {
         return (new TransformMatrix()).applyTranslate(getPosition()).applyEuler(getRadRotation()).applyScale(getScale());
