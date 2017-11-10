@@ -46,6 +46,7 @@ public class GCodeSceneGraph extends SubSceneGraph {
             GCodeMoveType.SUPPORT,
             GCodeMoveType.SKIN,
             GCodeMoveType.SKIRT,
+            GCodeMoveType.FILL,
             GCodeMoveType.NONE
     );
 
@@ -128,7 +129,12 @@ public class GCodeSceneGraph extends SubSceneGraph {
     private void loadGCodeLayers() {
         Group group = new Group();
 
+        int i = 0;
         for(GCodeLayer l : layers) {
+            if((i++)%10 != 0 ){
+                continue;
+            }
+
             if(interrupted){
                 onRenderInterrupted();
                 return;
