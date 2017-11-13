@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 public class DeeControlPreloader extends Preloader {
     private final Logger logger = LogManager.getLogger(DeeControlPreloader.class);
 
-    private final static String SPLASH_CSS = "css/splash_screen.css";
+    private final static String SPLASH_CSS = "/css/splash_screen.css";
     private final static String DEV_VERSION = "devel version";
 
     private Stage preloaderStage;
@@ -47,8 +47,7 @@ public class DeeControlPreloader extends Preloader {
         StackPane content = new StackPane();
 
         Scene scene = new Scene(root, Color.TRANSPARENT);
-        scene.getStylesheets().add(SPLASH_CSS);
-        scene.setFill(Color.TRANSPARENT);
+        scene.getStylesheets().add(getClass().getResource(SPLASH_CSS).toExternalForm());
 
         String version = getClass().getPackage().getImplementationVersion();
         Label versionLabel = new Label(version != null ? version : DEV_VERSION);
@@ -57,15 +56,14 @@ public class DeeControlPreloader extends Preloader {
         content.getStyleClass().addAll("content");
         content.getChildren().addAll(versionLabel);
         content.setAlignment(Pos.BOTTOM_RIGHT);
-        root.getChildren().add(content);
 
         preloaderStage.initStyle(StageStyle.UNDECORATED);
-        preloaderStage.setAlwaysOnTop(true);
         preloaderStage.setWidth(406);
         preloaderStage.setHeight(210);
         preloaderStage.centerOnScreen();
         preloaderStage.setScene(scene);
 
         preloaderStage.show();
+        root.getChildren().add(content);
     }
 }
