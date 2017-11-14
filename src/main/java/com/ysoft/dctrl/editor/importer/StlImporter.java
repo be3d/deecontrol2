@@ -54,7 +54,9 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
     }
 
     @Override
-    public TriangleMesh load(InputStream stream) throws IOException, IllegalArgumentException, RunningOutOfMemoryException, OutOfMemoryError {
+    public TriangleMesh load(InputStream stream)
+            throws IOException, IllegalArgumentException, RunningOutOfMemoryException, OutOfMemoryError, InterruptedException {
+
         try (BufferedInputStream bis = new BufferedInputStream(stream)){
             byte[] data = new byte[1024];
             bis.mark(100);
@@ -87,7 +89,9 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
                 StandardCharsets.US_ASCII.newEncoder().canEncode(s.substring(i+1));
     }
 
-    private TriangleMesh loadBinary(BufferedInputStream stream) throws IllegalArgumentException, IOException, RunningOutOfMemoryException, OutOfMemoryError {
+    private TriangleMesh loadBinary(BufferedInputStream stream)
+            throws IllegalArgumentException, IOException, RunningOutOfMemoryException, OutOfMemoryError, InterruptedException {
+
         byte[] data = new byte[80];
         if(stream.read(data) != 80) { throw new IllegalArgumentException("Not a valid stl file"); }
         addBytesRead(80);
@@ -99,6 +103,10 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
         data = new byte[50];
         while (stream.read(data) == 50) {
             MemoryManager.checkMemory();
+            if (Thread.currentThread().isInterrupted()) {
+                throw new InterruptedException();
+            }
+
             addBytesRead(50);
             loadFace(data);
             facesRead++;
@@ -109,13 +117,19 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
         return mesh;
     }
 
-    private TriangleMesh loadAscii(InputStream stream) throws IOException, RunningOutOfMemoryException, OutOfMemoryError {
+    private TriangleMesh loadAscii(InputStream stream)
+            throws IOException, RunningOutOfMemoryException, OutOfMemoryError, InterruptedException {
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
         StringBuilder builder = new StringBuilder();
         char[] buffer = new char[8192];
         int read = 0;
         while((read = reader.read(buffer)) != -1) {
             MemoryManager.checkMemory();
+            if (Thread.currentThread().isInterrupted()) {
+                throw new InterruptedException();
+            }
+
             addBytesRead(read);
             builder.append(buffer, 0, read);
             FACET_MATCHER.reset(builder);

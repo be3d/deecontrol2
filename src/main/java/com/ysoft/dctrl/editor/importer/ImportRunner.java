@@ -43,6 +43,9 @@ public class ImportRunner<R> extends YieldTask<Void,R> {
             result = (R)modelImporter.load(path);
         } catch (IOException e) {
             logger.warn(e);
+        } catch (InterruptedException e){
+            modelImporter.reset();
+            throw e;
         } finally {
             timeline.stop();
         }
