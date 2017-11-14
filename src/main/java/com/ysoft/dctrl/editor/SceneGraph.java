@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.ysoft.dctrl.editor.control.ExtendedPerspectiveCamera;
 import com.ysoft.dctrl.editor.mesh.PrintBed;
 import com.ysoft.dctrl.editor.mesh.PrinterVolume;
+import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.math.BoundingBox;
@@ -80,11 +81,13 @@ public class SceneGraph {
     public void init() {
         helpGroup.getChildren().addAll(camera, printVolume.getNode(), createPrintBed().getNode());
         helpGroup.getChildren().addAll(createLights());
+        helpGroup.setVisible(false);
         setMode(SceneMode.EDIT);
 
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> setMode((SceneMode) e.getData()));
         eventBus.subscribe(EventType.EDIT_SCENE_VALID.name(), (e) -> printVolume.setDefaultColor());
         eventBus.subscribe(EventType.EDIT_SCENE_INVALID.name(), (e) -> printVolume.setInvalidColor());
+        eventBus.subscribeOnce(EventType.MODEL_LOADED.name(), (e) -> helpGroup.setVisible(true));
     }
 
     private ExtendedPerspectiveCamera createCamera() {

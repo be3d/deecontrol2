@@ -93,7 +93,7 @@ public class BaseWindow {
         editorCanvas.prefWidthProperty().bind(root.widthProperty().subtract(slicerPanel.widthProperty()));
 
         ((AnchorPane) editorCanvas).getChildren().add(notificationManager.getNode());
-        canvasPane.getChildren().addAll(editorCanvas, slicerPanel, gcodePanel, gCodeLayerControlPanel);
+        canvasPane.getChildren().addAll(slicerPanel, gcodePanel, gCodeLayerControlPanel, editorCanvas);
         content.getChildren().addAll(menuBar, mainPanel, canvasPane);
 
         stage.setMinWidth(800);
