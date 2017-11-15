@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.util.StringUtils;
+
 import com.ysoft.dctrl.utils.MemoryManager;
 import com.ysoft.dctrl.utils.exceptions.RunningOutOfMemoryException;
 import javafx.scene.shape.TriangleMesh;
@@ -25,18 +27,19 @@ import javafx.scene.shape.VertexFormat;
  */
 public class StlImporter extends AbstractModelImporter<TriangleMesh> {
     private static final String ASCII_START = "solid ";
+    private static final String ASCII_END = "endsolid";
 
+    private static final String FACET_START = "facet";
+    private static final String FACET_END = "endface";
     private static final String FLOAT_FORMAT = "([+-]?[0-9]+\\.?[0-9]*([eE][+-]?[0-9]+)?)";
     private static final String VERTEX_FORMAT = FLOAT_FORMAT + "\\s+" + FLOAT_FORMAT + "\\s+" + FLOAT_FORMAT;
-    private static final Matcher FACET_MATCHER = Pattern.compile("facet([\\s\\S]*?)endface", Pattern.MULTILINE).matcher("");
+    private static final Matcher FACET_MATCHER = Pattern.compile(FACET_START + "([\\s\\S]*?)" + FACET_END, Pattern.MULTILINE).matcher("");
     private static final Matcher NORMAL_MATCHER = Pattern.compile("normal\\s+" + VERTEX_FORMAT, Pattern.MULTILINE).matcher("");
     private static final Matcher VERTEX_MATCHER = Pattern.compile("vertex\\s+" + VERTEX_FORMAT, Pattern.MULTILINE).matcher("");
 
     private TriangleMesh mesh;
     private Map<String, Integer> vertexMap;
     private Integer nextVertexIndex;
-    private Integer nextFaceIndex;
-    private Integer nextNormalIndex;
 
     public StlImporter() {
         super();
@@ -44,13 +47,11 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
     }
 
     @Override
-    public void reset() {
+    public final void reset() {
         mesh = new TriangleMesh();
         mesh.setVertexFormat(VertexFormat.POINT_NORMAL_TEXCOORD);
         vertexMap = new HashMap<>();
         nextVertexIndex = 0;
-        nextFaceIndex = 0;
-        nextNormalIndex = 0;
     }
 
     @Override
@@ -113,7 +114,7 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
         StringBuilder builder = new StringBuilder();
         char[] buffer = new char[8192];
-        int read = 0;
+        int read;
         while((read = reader.read(buffer)) != -1) {
             MemoryManager.checkMemory();
             addBytesRead(read);
@@ -122,9 +123,17 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
             while(FACET_MATCHER.find()) {
                 loadFace(FACET_MATCHER.group());
                 builder.delete(0, FACET_MATCHER.end());
+                if(builder.indexOf(FACET_START) > builder.indexOf(FACET_END)) {
+                    throw new IllegalArgumentException("Not valid ASCII stl file.");
+                }
                 FACET_MATCHER.reset(builder);
             }
         }
+
+        if(builder.indexOf(ASCII_END) != -1) {
+            throw new IllegalArgumentException("Not valid ASCII stl file.");
+        }
+
         return mesh;
     }
 
@@ -136,14 +145,24 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
         //    for(int i = 0; i < 3; i++) { norm[i] = Float.parseFloat(NORMAL_MATCHER.group(2*i + 1)); }
         //}
 
+        if(StringUtils.countOccurrencesOf(faceData, FACET_START) < 1) {
+            throw new IllegalArgumentException("Not valid ASCII stl file.");
+        }
+
         VERTEX_MATCHER.reset(faceData);
-        for(int i = 0; i < 3; i++) {
-            if(VERTEX_MATCHER.find()) {
-                for (int j = 0; j < 3; j++) {
-                    vertices[i * 3 + j] = Float.parseFloat(VERTEX_MATCHER.group(2*j + 1));
-                }
+        int counter = 0;
+        while(VERTEX_MATCHER.find()) {
+            if(++counter > 3) {
+                throw new IllegalArgumentException("Not valid ASCII stl file.");
+            }
+            for (int j = 0; j < 3; j++) {
+                vertices[(counter - 1) * 3 + j] = Float.parseFloat(VERTEX_MATCHER.group(2*j + 1));
             }
         }
+        if(counter < 3) {
+            throw new IllegalArgumentException("Not valid ASCII stl file.");
+        }
+
         float[] normal = computeNormalVector(vertices);
         int normalIndex = addNormal(normal[0], normal[1], normal[2]);
         int v1 = addVertex(vertices[0], vertices[1], vertices[2]);
