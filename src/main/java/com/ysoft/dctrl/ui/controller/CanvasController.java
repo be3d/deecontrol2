@@ -182,15 +182,15 @@ public class CanvasController extends LocalizableController implements Initializ
             addModelProgressNotification.hide();
 
             try {
-                throw importRunner.getException();
+                throw (Exception) importRunner.getException();
             } catch(RunningOutOfMemoryException | OutOfMemoryError ex) {
                 logger.warn("Model import failed (out of memory): {}", modelPath, ex);
                 eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), modelTooBigNotification));
             } catch(IllegalArgumentException ex) {
                 logger.warn("Model file damaged, unable to load ({})", modelPath, ex);
                 eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), damagedModelNotification));
-            } catch (Throwable t) {
-                logger.warn("Model import failed", t);
+            } catch (Exception ex) {
+                logger.warn("Model import failed", ex);
                 eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), addModelFailedNotification));
             }
         });
