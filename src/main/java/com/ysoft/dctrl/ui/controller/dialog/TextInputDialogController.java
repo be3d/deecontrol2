@@ -3,7 +3,7 @@ package com.ysoft.dctrl.ui.controller.dialog;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.ui.control.DialogPane;
 import com.ysoft.dctrl.ui.dialog.contract.TextInputDialogData;
-import com.ysoft.dctrl.ui.factory.dialog.DialogType;
+import com.ysoft.dctrl.ui.dialog.DialogType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 import javafx.fxml.FXML;

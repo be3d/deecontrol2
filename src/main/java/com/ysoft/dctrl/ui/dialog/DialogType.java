@@ -1,4 +1,4 @@
-package com.ysoft.dctrl.ui.factory.dialog;
+package com.ysoft.dctrl.ui.dialog;
 
 /**
  * Created by pilar on 23.5.2017.

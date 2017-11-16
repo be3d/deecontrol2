@@ -21,8 +21,10 @@ import com.ysoft.dctrl.event.EventType;
 
 @Component
 public class ModelInsertionStack extends ArrayList<ExtendedMesh> {
-    private final EventBus eventBus;
-    private final Comparator<ExtendedMesh> comparator = Comparator.comparingInt(ExtendedMesh::getID);
+    private static final long serialVersionUID = 1;
+
+    private final transient EventBus eventBus;
+    private final transient Comparator<ExtendedMesh> comparator = Comparator.comparingInt(ExtendedMesh::getID);
 
     @Autowired
     public ModelInsertionStack(EventBus eventBus) {

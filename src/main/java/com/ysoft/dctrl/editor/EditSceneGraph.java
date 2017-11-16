@@ -35,6 +35,7 @@ import com.ysoft.dctrl.math.Utils;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Material;
 import javafx.scene.paint.PhongMaterial;
 
 /**
@@ -145,6 +146,7 @@ public class EditSceneGraph extends SubSceneGraph {
         extendedMesh.getBoundingBox().setOnChange(bb -> validatePosition(extendedMesh, bb));
     }
 
+    @Override
     public void addMesh(SceneMesh sceneMesh) {
         super.addMesh(sceneMesh);
         sceneMesh.setBoundingBoxVisible(false);
@@ -211,7 +213,7 @@ public class EditSceneGraph extends SubSceneGraph {
 
     public void scaleSelectedToMax() {
         SceneMesh s = getSelected();
-        if(s == null) return;
+        if(s == null) { return; }
         Point3D size = s.getBoundingBox().getSize();
         size = Point3DUtils.divideElements(size, s.getScale());
         Point3D oldScale = s.getScale();
@@ -264,7 +266,7 @@ public class EditSceneGraph extends SubSceneGraph {
         LinkedList<SceneMesh> sm = getSceneMeshes();
         SceneMesh s = getSelected();
         if(s == null) {
-            if(!sm.isEmpty()) selectSingle(sm.getFirst());
+            if(!sm.isEmpty()) { selectSingle(sm.getFirst()); }
         } else {
             int next = sm.indexOf(s) + 1;
             if(next > sm.size() - 1) { next = 0; }
@@ -414,7 +416,8 @@ public class EditSceneGraph extends SubSceneGraph {
     private void validatePosition(SceneMesh mesh, BoundingBox bb) {
         boolean oob = !printerVolume.contains(bb);
         mesh.setOutOfBounds(oob);
-        mesh.setMaterial(oob ? INVALID_MATERIAL : (selected.contains(mesh) ? SELECTED_MATERIAL : MATERIAL));
+        Material validMaterial = selected.contains(mesh) ? SELECTED_MATERIAL : MATERIAL;
+        mesh.setMaterial(oob ? INVALID_MATERIAL : validMaterial);
 
         handleOOB(oob, mesh);
     }

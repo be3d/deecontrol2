@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 /**
  * Created by pilar on 8.6.2017.
  */
-public abstract class YieldModelImporter<T> extends AbstractModelImporter {
+public abstract class YieldModelImporter<T, R> extends AbstractModelImporter<R> {
     private Consumer<T> onYield;
 
     public YieldModelImporter() {
@@ -13,7 +13,7 @@ public abstract class YieldModelImporter<T> extends AbstractModelImporter {
     }
 
     protected void yield(T object) {
-        if(onYield == null) return;
+        if(onYield == null) { return; }
         onYield.accept(object);
     }
 
