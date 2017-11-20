@@ -189,6 +189,8 @@ public class CanvasController extends LocalizableController implements Initializ
             } catch(IllegalArgumentException ex) {
                 logger.warn("Model file damaged, unable to load ({})", modelPath, ex);
                 eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), damagedModelNotification));
+            } catch(InterruptedException ex){
+                logger.trace("Model import interrupted");
             } catch (Exception ex) {
                 logger.warn("Model import failed", ex);
                 eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), addModelFailedNotification));
