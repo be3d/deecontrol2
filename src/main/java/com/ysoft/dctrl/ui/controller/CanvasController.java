@@ -1,13 +1,8 @@
 package com.ysoft.dctrl.ui.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.ResourceBundle;
-
-import javax.imageio.ImageIO;
 
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.ui.notification.ErrorNotification;
@@ -18,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.ysoft.dctrl.editor.EditSceneGraph;
 import com.ysoft.dctrl.editor.SceneGraph;
 import com.ysoft.dctrl.editor.control.MeshTransformControls;
 import com.ysoft.dctrl.editor.control.TrackBallCameraControls;
@@ -31,16 +25,13 @@ import com.ysoft.dctrl.event.dto.ModelLoadedDTO;
 import com.ysoft.dctrl.ui.notification.ProgressNotification;
 import com.ysoft.dctrl.utils.DeeControlContext;
 import com.ysoft.dctrl.utils.KeyEventPropagator;
+import com.ysoft.dctrl.utils.files.FileValidator;
 
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point3D;
-import javafx.scene.Node;
 import javafx.scene.SceneAntialiasing;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.SubScene;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyEvent;
@@ -61,6 +52,11 @@ public class CanvasController extends LocalizableController implements Initializ
     private final SceneGraph sceneGraph;
     private final KeyEventPropagator keyEventPropagator;
     private final MeshTransformControls meshTransformControls;
+    private final ProgressNotification addModelProgressNotification;
+    private final ErrorNotification modelTooBigNotification;
+    private final ErrorNotification notSupportedFormatNotification;
+    private final ErrorNotification damagedModelNotification;
+    private final ErrorNotification addModelFailedNotification;
 
     private Thread importRunnerThread;
 
@@ -76,6 +72,11 @@ public class CanvasController extends LocalizableController implements Initializ
         this.sceneGraph = sceneGraph;
         this.keyEventPropagator = keyEventPropagator;
         this.meshTransformControls = meshTransformControls;
+        this.addModelProgressNotification = new ProgressNotification();
+        this.modelTooBigNotification = new ErrorNotification();
+        this.notSupportedFormatNotification = new ErrorNotification();
+        this.damagedModelNotification = new ErrorNotification();
+        this.addModelFailedNotification = new ErrorNotification();
     }
 
     @Override
@@ -121,6 +122,15 @@ public class CanvasController extends LocalizableController implements Initializ
         eventBus.subscribe(EventType.TOP_VIEW.name(), (e) -> controls.setTopView());
         eventBus.subscribe(EventType.ZOOM_IN_VIEW.name(), (e) -> controls.zoomInCamera());
         eventBus.subscribe(EventType.ZOOM_OUT_VIEW.name(), (e) -> controls.zoomOutCamera());
+
+        addModelProgressNotification.setLabelText(getMessage("notification_inserting_objects"));
+        addModelProgressNotification.addOnCloseAction(e -> importRunnerThread.interrupt());
+        eventBus.subscribe(EventType.MODEL_LOAD_PROGRESS.name(), e -> addModelProgressNotification.setProgress(((double) e.getData())/100));
+
+        modelTooBigNotification.setLabelText(getMessage("notification_too_big_to_insert"));
+        notSupportedFormatNotification.setLabelText(getMessage("notification_not_supported_format"));
+        damagedModelNotification.setLabelText(getMessage("notification_damaged_model_file"));
+        addModelFailedNotification.setLabelText(getMessage("notification_add_model_failed"));
     }
 
     private void onDragOver(DragEvent dragEvent) {
@@ -144,40 +154,43 @@ public class CanvasController extends LocalizableController implements Initializ
     }
 
     public void addModel(String modelPath) {
-        ProgressNotification progressNotification = new ProgressNotification();
-        progressNotification.setLabelText(getMessage("notification_inserting_objects"));
-        progressNotification.addOnCloseAction(e -> importRunnerThread.interrupt());
-        String hd = eventBus.subscribe(EventType.MODEL_LOAD_PROGRESS.name(), e -> {
-            progressNotification.setProgress(((double) e.getData())/100);
-        });
-        ErrorNotification addModelFailedNotification = new ErrorNotification();
-        addModelFailedNotification.setLabelText(getMessage("notification_too_big_to_insert"));
+        if(!FileValidator.isModelFileSupproted(modelPath)) {
+            logger.warn("Unsupported file ({})", modelPath);
+            eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), notSupportedFormatNotification));
+            return;
+        }
 
         String modelName = (new File(modelPath)).getName().replaceAll("\\.([^.])*$", "");
 
-        eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), progressNotification));
+        eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), addModelProgressNotification));
+        addModelProgressNotification.setProgress(0);
 
         StlImporter stlImporter = new StlImporter();
         ImportRunner importRunner = new ImportRunner<TriangleMesh>(eventBus, stlImporter, modelPath);
         importRunner.setOnSucceeded(e -> {
-            progressNotification.hide();
-            eventBus.unsubscribe(hd);
+            addModelProgressNotification.hide();
 
-            TriangleMesh mesh = (TriangleMesh)importRunner.getValue();
+            TriangleMesh mesh = (TriangleMesh) importRunner.getValue();
             if(mesh != null){
                 eventBus.publish(new Event(EventType.MODEL_LOADED.name(), new ModelLoadedDTO((TriangleMesh)importRunner.getValue(), modelName)));
             } else {
-                logger.warn("Model import failed: {}",modelPath);
+                logger.warn("Model import failed: {}", modelPath);
                 eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), addModelFailedNotification));
             }
         });
         importRunner.setOnFailed(e -> {
-            progressNotification.hide();
-            eventBus.unsubscribe(hd);
+            addModelProgressNotification.hide();
 
-            Throwable t = ((ImportRunner)e.getSource()).getException();
-            if((t instanceof RunningOutOfMemoryException) || (t instanceof OutOfMemoryError)){
-                logger.warn("Model import failed (out of memory): {}",modelPath);
+            try {
+                throw (Exception) importRunner.getException();
+            } catch(RunningOutOfMemoryException | OutOfMemoryError ex) {
+                logger.warn("Model import failed (out of memory): {}", modelPath, ex);
+                eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), modelTooBigNotification));
+            } catch(IllegalArgumentException ex) {
+                logger.warn("Model file damaged, unable to load ({})", modelPath, ex);
+                eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), damagedModelNotification));
+            } catch (Exception ex) {
+                logger.warn("Model import failed", ex);
                 eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), addModelFailedNotification));
             }
         });
