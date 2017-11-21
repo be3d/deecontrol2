@@ -178,7 +178,7 @@ public class CanvasController extends LocalizableController implements Initializ
                 eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), addModelFailedNotification));
             }
         });
-        importRunner.setOnFailed(e -> {
+        importRunner.setOnFailed((javafx.event.Event e) -> {
             addModelProgressNotification.hide();
 
             try {
@@ -191,6 +191,7 @@ public class CanvasController extends LocalizableController implements Initializ
                 eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), damagedModelNotification));
             } catch(InterruptedException ex){
                 logger.trace("Model import interrupted");
+                Thread.currentThread().interrupt();
             } catch (Exception ex) {
                 logger.warn("Model import failed", ex);
                 eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), addModelFailedNotification));
