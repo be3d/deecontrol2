@@ -23,7 +23,7 @@ import com.ysoft.dctrl.event.EventType;
 public class ModelInsertionStack extends ArrayList<ExtendedMesh> {
     private static final long serialVersionUID = 1;
 
-    private final transient EventBus eventBus;
+    private transient EventBus eventBus;
     private final transient Comparator<ExtendedMesh> comparator = Comparator.comparingInt(ExtendedMesh::getID);
 
     @Autowired

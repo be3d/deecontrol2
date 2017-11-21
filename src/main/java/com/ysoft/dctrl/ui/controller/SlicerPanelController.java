@@ -294,7 +294,6 @@ public class SlicerPanelController extends LocalizableController implements Init
         eventBus.subscribe(EventType.SLICER_CANCELLED.name(), this::onSlicerCancelled);
         eventBus.subscribe(EventType.SLICER_FINISHED.name(), this::onSlicerFinished);
         eventBus.subscribe(EventType.SLICER_FAILED.name(), this::onSlicerFailed);
-        eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> setSliceEnabled(true));
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), this::onEditModeActivate);
         eventBus.subscribe(EventType.EDIT_SCENE_VALID.name(), (e) -> sliceButton.setDisable(false));
         eventBus.subscribe(EventType.EDIT_SCENE_INVALID.name(), (e) -> sliceButton.setDisable(true));

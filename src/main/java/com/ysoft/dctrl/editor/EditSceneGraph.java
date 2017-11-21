@@ -153,8 +153,8 @@ public class EditSceneGraph extends SubSceneGraph {
         sceneMesh.setMaterial(MATERIAL);
         modelInsertionStack.addSceneMesh(sceneMesh);
 
-        validatePosition(sceneMesh);
         selectSingle(sceneMesh);
+        validatePosition(sceneMesh);
     }
 
     public void centerSelected() {
@@ -294,8 +294,8 @@ public class EditSceneGraph extends SubSceneGraph {
         selected.clear();
         mesh = mesh.getGroup() != null ? mesh.getGroup() : mesh;
         selected.add(mesh);
-        mesh.setMaterial(SELECTED_MATERIAL);
         mesh.setBoundingBoxVisible(true);
+        validatePosition(mesh);
         eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), mesh));
     }
 
@@ -304,7 +304,7 @@ public class EditSceneGraph extends SubSceneGraph {
         selected.clear();
         sm.forEach(m -> {
             selected.add(m);
-            m.setMaterial(SELECTED_MATERIAL);
+            validatePosition(m);
             m.setBoundingBoxVisible(true);
         });
     }
@@ -320,7 +320,7 @@ public class EditSceneGraph extends SubSceneGraph {
                 eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), selected.get(0)));}
         } else {
             selected.add(mesh);
-            mesh.setMaterial(SELECTED_MATERIAL);
+            validatePosition(mesh);
             mesh.setBoundingBoxVisible(true);
             if(selected.size() == 2) { eventBus.publish(new Event(EventType.MODEL_MULTISELECTION.name())); }
         }
@@ -342,7 +342,7 @@ public class EditSceneGraph extends SubSceneGraph {
             selected.clear();
             selection.forEach((m) -> {
                 m.setBoundingBoxVisible(false);
-                m.setMaterial(SELECTED_MATERIAL);
+                validatePosition(m);
                 selected.add(m);
             });
             if(oldSize < 2) { eventBus.publish(new Event(EventType.MODEL_MULTISELECTION.name())); }
@@ -450,7 +450,7 @@ public class EditSceneGraph extends SubSceneGraph {
 
     public List<SceneMesh> cloneSelection() {
         List<SceneMesh> cloned = new LinkedList<>();
-        selected.forEach(cloned::add);
+        cloned.addAll(selected);
         return cloned;
     }
 }
