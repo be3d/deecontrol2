@@ -58,7 +58,7 @@ public class CuraParamTranslator {
      */
     private void initDictionary() {
         dictionary.put(SlicerParamType.INFILL_DENSITY, x -> {
-            double max = 1.143; // infill line distance when slider set to 100
+            double max = 1.687; // infill line distance when slider set to 100
             double a = 5.0; // slope adjustment constant
             double nzlD = (double) slicerParams.get(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER.name()).getValue();
             double hyperbolicComponent = (nzlD * 100 / x) - nzlD;
@@ -75,6 +75,19 @@ public class CuraParamTranslator {
             double linearComponent = (a + max) - a * (0.01 * x);
             return new HashMap<String, Object>(){{
                 put("support_line_distance", hyperbolicComponent + linearComponent);
+            }};
+        });
+        dictionary.put(SlicerParamType.INFILL_OVERLAP_MIN, x -> {
+            /**
+             * minOverlap is applied, when infill density equals 0, maxOverlap is applied, when infill density equals 100
+             */
+            double minOverlap = x;
+            double maxOverlap = (double) slicerParams.get(SlicerParamType.INFILL_OVERLAP_MAX.name()).getValue();
+            double infillDensity = (double) slicerParams.get(SlicerParamType.INFILL_DENSITY.name()).getValue();
+            double k = (maxOverlap-minOverlap)/100;
+            double scaledOverlap = k*infillDensity + minOverlap;
+            return new HashMap<String, Object>(){{
+                put(curaParamMap.get(SlicerParamType.INFILL_OVERLAP_MM), scaledOverlap);
             }};
         });
     }

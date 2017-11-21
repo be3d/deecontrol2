@@ -60,7 +60,7 @@
           <SubHeader text="SHELL" />
           <ButtonIncrement fx:id="shellThicknessIncrement" label="Shell thickness" increment="1" max="10" min="0" unit="mm"/>
           <SliderDiscrete fx:id="printSpeedShellSlider" label="Print speed - Shell"
-                          min="10.0" max="90.00" step="5" unit="mm" decimals="0"/>
+                          min="10.0" max="90.00" step="5" unit="mm/s" decimals="0"/>
 
           <SubHeader text="INFILL" />
           <Picker fx:id="infillPatternPicker"  label="Infill internal pattern" />

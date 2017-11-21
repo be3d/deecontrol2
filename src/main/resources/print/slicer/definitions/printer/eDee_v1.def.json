@@ -85,9 +85,14 @@
          "value":0.0
       },
       {
-         "id":"INFILL_OVERLAP_MM",
+         "id":"INFILL_OVERLAP_MIN",
          "type":"float",
-         "value":0.032
+         "value":-0.017
+      },
+      {
+         "id":"INFILL_OVERLAP_MAX",
+         "type":"float",
+         "value":0.3
       },
       {
          "id":"INFILL_LAYER_THICKNESS",
