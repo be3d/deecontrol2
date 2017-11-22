@@ -35,8 +35,6 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
     private TriangleMesh mesh;
     private Map<String, Integer> vertexMap;
     private Integer nextVertexIndex;
-    private Integer nextFaceIndex;
-    private Integer nextNormalIndex;
 
     public StlImporter() {
         super();
@@ -49,8 +47,6 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
         mesh.setVertexFormat(VertexFormat.POINT_NORMAL_TEXCOORD);
         vertexMap = new HashMap<>();
         nextVertexIndex = 0;
-        nextFaceIndex = 0;
-        nextNormalIndex = 0;
     }
 
     @Override

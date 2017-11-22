@@ -24,7 +24,7 @@ import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.dialog.RetentionFileChooser;
 import com.ysoft.dctrl.ui.dialog.contract.DialogEventData;
-import com.ysoft.dctrl.ui.factory.dialog.DialogType;
+import com.ysoft.dctrl.ui.dialog.DialogType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
@@ -32,7 +32,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.KeyCodeCombination;
 import javafx.stage.FileChooser;
 
 /**

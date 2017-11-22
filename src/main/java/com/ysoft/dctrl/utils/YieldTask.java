@@ -56,11 +56,11 @@ public abstract class YieldTask<Y,R> extends Task<R> {
         onYield.accept(queue.poll());
     }
 
-    public void setOnYield(Consumer<Y> consumer) {
+    public synchronized void setOnYield(Consumer<Y> consumer) {
         onYield = consumer;
     }
 
-    protected void yield(Y object) {
+    protected synchronized void yield(Y object) {
         queue.add(object);
     }
 }
