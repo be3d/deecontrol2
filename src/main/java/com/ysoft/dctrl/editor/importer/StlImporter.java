@@ -30,7 +30,7 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
     private static final String ASCII_END = "endsolid";
 
     private static final String FACET_START = "facet";
-    private static final String FACET_END = "endface";
+    private static final String FACET_END = "endfacet";
     private static final String FLOAT_FORMAT = "([+-]?[0-9]+\\.?[0-9]*([eE][+-]?[0-9]+)?)";
     private static final String VERTEX_FORMAT = FLOAT_FORMAT + "\\s+" + FLOAT_FORMAT + "\\s+" + FLOAT_FORMAT;
     private static final Matcher FACET_MATCHER = Pattern.compile(FACET_START + "([\\s\\S]*?)" + FACET_END, Pattern.MULTILINE).matcher("");
@@ -123,14 +123,16 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
             while(FACET_MATCHER.find()) {
                 loadFace(FACET_MATCHER.group());
                 builder.delete(0, FACET_MATCHER.end());
-                if(builder.indexOf(FACET_START) > builder.indexOf(FACET_END)) {
+                int startIndex = builder.indexOf(FACET_START);
+                int endIndex = builder.indexOf(FACET_END);
+                if(startIndex != -1 && endIndex != -1 && startIndex > endIndex) {
                     throw new IllegalArgumentException("Not valid ASCII stl file.");
                 }
                 FACET_MATCHER.reset(builder);
             }
         }
 
-        if(builder.indexOf(ASCII_END) != -1) {
+        if(builder.indexOf(ASCII_END) == -1) {
             throw new IllegalArgumentException("Not valid ASCII stl file.");
         }
 
