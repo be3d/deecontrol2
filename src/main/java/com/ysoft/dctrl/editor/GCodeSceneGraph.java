@@ -86,7 +86,8 @@ public class GCodeSceneGraph extends SubSceneGraph {
         System.gc();
 
         GCodeImporter gCodeImporter = new GCodeImporter(eventBus);
-        ImportRunner gCodeImportRunner = new ImportRunner<ArrayList<GCodeLayer>>(eventBus, gCodeImporter, gcodeFile);
+        ImportRunner gCodeImportRunner = new ImportRunner<>(eventBus, gCodeImporter, gcodeFile);
+
         gCodeImportRunner.setOnSucceeded(e -> {
             layers = (ArrayList<GCodeLayer>)gCodeImportRunner.getValue();
 
@@ -99,13 +100,9 @@ public class GCodeSceneGraph extends SubSceneGraph {
                 try {
                     MemoryManager.checkMemory();
                     l.generateMeshViews();
-                } catch (RunningOutOfMemoryException ex) {
+                } catch (RunningOutOfMemoryException | OutOfMemoryError ex) {
                     onRunningOutOfMemory(ex);
                     return;
-                } catch (OutOfMemoryError er) {
-                    onRunningOutOfMemory(er);
-                    return;
-                }
             }
 
             loadGCodeLayers();
@@ -113,12 +110,15 @@ public class GCodeSceneGraph extends SubSceneGraph {
 
         gCodeImportRunner.setOnFailed((e) -> {
             logger.warn("GCode Import runner failed", e);
-            Throwable ex = ((ImportRunner)e.getSource()).getException();
 
-            if(ex instanceof RunningOutOfMemoryException || ex instanceof OutOfMemoryError){
+            try {
+                throw (((ImportRunner) e.getSource()).getException());
+            } catch(RunningOutOfMemoryException | OutOfMemoryError ex){
                 onRunningOutOfMemory(ex);
-            } else if(ex instanceof InterruptedException){
+            } catch(InterruptedException ex){
                 onRenderInterrupted();
+            } catch(Throwable ex){
+                logger.error("GCode import failed", ex);
             }
         });
 
@@ -143,11 +143,7 @@ public class GCodeSceneGraph extends SubSceneGraph {
                     group.getChildren().add(v);
                 });
             }
-            catch (RunningOutOfMemoryException e) {
-                onRunningOutOfMemory(e);
-                return;
-            }
-            catch (OutOfMemoryError e) {
+            catch (RunningOutOfMemoryException | OutOfMemoryError e) {
                 onRunningOutOfMemory(e);
                 return;
             }
