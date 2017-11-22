@@ -101,7 +101,6 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
         while (stream.read(data) == 50) {
             MemoryManager.checkMemory();
             if(isCancelled()){
-                System.out.println("Cancelled");
                 return null;
             }
 
@@ -125,7 +124,6 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
         while((read = reader.read(buffer)) != -1) {
             MemoryManager.checkMemory();
             if(isCancelled()){
-                System.out.println("cancelled");
                 reset();
                 return null;
             }
@@ -227,5 +225,4 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
     private float getFloat(byte[] data, int offset, int length) {
         return ByteBuffer.wrap(data, offset, length).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
-
 }

@@ -195,12 +195,6 @@ public class CanvasController extends LocalizableController implements Initializ
             }
         });
 
-        importRunner.setOnCancelled(e -> {
-            System.out.println("canvas ctrl knows its; cancelled");
-        });
-
-//        importRunnerThread = new Thread(importRunner);
-//        importRunnerThread.start();
         (new Thread(importRunner)).start();
     }
 
