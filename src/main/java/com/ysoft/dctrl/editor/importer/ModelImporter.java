@@ -12,9 +12,10 @@ import javafx.scene.shape.TriangleMesh;
  * Created by pilar on 28.3.2017.
  */
 public interface ModelImporter<R> {
-    R load(String path) throws IOException, IllegalArgumentException, RunningOutOfMemoryException, InterruptedException;
-    R load(File file) throws IOException, IllegalArgumentException, RunningOutOfMemoryException, InterruptedException;
-    void reset();
+    R load(String path) throws IOException, IllegalArgumentException, RunningOutOfMemoryException;
+    R load(File file) throws IOException, IllegalArgumentException, RunningOutOfMemoryException;
 
+    void reset();
+    void cancel();
     double getProgress();
 }

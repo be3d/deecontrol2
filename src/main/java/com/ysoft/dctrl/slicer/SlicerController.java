@@ -54,12 +54,17 @@ public class SlicerController {
     @PostConstruct
     private void initialize() {
         eventBus.subscribe(EventType.SCENE_EXPORTED.name(), (e) -> startSlice((String) e.getData()));
+        eventBus.subscribe(EventType.SLICER_CANCEL.name(), (e) -> {
+            if(runner != null) { runner.cancel(); }
+        });
     }
 
     private void startSlice(String stlPath) {
         runner = new SlicerRunner(eventBus, currentSlicer, slicerParams.getAllParams(), stlPath);
 
         runner.setOnSucceeded((e) -> {
+            logger.trace("Slicing succeeded");
+
             Project project = deeControlContext.getCurrentProject();
             project.setPrintDuration(runner.getDuration());
             for(Long m : runner.getMaterialUsage()) {
@@ -67,6 +72,8 @@ public class SlicerController {
 
                 project.addMaterial("PLA", m);
             }
+            eventBus.publish(new Event(EventType.SLICER_FINISHED.name()));
+
         });
 
         runner.setOnFailed((e) -> {
@@ -74,16 +81,17 @@ public class SlicerController {
             eventBus.publish(new Event(EventType.SLICER_FAILED.name()));
         });
 
+        runner.setOnCancelled((e) -> {
+            logger.trace("Slicing cancelled");
+            System.out.println("Controller knows it's cancelled");
+            eventBus.publish(new Event(EventType.SLICER_CANCELLED.name()));
+        });
+
         new Thread(runner).start();
     }
 
-    public void stopSlice() {
-        if(runner != null) runner.cancel();
-        runner = null;
-    }
-
     private void setSlicer(String id){
-        this.currentSlicer = slicerMap.get(id);
-        this.selectedSlicerID = id;
+        currentSlicer = slicerMap.get(id);
+        selectedSlicerID = id;
     }
 }

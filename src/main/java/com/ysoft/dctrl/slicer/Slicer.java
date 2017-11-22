@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public interface Slicer {
 
-    void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws IOException, InterruptedException;
+    void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws IOException;
 
     Map<String,SlicerParam> filterSupportedParams(Map<String, SlicerParam> allParams);
 
@@ -22,4 +22,7 @@ public interface Slicer {
     long getDuration();
     Long[] getMaterialUsage();
     int getLayerCount();
+
+    void cancel();
+    void reset();
 }

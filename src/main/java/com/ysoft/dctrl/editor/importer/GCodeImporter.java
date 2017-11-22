@@ -44,11 +44,11 @@ public class GCodeImporter extends AbstractModelImporter<ArrayList<GCodeLayer>> 
     }
 
     @Override
-    public ArrayList<GCodeLayer> load(String fileName) throws IOException, RunningOutOfMemoryException, InterruptedException {
+    public ArrayList<GCodeLayer> load(String fileName) throws IOException, RunningOutOfMemoryException {
         return load(new FileInputStream(fileName));
     }
 
-    public ArrayList<GCodeLayer> load(InputStream stream) throws IOException, RunningOutOfMemoryException, InterruptedException {
+    public ArrayList<GCodeLayer> load(InputStream stream) throws IOException, RunningOutOfMemoryException {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"))) {
             String line;
@@ -76,8 +76,8 @@ public class GCodeImporter extends AbstractModelImporter<ArrayList<GCodeLayer>> 
                 }
 
                 MemoryManager.checkMemory();
-                if (Thread.currentThread().isInterrupted()) {
-                    throw new InterruptedException();
+                if(isCancelled()){
+                    return null;
                 }
             }
 

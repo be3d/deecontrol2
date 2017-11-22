@@ -55,8 +55,9 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
 
     @Override
     public TriangleMesh load(InputStream stream)
-            throws IOException, IllegalArgumentException, RunningOutOfMemoryException, OutOfMemoryError, InterruptedException {
+            throws IOException, IllegalArgumentException, RunningOutOfMemoryException, OutOfMemoryError {
 
+        reset();
         try (BufferedInputStream bis = new BufferedInputStream(stream)){
             byte[] data = new byte[1024];
             bis.mark(100);
@@ -90,7 +91,7 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
     }
 
     private TriangleMesh loadBinary(BufferedInputStream stream)
-            throws IllegalArgumentException, IOException, RunningOutOfMemoryException, OutOfMemoryError, InterruptedException {
+            throws IllegalArgumentException, IOException, RunningOutOfMemoryException, OutOfMemoryError {
 
         byte[] data = new byte[80];
         if(stream.read(data) != 80) { throw new IllegalArgumentException("Not a valid stl file"); }
@@ -103,8 +104,9 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
         data = new byte[50];
         while (stream.read(data) == 50) {
             MemoryManager.checkMemory();
-            if (Thread.currentThread().isInterrupted()) {
-                throw new InterruptedException();
+            if(isCancelled()){
+                System.out.println("Cancelled");
+                return null;
             }
 
             addBytesRead(50);
@@ -118,7 +120,7 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
     }
 
     private TriangleMesh loadAscii(InputStream stream)
-            throws IOException, RunningOutOfMemoryException, OutOfMemoryError, InterruptedException {
+            throws IOException, RunningOutOfMemoryException, OutOfMemoryError {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
         StringBuilder builder = new StringBuilder();
@@ -126,8 +128,10 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
         int read = 0;
         while((read = reader.read(buffer)) != -1) {
             MemoryManager.checkMemory();
-            if (Thread.currentThread().isInterrupted()) {
-                throw new InterruptedException();
+            if(isCancelled()){
+                System.out.println("cancelled");
+                reset();
+                return null;
             }
 
             addBytesRead(read);
@@ -227,4 +231,5 @@ public class StlImporter extends AbstractModelImporter<TriangleMesh> {
     private float getFloat(byte[] data, int offset, int length) {
         return ByteBuffer.wrap(data, offset, length).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
+
 }

@@ -21,11 +21,11 @@ import org.apache.logging.log4j.Logger;
 public class ImportRunner<R> extends YieldTask<Void,R> {
     private final Logger logger = LogManager.getLogger(YieldImportRunner.class);
 
-    private final ModelImporter modelImporter;
+    private final ModelImporter<R> modelImporter;
     private final String path;
     private final EventBus eventBus;
 
-    public ImportRunner(EventBus eventBus, ModelImporter modelImporter, String path) {
+    public ImportRunner(EventBus eventBus, ModelImporter<R> modelImporter, String path) {
         this.modelImporter = modelImporter;
         this.path = path;
         this.eventBus = eventBus;
@@ -40,16 +40,19 @@ public class ImportRunner<R> extends YieldTask<Void,R> {
         timeline.play();
         R result = null;
         try {
-            result = (R)modelImporter.load(path);
+            result = modelImporter.load(path);
         } catch (IOException e) {
             logger.warn(e);
-        } catch (InterruptedException e){
-            modelImporter.reset();
-            throw e;
         } finally {
             timeline.stop();
         }
 
         return result;
+    }
+
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        modelImporter.cancel();
+        return super.cancel(mayInterruptIfRunning);
     }
 }
