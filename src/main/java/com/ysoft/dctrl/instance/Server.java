@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
@@ -84,8 +85,9 @@ public class Server implements Runnable{
         @Override
         public void run() {
             try {
-                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
                 String line = input.readLine();
+                logger.warn("read line {}", line);
                 onMessage.accept(line);
             } catch (IOException e) {
                 logger.error("Unable to get client input stream", e);
