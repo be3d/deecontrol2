@@ -11,7 +11,7 @@ import com.ysoft.dctrl.safeq.job.JobCreator;
 import com.ysoft.dctrl.ui.controller.controlMenu.CheckBoxInline;
 import com.ysoft.dctrl.ui.controller.dialog.PreferencesTab;
 import com.ysoft.dctrl.ui.dialog.contract.DialogEventData;
-import com.ysoft.dctrl.ui.factory.dialog.DialogType;
+import com.ysoft.dctrl.ui.dialog.DialogType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.ui.notification.*;
 import com.ysoft.dctrl.utils.DeeControlContext;
@@ -22,19 +22,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
-import java.util.function.Function;
 
 /**
  * Created by kuhn on 5/30/2017.

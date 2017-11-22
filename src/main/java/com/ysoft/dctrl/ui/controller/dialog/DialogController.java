@@ -7,7 +7,7 @@ import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.controller.LocalizableController;
 import com.ysoft.dctrl.ui.dialog.contract.DialogEventData;
-import com.ysoft.dctrl.ui.factory.dialog.DialogType;
+import com.ysoft.dctrl.ui.dialog.DialogType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
