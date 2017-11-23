@@ -1,5 +1,6 @@
 package com.ysoft.dctrl.slicer.cura;
 
+import com.ysoft.dctrl.slicer.AbstractSlicer;
 import com.ysoft.dctrl.slicer.Slicer;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
 import com.ysoft.dctrl.slicer.param.SlicerParamType;
@@ -29,7 +30,7 @@ import java.util.stream.Stream;
  * Created by kuhn on 4/4/2017.
  */
 @Component("Cura")
-public class Cura implements Slicer {
+public class Cura extends AbstractSlicer implements Slicer {
     private final Logger logger = LogManager.getLogger(Cura.class);
 
     private static final String CURA_FOLDER = "cura" + File.separator;
@@ -72,54 +73,19 @@ public class Cura implements Slicer {
         outputFile = filePathResource.getPath(FilePath.SLICER_GCODE_FILE);
     }
 
-    public boolean supportsParam(String paramName) {
-        try {
-            return Cura.curaParamMap.containsKey(SlicerParamType.valueOf(paramName));
-        } catch (IllegalArgumentException e) {
-            logger.debug("Not supported param {}",paramName);
-        }
-        return false;
-    }
-
-    public Map<String, SlicerParam> filterSupportedParams(Map<String, SlicerParam> params) {
-        Iterator<Map.Entry<String, SlicerParam>> iter = params.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<String, SlicerParam> entry = iter.next();
-            try {
-                if (!curaParamMap.containsKey(SlicerParamType.valueOf(entry.getKey()))) {
-                    throw new NoSuchElementException();
-                }
-            } catch (IllegalArgumentException e) {
-                iter.remove();
-                logger.debug("Slicer param type not defined {}", entry.getKey());
-
-            } catch (NoSuchElementException e) {
-                iter.remove();
-                logger.debug("Parameter not supported by Cura {}", entry.getKey());
-            }
-        }
-        return params;
-    }
-
-    public List<SlicerParam> filterSupportedParams(List<SlicerParam> params) {
-        for (Iterator<SlicerParam> iter = params.iterator(); iter.hasNext(); ) {
-            SlicerParam param = iter.next();
-            try {
-                if (!curaParamMap.containsKey(SlicerParamType.valueOf(param.getId()))) {
-                    throw new NoSuchElementException();
-                }
-            } catch (IllegalArgumentException | NoSuchElementException e) {
-                iter.remove();
-            }
-        }
-        return params;
-    }
-
     @Override
-    public void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws IOException, InterruptedException {
+    public void reset() {
+        super.reset();
+
         duration = 0;
         materialUsage = new Long[16];
         layerCount = 0;
+    }
+
+    @Override
+    public void run(Map<String, SlicerParam> slicerParams, String modelSTL) throws IOException {
+        reset();
+
         int counter = 0;
 
         createConfigFile(slicerParams);
@@ -146,9 +112,10 @@ public class Cura implements Slicer {
             while ((s = stdInput.readLine()) != null) {
                 System.err.println(s);
 
-                if (Thread.currentThread().isInterrupted()) {
+                if(isCancelled()){
                     process.destroy();
-                    throw new InterruptedException();
+                    System.out.println("slicer isCancelled()");
+                    return;
                 }
 
                 // Log the console output of Cura to file
@@ -236,6 +203,50 @@ public class Cura implements Slicer {
         return value;
     }
 
+
+    public boolean supportsParam(String paramName) {
+        try {
+            return Cura.curaParamMap.containsKey(SlicerParamType.valueOf(paramName));
+        } catch (IllegalArgumentException e) {
+            logger.debug("Not supported param {}",paramName);
+        }
+        return false;
+    }
+
+    public Map<String, SlicerParam> filterSupportedParams(Map<String, SlicerParam> params) {
+        Iterator<Map.Entry<String, SlicerParam>> iter = params.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, SlicerParam> entry = iter.next();
+            try {
+                if (!curaParamMap.containsKey(SlicerParamType.valueOf(entry.getKey()))) {
+                    throw new NoSuchElementException();
+                }
+            } catch (IllegalArgumentException e) {
+                iter.remove();
+                logger.debug("Slicer param type not defined {}", entry.getKey());
+
+            } catch (NoSuchElementException e) {
+                iter.remove();
+                logger.debug("Parameter not supported by Cura {}", entry.getKey());
+            }
+        }
+        return params;
+    }
+
+    public List<SlicerParam> filterSupportedParams(List<SlicerParam> params) {
+        for (Iterator<SlicerParam> iter = params.iterator(); iter.hasNext(); ) {
+            SlicerParam param = iter.next();
+            try {
+                if (!curaParamMap.containsKey(SlicerParamType.valueOf(param.getId()))) {
+                    throw new NoSuchElementException();
+                }
+            } catch (IllegalArgumentException | NoSuchElementException e) {
+                iter.remove();
+            }
+        }
+        return params;
+    }
+
     public double getProgress(){
         return progress;
     }
@@ -252,4 +263,5 @@ public class Cura implements Slicer {
 
     @Override
     public int getLayerCount() { return layerCount; }
+
 }

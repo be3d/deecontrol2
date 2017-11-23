@@ -47,4 +47,10 @@ public class ImportRunner<R> extends YieldTask<Void,R> {
 
         return result;
     }
+
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        modelImporter.cancel();
+        return super.cancel(mayInterruptIfRunning);
+    }
 }

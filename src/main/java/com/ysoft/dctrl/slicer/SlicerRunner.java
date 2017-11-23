@@ -8,7 +8,6 @@ import com.ysoft.dctrl.slicer.param.SlicerParam;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
@@ -16,8 +15,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by kuhn on 5/29/2017.
@@ -35,8 +32,6 @@ public class SlicerRunner extends Task<Slicer> {
         this.eventBus = eventBus;
         this.slicerParams = slicerParams;
         this.scene = scene;
-
-        eventBus.subscribe(EventType.SLICER_STOP.name(), this::stopTask);
     }
 
     @Override
@@ -52,32 +47,11 @@ public class SlicerRunner extends Task<Slicer> {
         } catch (IOException e) {
             logger.warn(e);
             eventBus.publish(new Event(EventType.SLICER_FAILED.name()));
-        } catch (InterruptedException e){
-            eventBus.publish(new Event(EventType.SLICER_CANCELLED.name()));
         } finally {
             timeline.stop();
         }
 
         return null;
-    }
-
-    @Override
-    protected void succeeded(){
-        eventBus.publish(new Event(EventType.SLICER_FINISHED.name()));
-    }
-
-    @Override
-    protected void cancelled(){
-        super.cancelled();
-    }
-
-    @Override protected void failed(){
-        super.failed();
-    }
-
-    public void stopTask(Event e){
-        logger.trace("Cancelling slicer");
-        this.cancel();
     }
 
     public long getDuration() {
@@ -90,4 +64,9 @@ public class SlicerRunner extends Task<Slicer> {
 
     public int getLayerCount() { return slicer.getLayerCount(); }
 
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        slicer.cancel();
+        return super.cancel(mayInterruptIfRunning);
+    }
 }

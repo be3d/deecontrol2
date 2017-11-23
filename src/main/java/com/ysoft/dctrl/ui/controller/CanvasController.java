@@ -58,7 +58,7 @@ public class CanvasController extends LocalizableController implements Initializ
     private final ErrorNotification damagedModelNotification;
     private final ErrorNotification addModelFailedNotification;
 
-    private Thread importRunnerThread;
+    private ImportRunner importRunner;
 
     @Autowired
     public CanvasController(EventBus eventBus,
@@ -124,7 +124,7 @@ public class CanvasController extends LocalizableController implements Initializ
         eventBus.subscribe(EventType.ZOOM_OUT_VIEW.name(), (e) -> controls.zoomOutCamera());
 
         addModelProgressNotification.setLabelText(getMessage("notification_inserting_objects"));
-        addModelProgressNotification.addOnCloseAction(e -> importRunnerThread.interrupt());
+        addModelProgressNotification.addOnCloseAction(e -> importRunner.cancel());
         eventBus.subscribe(EventType.MODEL_LOAD_PROGRESS.name(), e -> addModelProgressNotification.setProgress(((double) e.getData())/100));
 
         modelTooBigNotification.setLabelText(getMessage("notification_too_big_to_insert"));
@@ -166,7 +166,7 @@ public class CanvasController extends LocalizableController implements Initializ
         addModelProgressNotification.setProgress(0);
 
         StlImporter stlImporter = new StlImporter();
-        ImportRunner importRunner = new ImportRunner<TriangleMesh>(eventBus, stlImporter, modelPath);
+        importRunner = new ImportRunner<>(eventBus, stlImporter, modelPath);
         importRunner.setOnSucceeded(e -> {
             addModelProgressNotification.hide();
 
@@ -195,8 +195,7 @@ public class CanvasController extends LocalizableController implements Initializ
             }
         });
 
-        importRunnerThread = new Thread(importRunner);
-        importRunnerThread.start();
+        (new Thread(importRunner)).start();
     }
 
     public void keyDown(KeyEvent keyEvent) {

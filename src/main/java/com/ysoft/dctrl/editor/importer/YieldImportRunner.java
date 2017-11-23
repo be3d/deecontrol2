@@ -32,7 +32,7 @@ public class YieldImportRunner<Y,R> extends YieldTask<Y,R> {
     }
 
     @Override
-    protected R call() throws IOException, RunningOutOfMemoryException, OutOfMemoryError, InterruptedException {
+    protected R call() throws IOException, RunningOutOfMemoryException, OutOfMemoryError {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), (e) -> {
             eventBus.publish(new Event(EventType.MODEL_LOAD_PROGRESS.name(), importer.getProgress()));
         }));
