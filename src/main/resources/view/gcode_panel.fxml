@@ -26,11 +26,11 @@
                     <Label fx:id="jobNameLabel" styleClass="control-menu-keyValueText-value" text="Untitled"></Label>
                 </HBox>
                 <HBox styleClass="control-menu-keyValueText-row" >
-                    <Label styleClass="control-menu-keyValueText-key" text="Print time:"></Label>
+                    <Label styleClass="control-menu-keyValueText-key" text="Estimated time:"></Label>
                     <Label fx:id="printTimeLabel" styleClass="control-menu-keyValueText-value" text="Untitled"></Label>
                 </HBox>
                 <HBox styleClass="control-menu-keyValueText-row" >
-                    <Label styleClass="control-menu-keyValueText-key" text="Filament usage:"></Label>
+                    <Label styleClass="control-menu-keyValueText-key" text="Material length:"></Label>
                     <Label fx:id="filamentUsageLabel" styleClass="control-menu-keyValueText-value" text="Untitled"></Label>
                 </HBox>
             </VBox>
