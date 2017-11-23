@@ -66,14 +66,16 @@ public class SlicerController {
             logger.trace("Slicing succeeded");
 
             Project project = deeControlContext.getCurrentProject();
-            project.setPrintDuration(runner.getDuration());
             for(Long m : runner.getMaterialUsage()) {
                 if(m == null) continue;
 
                 project.addMaterial("PLA", m);
             }
-            eventBus.publish(new Event(EventType.SLICER_FINISHED.name()));
 
+            // Adding 20% extra print duration to mitigate estimation error
+            project.setPrintDuration(Math.round(runner.getDuration()*1.2));
+
+            eventBus.publish(new Event(EventType.SLICER_FINISHED.name()));
         });
 
         runner.setOnFailed((e) -> {

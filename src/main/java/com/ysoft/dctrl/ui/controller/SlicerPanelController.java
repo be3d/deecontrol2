@@ -390,10 +390,6 @@ public class SlicerPanelController extends LocalizableController implements Init
         panelControlsContainer.setDisable(!value);
     }
 
-    private void setSliceEnabled(boolean value){
-        sliceButton.setDisable(!value);
-    }
-
     private void setEdited(boolean value){
         saveProfile.setVisible(value);
         editedLabel.setVisible(value);
