@@ -103,6 +103,7 @@ public class GCodeSceneGraph extends SubSceneGraph {
                 } catch (RunningOutOfMemoryException | OutOfMemoryError ex) {
                     onRunningOutOfMemory(ex);
                     return;
+                }
             }
 
             loadGCodeLayers();
