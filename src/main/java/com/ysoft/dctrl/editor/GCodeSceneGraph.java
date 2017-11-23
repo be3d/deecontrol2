@@ -46,7 +46,6 @@ public class GCodeSceneGraph extends SubSceneGraph {
             GCodeMoveType.SUPPORT,
             GCodeMoveType.SKIN,
             GCodeMoveType.SKIRT,
-            GCodeMoveType.FILL,
             GCodeMoveType.NONE
     );
 
