@@ -1,5 +1,6 @@
 package com.ysoft.dctrl;
 
+import java.awt.SplashScreen;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -35,7 +36,12 @@ public class DeeControl extends Application {
 
     public static void main(String[] args) {
         initLogger();
-        LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
+
+        if(OSVersion.is(OSVersion.MAC)) {
+            launch(args);
+        } else {
+            LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
+        }
     }
 
     private static void initLogger() {
@@ -96,7 +102,15 @@ public class DeeControl extends Application {
             }
         }
 
-        notifyPreloader(new Preloader.ProgressNotification(1.0));
+        if(OSVersion.is(OSVersion.MAC)) {
+            final SplashScreen splash = SplashScreen.getSplashScreen();
+            if(splash != null){
+                splash.close();
+            }
+        } else {
+            notifyPreloader(new Preloader.ProgressNotification(1.0));
+        }
+
     }
 
     @Override
