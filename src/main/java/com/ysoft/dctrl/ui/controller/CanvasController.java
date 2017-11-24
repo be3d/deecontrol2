@@ -154,7 +154,7 @@ public class CanvasController extends LocalizableController implements Initializ
     }
 
     public void addModel(String modelPath) {
-        if(!FileValidator.isModelFileSupproted(modelPath)) {
+        if(!FileValidator.isModelFileSupported(modelPath)) {
             logger.warn("Unsupported file ({})", modelPath);
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), notSupportedFormatNotification));
             return;

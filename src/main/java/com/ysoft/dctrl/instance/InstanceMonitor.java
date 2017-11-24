@@ -19,7 +19,6 @@ public class InstanceMonitor {
     private Server server;
 
     public boolean connectClient(List<String> args) {
-        logger.error("{}", args);
         try {
             Client client = new Client(PORT);
             client.connect();
@@ -59,7 +58,7 @@ public class InstanceMonitor {
 
     private String getFileFromArgs(List<String> args) {
         for(String arg : args) {
-            if(FileValidator.isModelFileSupproted(arg)) {
+            if(FileValidator.isModelFileSupported(arg)) {
                 return arg;
             }
         }
