@@ -21,32 +21,36 @@ import org.apache.logging.log4j.Logger;
 public class ImportRunner<R> extends YieldTask<Void,R> {
     private final Logger logger = LogManager.getLogger(YieldImportRunner.class);
 
-    private final ModelImporter modelImporter;
+    private final ModelImporter<R> modelImporter;
     private final String path;
     private final EventBus eventBus;
 
-    public ImportRunner(EventBus eventBus, ModelImporter modelImporter, String path) {
+    public ImportRunner(EventBus eventBus, ModelImporter<R> modelImporter, String path) {
         this.modelImporter = modelImporter;
         this.path = path;
         this.eventBus = eventBus;
     }
 
     @Override
-    protected R call() throws RunningOutOfMemoryException, OutOfMemoryError, InterruptedException {
+    protected R call() throws IOException, RunningOutOfMemoryException, OutOfMemoryError, InterruptedException {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), (e) -> {
             eventBus.publish(new Event(EventType.MODEL_LOAD_PROGRESS.name(), modelImporter.getProgress()));
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
-        R result = null;
+        R result;
         try {
-            result = (R)modelImporter.load(path);
-        } catch (IOException e) {
-            logger.warn(e);
-        } finally {
+            result = modelImporter.load(path);
+        }finally {
             timeline.stop();
         }
 
         return result;
+    }
+
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        modelImporter.cancel();
+        return super.cancel(mayInterruptIfRunning);
     }
 }

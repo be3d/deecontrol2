@@ -1,5 +1,6 @@
 package com.ysoft.dctrl;
 
+import javafx.application.Platform;
 import javafx.application.Preloader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,10 +19,37 @@ import org.apache.logging.log4j.Logger;
 public class DeeControlPreloader extends Preloader {
     private final Logger logger = LogManager.getLogger(DeeControlPreloader.class);
 
-    private final static String SPLASH_CSS = "css/splash_screen.css";
+    private final static String SPLASH_CSS = "/css/splash_screen.css";
     private final static String DEV_VERSION = "devel version";
 
     private Stage preloaderStage;
+    private Scene scene;
+
+    @Override
+    public void init() throws Exception {
+        super.init();
+
+        StackPane root = new StackPane();
+        StackPane content = new StackPane();
+
+        String version = getClass().getPackage().getImplementationVersion();
+        Label versionLabel = new Label(version != null ? version : DEV_VERSION);
+        versionLabel.getStyleClass().add("version");
+
+        content.getStyleClass().addAll("content");
+        content.getChildren().addAll(versionLabel);
+        content.setAlignment(Pos.BOTTOM_RIGHT);
+
+        root.getChildren().add(content);
+
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                scene = new Scene(root, Color.TRANSPARENT);
+                scene.getStylesheets().add(getClass().getResource(SPLASH_CSS).toExternalForm());
+            }
+        });
+    }
 
     @Override
     public void handleApplicationNotification(PreloaderNotification info) {
@@ -43,29 +71,12 @@ public class DeeControlPreloader extends Preloader {
     public void start(Stage stage) throws Exception {
         preloaderStage = stage;
 
-        StackPane root = new StackPane();
-        StackPane content = new StackPane();
-
-        Scene scene = new Scene(root, Color.TRANSPARENT);
-        scene.getStylesheets().add(SPLASH_CSS);
-        scene.setFill(Color.TRANSPARENT);
-
-        String version = getClass().getPackage().getImplementationVersion();
-        Label versionLabel = new Label(version != null ? version : DEV_VERSION);
-        versionLabel.getStyleClass().add("version");
-
-        content.getStyleClass().addAll("content");
-        content.getChildren().addAll(versionLabel);
-        content.setAlignment(Pos.BOTTOM_RIGHT);
-        root.getChildren().add(content);
-
         preloaderStage.initStyle(StageStyle.UNDECORATED);
-        preloaderStage.setAlwaysOnTop(true);
         preloaderStage.setWidth(406);
         preloaderStage.setHeight(210);
         preloaderStage.centerOnScreen();
-        preloaderStage.setScene(scene);
 
+        preloaderStage.setScene(scene);
         preloaderStage.show();
     }
 }

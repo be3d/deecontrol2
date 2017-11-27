@@ -22,31 +22,30 @@ public class YieldImportRunner<Y,R> extends YieldTask<Y,R> {
     private final Logger logger = LogManager.getLogger(YieldImportRunner.class);
 
     private EventBus eventBus;
-    private YieldModelImporter<Y> importer;
+    private YieldModelImporter<Y,R> importer;
     private String path;
 
-    public YieldImportRunner(EventBus eventBus, YieldModelImporter<Y> importer, String path) {
+    public YieldImportRunner(EventBus eventBus, YieldModelImporter<Y,R> importer, String path) {
         this.eventBus = eventBus;
         this.importer = importer;
         this.path = path;
     }
 
     @Override
-    protected R call() throws RunningOutOfMemoryException, OutOfMemoryError, InterruptedException {
+    protected R call() throws IOException, RunningOutOfMemoryException, OutOfMemoryError {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), (e) -> {
             eventBus.publish(new Event(EventType.MODEL_LOAD_PROGRESS.name(), importer.getProgress()));
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
-        R result = null;
+        R result;
         try {
             importer.setOnYield(this::yield);
-            result = (R)importer.load(path);
-        } catch (IOException e) {
-            logger.warn(e);
+            result = importer.load(path);
+        } finally {
+            timeline.stop();
         }
 
-        timeline.stop();
         return result;
     }
 }

@@ -17,15 +17,13 @@ import com.ysoft.dctrl.slicer.profile.ProfileResource;
 import com.ysoft.dctrl.ui.controller.controlMenu.*;
 import com.ysoft.dctrl.ui.dialog.contract.DialogEventData;
 import com.ysoft.dctrl.ui.dialog.contract.TextInputDialogData;
-import com.ysoft.dctrl.ui.factory.dialog.DialogType;
+import com.ysoft.dctrl.ui.dialog.DialogType;
 import com.ysoft.dctrl.ui.notification.ErrorNotification;
 import com.ysoft.dctrl.ui.tooltip.TooltipDefinition;
 import com.ysoft.dctrl.ui.tooltip.Tooltip;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -128,9 +126,10 @@ public class SlicerPanelController extends LocalizableController implements Init
         slicingFailedNotification = new ErrorNotification();
 
         slicingProgressNotification.setLabelText(getMessage("notification_slicing_objects"));
-        slicingProgressNotification.addOnCloseAction((e) -> slicerController.stopSlice());
         slicingDoneNotification.setLabelText(getMessage("notification_slicing_completed"));
         slicingFailedNotification.setLabelText(getMessage("notification_slicing_failed"));
+
+        slicingProgressNotification.addOnCloseAction((e) -> eventBus.publish(new Event(EventType.SLICER_CANCEL.name())));
     }
 
     @Override
@@ -296,7 +295,6 @@ public class SlicerPanelController extends LocalizableController implements Init
         eventBus.subscribe(EventType.SLICER_CANCELLED.name(), this::onSlicerCancelled);
         eventBus.subscribe(EventType.SLICER_FINISHED.name(), this::onSlicerFinished);
         eventBus.subscribe(EventType.SLICER_FAILED.name(), this::onSlicerFailed);
-        eventBus.subscribe(EventType.MODEL_LOADED.name(), (e) -> setSliceEnabled(true));
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), this::onEditModeActivate);
         eventBus.subscribe(EventType.EDIT_SCENE_VALID.name(), (e) -> sliceButton.setDisable(false));
         eventBus.subscribe(EventType.EDIT_SCENE_INVALID.name(), (e) -> sliceButton.setDisable(true));
@@ -390,10 +388,6 @@ public class SlicerPanelController extends LocalizableController implements Init
 
     private void setControlsEnabled(boolean value){
         panelControlsContainer.setDisable(!value);
-    }
-
-    private void setSliceEnabled(boolean value){
-        sliceButton.setDisable(!value);
     }
 
     private void setEdited(boolean value){

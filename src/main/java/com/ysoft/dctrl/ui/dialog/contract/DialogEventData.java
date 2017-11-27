@@ -1,6 +1,6 @@
 package com.ysoft.dctrl.ui.dialog.contract;
 
-import com.ysoft.dctrl.ui.factory.dialog.DialogType;
+import com.ysoft.dctrl.ui.dialog.DialogType;
 
 /**
  * Created by pilar on 24.5.2017.

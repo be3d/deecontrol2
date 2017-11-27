@@ -35,6 +35,7 @@ import com.ysoft.dctrl.math.Utils;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Material;
 import javafx.scene.paint.PhongMaterial;
 
 /**
@@ -145,14 +146,15 @@ public class EditSceneGraph extends SubSceneGraph {
         extendedMesh.getBoundingBox().setOnChange(bb -> validatePosition(extendedMesh, bb));
     }
 
+    @Override
     public void addMesh(SceneMesh sceneMesh) {
         super.addMesh(sceneMesh);
         sceneMesh.setBoundingBoxVisible(false);
         sceneMesh.setMaterial(MATERIAL);
         modelInsertionStack.addSceneMesh(sceneMesh);
 
-        validatePosition(sceneMesh);
         selectSingle(sceneMesh);
+        validatePosition(sceneMesh);
     }
 
     public void centerSelected() {
@@ -211,7 +213,7 @@ public class EditSceneGraph extends SubSceneGraph {
 
     public void scaleSelectedToMax() {
         SceneMesh s = getSelected();
-        if(s == null) return;
+        if(s == null) { return; }
         Point3D size = s.getBoundingBox().getSize();
         size = Point3DUtils.divideElements(size, s.getScale());
         Point3D oldScale = s.getScale();
@@ -264,7 +266,7 @@ public class EditSceneGraph extends SubSceneGraph {
         LinkedList<SceneMesh> sm = getSceneMeshes();
         SceneMesh s = getSelected();
         if(s == null) {
-            if(!sm.isEmpty()) selectSingle(sm.getFirst());
+            if(!sm.isEmpty()) { selectSingle(sm.getFirst()); }
         } else {
             int next = sm.indexOf(s) + 1;
             if(next > sm.size() - 1) { next = 0; }
@@ -292,8 +294,8 @@ public class EditSceneGraph extends SubSceneGraph {
         selected.clear();
         mesh = mesh.getGroup() != null ? mesh.getGroup() : mesh;
         selected.add(mesh);
-        mesh.setMaterial(SELECTED_MATERIAL);
         mesh.setBoundingBoxVisible(true);
+        validatePosition(mesh);
         eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), mesh));
     }
 
@@ -302,7 +304,7 @@ public class EditSceneGraph extends SubSceneGraph {
         selected.clear();
         sm.forEach(m -> {
             selected.add(m);
-            m.setMaterial(SELECTED_MATERIAL);
+            validatePosition(m);
             m.setBoundingBoxVisible(true);
         });
     }
@@ -318,7 +320,7 @@ public class EditSceneGraph extends SubSceneGraph {
                 eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), selected.get(0)));}
         } else {
             selected.add(mesh);
-            mesh.setMaterial(SELECTED_MATERIAL);
+            validatePosition(mesh);
             mesh.setBoundingBoxVisible(true);
             if(selected.size() == 2) { eventBus.publish(new Event(EventType.MODEL_MULTISELECTION.name())); }
         }
@@ -340,7 +342,7 @@ public class EditSceneGraph extends SubSceneGraph {
             selected.clear();
             selection.forEach((m) -> {
                 m.setBoundingBoxVisible(false);
-                m.setMaterial(SELECTED_MATERIAL);
+                validatePosition(m);
                 selected.add(m);
             });
             if(oldSize < 2) { eventBus.publish(new Event(EventType.MODEL_MULTISELECTION.name())); }
@@ -414,7 +416,8 @@ public class EditSceneGraph extends SubSceneGraph {
     private void validatePosition(SceneMesh mesh, BoundingBox bb) {
         boolean oob = !printerVolume.contains(bb);
         mesh.setOutOfBounds(oob);
-        mesh.setMaterial(oob ? INVALID_MATERIAL : (selected.contains(mesh) ? SELECTED_MATERIAL : MATERIAL));
+        Material validMaterial = selected.contains(mesh) ? SELECTED_MATERIAL : MATERIAL;
+        mesh.setMaterial(oob ? INVALID_MATERIAL : validMaterial);
 
         handleOOB(oob, mesh);
     }
@@ -447,7 +450,7 @@ public class EditSceneGraph extends SubSceneGraph {
 
     public List<SceneMesh> cloneSelection() {
         List<SceneMesh> cloned = new LinkedList<>();
-        selected.forEach(cloned::add);
+        cloned.addAll(selected);
         return cloned;
     }
 }

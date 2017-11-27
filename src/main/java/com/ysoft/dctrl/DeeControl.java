@@ -1,5 +1,6 @@
 package com.ysoft.dctrl;
 
+import java.awt.SplashScreen;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -8,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import com.sun.javafx.application.LauncherImpl;
 import javafx.application.Preloader;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -19,7 +19,6 @@ import com.ysoft.dctrl.instance.InstanceMonitor;
 import com.ysoft.dctrl.log.DeeControlConfigurationFactory;
 import com.ysoft.dctrl.ui.BaseWindow;
 import com.ysoft.dctrl.utils.DeeControlConfig;
-import com.ysoft.dctrl.utils.DeeControlContext;
 import com.ysoft.dctrl.utils.OSVersion;
 import com.ysoft.dctrl.utils.files.FileValidator;
 
@@ -37,7 +36,12 @@ public class DeeControl extends Application {
 
     public static void main(String[] args) {
         initLogger();
-        LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
+
+        if(OSVersion.is(OSVersion.MAC)) {
+            launch(args);
+        } else {
+            LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
+        }
     }
 
     private static void initLogger() {
@@ -80,7 +84,7 @@ public class DeeControl extends Application {
                 @Override
                 public void handleOpenFilesAction(com.sun.glass.ui.Application app, long time, String[] files) {
                     for(String f : files) {
-                        if(FileValidator.isModelFileSupproted(f)) {
+                        if(FileValidator.isModelFileSupported(f)) {
                             eventBus.publish(new Event(EventType.ADD_MODEL.name(), f));
                         }
                     }
@@ -90,7 +94,7 @@ public class DeeControl extends Application {
             List<String> args = getParameters().getRaw();
             if(args.size() > 0) {
                for(String p : args){
-                    if(FileValidator.isModelFileSupproted(p)) {
+                    if(FileValidator.isModelFileSupported(p)) {
                         eventBus.publish(new Event(EventType.ADD_MODEL.name(), p));
                         break;
                     }
@@ -98,7 +102,15 @@ public class DeeControl extends Application {
             }
         }
 
-        notifyPreloader(new Preloader.ProgressNotification(1.0));
+        if(OSVersion.is(OSVersion.MAC)) {
+            final SplashScreen splash = SplashScreen.getSplashScreen();
+            if(splash != null){
+                splash.close();
+            }
+        } else {
+            notifyPreloader(new Preloader.ProgressNotification(1.0));
+        }
+
     }
 
     @Override

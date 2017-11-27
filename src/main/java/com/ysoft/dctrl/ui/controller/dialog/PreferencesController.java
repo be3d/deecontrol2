@@ -12,7 +12,7 @@ import com.ysoft.dctrl.event.EventType;
 import com.ysoft.dctrl.ui.control.DialogPane;
 import com.ysoft.dctrl.ui.control.complex.Picker;
 import com.ysoft.dctrl.ui.control.complex.TextInput;
-import com.ysoft.dctrl.ui.factory.dialog.DialogType;
+import com.ysoft.dctrl.ui.dialog.DialogType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 import com.ysoft.dctrl.utils.settings.SafeQSettings;

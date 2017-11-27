@@ -15,7 +15,7 @@ public class FileValidator {
         SUPPORTED_MODEL_EXTENSIONS = Collections.unmodifiableSet(extensions);
     }
 
-    public static boolean isModelFileSupproted(String filePath) {
+    public static boolean isModelFileSupported(String filePath) {
         String fileName = Paths.get(filePath).getFileName().toString();
         int dotIndex = fileName.lastIndexOf(".");
         return Files.exists(Paths.get(filePath)) && dotIndex > -1 && SUPPORTED_MODEL_EXTENSIONS.contains(fileName.substring(dotIndex).toLowerCase());
