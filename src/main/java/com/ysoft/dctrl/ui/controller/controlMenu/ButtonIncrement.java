@@ -49,6 +49,8 @@ public class ButtonIncrement extends BaseTooltipControl implements SlicerParamBi
             }
         });
 
+        minusBtn.disabledProperty().addListener((obs, oldVal, newVal) -> { if(!newVal){ updateView(); }});
+        plusBtn.disabledProperty().addListener((obs, oldVal, newVal) -> { if(!newVal) { updateView(); }});
     }
 
     public void setIncrement(double value){
@@ -94,9 +96,6 @@ public class ButtonIncrement extends BaseTooltipControl implements SlicerParamBi
     private void setValue(Double value){
         this.value = value;
 
-        minusBtn.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), getValue().equals(min) );
-        plusBtn.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), getValue().equals(max) );
-
         updateParam();
         updateView();
     }
@@ -110,10 +109,13 @@ public class ButtonIncrement extends BaseTooltipControl implements SlicerParamBi
     }
 
     public void updateView(){
+
+        minusBtn.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), getValue().equals(min) );
+        plusBtn.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), getValue().equals(max) );
+
         if (recalculation != null){
             Double showValue = recalculation.apply(this.value);
             textValue.setText(decimalFormat.format(showValue) + " " + unit);
-//            textValue.setText(new Double((Math.round(value * 10D) / 10D)).toString() + unit);
         } else {
             textValue.setText(decimalFormat.format(this.value) + (unit != null ? " " + unit : ""));
         }
