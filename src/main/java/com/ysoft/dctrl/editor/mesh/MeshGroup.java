@@ -34,6 +34,7 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
     private List<Consumer<SceneMesh>> onChangeListeners;
 
     private boolean outOfBounds;
+    private int cloneCounter;
 
     public MeshGroup() {
         onChangeListeners = new LinkedList<>();
@@ -45,6 +46,7 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         scale = new Scale(1,1,1);
         groupNode.getChildren().add(boundingBox.getNode());
         outOfBounds = false;
+        cloneCounter = 0;
     }
 
     public MeshGroup(Collection<SceneMesh> meshes) {
@@ -217,7 +219,15 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         return new MeshGroup(this);
     }
 
+    @Override
+    public SceneMesh clone(Point3D offset) {
+        SceneMesh cloned = clone();
+        cloned.setPosition(cloned.getPosition().add(offset.multiply(++cloneCounter)));
+        return cloned;
+    }
+
     private void onChange() {
+        cloneCounter = 0;
         onChangeListeners.forEach(c -> c.accept(this));
     }
 

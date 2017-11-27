@@ -108,12 +108,11 @@ public class EditSceneGraph extends SubSceneGraph {
         extendedMesh.setPositionZ(extendedMesh.getBoundingBox().getHalfSize().getZ());
         addMesh(extendedMesh);
         extendedMesh.getBoundingBox().setOnChange(bb -> validatePosition(extendedMesh, bb));
-        extendedMesh.addOnMeshChangeListener(onMeshChangeConsumer);
         eventBus.publish(new Event(EventType.ADD_ACTION.name(), new AddModelAction(this::addMesh, this::deleteModel, extendedMesh)));
     }
 
     public void cloneMesh(SceneMesh original) {
-        SceneMesh mesh = original.clone();
+        SceneMesh mesh = original.clone(new Point3D(5,0,0));
         if(mesh instanceof MeshGroup) {
             ((MeshGroup) mesh).getChildren().forEach(this::initMesh);
         } else {
@@ -144,6 +143,8 @@ public class EditSceneGraph extends SubSceneGraph {
             )));
         }));
         extendedMesh.getBoundingBox().setOnChange(bb -> validatePosition(extendedMesh, bb));
+        extendedMesh.addOnMeshChangeListener(onMeshChangeConsumer);
+
     }
 
     @Override
