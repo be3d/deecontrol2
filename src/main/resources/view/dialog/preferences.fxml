@@ -26,7 +26,7 @@
             <items>
               <FXCollections fx:factory="observableArrayList">
                 <PickerItem label="English" value="en_US" />
-                <PickerItem label="Czech" value="cs_CZ"/>
+                <!--<PickerItem label="Czech" value="cs_CZ"/>-->
               </FXCollections>
             </items>
           </Picker>
@@ -40,11 +40,13 @@
           </HBox>
         </VBox>
       </Tab>
+      <!--
       <Tab text="PROFILES" styleClass="profiles-preferences">
         <VBox  styleClass="settings-wrapper">
 
         </VBox>
       </Tab>
+      -->
     </TabPane>
     <HBox styleClass="footer">
       <Region HBox.hgrow="ALWAYS" />
