@@ -70,7 +70,7 @@ public class GCodePanelController extends LocalizableController implements Initi
     private SpinnerNotification jobSendProgressNotification;
     private SpinnerNotification gCodeRenderingNotification;
     private SuccessNotification gCodeRenderingFailed;
-    private SuccessNotification printReadyNotification;
+    private AlertNotification gCodeRenderingCancelledNotification;
 
     public GCodePanelController(
             GCodeSceneGraph gcodeSceneGraph,
@@ -93,9 +93,9 @@ public class GCodePanelController extends LocalizableController implements Initi
         gCodeRenderingFailed = new SuccessNotification();
         gCodeRenderingFailed.setLabelText(getMessage("notification_gcode_rendering_done_no_preview"));
         gCodeRenderingFailed.setTimeout(0);
-        printReadyNotification = new SuccessNotification();
-        printReadyNotification.setLabelText(getMessage("notification_slicing_completed"));
-        printReadyNotification.setTimeout(0);
+        gCodeRenderingCancelledNotification = new AlertNotification();
+        gCodeRenderingCancelledNotification.setLabelText(getMessage("notification_gcode_rendering_cancelled"));
+        gCodeRenderingCancelledNotification.setTimeout(5);
     }
 
     @Override
@@ -191,6 +191,8 @@ public class GCodePanelController extends LocalizableController implements Initi
 
         eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), this::onGCRenderFinished);
         eventBus.subscribe(EventType.GCODE_RENDER_OUTTA_MEMORY.name(), this::onNotEnoughMemory);
+        eventBus.subscribe(EventType.GCODE_RENDER_CANCEL.name(), this::onGCRenderCancelled);
+
         super.initialize(location, resources);
 
         checkSafeQSettings.getAsBoolean();
@@ -219,10 +221,12 @@ public class GCodePanelController extends LocalizableController implements Initi
     private void onGCRenderFinished(Event e){
         gCodeRenderingNotification.hide();
 
-        eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), printReadyNotification));
-
         optimizedViewRadio.setDisable(false);
         detailedViewRadio.setDisable(false);
+    }
+
+    private void onGCRenderCancelled(Event e){
+        eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), gCodeRenderingCancelledNotification));
     }
 
     private void loadProjectInfo(){

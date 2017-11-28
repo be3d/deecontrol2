@@ -80,6 +80,7 @@ public class Cura extends AbstractSlicer implements Slicer {
         duration = 0;
         materialUsage = new Long[16];
         layerCount = 0;
+        progress = 0;
     }
 
     @Override
@@ -114,7 +115,7 @@ public class Cura extends AbstractSlicer implements Slicer {
 
                 if(isCancelled()){
                     process.destroy();
-                    System.out.println("slicer isCancelled()");
+                    logger.trace("Cura slicer cancelled");
                     return;
                 }
 

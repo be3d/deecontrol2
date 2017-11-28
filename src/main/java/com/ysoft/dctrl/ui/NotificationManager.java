@@ -43,10 +43,12 @@ public class NotificationManager {
         eventBus.subscribe(EventType.SHOW_NOTIFICATION.name(), (e) -> {
             showNotification((Notification) e.getData());
         });
+
+        root.setPickOnBounds(false);
+        wrapper.setPickOnBounds(false);
     }
 
     public void showNotification(Notification notification) {
-        wrapper.getChildren().clear();
         int timeout = notification.getTimeout();
 
         notification.addOnCloseAction((e) -> {
