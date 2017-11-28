@@ -1,0 +1,12 @@
+.about-container {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../img/splash.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-insets: 0;
+}
+
+.version {
+    -fx-font-weight: 700;
+    -fx-text-fill: #535353;
+}
