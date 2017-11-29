@@ -85,7 +85,7 @@ public class Notification extends VBox {
         FadeTransition ft = new FadeTransition(Duration.millis(durationMillis), this);
         ft.setInterpolator(Interpolator.EASE_OUT);
         ft.setFromValue(1.0);
-        ft.setToValue(0.2);
+        ft.setToValue(0.0);
 
         ft.setOnFinished(e -> {
             if(onHide == null) return;
