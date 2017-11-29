@@ -148,7 +148,7 @@ public class GCodePanelController extends LocalizableController implements Initi
         safeqNotSetNotification.setOnLinkAction((e) -> {
             eventBus.publish(new Event(EventType.SHOW_DIALOG.name(), new DialogEventData(DialogType.PREFERENCES, PreferencesTab.NETWORK)));
         });
-        safeqNotSetNotification.setTimeout(5);
+        safeqNotSetNotification.setTimeout(10);
 
         BooleanSupplier checkSafeQSettings = () -> {
             if(!deeControlContext.getSettings().getSafeQSettings().isSet()) {
@@ -160,6 +160,7 @@ public class GCodePanelController extends LocalizableController implements Initi
 
         sendJobBtn.setOnAction(event -> {
             if(!checkSafeQSettings.getAsBoolean()) { return; }
+            jobSendDoneNotification.hide();
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), jobSendProgressNotification));
             sendJobBtn.setDisable(true);
             jobCreator.createJobFile();
@@ -219,7 +220,7 @@ public class GCodePanelController extends LocalizableController implements Initi
     }
 
     private void onGCRenderFinished(Event e){
-        gCodeRenderingNotification.hide();
+        gCodeRenderingNotification.hide(1000);
 
         optimizedViewRadio.setDisable(false);
         detailedViewRadio.setDisable(false);

@@ -127,8 +127,9 @@ public class SlicerPanelController extends LocalizableController implements Init
 
         slicingProgressNotification.setLabelText(getMessage("notification_slicing_objects"));
         slicingDoneNotification.setLabelText(getMessage("notification_slicing_completed"));
+        slicingDoneNotification.setTimeout(6);
         slicingFailedNotification.setLabelText(getMessage("notification_slicing_failed"));
-
+        
         slicingProgressNotification.addOnCloseAction((e) -> eventBus.publish(new Event(EventType.SLICER_CANCEL.name())));
     }
 
@@ -342,7 +343,7 @@ public class SlicerPanelController extends LocalizableController implements Init
     }
 
     private void onSlicerFinished(Event e){
-        slicingProgressNotification.hide();
+        slicingProgressNotification.hide(0);
         eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingDoneNotification));
         eventBus.publish(new Event(EventType.SCENE_SET_MODE.name(), SceneMode.GCODE));
     }

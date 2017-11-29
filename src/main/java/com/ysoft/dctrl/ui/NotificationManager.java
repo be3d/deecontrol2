@@ -2,6 +2,11 @@ package com.ysoft.dctrl.ui;
 
 import javax.annotation.PostConstruct;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,10 +16,7 @@ import com.ysoft.dctrl.ui.factory.NotificationWrapperFactory;
 import com.ysoft.dctrl.ui.notification.Notification;
 
 import javafx.animation.PauseTransition;
-import javafx.geometry.Pos;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -51,13 +53,16 @@ public class NotificationManager {
     public void showNotification(Notification notification) {
         int timeout = notification.getTimeout();
 
+        notification.onShow();
         notification.addOnCloseAction((e) -> {
             timer.stop();
-            hideNotification(notification);
+            notification.hide();
         });
         notification.setOnHideHandler(() -> hideNotification(notification));
 
-        wrapper.getChildren().add(notification);
+        if(!wrapper.getChildren().contains(notification)){
+            wrapper.getChildren().add(0, notification);
+        }
 
         if(timeout > 0) {
             setTimer(notification, timeout);
@@ -70,7 +75,7 @@ public class NotificationManager {
 
     private void setTimer(Notification notification, int timeout) {
         timer.setDuration(Duration.seconds(timeout));
-        timer.setOnFinished((e) -> hideNotification(notification));
+        timer.setOnFinished((e) -> notification.hide());
         timer.play();
     }
 
