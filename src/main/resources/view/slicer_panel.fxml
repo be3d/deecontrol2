@@ -52,8 +52,8 @@
         <VBox fx:id="advSettingsBox" visible="false" managed="false">
           <SubHeader text="LAYERS" />
           <ToggleButtonGroup fx:id="layerHeightToggle" label="Layer height" decimals="2" unit="mm"></ToggleButtonGroup>
-          <ButtonIncrement fx:id="roofThicknessIncrement" label="Roof thickness" increment="1" max="10" min="0" unit="mm"/>
-          <ButtonIncrement fx:id="bottomThicknessIncrement" label="Bottom thickness" increment="1" max="10" min="0" unit="mm"/>
+          <ButtonIncrement fx:id="roofThicknessIncrement" label="Roof thickness" increment="1" min="0" unit="mm"/>
+          <ButtonIncrement fx:id="bottomThicknessIncrement" label="Bottom thickness" increment="1" min="0" unit="mm"/>
           <SliderDiscrete fx:id="printSpeedSolidSlider" label="Print speed - Solid layers"
                           min="0.0" max="90.00" step="5" unit="mm/s" decimals="0"/>
 
