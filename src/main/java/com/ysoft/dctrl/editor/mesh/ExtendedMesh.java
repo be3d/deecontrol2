@@ -39,6 +39,7 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     private boolean isDirty;
 
     private boolean outOfBounds;
+    private int cloneCounter;
 
     private MeshView view;
     private Group node;
@@ -65,6 +66,7 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         boundingBox.setColor(ColorUtils.getColorImage("#0081ea"));
         isDirty = false;
         outOfBounds = false;
+        cloneCounter = 0;
         group = null;
         node = new Group();
         node.getChildren().addAll(view, boundingBox.getNode());
@@ -186,14 +188,17 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     }
 
     private void handleRotationChange() {
+        cloneCounter = 0;
         onRotationChange.forEach(h -> h.accept(this));
     }
 
     private void handleScaleChange() {
+        cloneCounter = 0;
         onScaleChange.forEach(h -> h.accept(this));
     }
 
     private void handlePositionChange() {
+        cloneCounter = 0;
         onPositionChange.forEach(h -> h.accept(this));
     }
 
@@ -265,5 +270,12 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     @Override
     public SceneMesh clone() {
         return new ExtendedMesh(this);
+    }
+
+    @Override
+    public SceneMesh clone(Point3D offset) {
+        SceneMesh cloned = clone();
+        cloned.setPosition(cloned.getPosition().add(offset.multiply(++cloneCounter)));
+        return cloned;
     }
 }
