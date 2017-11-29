@@ -7,11 +7,11 @@
 
 <?import java.net.URL?>
 
-<Stage xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.component.AboutController" alwaysOnTop="true" width="436" height="261">
+<Stage xmlns:fx="http://javafx.com/fxml" fx:id="stage" fx:controller="com.ysoft.dctrl.ui.component.AboutController" alwaysOnTop="true" width="436" height="261">
   <scene>
     <Scene fill="transparent">
-        <AnchorPane styleClass="about-container">
-          <Label styleClass="version" fx:id="version" AnchorPane.rightAnchor="19" AnchorPane.bottomAnchor="15">some fucking version</Label>
+        <AnchorPane fx:id="root" styleClass="about-container">
+          <Label styleClass="version" fx:id="version" AnchorPane.bottomAnchor="90" />
 
           <stylesheets>
             <URL value="@/css/master.css" />

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.ui.controller.AbstractController;
+import com.ysoft.dctrl.ui.controller.LocalizableController;
+import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
@@ -18,42 +20,39 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 @Controller
-public class AboutController extends AbstractController implements Initializable {
+public class AboutController extends LocalizableController implements Initializable {
     @FXML
-    private Stage root;
+    private Stage stage;
 
     @FXML
     private Label version;
 
     @Autowired
-    public AboutController(EventBus eventBus, DeeControlContext deeControlContext) {
-        super(eventBus, deeControlContext);
+    public AboutController(LocalizationService localizationService, EventBus eventBus, DeeControlContext deeControlContext) {
+        super(localizationService, eventBus, deeControlContext);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        root.initStyle(StageStyle.TRANSPARENT);
-        root.setAlwaysOnTop(true);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setAlwaysOnTop(true);
 
-        root.setOnShowing((e) -> {
+        stage.setOnShowing((e) -> {
+            version.setText(getMessage("about_version") + " " + deeControlContext.getVersion());
             setPosition();
-            root.requestFocus();
+            stage.requestFocus();
         });
 
-        root.focusedProperty().addListener((ob, o, n) -> {
-            if(!n) { root.hide(); }
+        stage.focusedProperty().addListener((ob, o, n) -> {
+            if(!n) { stage.hide(); }
         });
-
-        root.getScene().setOnMousePressed((e) -> root.hide());
-
-        version.setText(deeControlContext.getVersion());
     }
 
     private void setPosition() {
-        Window owner = root.getOwner();
+        Window owner = stage.getOwner();
         if(owner == null) { return; }
 
-        root.setX(owner.getX() + (owner.getWidth() - root.getWidth())/2.0);
-        root.setY(owner.getY() + (owner.getHeight() - root.getHeight())/2.0);
+        stage.setX(owner.getX() + (owner.getWidth() - stage.getWidth())/2.0);
+        stage.setY(owner.getY() + (owner.getHeight() - stage.getHeight())/2.0);
     }
 }
