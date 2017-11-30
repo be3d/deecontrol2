@@ -63,7 +63,7 @@
       {
          "id":"SPEED_SOLID_LAYERS",
          "type":"float",
-         "value":55
+         "value":70
       },
       {
          "id":"COOL_FAN_REGMAX_SPEED_THRESHOLD",
