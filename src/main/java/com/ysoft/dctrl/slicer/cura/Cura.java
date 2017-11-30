@@ -55,11 +55,11 @@ public class Cura extends AbstractSlicer implements Slicer {
     private final DeeControlContext deeControlContext;
 
     private static final CuraParamMap curaParamMap = new CuraParamMap(SlicerParamType.class);
-    private static double progress = 0.0;
 
     private volatile long duration;
     private volatile Long[] materialUsage;
     private volatile int layerCount;
+    private volatile double progress;
 
     @Autowired
     public Cura(FilePathResource filePathResource, DeeControlContext deeControlContext) {
@@ -71,6 +71,7 @@ public class Cura extends AbstractSlicer implements Slicer {
         binFile = binPath + (OSVersion.is(OSVersion.WIN) ? WIN_BINARY : MAC_BINARY);
         logFile = filePathResource.getPath(FilePath.SLICER_DIR) + File.separator + LOG_FILE;
         outputFile = filePathResource.getPath(FilePath.SLICER_GCODE_FILE);
+        progress = 0;
     }
 
     @Override
