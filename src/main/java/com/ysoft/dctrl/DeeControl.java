@@ -32,17 +32,18 @@ import javafx.stage.Stage;
  */
 public class DeeControl extends Application {
     private ConfigurableApplicationContext applicationContext;
-    private static final InstanceMonitor instanceMonitor = new InstanceMonitor();
+    private static InstanceMonitor instanceMonitor;
     private static Logger logger;
 
     public static void main(String[] args) {
+        initLogger();
         if(!OSVersion.is(OSVersion.MAC)) {
+            instanceMonitor = new InstanceMonitor();
             boolean isServer = instanceMonitor.startServer();
             if (!isServer && !instanceMonitor.connectClient(new LinkedList<>(Arrays.asList(args)))) {
                 throw new IllegalStateException("Other instance is running");
             }
         }
-        initLogger();
         LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
     }
 
