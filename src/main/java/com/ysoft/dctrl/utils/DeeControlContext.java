@@ -18,7 +18,7 @@ public class DeeControlContext {
     private final Settings settings;
     private final ObjectMapper objectMapper;
     private Project currentProject;
-    private String lastFileChooserPath;
+    private String version;
 
     @Autowired
     public DeeControlContext(SpringFXMLLoader loader, SettingsStore settingsStore) {
@@ -26,6 +26,8 @@ public class DeeControlContext {
         this.settings = settingsStore.getSettings();
         this.objectMapper = new ObjectMapper();
         this.currentProject = new Project();
+        String v = getClass().getPackage().getImplementationVersion();
+        this.version = v != null ? v : "DEV";
     }
 
     public SpringFXMLLoader getFXMLLoader() {
@@ -44,5 +46,9 @@ public class DeeControlContext {
 
     public ObjectMapper getObjectMapper() {
         return objectMapper;
+    }
+
+    public String getVersion() {
+        return version;
     }
 }
