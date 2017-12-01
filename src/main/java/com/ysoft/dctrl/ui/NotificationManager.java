@@ -30,14 +30,11 @@ public class NotificationManager {
     private StackPane root;
     private FlowPane wrapper;
 
-    private PauseTransition timer;
-
     @Autowired
     public NotificationManager(NotificationWrapperFactory notificationWrapperFactory, EventBus eventBus) {
         this.root = notificationWrapperFactory.buildNotificationWrapper();
         this.wrapper = (FlowPane) root.getChildren().get(0);
         this.eventBus = eventBus;
-        this.timer = new PauseTransition();
     }
 
     @PostConstruct
@@ -51,32 +48,17 @@ public class NotificationManager {
     }
 
     public void showNotification(Notification notification) {
-        int timeout = notification.getTimeout();
-
         notification.onShow();
-        notification.addOnCloseAction((e) -> {
-            timer.stop();
-            notification.hide();
-        });
         notification.setOnHideHandler(() -> hideNotification(notification));
 
         if(!wrapper.getChildren().contains(notification)){
             wrapper.getChildren().add(0, notification);
         }
 
-        if(timeout > 0) {
-            setTimer(notification, timeout);
-        }
     }
 
     public void hideNotification(Notification notification) {
         wrapper.getChildren().remove(notification);
-    }
-
-    private void setTimer(Notification notification, int timeout) {
-        timer.setDuration(Duration.seconds(timeout));
-        timer.setOnFinished((e) -> notification.hide());
-        timer.play();
     }
 
     public Region getNode() {

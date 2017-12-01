@@ -127,7 +127,7 @@ public class SlicerPanelController extends LocalizableController implements Init
 
         slicingProgressNotification.setLabelText(getMessage("notification_slicing_objects"));
         slicingDoneNotification.setLabelText(getMessage("notification_slicing_completed"));
-        slicingDoneNotification.setTimeout(6);
+        slicingDoneNotification.setTimeout(8);
         slicingFailedNotification.setLabelText(getMessage("notification_slicing_failed"));
         
         slicingProgressNotification.addOnCloseAction((e) -> eventBus.publish(new Event(EventType.SLICER_CANCEL.name())));

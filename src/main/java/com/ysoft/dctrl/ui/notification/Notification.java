@@ -5,6 +5,7 @@ import com.ysoft.dctrl.utils.Worker;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -21,7 +22,7 @@ import javafx.util.Duration;
  * Created by pilar on 30.5.2017.
  */
 public class Notification extends VBox {
-    private static final int DEFAULT_TIMEOUT = 5;
+    private static final int DEFAULT_TIMEOUT = 6;
     private static final double DEFAULT_FADE_OUT_DURATION_MILLIS = 500;
 
     private Label label;
@@ -30,6 +31,7 @@ public class Notification extends VBox {
 
     private int timeout;
     private double fadeOutDuration;
+    private PauseTransition timer;
 
     private Worker onHide;
 
@@ -40,6 +42,7 @@ public class Notification extends VBox {
         close = new Button();
         baseRow = new HBox();
         onHide = null;
+        timer = new PauseTransition();
 
         HBox.setHgrow(this, Priority.NEVER);
         HBox.setHgrow(label, Priority.ALWAYS);
@@ -82,6 +85,8 @@ public class Notification extends VBox {
     }
 
     public void hide(double durationMillis){
+        timer.stop();
+
         FadeTransition ft = new FadeTransition(Duration.millis(durationMillis), this);
         ft.setInterpolator(Interpolator.EASE_OUT);
         ft.setFromValue(1.0);
@@ -99,6 +104,15 @@ public class Notification extends VBox {
     }
 
     public void onShow(){
+        if(timeout > 0){
+            setTimer();
+        }
         setOpacity(1.0);
+    }
+
+    private void setTimer() {
+        timer.setDuration(Duration.seconds(timeout));
+        timer.setOnFinished((e) -> hide());
+        timer.play();
     }
 }
