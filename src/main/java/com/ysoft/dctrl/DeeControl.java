@@ -1,5 +1,7 @@
 package com.ysoft.dctrl;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -30,10 +32,16 @@ import javafx.stage.Stage;
  */
 public class DeeControl extends Application {
     private ConfigurableApplicationContext applicationContext;
-    private InstanceMonitor instanceMonitor;
+    private static final InstanceMonitor instanceMonitor = new InstanceMonitor();
     private static Logger logger;
 
     public static void main(String[] args) {
+        if(!OSVersion.is(OSVersion.MAC)) {
+            boolean isServer = instanceMonitor.startServer();
+            if (!isServer && !instanceMonitor.connectClient(new LinkedList<>(Arrays.asList(args)))) {
+                throw new IllegalStateException("Other instance is running");
+            }
+        }
         initLogger();
         LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
     }
@@ -45,21 +53,13 @@ public class DeeControl extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> Platform.runLater(() -> showError(t, e)));
         Thread.currentThread().setUncaughtExceptionHandler(this::showError);
 
         applicationContext = new AnnotationConfigApplicationContext(DeeControlConfig.class);
         applicationContext.registerShutdownHook();
         EventBus eventBus = applicationContext.getBean(EventBus.class);
-
-        if(!OSVersion.is(OSVersion.MAC)) {
-            instanceMonitor = new InstanceMonitor();
-            boolean isServer = instanceMonitor.startServer(eventBus);
-            if (!isServer && !instanceMonitor.connectClient(getParameters().getRaw())) {
-                throw new IllegalStateException("Other instance is running");
-            }
-        }
+        instanceMonitor.setEventBus(eventBus);
 
         BaseWindow baseWindow = applicationContext.getBean(BaseWindow.class);
         baseWindow.composeWindow(primaryStage);
@@ -106,7 +106,7 @@ public class DeeControl extends Application {
     }
 
     private void showError(Thread t, Throwable e){
-        logger.error("Unhandled exception", e);
+        logger.error("Unhandled exception in {}", t.getName(), e);
     }
 
 }
