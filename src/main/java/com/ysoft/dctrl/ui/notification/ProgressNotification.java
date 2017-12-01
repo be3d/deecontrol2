@@ -85,9 +85,4 @@ public class ProgressNotification extends Notification {
 
         return new KeyFrame(Duration.millis(1000), k1, k2);
     }
-
-    @Override
-    public void addOnCloseAction(EventHandler<ActionEvent> eventHandler) {
-        super.addOnCloseAction(eventHandler);
-    }
 }
