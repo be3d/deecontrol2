@@ -2,21 +2,15 @@ package com.ysoft.dctrl.editor.mesh;
 
 import com.ysoft.dctrl.utils.ColorUtils;
 
-import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
+
+import static com.ysoft.dctrl.editor.mesh.MeshUtils.addFaces;
+import static com.ysoft.dctrl.editor.mesh.MeshUtils.getSign;
 
 /**
  * Created by pilar on 25.7.2017.
@@ -100,23 +94,6 @@ public class PrintBed {
         return view;
     }
 
-    private void addFaces(int[] faces, int[] other, int offset) {
-        for(int i = 1, j = offset; i < other.length - 2; i+=2, j+=12) {
-            faces[j] = other[i];
-            faces[j+2] = other[i-1];
-            faces[j+4] = other[i+1];
-            faces[j+6] = other[i];
-            faces[j+8] = other[i+1];
-            faces[j+10] = other[i+2];
-            faces[j+1] = 0;
-            faces[j+3] = 1;
-            faces[j+5] = 2;
-            faces[j+7] = 0;
-            faces[j+9] = 1;
-            faces[j+11] = 2;
-        }
-    }
-
     private MeshView getGridMesh(float x, float y, float step) {
         float[] points = new float[((int) (Math.ceil(x/step)*Math.ceil(y/step)))*4*3*2];
         int[] faces = new int[points.length];
@@ -140,10 +117,10 @@ public class PrintBed {
             pOffset = addGridPlane(points, -hx, i, -0.5f, x, 0.1f, pOffset);
             addFaces(faces, new int[] {facesCount+1,facesCount,facesCount+2,facesCount+3}, fOffset);
             facesCount += 4;
-            fOffset += 2*6;
+            fOffset += 12;
             addFaces(faces, new int[] {facesCount+3,facesCount,facesCount+2,facesCount+1}, fOffset);
             facesCount += 4;
-            fOffset += 2*6;
+            fOffset += 12;
         }
 
         TriangleMesh mesh = new TriangleMesh();
@@ -218,9 +195,7 @@ public class PrintBed {
         return offset;
     }
 
-    private float getSign(int i, int bit) {
-        return ((i & (1<<bit)) > 0) ? 1 : -1;
-    }
+
 
     public Node getNode() {
         return group;

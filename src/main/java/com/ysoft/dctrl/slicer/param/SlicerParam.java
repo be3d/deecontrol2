@@ -126,10 +126,6 @@ public class SlicerParam implements Cloneable {
         this.setValueProperty(value);
     }
 
-    private void publishChanged(){
-        this.eventBus.publish(new Event(EventType.SLICER_PARAM_CHANGED.name() ));
-    }
-
     public void setLimits(Double min, Double max){
         this.min = min;
         this.max = max;
