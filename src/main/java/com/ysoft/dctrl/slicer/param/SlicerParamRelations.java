@@ -4,7 +4,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
+import com.ysoft.dctrl.event.Event;
+import com.ysoft.dctrl.event.EventBus;
+import com.ysoft.dctrl.event.EventType;
 
 /**
  * Created by kuhn on 4/21/2017.
@@ -15,32 +19,46 @@ import java.util.Map;
  */
 @Component
 public class SlicerParamRelations {
-
+    private final EventBus eventBus;
     public Map<SlicerParamType, Runnable> map = new HashMap<>();
 
-    public SlicerParamRelations() {
+    public SlicerParamRelations(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     public void init(Map<String,SlicerParam> params){
-        map.put(SlicerParamType.RESOLUTION_LAYER_HEIGHT, new ParamChangeHandle(SlicerParamType.RESOLUTION_LAYER_HEIGHT.name(), params){
-                @Override
-                public void run() {
-                    super.run();
-                    try{
-                        // example
-//                            this.params.get(SlicerParamType.SHELL_TOP_THICKNESS.name())
-//                                    .setVal( (Double)this.param.getValue() * (Double)this.params.get(SlicerParamType.SHELL_TOP_LAYERS.name()).getValue());
-//                           this.params.get(SlicerParamType.SHELL_TOP_THICKNESS.name())
-//                                    .setVal( (Double)this.param.getValue() * (Double)this.params.get(SlicerParamType.SHELL_TOP_LAYERS.name()).getValue());
-//                         // todo check if the parameter goes outside limits
-                    }catch(NullPointerException e){}
-                }
-            });
+        map.put(SlicerParamType.SUPPORT_BUILDPLATE_TYPE, () -> {
+            SlicerParam p = params.get(SlicerParamType.SUPPORT_BUILDPLATE_TYPE.name());
+            double extrusionWidth = (double) params.get(SlicerParamType.RESOLUTION_LINE_WIDTH_0.name()).getValue();
+            int brimLineNumber = (int) params.get(SlicerParamType.SUPPORT_BUILDPLATE_BRIM_LINES.name()).getValue();
+            double volumeOffset = 0;
+            switch ((String) p.getValue()) {
+                case "brim":
+                    volumeOffset = extrusionWidth * brimLineNumber;
+                    break;
+                case "raft":
+                    //number taken from fdmprinter configuration
+                    volumeOffset = 15;
+                    break;
+            }
+
+            eventBus.publish(new Event(EventType.PRINT_VOLUME_OFFSET_CHANGED.name(), volumeOffset));
+        });
 
     }
 
-    public Runnable getHandle(SlicerParamType paramType){
-       return map.get(paramType);
+    public void handleAll() {
+        map.forEach((type, handler) -> handler.run());
+    }
+
+    public void handle(String paramID) {
+        handle(SlicerParamType.valueOf(paramID));
+    }
+
+    public void handle(SlicerParamType slicerParamType) {
+        if(map.containsKey(slicerParamType)) {
+            map.get(slicerParamType).run();
+        }
     }
 
 }

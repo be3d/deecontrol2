@@ -49,15 +49,12 @@ public class SlicerParams {
         this.printerResource = printerResource;
         this.paramRelations = paramRelations;
 
-
         eventBus.subscribe(EventType.PRINTER_CHANGED.name(), this::printerChanged );
-        eventBus.subscribe(EventType.SLICER_PARAM_CHANGED.name(), this::slicerParamChanged );
     }
 
     @PostConstruct
     private void initParams(){
 
-        List<Printer> printerList =  printerResource.getAllPrinters();
         try{
             this.printerResource.setPrinter("edee");
         }catch(Exception e){
@@ -66,6 +63,7 @@ public class SlicerParams {
 
         this.slicerParameters = this.loadParams();
         this.paramRelations.init(this.slicerParameters);
+        this.paramRelations.handleAll();
     }
 
     public Map<String, SlicerParam> loadParams(){
@@ -90,17 +88,10 @@ public class SlicerParams {
         this.slicerParameters = loadParams();
     }
 
-    public void slicerParamChanged(Event event){
-        try{
-            (paramRelations.getHandle(SlicerParamType.valueOf((String)event.getData()))).run();
-        }catch (NullPointerException e){
-            // linked parameter does not have to exist
-        }
-    }
-
     public void updateParam(String paramID, Object value){
-        this.slicerParameters.get(paramID).setValue(value);
-        this.eventBus.publish(new Event(EventType.SLICER_PARAM_CHANGED.name(), paramID));
+        slicerParameters.get(paramID).setValue(value);
+        paramRelations.handle(paramID);
+        eventBus.publish(new Event(EventType.SLICER_PARAM_CHANGED.name(), slicerParameters.get(paramID)));
     }
 
     public void updateParams(List<SlicerParam> params){
@@ -108,12 +99,6 @@ public class SlicerParams {
             for (SlicerParam p : params){
                 this.updateParam(p.getId(), p.getValue());
             }
-        }
-    }
-
-    public void updateParams(Map<String, SlicerParam> params){
-        for (String key : params.keySet()){
-            this.updateParam(key, params.get(key));
         }
     }
 

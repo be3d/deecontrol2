@@ -86,7 +86,9 @@ public class MenuBarController extends LocalizableController implements Initiali
     public void initialize(URL location, ResourceBundle resources) {
         openFile.setOnAction(this::onOpenFile);
         settings.setOnAction(this::onSettings);
-        quit.setOnAction( this::onQuit);
+
+        quit.setOnAction(this::onQuit);
+        quit.setAccelerator(ShortcutKeys.QUIT);
 
         exportAs.setOnAction(this::onExportAs);
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {

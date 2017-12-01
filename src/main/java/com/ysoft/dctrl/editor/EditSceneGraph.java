@@ -22,6 +22,7 @@ import com.ysoft.dctrl.editor.action.SelectModelAction;
 import com.ysoft.dctrl.editor.action.UngroupModelAction;
 import com.ysoft.dctrl.editor.mesh.ExtendedMesh;
 import com.ysoft.dctrl.editor.mesh.MeshGroup;
+import com.ysoft.dctrl.editor.mesh.PrinterVolume;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.editor.utils.ModelInsertionStack;
 import com.ysoft.dctrl.event.Event;
@@ -45,9 +46,6 @@ import javafx.scene.paint.PhongMaterial;
 @Component
 @SubSceneMode(SceneMode.EDIT)
 public class EditSceneGraph extends SubSceneGraph {
-    private static final Point3D PRINTER_SIZE = new Point3D(150,150,150);
-    private static final Point3D PRINTER_HALF_SIZE = new Point3D(75,75,75);
-
     private static PhongMaterial MATERIAL = new PhongMaterial(Color.web("#cccccc"));
     private static PhongMaterial SELECTED_MATERIAL = new PhongMaterial(Color.web("#4dc824"));
     private static PhongMaterial INVALID_MATERIAL = new PhongMaterial(Color.web("#ff0000"));
@@ -99,6 +97,17 @@ public class EditSceneGraph extends SubSceneGraph {
         onMeshChangeConsumer = (mesh) -> {
             eventBus.publish(new Event(EventType.MODEL_CHANGED.name(), mesh));
         };
+
+        eventBus.subscribe(EventType.PRINT_VOLUME_OFFSET_CHANGED.name(), (e) -> {
+            printerVolume.setPlatformOffset((double) e.getData());
+            getSceneMeshes().forEach(m -> validatePosition(m));
+        });
+    }
+
+    @Override
+    protected void setPrinterVolume(PrinterVolume printerVolume) {
+        super.setPrinterVolume(printerVolume);
+        addHelpObject(printerVolume.getOffsetNode());
     }
 
     public void addMesh(ModelLoadedDTO modelLoaded) {
@@ -171,7 +180,7 @@ public class EditSceneGraph extends SubSceneGraph {
         BoundingBox bb = s.getBoundingBox();
         Point2D c = getCenteredPosition(s);
         Point3D oldPosition = s.getPosition();
-        s.setPosition(new Point2D(-PRINTER_HALF_SIZE.getX() + bb.getHalfSize().getX() + c.getX(), s.getPositionY()));
+        s.setPosition(new Point2D(-printerVolume.getHalfSize().getX() + bb.getHalfSize().getX() + c.getX(), s.getPositionY()));
         eventBus.publish(new Event(EventType.ADD_ACTION.name(), new ModelTranslateAction(s, oldPosition, s.getPosition())));
     }
 
@@ -181,7 +190,7 @@ public class EditSceneGraph extends SubSceneGraph {
         BoundingBox bb = s.getBoundingBox();
         Point2D c = getCenteredPosition(s);
         Point3D oldPosition = s.getPosition();
-        s.setPosition(new Point2D(PRINTER_HALF_SIZE.getX() - bb.getHalfSize().getX() + c.getX(), s.getPositionY()));
+        s.setPosition(new Point2D(printerVolume.getHalfSize().getX() - bb.getHalfSize().getX() + c.getX(), s.getPositionY()));
         eventBus.publish(new Event(EventType.ADD_ACTION.name(), new ModelTranslateAction(s, oldPosition, s.getPosition())));
     }
 
@@ -191,7 +200,7 @@ public class EditSceneGraph extends SubSceneGraph {
         BoundingBox bb = s.getBoundingBox();
         Point2D c = getCenteredPosition(s);
         Point3D oldPosition = s.getPosition();
-        s.setPosition(new Point2D(s.getPositionX(), -PRINTER_HALF_SIZE.getY() + bb.getHalfSize().getY() + c.getY()));
+        s.setPosition(new Point2D(s.getPositionX(), -printerVolume.getHalfSize().getY() + bb.getHalfSize().getY() + c.getY()));
         eventBus.publish(new Event(EventType.ADD_ACTION.name(), new ModelTranslateAction(s, oldPosition, s.getPosition())));
     }
 
@@ -201,7 +210,7 @@ public class EditSceneGraph extends SubSceneGraph {
         BoundingBox bb = s.getBoundingBox();
         Point2D c = getCenteredPosition(s);
         Point3D oldPosition = s.getPosition();
-        s.setPosition(new Point2D(s.getPositionX(), PRINTER_HALF_SIZE.getY() - bb.getHalfSize().getY() + c.getY()));
+        s.setPosition(new Point2D(s.getPositionX(), printerVolume.getHalfSize().getY() - bb.getHalfSize().getY() + c.getY()));
         eventBus.publish(new Event(EventType.ADD_ACTION.name(), new ModelTranslateAction(s, oldPosition, s.getPosition())));
     }
 
@@ -218,7 +227,8 @@ public class EditSceneGraph extends SubSceneGraph {
         size = Point3DUtils.divideElements(size, s.getScale());
         Point3D oldScale = s.getScale();
         Point3D oldPosition = s.getPosition();
-        double scale = Utils.min(PRINTER_SIZE.getX()/size.getX(), PRINTER_SIZE.getY()/size.getY(), PRINTER_SIZE.getZ()/size.getZ());
+        Point3D volumeSize = printerVolume.getSize();
+        double scale = Utils.min(volumeSize.getX()/size.getX(), volumeSize.getY()/size.getY(), volumeSize.getZ()/size.getZ());
         s.setScale(scale);
         s.setPosition(getCenteredPosition(s));
         ModelTranslateAction translateAction = new ModelTranslateAction(s, oldPosition, s.getPosition());

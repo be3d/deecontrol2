@@ -264,7 +264,7 @@
       },
       {
          "id":"SUPPORT_BUILDPLATE_BRIM_LINES",
-         "type":"float",
+         "type":"int",
          "value":15
       },
       {
