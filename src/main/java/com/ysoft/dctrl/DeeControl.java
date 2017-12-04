@@ -38,19 +38,16 @@ public class DeeControl extends Application {
     public static void main(String[] args) {
         initLogger();
 
-        if(OSVersion.is(OSVersion.MAC)) {
-            launch(args);
-        } else {
-            LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
-        }
         if(!OSVersion.is(OSVersion.MAC)) {
             instanceMonitor = new InstanceMonitor();
             boolean isServer = instanceMonitor.startServer();
             if (!isServer && !instanceMonitor.connectClient(new LinkedList<>(Arrays.asList(args)))) {
                 throw new IllegalStateException("Other instance is running");
             }
+            LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
+        } else {
+            launch(args);
         }
-        LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
     }
 
     private static void initLogger() {
