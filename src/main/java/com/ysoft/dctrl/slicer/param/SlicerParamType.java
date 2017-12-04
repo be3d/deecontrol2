@@ -41,6 +41,8 @@ public enum SlicerParamType {
 
     //infill
     INFILL_OVERLAP_MM,
+    INFILL_OVERLAP_MIN,
+    INFILL_OVERLAP_MAX,
     INFILL_LAYER_THICKNESS,
     INFILL_PATTERN,
     INFILL_DENSITY,

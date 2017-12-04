@@ -1,7 +1,9 @@
 package com.ysoft.dctrl.instance;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +19,13 @@ public class InstanceMonitor {
     Logger logger = LogManager.getLogger(InstanceMonitor.class);
     private final static int PORT = 58936;
     private Server server;
+    private EventBus eventBus;
+    private final Queue<String> prebusFileQueue;
+
+    public InstanceMonitor() {
+        prebusFileQueue = new LinkedList<>();
+        eventBus = null;
+    }
 
     public boolean connectClient(List<String> args) {
         try {
@@ -38,18 +47,31 @@ public class InstanceMonitor {
         return true;
     }
 
-    public boolean startServer(EventBus eventBus) {
+    public boolean startServer() {
         server = new Server(PORT);
         if(!server.start()) { return false; }
         server.setOnMessage((m) -> {
             Platform.runLater(() ->{
-                eventBus.publish(new Event(EventType.ADD_MODEL.name(), m));
+                if(eventBus == null) {
+                    prebusFileQueue.add(m);
+                } else {
+                    eventBus.publish(new Event(EventType.ADD_MODEL.name(), m));
+                }
             });
         });
 
         (new Thread(server)).start();
 
         return true;
+    }
+
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
+        if(!prebusFileQueue.isEmpty()) {
+            prebusFileQueue.forEach((f) -> {
+                eventBus.publish(new Event(EventType.ADD_MODEL.name(), f));
+            });
+        }
     }
 
     public void destroy() {

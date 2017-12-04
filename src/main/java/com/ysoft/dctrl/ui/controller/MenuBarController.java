@@ -1,10 +1,6 @@
 package com.ysoft.dctrl.ui.controller;
 
-import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -12,6 +8,7 @@ import java.util.ResourceBundle;
 import com.ysoft.dctrl.action.ActionStack;
 import com.ysoft.dctrl.editor.EditSceneGraph;
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
+import com.ysoft.dctrl.ui.factory.component.AboutFactory;
 import com.ysoft.dctrl.utils.Clipboard;
 import com.ysoft.dctrl.utils.settings.ShortcutKeys;
 import javafx.application.Platform;
@@ -31,8 +28,11 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 /**
  * Created by pilar on 30.3.2017.
@@ -67,6 +67,7 @@ public class MenuBarController extends LocalizableController implements Initiali
     private final ActionStack actionStack;
     private final EditSceneGraph editSceneGraph;
     private final Clipboard clipboard;
+    private final Stage aboutStage;
 
     @Autowired
     public MenuBarController(LocalizationService localizationService,
@@ -74,19 +75,23 @@ public class MenuBarController extends LocalizableController implements Initiali
                              RetentionFileChooser retentionFileChooser,
                              ActionStack actionStack,
                              EditSceneGraph editSceneGraph,
-                             Clipboard clipboard) {
+                             Clipboard clipboard,
+                             AboutFactory aboutFactory) {
         super(localizationService, eventBus, deeControlContext);
         this.retentionFileChooser = retentionFileChooser;
         this.actionStack = actionStack;
         this.editSceneGraph = editSceneGraph;
         this.clipboard = clipboard;
+        this.aboutStage = aboutFactory.buildAbout();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         openFile.setOnAction(this::onOpenFile);
         settings.setOnAction(this::onSettings);
-        quit.setOnAction( this::onQuit);
+
+        quit.setOnAction(this::onQuit);
+        quit.setAccelerator(ShortcutKeys.QUIT);
 
         exportAs.setOnAction(this::onExportAs);
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
@@ -141,7 +146,7 @@ public class MenuBarController extends LocalizableController implements Initiali
 
     private void onOpenFile(ActionEvent event){
         File f = retentionFileChooser.showOpenDialog(root.getScene().getWindow(), new FileChooser.ExtensionFilter("3D models", "*.STL", "*.stl"));
-        if(f == null) return;
+        if(f == null) { return; }
         eventBus.publish(new Event(EventType.ADD_MODEL.name(), f.getAbsolutePath()));
     }
 
@@ -190,12 +195,11 @@ public class MenuBarController extends LocalizableController implements Initiali
     }
 
     private void onAbout(ActionEvent event){
-        if(ABOUT_URL.isEmpty()) { return; }
-        try {
-            Desktop.getDesktop().browse(new URI(ABOUT_URL));
-        } catch (IOException | URISyntaxException e1) {
-            e1.printStackTrace();
+        if(aboutStage.getOwner() == null) {
+            aboutStage.initOwner(root.getScene().getWindow());
         }
+
+        aboutStage.show();
     }
 
     private void onDelete(ActionEvent event){

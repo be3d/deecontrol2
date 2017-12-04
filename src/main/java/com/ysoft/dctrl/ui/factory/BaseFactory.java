@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
  */
 
 @Component
-public class BaseComponentFactory implements
+public class BaseFactory implements
         MenuBarFactory,
         ControlPanelFactory,
         EditorCanvasFactory,
@@ -29,12 +29,11 @@ public class BaseComponentFactory implements
         GCodePanelFactory,
         GCodeLayerSliderFactory,
         NotificationWrapperFactory,
-        TooltipWrapperFactory
-{
+        TooltipWrapperFactory {
     private final SpringFXMLLoader loader;
 
     @Autowired
-    public BaseComponentFactory(SpringFXMLLoader loader) {
+    public BaseFactory(SpringFXMLLoader loader) {
         this.loader = loader;
     }
 

@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javafx.collections.ObservableFloatArray;
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -22,11 +23,13 @@ import javafx.scene.transform.Translate;
  * Created by pilar on 4.4.2017.
  */
 public class BoundingBox {
-    private Point3D min;
-    private Point3D max;
+    private static final double RECT_HEIGHT = 0.5;
 
-    //private MeshView node;
-    private ObservableFloatArray nodePoints;
+    protected Point3D min;
+    protected Point3D max;
+
+    private Point2D minRect;
+    private Point2D maxRect;
 
     private Group node;
     private PhongMaterial material;
@@ -58,8 +61,8 @@ public class BoundingBox {
     public void reset() {
         this.max = new Point3D(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
         this.min = new Point3D(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-        //nodePoints.clear();
-        //nodePoints.addAll(new float[8*3]);
+        this.maxRect = new Point2D(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        this.minRect = new Point2D(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
 
     public void update(float[] vertices, TransformMatrix matrix) {
@@ -93,6 +96,14 @@ public class BoundingBox {
 
         if(z < this.min.getZ()) { this.min = Point3DUtils.setZ(this.min, z); }
         if(z > this.max.getZ()) { this.max = Point3DUtils.setZ(this.max, z); }
+
+        if(Math.abs(z - RECT_HEIGHT/2) < RECT_HEIGHT/2) {
+            if(x < this.minRect.getX()) { this.minRect = Point2DUtils.setX(this.minRect, x); }
+            if(x > this.maxRect.getX()) { this.maxRect = Point2DUtils.setX(this.maxRect, x); }
+
+            if(y < this.minRect.getY()) { this.minRect = Point2DUtils.setY(this.minRect, y); }
+            if(y > this.maxRect.getY()) { this.maxRect = Point2DUtils.setY(this.maxRect, y); }
+        }
     }
 
     public Point3D getMin() {
@@ -122,6 +133,14 @@ public class BoundingBox {
         onChange();
     }
 
+    public Point2D getMinRect() {
+        return minRect;
+    }
+
+    public Point2D getMaxRect() {
+        return maxRect;
+    }
+
     public boolean intersects(BoundingBox bb) {
         return !(min.getX() > bb.max.getX() || max.getX() < bb.min.getX() ||
                  min.getY() > bb.max.getY() || max.getY() < bb.min.getY() ||
@@ -134,11 +153,11 @@ public class BoundingBox {
                 compareWithDeviation(min.getZ(), point.getZ()) && compareWithDeviation(point.getZ(), max.getZ());
     }
 
-    private boolean compareWithDeviation(double low, double high) {
+    protected boolean compareWithDeviation(double low, double high) {
         return compareWithDeviation(low, high, 1E-5);
     }
 
-    private boolean compareWithDeviation(double low, double high, double deviation) {
+    protected boolean compareWithDeviation(double low, double high, double deviation) {
         return high > low || Math.abs(high-low) < deviation;
     }
 

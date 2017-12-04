@@ -10,6 +10,8 @@ import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.math.BoundingBox;
 
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 
 /**
@@ -18,6 +20,7 @@ import javafx.scene.shape.TriangleMesh;
 public abstract class SubSceneGraph {
     private final LinkedList<SceneMesh> sceneMeshes;
     private final Group sceneGroup;
+    private final Group helpGroup;
     protected final EventBus eventBus;
     protected PrinterVolume printerVolume;
 
@@ -25,11 +28,13 @@ public abstract class SubSceneGraph {
         this.eventBus = eventBus;
         sceneMeshes = new LinkedList<>();
         sceneGroup = new Group();
+        helpGroup = new Group();
     }
 
-    public final Group getSceneGroup() {
+    final Group getSceneGroup() {
         return sceneGroup;
     }
+    final Group getHelpGroup() { return helpGroup; }
 
     public final LinkedList<SceneMesh> getSceneMeshes() { return sceneMeshes; }
 
@@ -43,7 +48,15 @@ public abstract class SubSceneGraph {
         sceneGroup.getChildren().remove(mesh.getNode());
     }
 
-    protected final void setPrinterVolume(PrinterVolume printerVolume) {
+    protected void addHelpObject(Node node) {
+        helpGroup.getChildren().add(node);
+    }
+
+    protected void remvoeHelpObject(Node node) {
+        helpGroup.getChildren().remove(node);
+    }
+
+    protected void setPrinterVolume(PrinterVolume printerVolume) {
         this.printerVolume = printerVolume;
     }
 }

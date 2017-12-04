@@ -4,6 +4,7 @@ import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventHandler;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
 import javafx.beans.value.ChangeListener;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,11 +23,11 @@ public class ButtonIncrement extends BaseTooltipControl implements SlicerParamBi
     @FXML Button plusBtn;
     @FXML Label textValue;
 
-    private double increment;
+    private Double increment;
     private String unit;
-    private double value;
-    private double max;
-    private double min;
+    private Double value;
+    private Double max;
+    private Double min;
     private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     private DoubleFunction<Double> recalculation;
@@ -35,18 +36,21 @@ public class ButtonIncrement extends BaseTooltipControl implements SlicerParamBi
         super.init("/view/controlMenu/increment.fxml");
 
         minusBtn.setOnAction((e) -> {
-            double newValue = this.getValue() - increment;
-            if (newValue >= min && newValue <= max){
+            double newValue = getValue() - increment;
+            if(isValid(newValue)){
                 setValue(newValue);
             }
         } );
+
         plusBtn.setOnAction((e) -> {
-            double newValue = this.getValue() + increment;
-            if (newValue >= min && newValue <= max){
+            double newValue = getValue() + increment;
+            if(isValid(newValue)){ 
                 setValue(newValue);
             }
         });
 
+        minusBtn.disabledProperty().addListener((obs, oldVal, newVal) -> { if(!newVal){ updateView(); }});
+        plusBtn.disabledProperty().addListener((obs, oldVal, newVal) -> { if(!newVal) { updateView(); }});
     }
 
     public void setIncrement(double value){
@@ -91,21 +95,27 @@ public class ButtonIncrement extends BaseTooltipControl implements SlicerParamBi
 
     private void setValue(Double value){
         this.value = value;
-        //this.boundParam.setVal(value);
+
         updateParam();
         updateView();
     }
 
+    private boolean isValid(Double value){
+        return ((min == null) || value >= min) && ((max == null) || value <= max);
+    }
 
-    private double getValue(){
+    private Double getValue(){
         return value;
     }
 
     public void updateView(){
+
+        minusBtn.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), getValue().equals(min) );
+        plusBtn.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), getValue().equals(max) );
+
         if (recalculation != null){
             Double showValue = recalculation.apply(this.value);
             textValue.setText(decimalFormat.format(showValue) + " " + unit);
-//            textValue.setText(new Double((Math.round(value * 10D) / 10D)).toString() + unit);
         } else {
             textValue.setText(decimalFormat.format(this.value) + (unit != null ? " " + unit : ""));
         }
