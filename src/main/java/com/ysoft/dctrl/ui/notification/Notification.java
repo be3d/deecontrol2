@@ -53,6 +53,7 @@ public class Notification extends VBox {
 
         getChildren().add(baseRow);
         addEventHandler(MouseEvent.ANY, Event::consume);
+        addOnCloseAction((e) -> hide());
     }
 
     protected HBox getBaseRow() {
