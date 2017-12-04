@@ -46,10 +46,6 @@ public class ProgressNotification extends Notification {
         progressBar.setProgress(value);
     }
 
-    public void resetProgress(){
-        setProgress(0);
-    }
-
     @Override
     public void setTimeout(int time) {
         collapseTimeout = time;
@@ -58,7 +54,7 @@ public class ProgressNotification extends Notification {
     @Override
     public void onShow() {
         super.onShow();
-        resetProgress();
+        setProgress(0);
         collapse();
     }
 
