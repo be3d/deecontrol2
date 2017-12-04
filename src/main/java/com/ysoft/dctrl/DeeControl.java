@@ -1,6 +1,7 @@
 package com.ysoft.dctrl;
 
-import java.awt.SplashScreen;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -31,16 +32,21 @@ import javafx.stage.Stage;
  */
 public class DeeControl extends Application {
     private ConfigurableApplicationContext applicationContext;
-    private InstanceMonitor instanceMonitor;
+    private static InstanceMonitor instanceMonitor;
     private static Logger logger;
 
     public static void main(String[] args) {
         initLogger();
 
-        if(OSVersion.is(OSVersion.MAC)) {
-            launch(args);
-        } else {
+        if(!OSVersion.is(OSVersion.MAC)) {
+            instanceMonitor = new InstanceMonitor();
+            boolean isServer = instanceMonitor.startServer();
+            if (!isServer && !instanceMonitor.connectClient(new LinkedList<>(Arrays.asList(args)))) {
+                throw new IllegalStateException("Other instance is running");
+            }
             LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
+        } else {
+            launch(args);
         }
     }
 
@@ -51,21 +57,13 @@ public class DeeControl extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> Platform.runLater(() -> showError(t, e)));
         Thread.currentThread().setUncaughtExceptionHandler(this::showError);
 
         applicationContext = new AnnotationConfigApplicationContext(DeeControlConfig.class);
         applicationContext.registerShutdownHook();
         EventBus eventBus = applicationContext.getBean(EventBus.class);
-
-        if(!OSVersion.is(OSVersion.MAC)) {
-            instanceMonitor = new InstanceMonitor();
-            boolean isServer = instanceMonitor.startServer(eventBus);
-            if (!isServer && !instanceMonitor.connectClient(getParameters().getRaw())) {
-                throw new IllegalStateException("Other instance is running");
-            }
-        }
+        instanceMonitor.setEventBus(eventBus);
 
         BaseWindow baseWindow = applicationContext.getBean(BaseWindow.class);
         baseWindow.composeWindow(primaryStage);
@@ -102,15 +100,9 @@ public class DeeControl extends Application {
             }
         }
 
-        if(OSVersion.is(OSVersion.MAC)) {
-            final SplashScreen splash = SplashScreen.getSplashScreen();
-            if(splash != null){
-                splash.close();
-            }
-        } else {
+        if(OSVersion.is(OSVersion.WIN)) {
             notifyPreloader(new Preloader.ProgressNotification(1.0));
         }
-
     }
 
     @Override
@@ -120,7 +112,7 @@ public class DeeControl extends Application {
     }
 
     private void showError(Thread t, Throwable e){
-        logger.error("Unhandled exception", e);
+        logger.error("Unhandled exception in {}", t.getName(), e);
     }
 
 }
