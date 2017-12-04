@@ -63,7 +63,6 @@ public class DeeControl extends Application {
         applicationContext = new AnnotationConfigApplicationContext(DeeControlConfig.class);
         applicationContext.registerShutdownHook();
         EventBus eventBus = applicationContext.getBean(EventBus.class);
-        instanceMonitor.setEventBus(eventBus);
 
         BaseWindow baseWindow = applicationContext.getBean(BaseWindow.class);
         baseWindow.composeWindow(primaryStage);
@@ -89,19 +88,17 @@ public class DeeControl extends Application {
                 }
             });
         } else {
+            notifyPreloader(new Preloader.ProgressNotification(1.0));
+            instanceMonitor.setEventBus(eventBus);
             List<String> args = getParameters().getRaw();
             if(args.size() > 0) {
-               for(String p : args){
+                for(String p : args){
                     if(FileValidator.isModelFileSupported(p)) {
-                        eventBus.publish(new Event(EventType.ADD_MODEL.name(), p));
-                        break;
-                    }
-               }
+                       eventBus.publish(new Event(EventType.ADD_MODEL.name(), p));
+                       break;
+                   }
+                }
             }
-        }
-
-        if(OSVersion.is(OSVersion.WIN)) {
-            notifyPreloader(new Preloader.ProgressNotification(1.0));
         }
     }
 
