@@ -127,8 +127,9 @@ public class SlicerPanelController extends LocalizableController implements Init
 
         slicingProgressNotification.setLabelText(getMessage("notification_slicing_objects"));
         slicingDoneNotification.setLabelText(getMessage("notification_slicing_completed"));
+        slicingDoneNotification.setTimeout(8);
         slicingFailedNotification.setLabelText(getMessage("notification_slicing_failed"));
-
+        
         slicingProgressNotification.addOnCloseAction((e) -> eventBus.publish(new Event(EventType.SLICER_CANCEL.name())));
     }
 
@@ -295,9 +296,11 @@ public class SlicerPanelController extends LocalizableController implements Init
         eventBus.subscribe(EventType.SLICER_CANCELLED.name(), this::onSlicerCancelled);
         eventBus.subscribe(EventType.SLICER_FINISHED.name(), this::onSlicerFinished);
         eventBus.subscribe(EventType.SLICER_FAILED.name(), this::onSlicerFailed);
-        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), this::onEditModeActivate);
         eventBus.subscribe(EventType.EDIT_SCENE_VALID.name(), (e) -> sliceButton.setDisable(false));
         eventBus.subscribe(EventType.EDIT_SCENE_INVALID.name(), (e) -> sliceButton.setDisable(true));
+        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
+            if(e.getData() == SceneMode.EDIT){ onEditModeActivate(); }
+        });
 
         initTooltips();
 
@@ -342,7 +345,7 @@ public class SlicerPanelController extends LocalizableController implements Init
     }
 
     private void onSlicerFinished(Event e){
-        slicingProgressNotification.hide();
+        slicingProgressNotification.hide(0);
         eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingDoneNotification));
         eventBus.publish(new Event(EventType.SCENE_SET_MODE.name(), SceneMode.GCODE));
     }
@@ -353,10 +356,9 @@ public class SlicerPanelController extends LocalizableController implements Init
         eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), slicingFailedNotification));
     }
 
-    private void onEditModeActivate(Event e){
-        if(e.getData() == SceneMode.EDIT){
-            enableControls();
-        }
+    private void onEditModeActivate(){
+        slicingDoneNotification.hide();
+        enableControls();
     }
 
     private void onSaveProfile(String name){

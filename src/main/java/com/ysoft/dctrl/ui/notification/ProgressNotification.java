@@ -1,12 +1,12 @@
 package com.ysoft.dctrl.ui.notification;
 
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 /**
@@ -51,7 +51,10 @@ public class ProgressNotification extends Notification {
         collapseTimeout = time;
     }
 
-    private void onShow() {
+    @Override
+    public void onShow() {
+        super.onShow();
+        setProgress(0);
         collapse();
     }
 

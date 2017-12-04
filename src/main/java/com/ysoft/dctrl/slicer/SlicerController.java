@@ -85,7 +85,6 @@ public class SlicerController {
 
         runner.setOnCancelled((e) -> {
             logger.trace("Slicing cancelled");
-            System.out.println("Controller knows it's cancelled");
             eventBus.publish(new Event(EventType.SLICER_CANCELLED.name()));
         });
 

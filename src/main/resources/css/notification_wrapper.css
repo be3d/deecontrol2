@@ -1,10 +1,14 @@
 .notification-wrapper {
-    -fx-pref-height: 68px;
-    -fx-max-height: 68px;
+    -fx-pref-height: 268px;
+    -fx-max-height: 268px;
     -fx-padding: 0;
     -fx-alignment: top-center;
 }
 
 .notification-wrapper > FlowPane {
-    -fx-alignment: top-center;
+    -fx-alignment: bottom-center;
+    -fx-padding: 0 0 10 0px;
+    -fx-vgap: 10;
+    -fx-hgap: 10;
+    -fx-orientation: vertical;
 }
