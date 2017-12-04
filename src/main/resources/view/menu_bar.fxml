@@ -8,12 +8,12 @@
 <?import java.net.URL?>
 <MenuBar xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.MenuBarController" useSystemMenuBar="true" styleClass="menu-bar">
   <Menu text="?_menu_bar_file">
-      <MenuItem text="?_menu_bar_new_project" styleClass="menu-item" disable="true" />
+      <!--<MenuItem text="?_menu_bar_new_project" styleClass="menu-item" disable="true" />-->
       <MenuItem fx:id="openFile" text="?_menu_bar_open_file" styleClass="menu-item" />
-      <Menu fx:id="openRecent" text="?_menu_bar_open_recent" styleClass="menu-item" disable="true" />
+      <!--<Menu fx:id="openRecent" text="?_menu_bar_open_recent" styleClass="menu-item" disable="true" />-->
       <SeparatorMenuItem />
-      <MenuItem text="?_menu_bar_save" styleClass="menu-item" disable="true" />
-      <MenuItem text="?_menu_bar_save_as" styleClass="menu-item" disable="true" />
+      <!--<MenuItem text="?_menu_bar_save" styleClass="menu-item" disable="true" />-->
+      <!--<MenuItem text="?_menu_bar_save_as" styleClass="menu-item" disable="true" />-->
       <MenuItem fx:id="exportAs" text="?_menu_bar_export_gcode" styleClass="menu-item" disable="true" />
       <SeparatorMenuItem />
       <MenuItem fx:id="settings" text="?_menu_bar_settings" styleClass="menu-item" />
@@ -42,8 +42,8 @@
   </Menu>
   <Menu text="?_menu_bar_help">
       <MenuItem fx:id="about" text="?_menu_bar_about" styleClass="menu-item" />
-      <SeparatorMenuItem />
-      <MenuItem text="?_menu_bar_getting_started" styleClass="menu-item" disable="true" />
+      <!--<SeparatorMenuItem />-->
+      <!--<MenuItem text="?_menu_bar_getting_started" styleClass="menu-item" disable="true" />-->
   </Menu>
 
   <stylesheets>

@@ -37,6 +37,12 @@ public class DeeControl extends Application {
 
     public static void main(String[] args) {
         initLogger();
+
+        if(OSVersion.is(OSVersion.MAC)) {
+            launch(args);
+        } else {
+            LauncherImpl.launchApplication(DeeControl.class, DeeControlPreloader.class, args);
+        }
         if(!OSVersion.is(OSVersion.MAC)) {
             instanceMonitor = new InstanceMonitor();
             boolean isServer = instanceMonitor.startServer();
@@ -97,7 +103,9 @@ public class DeeControl extends Application {
             }
         }
 
-        notifyPreloader(new Preloader.ProgressNotification(1.0));
+        if(OSVersion.is(OSVersion.WIN)) {
+            notifyPreloader(new Preloader.ProgressNotification(1.0));
+        }
     }
 
     @Override

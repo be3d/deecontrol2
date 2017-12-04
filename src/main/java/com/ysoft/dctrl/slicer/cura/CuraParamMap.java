@@ -46,6 +46,8 @@ public class CuraParamMap extends EnumMap<SlicerParamType, String>{
         put(SlicerParamType.SHELL_Z_SEAM_Y,"z_seam_y");
 
         put(SlicerParamType.INFILL_OVERLAP_MM,"infill_overlap_mm");
+        put(SlicerParamType.INFILL_OVERLAP_MIN,"");
+        put(SlicerParamType.INFILL_OVERLAP_MAX,"");
         put(SlicerParamType.INFILL_LAYER_THICKNESS,"infill_sparse_thickness");
         put(SlicerParamType.INFILL_PATTERN,"infill_pattern");
         put(SlicerParamType.INFILL_DENSITY,"infill_sparse_density");

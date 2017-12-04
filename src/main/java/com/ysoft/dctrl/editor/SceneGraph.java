@@ -113,9 +113,13 @@ public class SceneGraph {
     }
 
     public void setMode(SceneMode mode) {
-        if(this.mode != null) { subSceneGroup.getChildren().remove(subSceneGraphs.get(this.mode).getSceneGroup()); }
+        if(this.mode != null) {
+            subSceneGroup.getChildren().remove(subSceneGraphs.get(this.mode).getSceneGroup());
+            helpGroup.getChildren().remove(subSceneGraphs.get(this.mode).getHelpGroup());
+        }
         this.mode = mode;
         subSceneGroup.getChildren().add(0, subSceneGraphs.get(this.mode).getSceneGroup());
+        helpGroup.getChildren().add(subSceneGraphs.get(this.mode).getHelpGroup());
     }
 
     public ExtendedPerspectiveCamera getCamera() {

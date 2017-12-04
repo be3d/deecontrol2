@@ -20,11 +20,16 @@ public class ShortcutKeys {
     public static final KeyCodeCombination PASTE = new KeyCodeCombination(KeyCode.V, KeyCombination.SHORTCUT_DOWN);
     public static final KeyCodeCombination DUPLICATE = new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN);
     public static final KeyCodeCombination DELETE;
+    public static final KeyCodeCombination QUIT;
 
     static {
         KeyCodeCombination macDelete = new KeyCodeCombination(KeyCode.BACK_SPACE, KeyCombination.SHORTCUT_DOWN);
         KeyCodeCombination winDelete = new KeyCodeCombination(KeyCode.DELETE);
         DELETE = OSVersion.is(OSVersion.MAC) ? macDelete : winDelete;
+
+        KeyCodeCombination macQuit = new KeyCodeCombination(KeyCode.Q, KeyCombination.SHORTCUT_DOWN);
+        KeyCodeCombination winQuit = new KeyCodeCombination(KeyCode.F4, KeyCombination.ALT_DOWN);
+        QUIT = OSVersion.is(OSVersion.MAC) ? macQuit : winQuit;
     }
 
 }
