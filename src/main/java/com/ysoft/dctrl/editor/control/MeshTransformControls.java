@@ -79,7 +79,7 @@ public class MeshTransformControls {
                 plane.setMouseTransparent(false);
                 plane.setTranslateZ(selected.getPositionZ() - plane.getDepth()/2);
                 sceneGraph.setSubSceneMouseTransparent(true);
-                Point3D intersection = getPlaneIntersection(selected.getPosition().add(event.getPickResult().getIntersectedPoint()));
+                Point3D intersection = getPlaneIntersection(em.getTransformMatrix().applyTo(event.getPickResult().getIntersectedPoint()));
                 oldPosition = selected.getPosition();
                 offset = oldPosition.subtract(intersection);
                 event.consume();
