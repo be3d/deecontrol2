@@ -9,11 +9,14 @@ import javafx.scene.control.TextField;
  * Created by pilar on 25.5.2017.
  */
 public class TextInput extends ComplexControl {
-    TextField textField;
+    private TextField textField;
 
     @Override
     protected void initControl() {
         textField = new TextField();
+        textField.textProperty().addListener((ob, o, n) ->{
+            onChange.run();
+        });
     }
 
     @Override
@@ -38,7 +41,7 @@ public class TextInput extends ComplexControl {
     }
 
     @Override
-    protected void setOnAction(EventHandler<ActionEvent> eventHandler) {
-        textField.setOnAction(eventHandler);
+    public void requestFocus() {
+        textField.requestFocus();
     }
 }

@@ -23,6 +23,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
 /**
  * Created by pilar on 16.5.2017.
@@ -33,7 +35,6 @@ public class LocalizationService {
     private final Logger logger = LogManager.getLogger(LocalizationService.class);
 
     private final Map<Container, String> translations;
-    private final Map<MenuItem, String> menuTranslations;
     private final LocalizationResource localizationResource;
     private final EventBus eventBus;
     private final Locale startUpLocale;
@@ -42,7 +43,6 @@ public class LocalizationService {
     @Autowired
     public LocalizationService(LocalizationResource localizationResource, EventBus eventBus, DeeControlContext context) {
         translations = new HashMap<>();
-        menuTranslations = new HashMap<>();
         this.localizationResource = localizationResource;
         this.eventBus = eventBus;
         this.startUpLocale = context.getSettings().getStartUpLocale();
@@ -54,13 +54,28 @@ public class LocalizationService {
         eventBus.subscribe(EventType.CHANGE_LANGUAGE.name(), this::onTranslate);
     }
 
-    public final void addTranslation(Node node) {
-        if(node == null) { return; }
+    public final void addTranslation(Object node) {
+        if (node == null) {
+            return;
+        }
+
+        addMethodContainer("Text", node);
+        addMethodContainer("PromptText", node);
+
+        if(node instanceof Parent) { ((Parent) node).getChildrenUnmodifiable().forEach(this::addTranslation); }
+        if(node instanceof TabPane) { ((TabPane) node).getTabs().forEach(this::addTranslation); }
+        if(node instanceof Tab) { addTranslation(((Tab) node).getContent()); }
+        if(node instanceof MenuBar) { ((MenuBar) node).getMenus().forEach(this::addTranslation); }
+        if(node instanceof Menu) { ((Menu) node).getItems().forEach(this::addTranslation); }
+
+    }
+
+    private void addMethodContainer(String methodSuffix, Object node) {
         try {
-            Method set = node.getClass().getMethod("setText", String.class);
-            Method get = node.getClass().getMethod("getText");
+            Method set = node.getClass().getMethod("set" + methodSuffix, String.class);
+            Method get = node.getClass().getMethod("get" + methodSuffix);
             String text = (String) get.invoke(node);
-            if(text.startsWith("?_")) {
+            if (text != null && text.startsWith("?_")) {
                 String key = text.substring(2);
                 Container cont = new Container(node, set);
                 translations.put(cont, key);
@@ -68,26 +83,6 @@ public class LocalizationService {
             }
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             logger.debug("Not localizable element");
-        }
-
-        if(!(node instanceof Parent)) { return; }
-        Parent parent = (Parent) node;
-        parent.getChildrenUnmodifiable().forEach(this::addTranslation);
-        if(parent instanceof MenuBar) {
-            ((MenuBar) parent).getMenus().forEach(this::addTranslation);
-        }
-    }
-
-    public final void addTranslation(MenuItem menuItem) {
-        String text = menuItem.getText();
-        if(text != null && text.startsWith("?_")) {
-            String key = text.substring(2);
-            menuTranslations.put(menuItem, key);
-            translate(menuItem, startUpLocale, key);
-        }
-
-        if(menuItem instanceof Menu) {
-            ((Menu) menuItem).getItems().forEach(this::addTranslation);
         }
     }
 
@@ -101,17 +96,10 @@ public class LocalizationService {
         translations.forEach((container, s) -> {
             container.setText(localizationResource.getMessage(locale, s));
         });
-        menuTranslations.forEach((menuItem, s) -> {
-            menuItem.setText(localizationResource.getMessage(locale, s));
-        });
     }
 
     private void translate(Container container, Locale locale, String key) {
         container.setText(localizationResource.getMessage(locale, key));
-    }
-
-    private void translate(MenuItem menuItem, Locale locale, String key) {
-        menuItem.setText(localizationResource.getMessage(locale, key));
     }
 
     public String getMessage(String key) {

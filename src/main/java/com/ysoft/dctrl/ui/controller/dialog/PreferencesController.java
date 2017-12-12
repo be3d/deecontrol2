@@ -5,6 +5,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.NumberUtils;
+import org.springframework.util.StringUtils;
 
 import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
@@ -36,8 +38,8 @@ public class PreferencesController extends DialogController {
     @FXML private Picker language;
 
     /* NETWORK */
-    @FXML private TextInput flexiSpoolerAddress;
-    @FXML private TextInput flexiSpoolerPort;
+    @FXML private TextInput safeQAddress;
+    @FXML private TextInput safeQPort;
 
     @FXML private Button save;
     @FXML private Button cancel;
@@ -61,11 +63,26 @@ public class PreferencesController extends DialogController {
     }
 
     public void apply() {
+        String address = safeQAddress.getText();
+        String port = safeQPort.getText();
+
+        if(isOneEmptyOrNull(address, port) || !isPortValid(port)) {
+            tabPane.getSelectionModel().select(1);
+            if(StringUtils.isEmpty(address)) {
+                safeQAddress.setErrorText(getMessage("preferences_network_safeq_address_missing"));
+                safeQAddress.requestFocus();
+            } else {
+                safeQPort.setErrorText(getMessage("preferences_network_safeq_port_missing"));
+                safeQPort.requestFocus();
+            }
+            return;
+        }
+
         Settings settings = deeControlContext.getSettings();
         SafeQSettings safeQSettings = settings.getSafeQSettings();
 
-        safeQSettings.setSpoolerAddress(flexiSpoolerAddress.getText());
-        safeQSettings.setSpoolerPort(flexiSpoolerPort.getText());
+        safeQSettings.setSpoolerAddress(safeQAddress.getText());
+        safeQSettings.setSpoolerPort(safeQPort.getText());
 
         Locale oldLocale = settings.getStartUpLocale();
         Locale locale = localeFromString((String) language.getValue());
@@ -87,8 +104,8 @@ public class PreferencesController extends DialogController {
         language.setSelected(locale.getLanguage() + "_" + locale.getCountry());
 
         SafeQSettings safeQSettings = settings.getSafeQSettings();
-        flexiSpoolerAddress.setText(safeQSettings.getSpoolerAddress());
-        flexiSpoolerPort.setText(safeQSettings.getSpoolerPort());
+        safeQAddress.setText(safeQSettings.getSpoolerAddress());
+        safeQPort.setText(safeQSettings.getSpoolerPort());
 
         int tabIndex;
         PreferencesTab tab = data == null ? PreferencesTab.GENERAL : (PreferencesTab) data;
@@ -112,5 +129,13 @@ public class PreferencesController extends DialogController {
     public Locale localeFromString(String s) {
         String[] parts = s.split("_");
         return new Locale(parts[0], parts[1]);
+    }
+
+    private boolean isOneEmptyOrNull(String a, String b) {
+        return (StringUtils.isEmpty(a) && !StringUtils.isEmpty(b)) || (StringUtils.isEmpty(b) && !StringUtils.isEmpty(a));
+    }
+
+    private boolean isPortValid(String port) {
+        return !StringUtils.isEmpty(port) && port.length() < 6 && port.matches("^[0-9]+$") && Integer.parseInt(port) < 65536;
     }
 }

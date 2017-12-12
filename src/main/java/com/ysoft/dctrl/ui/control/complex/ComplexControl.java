@@ -13,18 +13,28 @@ import javafx.scene.layout.VBox;
  */
 public abstract class ComplexControl extends VBox {
     protected Label label;
+    protected Label error;
     protected Label toolTip;
+    protected Runnable onChange;
 
     public ComplexControl() {
         label = new Label();
+        error = new Label();
         toolTip = new Label();
+        onChange = () -> setErrorText(null);
+
+        error.setManaged(false);
+        error.setWrapText(true);
+        toolTip.setManaged(false);
+        toolTip.setWrapText(true);
 
         initControl();
 
         getStyleClass().addAll("complex-control");
+        error.getStyleClass().addAll("error");
         toolTip.getStyleClass().addAll("tooltip");
 
-        getChildren().addAll(label, getControl());
+        getChildren().addAll(label, getControl(), error, toolTip);
         getControl().setMaxWidth(Double.MAX_VALUE);
     }
 
@@ -43,13 +53,27 @@ public abstract class ComplexControl extends VBox {
     public void setToolTipText(String toolTipText) {
         toolTip.setText(toolTipText);
         if(toolTipText == null || toolTipText.isEmpty()) {
-            getChildren().remove(toolTip);
+            toolTip.setManaged(false);
         } else {
-            getChildren().add(toolTip);
+            toolTip.setManaged(true);
+        }
+    }
+
+    public String getErrorText() {
+        return error.getText();
+    }
+
+    public void setErrorText(String errorText) {
+        error.setText(errorText);
+        if(errorText == null || errorText.isEmpty()) {
+            error.setManaged(false);
+            getStyleClass().remove("error");
+        } else {
+            error.setManaged(true);
+            getStyleClass().add("error");
         }
     }
 
     protected abstract Control getControl();
     protected abstract void initControl();
-    protected abstract void setOnAction(EventHandler<ActionEvent> eventHandler);
 }

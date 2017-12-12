@@ -17,26 +17,26 @@
 <?import com.ysoft.dctrl.ui.control.complex.contract.PickerItem?>
 <?import javafx.collections.FXCollections?>
 
-<DialogPane xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.dialog.PreferencesController" text="Preferences" StackPane.alignment="CENTER">
+<DialogPane xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.dialog.PreferencesController" text="?_preferences_header" StackPane.alignment="CENTER">
   <VBox>
     <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
-      <Tab text="GENERAL" styleClass="general-preferences" >
+      <Tab text="?_preferences_general_header" styleClass="general-preferences" >
         <VBox styleClass="settings-wrapper">
-          <Picker fx:id="language" labelText="Language" placeholderText="Select language…">
+          <Picker fx:id="language" labelText="?_preferences_general_language_label" placeholderText="?_preferences_general_language_placeholder">
             <items>
               <FXCollections fx:factory="observableArrayList">
                 <PickerItem label="English" value="en_US" />
-                <!--<PickerItem label="Czech" value="cs_CZ"/>-->
+                <!--<PickerItem label="Čeština" value="cs_CZ"/>-->
               </FXCollections>
             </items>
           </Picker>
         </VBox>
       </Tab>
-      <Tab text="NETWORK" styleClass="network-preferences">
+      <Tab text="?_preferences_network_header" styleClass="network-preferences">
         <VBox styleClass="settings-wrapper">
           <HBox styleClass="options-row">
-            <TextInput fx:id="flexiSpoolerAddress" labelText="SafeQ server address" toolTipText="Type in IP address of Flexi Spooler" placeholderText="e.g. 10.0.0.169" styleClass="server-address" />
-            <TextInput fx:id="flexiSpoolerPort" labelText="Port" placeholderText="e.g. 515" styleClass="server-port"/>
+            <TextInput fx:id="safeQAddress" labelText="?_preferences_network_safeq_address_label" toolTipText="?_preferences_network_safeq_address_tooltip" placeholderText="?_preferences_network_safeq_address_placeholder" styleClass="server-address" />
+            <TextInput fx:id="safeQPort" labelText="?_preferences_network_safeq_port_label" placeholderText="?_preferences_network_safeq_port_placeholder" styleClass="server-port"/>
           </HBox>
         </VBox>
       </Tab>

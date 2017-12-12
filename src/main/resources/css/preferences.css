@@ -57,7 +57,7 @@ DialogPane {
 }
 
 .tab-pane:top > .tab-header-area {
-    -fx-padding: 0;
+    -fx-padding: 0 8 0 8;
     -fx-background-insets: 0;
 }
 

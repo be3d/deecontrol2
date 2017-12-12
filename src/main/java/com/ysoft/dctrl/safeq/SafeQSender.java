@@ -3,6 +3,7 @@ package com.ysoft.dctrl.safeq;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 
 import javax.annotation.PostConstruct;
@@ -42,7 +43,8 @@ public class SafeQSender {
                 String username = System.getProperty("user.name");
                 File f;
                 try (FileInputStream fis = new FileInputStream(f = new File(jobPath))) {
-                    DefaultLprSender sender = new DefaultLprSender(safeQSettings.getSpoolerAddress(), InetAddress.getByName(safeQSettings.getSpoolerAddress()).getHostName(), Integer.valueOf(safeQSettings.getSpoolerPort()));
+                    Inet4Address address = (Inet4Address) InetAddress.getByName(safeQSettings.getSpoolerAddress());
+                    DefaultLprSender sender = new DefaultLprSender(address.getHostAddress(), address.getHostName(), Integer.parseInt(safeQSettings.getSpoolerPort()));
                     sender.send(username, "YSoft.be3D", deeControlContext.getCurrentProject().getName(), fis, f.length());
                 }
                 return null;
