@@ -28,9 +28,18 @@ public abstract class AbstractEditPanelController extends LocalizableController 
     @FXML protected NumberField y;
     @FXML protected NumberField z;
 
+    private double mouseDragInitialX;
+    private double mouseDragInitialY;
+    private double mouseDragInitialValue;
+
+
     public AbstractEditPanelController(EditSceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
         super(localizationService, eventBus, context);
         this.sceneGraph = sceneGraph;
+
+        mouseDragInitialX = 0;
+        mouseDragInitialY = 0;
+        mouseDragInitialValue = 0;
     }
 
     @Override
@@ -58,6 +67,18 @@ public abstract class AbstractEditPanelController extends LocalizableController 
         field.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.ENTER) { consumer.accept(field.getValue(), item); }
         });
+        field.setOnMousePressed(e -> {
+            mouseDragInitialX = e.getSceneX();
+            mouseDragInitialY = e.getSceneY();
+            mouseDragInitialValue = field.getValue();
+        });
+        field.setOnMouseDragged(e -> {
+            double dx = e.getSceneX()-mouseDragInitialX;
+            double dy = e.getSceneY()-mouseDragInitialY;
+            double newValue = mouseDragInitialValue + field.getMouseDragScale()*dx/(1+Math.abs(dy)*0.1);
+            field.setValue(newValue);
+            consumer.accept(field.getValue(), item);
+        });
     }
 
     public abstract void refresh(SceneMesh mesh);
@@ -81,5 +102,8 @@ public abstract class AbstractEditPanelController extends LocalizableController 
     public abstract void onXChange(SceneMesh mesh, double newValue);
     public abstract void onYChange(SceneMesh mesh, double newValue);
     public abstract void onZChange(SceneMesh mesh, double newValue);
+
+   // public abstract void onXDrag(SceneMesh mesh, double newValue);
+
     public abstract void onReset();
 }

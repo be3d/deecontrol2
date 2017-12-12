@@ -12,11 +12,11 @@
   <Region managed="false" styleClass="arrow-ear" />
   <HBox styleClass="edit-panel-group">
     <Label text="X" labelFor="$x" mnemonicParsing="true" />
-    <NumberField fx:id="x" styleClass="value-field" />
+    <NumberField fx:id="x" mouseDragScale="0.5" styleClass="value-field" />
   </HBox>
   <HBox styleClass="edit-panel-group">
     <Label text="Y" labelFor="$y" mnemonicParsing="true" />
-    <NumberField fx:id="y" styleClass="value-field" />
+    <NumberField fx:id="y" mouseDragScale="0.5" styleClass="value-field" />
   </HBox>
   <HBox styleClass="edit-panel-group" visible="false" managed="false">
     <Label text="Z" labelFor="$z" mnemonicParsing="true" />

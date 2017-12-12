@@ -358,3 +358,7 @@ NumberField:invalid {
     -fx-border-color: #fb4a46 !important;
     -fx-text-fill: #fb4a46 !important;
 }
+
+NumberField:focused {
+    -fx-border-color: #21c1ef !important;
+}
