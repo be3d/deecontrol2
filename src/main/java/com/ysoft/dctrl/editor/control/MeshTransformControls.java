@@ -79,7 +79,7 @@ public class MeshTransformControls {
                 plane.setMouseTransparent(false);
                 plane.setTranslateZ(selected.getPositionZ() - plane.getDepth()/2);
                 sceneGraph.setSubSceneMouseTransparent(true);
-                Point3D intersection = getPlaneIntersection(selected.getPosition().add(event.getPickResult().getIntersectedPoint()));
+                Point3D intersection = getPlaneIntersection(em.getTransformMatrix().applyTo(event.getPickResult().getIntersectedPoint()));
                 oldPosition = selected.getPosition();
                 offset = oldPosition.subtract(intersection);
                 event.consume();
@@ -90,8 +90,10 @@ public class MeshTransformControls {
     public void onMouseDragged(MouseEvent event) {
         switch (mode) {
             case MOVE:
-                if(selected == null || event.getButton() != MouseButton.PRIMARY) { return; }
-                Point2D res = new Point2D(event.getX() + offset.getX(), event.getY() + offset.getY());
+
+                if(selected == null || event.getButton() != MouseButton.PRIMARY || event.getPickResult().getIntersectedNode() != plane) { return; }
+                Point3D i = event.getPickResult().getIntersectedPoint();
+                Point2D res = new Point2D(i.getX() + offset.getX(), i.getY() + offset.getY());
                 if(event.isControlDown()) { res = roundTo(res, 5); }
                 selected.setPosition(res);
                 break;
