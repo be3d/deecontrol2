@@ -90,8 +90,10 @@ public class MeshTransformControls {
     public void onMouseDragged(MouseEvent event) {
         switch (mode) {
             case MOVE:
-                if(selected == null || event.getButton() != MouseButton.PRIMARY) { return; }
-                Point2D res = new Point2D(event.getX() + offset.getX(), event.getY() + offset.getY());
+
+                if(selected == null || event.getButton() != MouseButton.PRIMARY || event.getPickResult().getIntersectedNode() != plane) { return; }
+                Point3D i = event.getPickResult().getIntersectedPoint();
+                Point2D res = new Point2D(i.getX() + offset.getX(), i.getY() + offset.getY());
                 if(event.isControlDown()) { res = roundTo(res, 5); }
                 selected.setPosition(res);
                 break;
