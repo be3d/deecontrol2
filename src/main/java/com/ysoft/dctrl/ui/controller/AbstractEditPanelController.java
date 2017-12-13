@@ -79,7 +79,7 @@ public abstract class AbstractEditPanelController extends LocalizableController 
             double dx = e.getSceneX()-mouseDragLastX;
             mouseDragLastX = e.getSceneX();
 
-            double y = e.getScreenY()-mouseDragInitialY;
+            double ym = e.getScreenY()-mouseDragInitialY;
             double y0 = MOUSE_DRAG_Y_DEAD_AREA;
 
             double sx = field.getMouseDragSensitivity();
@@ -88,8 +88,8 @@ public abstract class AbstractEditPanelController extends LocalizableController 
             double v0 = field.getValue();
             double v1;
 
-            if(Math.abs(y)>y0) {
-                v1 = v0 + sx*dx*Math.max(1 - sy*Math.abs(y - y0), MOUSE_DRAG_Y_MAX_INCREMENT_PENALTY);
+            if(Math.abs(ym)>y0) {
+                v1 = v0 + sx*dx*Math.max(1 - sy*Math.abs(ym - y0), MOUSE_DRAG_Y_MAX_INCREMENT_PENALTY);
             } else {
                 v1 = v0 + sx*dx;
             }
