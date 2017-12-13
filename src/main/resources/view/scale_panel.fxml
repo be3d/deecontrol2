@@ -13,19 +13,19 @@
 <VBox fx:id="root" styleClass="panel, edit-panel, scale-panel" StackPane.alignment="TOP_LEFT" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.121" fx:controller="com.ysoft.dctrl.ui.controller.ScalePanelController">
   <HBox styleClass="edit-panel-group">
     <Label mnemonicParsing="true" text="X" />
-    <NumberField fx:id="xSize" styleClass="" mouseDragScale="0.2" unit=" mm"  />
-    <NumberField  fx:id="x" styleClass="" mouseDragScale="0.4" unit=" %" />
+    <NumberField fx:id="xSize" styleClass="" mouseDragSensitivity="0.2" unit=" mm"  />
+    <NumberField  fx:id="x" styleClass="" mouseDragSensitivity="0.4" unit=" %" />
   </HBox>
   <HBox styleClass="edit-panel-group">
     <Label mnemonicParsing="true" text="Y" />
-    <NumberField fx:id="ySize" styleClass="" mouseDragScale="0.2" unit=" mm" />
-    <NumberField fx:id="y" styleClass="" mouseDragScale="0.4" unit=" %" />
+    <NumberField fx:id="ySize" styleClass="" mouseDragSensitivity="0.2" unit=" mm" />
+    <NumberField fx:id="y" styleClass="" mouseDragSensitivity="0.4" unit=" %" />
   </HBox>
 
   <HBox styleClass="edit-panel-group">
     <Label mnemonicParsing="true" text="Z" />
-    <NumberField fx:id="zSize" styleClass="" mouseDragScale="0.02" unit=" mm" />
-    <NumberField fx:id="z" styleClass="" mouseDragScale="0.5" unit=" %" />
+    <NumberField fx:id="zSize" styleClass="" mouseDragSensitivity="0.2" unit=" mm" />
+    <NumberField fx:id="z" styleClass="" mouseDragSensitivity="0.4" unit=" %" />
   </HBox>
 
   <HBox styleClass="edit-panel-group, uniform">

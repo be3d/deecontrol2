@@ -30,7 +30,7 @@ public class NumberField extends TextField {
     private DoubleFunction<Boolean> validator;
 
     private Double value;
-    private Double mouseDragScale;
+    private Double mouseDragSensitivity;
     private BooleanProperty invalid;
     private boolean associated;
 
@@ -48,7 +48,7 @@ public class NumberField extends TextField {
         invalid = new SimpleBooleanProperty(false);
         invalid.addListener(e -> pseudoClassStateChanged(INVALID_PSEUDO_CLASS, invalid.get()));
         validator = (v) -> true;
-        mouseDragScale = 1.0;
+        mouseDragSensitivity = 1.0;
 
         unit.addListener((ob, o, n) -> setText((o == null) ? getText() + n : getText().replace(o, n)));
 
@@ -150,9 +150,11 @@ public class NumberField extends TextField {
         setValue(associated ? 0d : null);
     }
 
-    public Double getMouseDragScale() { return this.mouseDragScale; }
+    public Double getMouseDragSensitivity() { return mouseDragSensitivity; }
 
-    public void setMouseDragScale(Double mouseDragScale) { this.mouseDragScale = mouseDragScale; }
+    public void setMouseDragSensitivity(Double mouseDragSensitivity) {
+        this.mouseDragSensitivity = mouseDragSensitivity;
+    }
 
     @Override
     public void nextWord() {

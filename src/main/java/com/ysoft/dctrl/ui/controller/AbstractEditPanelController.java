@@ -28,18 +28,22 @@ public abstract class AbstractEditPanelController extends LocalizableController 
     @FXML protected NumberField y;
     @FXML protected NumberField z;
 
-    private double mouseDragInitialX;
-    private double mouseDragInitialY;
-    private double mouseDragInitialValue;
+    // Mouse drag along x axis increments the field value proportionally to NumberField.MouseDragSensitivity().
+    // The Y position of the mouse while dragging applies a penalty to that increment. This effectively
+    //  means, the further mouse is in Y from the drag start, the more delicate change is applied to the field value.
+    private static double MOUSE_DRAG_Y_DEAD_AREA = 100; // area around 0 in y that is insensitive to this point
+    private static double MOUSE_DRAG_Y_SENSITIVITY = 0.002; // defines rate of increasing increment penalty
+    private static double MOUSE_DRAG_Y_MAX_INCREMENT_PENALTY = 0.05;
 
+    private double mouseDragLastX;
+    private double mouseDragInitialY;
 
     public AbstractEditPanelController(EditSceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
         super(localizationService, eventBus, context);
         this.sceneGraph = sceneGraph;
 
-        mouseDragInitialX = 0;
         mouseDragInitialY = 0;
-        mouseDragInitialValue = 0;
+        mouseDragLastX = 0;
     }
 
     @Override
@@ -68,16 +72,30 @@ public abstract class AbstractEditPanelController extends LocalizableController 
             if(e.getCode() == KeyCode.ENTER) { consumer.accept(field.getValue(), item); }
         });
         field.setOnMousePressed(e -> {
-            mouseDragInitialX = e.getSceneX();
+            mouseDragLastX = e.getSceneX();
             mouseDragInitialY = e.getSceneY();
-            mouseDragInitialValue = field.getValue();
         });
         field.setOnMouseDragged(e -> {
-            double dx = e.getSceneX()-mouseDragInitialX;
-            double dy = e.getSceneY()-mouseDragInitialY;
-            double newValue = mouseDragInitialValue + field.getMouseDragScale()*dx/(1+Math.abs(dy)*0.1);
-            field.setValue(newValue);
-            consumer.accept(field.getValue(), item);
+            double dx = e.getSceneX()-mouseDragLastX;
+            mouseDragLastX = e.getSceneX();
+
+            double y = e.getScreenY()-mouseDragInitialY;
+            double y0 = MOUSE_DRAG_Y_DEAD_AREA;
+
+            double sx = field.getMouseDragSensitivity();
+            double sy = MOUSE_DRAG_Y_SENSITIVITY;
+
+            double v0 = field.getValue();
+            double v1;
+
+            if(Math.abs(y)>y0) {
+                v1 = v0 + sx*dx*Math.max(1 - sy*Math.abs(y - y0), MOUSE_DRAG_Y_MAX_INCREMENT_PENALTY);
+            } else {
+                v1 = v0 + sx*dx;
+            }
+
+            field.setValue(v1);
+            consumer.accept(v1, item);
         });
     }
 
@@ -102,8 +120,6 @@ public abstract class AbstractEditPanelController extends LocalizableController 
     public abstract void onXChange(SceneMesh mesh, double newValue);
     public abstract void onYChange(SceneMesh mesh, double newValue);
     public abstract void onZChange(SceneMesh mesh, double newValue);
-
-   // public abstract void onXDrag(SceneMesh mesh, double newValue);
 
     public abstract void onReset();
 }
