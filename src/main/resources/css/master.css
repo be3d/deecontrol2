@@ -197,6 +197,34 @@ RangeSliderVertical Slider {
     -fx-effect: none;
 }
 
+.complex-control Label.error {
+    -fx-font-size: 12px;
+    -fx-text-fill: #fb4a46;
+    -fx-padding: 5 0 0 0;
+    -fx-background-color: transparent;
+    -fx-effect: none;
+}
+
+.complex-control TextField {
+    -fx-effect: none;
+    -fx-min-height: 36px;
+    -fx-pref-height: 36px;
+    -fx-max-height: 36px;
+}
+
+.complex-control.error TextField {
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-border-width: 1px;
+    -fx-border-color: #fb4a46;
+    -fx-text-fill: #fb4a46;
+    -fx-font-weight: bold;
+    -fx-background-image: url("../img/notification/error.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: right 10px center;
+    -fx-background-insets: 0;
+}
+
 .complex-control ComboBox {
     -fx-background-color: transparent;
     -fx-background-radius: 3px;
@@ -204,6 +232,9 @@ RangeSliderVertical Slider {
     -fx-border-style: solid;
     -fx-border-width: 1px;
     -fx-border-color: #bfbfbf;
+    -fx-min-height: 36px;
+    -fx-pref-height: 36px;
+    -fx-max-height: 36px;
 }
 
 .complex-control ComboBox > .arrow-button {
