@@ -28,22 +28,9 @@ public abstract class AbstractEditPanelController extends LocalizableController 
     @FXML protected NumberField y;
     @FXML protected NumberField z;
 
-    // Mouse drag along x axis increments the field value proportionally to NumberField.MouseDragSensitivity().
-    // The Y position of the mouse while dragging applies a penalty to that increment. This effectively
-    //  means, the further mouse is in Y from the drag start, the more delicate change is applied to the field value.
-    private static double MOUSE_DRAG_Y_DEAD_AREA = 100; // area around 0 in y that is insensitive to this point
-    private static double MOUSE_DRAG_Y_SENSITIVITY = 0.002; // defines rate of increasing increment penalty
-    private static double MOUSE_DRAG_Y_MAX_INCREMENT_PENALTY = 0.05;
-
-    private double mouseDragLastX;
-    private double mouseDragInitialY;
-
     public AbstractEditPanelController(EditSceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
         super(localizationService, eventBus, context);
         this.sceneGraph = sceneGraph;
-
-        mouseDragInitialY = 0;
-        mouseDragLastX = 0;
     }
 
     @Override
@@ -71,32 +58,7 @@ public abstract class AbstractEditPanelController extends LocalizableController 
         field.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.ENTER) { consumer.accept(field.getValue(), item); }
         });
-        field.setOnMousePressed(e -> {
-            mouseDragLastX = e.getSceneX();
-            mouseDragInitialY = e.getSceneY();
-        });
-        field.setOnMouseDragged(e -> {
-            double dx = e.getSceneX()-mouseDragLastX;
-            mouseDragLastX = e.getSceneX();
-
-            double ym = e.getScreenY()-mouseDragInitialY;
-            double y0 = MOUSE_DRAG_Y_DEAD_AREA;
-
-            double sx = field.getMouseDragSensitivity();
-            double sy = MOUSE_DRAG_Y_SENSITIVITY;
-
-            double v0 = field.getValue();
-            double v1;
-
-            if(Math.abs(ym)>y0) {
-                v1 = v0 + sx*dx*Math.max(1 - sy*Math.abs(ym - y0), MOUSE_DRAG_Y_MAX_INCREMENT_PENALTY);
-            } else {
-                v1 = v0 + sx*dx;
-            }
-
-            field.setValue(v1);
-            consumer.accept(v1, item);
-        });
+        field.setOnChangedByMouseDrag((e) -> consumer.accept(field.getValue(), item));
     }
 
     public abstract void refresh(SceneMesh mesh);
