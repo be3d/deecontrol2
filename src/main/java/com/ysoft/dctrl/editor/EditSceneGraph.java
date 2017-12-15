@@ -1,11 +1,6 @@
 package com.ysoft.dctrl.editor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
@@ -256,10 +251,13 @@ public class EditSceneGraph extends SubSceneGraph {
     }
 
     public void deleteSelected() {
-        SceneMesh s = getSelected();
-        if(s == null) { return; }
-        deleteModel(s);
-        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new DeleteModelAction(this::deleteModel, this::addMesh, s)));
+        List<SceneMesh> selected = new ArrayList<>(getSelectedAll());
+        selected.forEach(mesh -> deleteModel(mesh));
+        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new DeleteModelAction(this::deleteModels, this::addMeshes, selected)));
+    }
+
+    private void deleteModels(List<SceneMesh> meshes){
+        meshes.forEach( (m) -> deleteModel(m));
     }
 
     private void deleteModel(SceneMesh mesh) {
@@ -449,6 +447,10 @@ public class EditSceneGraph extends SubSceneGraph {
 
     public SceneMesh getSelected() {
         return selected.size() == 1 ? selected.get(0) : null;
+    }
+
+    public List<SceneMesh> getSelectedAll(){
+        return selected.size() > 0 ? selected : new ArrayList<>();
     }
 
     public void setSelected(SceneMesh mesh) {
