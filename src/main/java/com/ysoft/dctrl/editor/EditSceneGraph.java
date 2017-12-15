@@ -251,9 +251,9 @@ public class EditSceneGraph extends SubSceneGraph {
     }
 
     public void deleteSelected() {
-        List<SceneMesh> selected = new ArrayList<>(getSelectedAll());
-        selected.forEach(mesh -> deleteModel(mesh));
-        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new DeleteModelAction(this::deleteModels, this::addMeshes, selected)));
+        List<SceneMesh> selectedMeshes = new ArrayList<>(getSelectedAll());
+        selectedMeshes.forEach(mesh -> deleteModel(mesh));
+        eventBus.publish(new Event(EventType.ADD_ACTION.name(), new DeleteModelAction(this::deleteModels, this::addMeshes, selectedMeshes)));
     }
 
     private void deleteModels(List<SceneMesh> meshes){
