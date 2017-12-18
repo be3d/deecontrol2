@@ -1,7 +1,5 @@
 package com.ysoft.dctrl.ui.control;
 
-import java.util.EnumMap;
-import java.util.function.Consumer;
 import java.util.function.DoubleFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,10 +13,11 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.css.PseudoClass;
+import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 public class NumberField extends TextField {
     private static PseudoClass INVALID_PSEUDO_CLASS = PseudoClass.getPseudoClass("invalid");
@@ -28,11 +27,22 @@ public class NumberField extends TextField {
     private IntegerProperty precision;
 
     private DoubleFunction<Boolean> validator;
+    private EventHandler onChangedByMouseDragHandler;
 
     private Double value;
+    private Double mouseDragSensitivity;
     private BooleanProperty invalid;
     private boolean associated;
 
+    // Mouse drag along x axis increments the field value proportionally to NumberField.MouseDragSensitivity().
+    // The Y position of the mouse while dragging applies a penalty to that increment. This effectively
+    //  means, the further mouse is in Y from the drag start, the more delicate change is applied to the field value.
+    private static double MOUSE_DRAG_Y_DEAD_AREA = 100; // area around 0 in y that is insensitive to this point
+    private static double MOUSE_DRAG_Y_SENSITIVITY = 0.002; // defines rate of increasing increment penalty
+    private static double MOUSE_DRAG_Y_MAX_INCREMENT_PENALTY = 0.05;
+
+    private double mouseDragLastX;
+    private double mouseDragInitialY;
 
     public NumberField() {
         this("");
@@ -47,6 +57,11 @@ public class NumberField extends TextField {
         invalid = new SimpleBooleanProperty(false);
         invalid.addListener(e -> pseudoClassStateChanged(INVALID_PSEUDO_CLASS, invalid.get()));
         validator = (v) -> true;
+        mouseDragSensitivity = 1.0;
+        mouseDragInitialY = 0;
+        mouseDragLastX = 0;
+        onChangedByMouseDragHandler = event -> {};
+
 
         unit.addListener((ob, o, n) -> setText((o == null) ? getText() + n : getText().replace(o, n)));
 
@@ -68,6 +83,35 @@ public class NumberField extends TextField {
         });
         focusedProperty().addListener((ob, o, n) -> {
             if(!n) { validate(); }
+        });
+
+        setOnMousePressed(e -> {
+            mouseDragLastX = e.getSceneX();
+            mouseDragInitialY = e.getSceneY();
+        });
+
+        setOnMouseDragged((e) -> {
+            double dx = e.getSceneX() - mouseDragLastX;
+            mouseDragLastX = e.getSceneX();
+
+            double ym = e.getScreenY() - mouseDragInitialY;
+            double y0 = MOUSE_DRAG_Y_DEAD_AREA;
+
+            double sx = mouseDragSensitivity;
+            double sy = MOUSE_DRAG_Y_SENSITIVITY;
+
+            double v0 = getValue();
+            double v1;
+
+            if (Math.abs(ym) > y0) {
+                v1 = v0 + sx * dx * Math.max(1 - sy * Math.abs(ym - y0), MOUSE_DRAG_Y_MAX_INCREMENT_PENALTY);
+            } else {
+                v1 = v0 + sx * dx;
+            }
+
+            setValue(v1);
+            onChangedByMouseDragHandler.handle(e);
+            e.consume();
         });
     }
 
@@ -146,6 +190,16 @@ public class NumberField extends TextField {
     public void setAssociated(boolean associated) {
         this.associated = associated;
         setValue(associated ? 0d : null);
+    }
+
+    public Double getMouseDragSensitivity() { return mouseDragSensitivity; }
+
+    public void setMouseDragSensitivity(Double mouseDragSensitivity) {
+        this.mouseDragSensitivity = mouseDragSensitivity;
+    }
+
+    public void setOnChangedByMouseDrag(EventHandler<MouseEvent> h) {
+        onChangedByMouseDragHandler = h;
     }
 
     @Override

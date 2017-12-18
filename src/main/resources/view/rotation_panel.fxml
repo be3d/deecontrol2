@@ -13,7 +13,7 @@
     <Label text="X" labelFor="$x" mnemonicParsing="true" />
     <HBox styleClass="rotation-field">
       <Button fx:id="counterX" styleClass="rotate, rotate-counter" />
-      <NumberField fx:id="x" value="90" styleClass="rotate-value" unit="°"/>
+      <NumberField fx:id="x" value="90" styleClass="rotate-value"  mouseDragSensitivity="0.3" unit="°"/>
       <Button fx:id="clockX" styleClass="rotate, rotate-clock" />
     </HBox>
   </HBox>
@@ -21,7 +21,7 @@
     <Label text="Y" labelFor="$y" mnemonicParsing="true" />
     <HBox styleClass="rotation-field">
       <Button fx:id="counterY" styleClass="rotate, rotate-counter" />
-      <NumberField fx:id="y" value="90" styleClass="rotate-value" unit="°"/>
+      <NumberField fx:id="y" value="90" styleClass="rotate-value"  mouseDragSensitivity="0.3" unit="°"/>
       <Button fx:id="clockY" styleClass="rotate, rotate-clock" />
     </HBox>
   </HBox>
@@ -29,7 +29,7 @@
     <Label text="Z" labelFor="$z" mnemonicParsing="true" />
     <HBox styleClass="rotation-field">
       <Button fx:id="counterZ" styleClass="rotate, rotate-counter" />
-      <NumberField fx:id="z" value="90" styleClass="rotate-value" unit="°"/>
+      <NumberField fx:id="z" value="90" styleClass="rotate-value"  mouseDragSensitivity="0.3" unit="°"/>
       <Button fx:id="clockZ" styleClass="rotate, rotate-clock" />
     </HBox>
   </HBox>

@@ -58,6 +58,7 @@ public abstract class AbstractEditPanelController extends LocalizableController 
         field.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.ENTER) { consumer.accept(field.getValue(), item); }
         });
+        field.setOnChangedByMouseDrag((e) -> consumer.accept(field.getValue(), item));
     }
 
     public abstract void refresh(SceneMesh mesh);
@@ -81,5 +82,6 @@ public abstract class AbstractEditPanelController extends LocalizableController 
     public abstract void onXChange(SceneMesh mesh, double newValue);
     public abstract void onYChange(SceneMesh mesh, double newValue);
     public abstract void onZChange(SceneMesh mesh, double newValue);
+
     public abstract void onReset();
 }
