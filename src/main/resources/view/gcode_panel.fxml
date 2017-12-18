@@ -22,41 +22,43 @@
         <Header label="?_gcode_printjob_info" icon="@/img/control_menu/job_info_icon.png" />
             <VBox styleClass="control-menu-keyValueText-container">
                 <HBox styleClass="control-menu-keyValueText-row" >
-                    <Label styleClass="control-menu-keyValueText-key" text="?_gcode_printjob_name"></Label>
-                    <Label fx:id="jobNameLabel" styleClass="control-menu-keyValueText-value" text=""></Label>
+                    <Label styleClass="control-menu-keyValueText-key" text="?_gcode_printjob_name"/>
+                    <Label fx:id="jobNameLabel" styleClass="control-menu-keyValueText-value" text=""/>
                 </HBox>
                 <HBox styleClass="control-menu-keyValueText-row" >
-                    <Label styleClass="control-menu-keyValueText-key" text="?_gcode_printjob_time"></Label>
-                    <Label fx:id="printTimeLabel" styleClass="control-menu-keyValueText-value" text=""></Label>
+                    <Label styleClass="control-menu-keyValueText-key" text="?_gcode_printjob_time"/>
+                    <Label fx:id="printTimeLabel" styleClass="control-menu-keyValueText-value" text=""/>
                 </HBox>
                 <HBox styleClass="control-menu-keyValueText-row" >
-                    <Label styleClass="control-menu-keyValueText-key" text="?_gcode_printjob_material_length"></Label>
-                    <Label fx:id="filamentUsageLabel" styleClass="control-menu-keyValueText-value" text=""></Label>
+                    <Label styleClass="control-menu-keyValueText-key" text="?_gcode_printjob_material_length"/>
+                    <Label fx:id="filamentUsageLabel" styleClass="control-menu-keyValueText-value" text=""/>
                 </HBox>
             </VBox>
         <Header label="?_gcode_visualisation" icon="@/img/control_menu/gc_viewer_icon.png"/>
-        <fx:define><ToggleGroup fx:id="viewToggleGroup"></ToggleGroup></fx:define>
+        <fx:define>
+            <ToggleGroup fx:id="viewToggleGroup"/></fx:define>
         <VBox styleClass="control-menu-radioButton-container">
-            <RadioButton fx:id="optimizedViewRadio" toggleGroup="$viewToggleGroup" text="?_gcode_optimized_view" userData="optimizedView"
-                         styleClass="control-menu-radioButton" selected="true" disable="true"></RadioButton>
-            <Label styleClass="control-menu-radioButton-info" wrapText="true" text="?_gcode_optimized_view_info" ></Label>
+            <RadioButton fx:id="optimizedViewRadio" toggleGroup="$viewToggleGroup" text="?_gcode_optimized_view"
+                         userData="optimizedView"
+                         styleClass="control-menu-radioButton" selected="true" disable="true"/>
+            <Label styleClass="control-menu-radioButton-info" wrapText="true" text="?_gcode_optimized_view_info"/>
         </VBox>
         <VBox styleClass="control-menu-radioButton-container">
-            <RadioButton fx:id="detailedViewRadio" toggleGroup="$viewToggleGroup" text="?_gcode_detailed_view" userData="detailedView"
-                         styleClass="control-menu-radioButton" disable="true"></RadioButton>
-            <Label styleClass="control-menu-radioButton-info" wrapText="true" text="?_gcode_detailed_view_info"></Label>
+            <RadioButton fx:id="detailedViewRadio" toggleGroup="$viewToggleGroup" text="?_gcode_detailed_view"
+                         userData="detailedView"
+                         styleClass="control-menu-radioButton" disable="true"/>
+            <Label styleClass="control-menu-radioButton-info" wrapText="true" text="?_gcode_detailed_view_info"/>
         </VBox>
         <VBox fx:id="detailViewControls" styleClass="control-menu-checkBox-container" visible="false">
-            <CheckBoxInline fx:id="displayShell" text="?_gcode_display_shell"></CheckBoxInline>
-            <CheckBoxInline fx:id="displayTravelMoves" text="?_gcode_display_travel_moves" ></CheckBoxInline>
-            <CheckBoxInline fx:id="displayInfill" text="?_gcode_display_infill"></CheckBoxInline>
-            <CheckBoxInline fx:id="displaySupports" text="?_gcode_display_supports"></CheckBoxInline>
+            <CheckBoxInline fx:id="displayShell" text="?_gcode_display_shell"/>
+            <CheckBoxInline fx:id="displayTravelMoves" text="?_gcode_display_travel_moves"/>
+            <CheckBoxInline fx:id="displayInfill" text="?_gcode_display_infill"/>
+            <CheckBoxInline fx:id="displaySupports" text="?_gcode_display_supports"/>
         </VBox>
     </VBox>
 
-    <VBox alignment="CENTER" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10"  >
+    <VBox styleClass="control-menu-footer-container" alignment="CENTER" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10"  >
         <Button fx:id="backToEditBtn" styleClass="control-button" text="?_gcode_back_to_edit" />
-        <Region prefHeight="10"></Region>
         <Button fx:id="sendJobBtn" styleClass="blue,control-button" text="?_gcode_send_to_safeq" />
     </VBox>
 

@@ -48,6 +48,7 @@
 
 .control-menu-footer-container {
     -fx-padding:0 0 4 0px;
+    -fx-spacing: 10px;
 }
 
 .control-button {
