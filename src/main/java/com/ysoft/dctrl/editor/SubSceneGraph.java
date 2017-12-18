@@ -43,6 +43,10 @@ public abstract class SubSceneGraph {
         sceneGroup.getChildren().add(mesh.getNode());
     }
 
+    protected void addMeshes(List<SceneMesh> meshes){
+        meshes.forEach((m) -> addMesh(m));
+    }
+
     protected void removeMesh(SceneMesh mesh) {
         sceneMeshes.remove(mesh);
         sceneGroup.getChildren().remove(mesh.getNode());
