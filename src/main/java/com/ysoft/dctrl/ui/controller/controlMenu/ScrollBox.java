@@ -4,7 +4,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.css.PseudoClass;
 import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 
 import java.util.LinkedHashMap;
@@ -14,8 +13,8 @@ import java.util.LinkedHashMap;
  */
 public class ScrollBox extends ScrollPane {
 
-    private boolean scrollable = false;
-    private ScrollState currentScrollState = null;
+    private boolean scrollable;
+    private ScrollState currentScrollState;
     private enum ScrollState {NOT_SCROLLABLE, AT_TOP, AT_BOTTOM, AT_MIDDLE}
 
     private LinkedHashMap<ScrollState, PseudoClass> pseudoClasses = new LinkedHashMap<ScrollState, PseudoClass>(){{
@@ -25,6 +24,9 @@ public class ScrollBox extends ScrollPane {
     }};
 
     public ScrollBox() {
+        scrollable = false;
+        currentScrollState = null;
+
         vvalueProperty().addListener(
             (ObservableValue<? extends Number> obs, Number oldValue, Number newValue) -> {
                 decideScrollState((double)newValue);

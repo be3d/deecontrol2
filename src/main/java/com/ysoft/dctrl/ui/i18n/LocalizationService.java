@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import javafx.scene.control.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,6 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 
 /**
  * Created by pilar on 16.5.2017.
@@ -61,12 +57,14 @@ public class LocalizationService {
 
         addMethodContainer("Text", node);
         addMethodContainer("PromptText", node);
+        addMethodContainer("Label", node);
 
         if(node instanceof Parent) { ((Parent) node).getChildrenUnmodifiable().forEach(this::addTranslation); }
         if(node instanceof TabPane) { ((TabPane) node).getTabs().forEach(this::addTranslation); }
         if(node instanceof Tab) { addTranslation(((Tab) node).getContent()); }
         if(node instanceof MenuBar) { ((MenuBar) node).getMenus().forEach(this::addTranslation); }
         if(node instanceof Menu) { ((Menu) node).getItems().forEach(this::addTranslation); }
+        if(node instanceof ScrollPane) { addTranslation(((ScrollPane)node).getContent()); }
 
     }
 

@@ -15,7 +15,7 @@
     </Text>
     <Text styleClass="no-model-panel-text" text="?_no_model_panel_text" />
 
-    <Button fx:id="browse" text="BROWSE" styleClass="blue" >
+    <Button fx:id="browse" text="?_no_model_panel_browse" styleClass="blue" >
       <VBox.margin><Insets><top>40</top></Insets></VBox.margin>
     </Button>
   </VBox>
