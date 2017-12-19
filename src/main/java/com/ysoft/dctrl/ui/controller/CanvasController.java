@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.ysoft.dctrl.editor.control.ExtendedPerspectiveCamera;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.ui.notification.ErrorNotification;
 import com.ysoft.dctrl.utils.exceptions.RunningOutOfMemoryException;
@@ -96,7 +97,7 @@ public class CanvasController extends LocalizableController implements Initializ
             subScene.setHeight(newValue.doubleValue());
         });
 
-        TrackBallCameraControls controls = new TrackBallCameraControls(sceneGraph.getCamera(), new Point3D(0,-400,400));
+        TrackBallCameraControls controls = new TrackBallCameraControls(sceneGraph.getCameraGroup(), new Point3D(0,-400,400));
         
         canvas.setOnMousePressed((e) -> {
             canvas.requestFocus();

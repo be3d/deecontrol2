@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.ysoft.dctrl.editor.control.CameraGroup;
+import com.ysoft.dctrl.editor.control.CameraType;
+import javafx.scene.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,11 +23,6 @@ import com.ysoft.dctrl.math.Point3DUtils;
 import com.ysoft.dctrl.utils.ColorUtils;
 
 import javafx.geometry.Point3D;
-import javafx.scene.AmbientLight;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.PointLight;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.Shape3D;
@@ -40,6 +38,8 @@ public class SceneGraph {
     private static final Point3D PRINTER_SIZE = new Point3D(150,150,150);
     private static final Point3D PRINTER_HALF_SIZE = new Point3D(75,75,75);
     private ExtendedPerspectiveCamera camera;
+    private CameraGroup cameraGroup;
+
     private final Group sceneGroup;
     private final Group helpGroup;
     private final Group subSceneGroup;
@@ -64,6 +64,8 @@ public class SceneGraph {
         subSceneGroup = new Group();
         sceneGroup.getChildren().addAll(subSceneGroup, helpGroup);
         camera = createCamera();
+        cameraGroup = createCameraGroup();
+
         this.subSceneGraphs = initSubSceneGraphs(subSceneGraphs);
     }
 
@@ -97,6 +99,19 @@ public class SceneGraph {
         return camera;
     }
 
+    private CameraGroup createCameraGroup() {
+        PerspectiveCamera per = new PerspectiveCamera(true);
+        per.setFarClip(10000);
+
+        ParallelCamera par = new ParallelCamera();
+        par.setFarClip(10000);
+
+        CameraGroup cameraGroup = new CameraGroup(per, par);
+        cameraGroup.setInitialTransforms(new Rotate(-90, Rotate.X_AXIS));
+        cameraGroup.select(CameraType.PARALLEL);
+        return cameraGroup;
+    }
+
     private PrintBed createPrintBed() {
         return new PrintBed((float) PRINTER_SIZE.getX(),(float) PRINTER_SIZE.getY());
     }
@@ -122,8 +137,16 @@ public class SceneGraph {
         helpGroup.getChildren().add(subSceneGraphs.get(this.mode).getHelpGroup());
     }
 
-    public ExtendedPerspectiveCamera getCamera() {
-        return camera;
+    //public ExtendedPerspectiveCamera getCamera() {
+    //    return camera;
+    //}
+
+    public Camera getCamera() {
+        return cameraGroup.getSelected();
+    }
+
+    public CameraGroup getCameraGroup(){
+        return cameraGroup;
     }
 
     public Parent getSceneGroup() {

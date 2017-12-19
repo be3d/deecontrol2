@@ -24,7 +24,9 @@ public class TrackBallCameraControls {
     private static final Point3D DEFAULT_LOOK_AT = new Point3D(0,1,0);
     private static final Point2D DEFAULT_LOOK_AXIS = new Point2D(0, 1);
 
-    private final ExtendedPerspectiveCamera camera;
+    //private final ExtendedPerspectiveCamera camera;
+    private final CameraGroup cameraGroup;
+
     private final Point3D initialCameraPosition;
     private Point3D target;
     private Point3D position;
@@ -39,12 +41,12 @@ public class TrackBallCameraControls {
 
     private boolean changed;
 
-    public TrackBallCameraControls(ExtendedPerspectiveCamera camera) {
+    public TrackBallCameraControls(CameraGroup camera) {
         this(camera, new Point3D(0, -100, 0));
     }
 
-    public TrackBallCameraControls(ExtendedPerspectiveCamera camera, Point3D initialPosition) {
-        this.camera = camera;
+    public TrackBallCameraControls(CameraGroup cameraGroup, Point3D initialPosition) {
+        this.cameraGroup = cameraGroup;
         this.initialCameraPosition = initialPosition;
         target = new Point3D(0,0,0);
         position = new Point3D(0,0,0);
@@ -55,8 +57,8 @@ public class TrackBallCameraControls {
         previousState = State.ENABLED;
 
         setCameraPosition(new Point3D(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ()));
-        camera.setRotationX(Math.toDegrees(-theta));
-        camera.setRotationY(Math.toDegrees(alpha) + 180);
+        cameraGroup.setRotationX(Math.toDegrees(-theta));
+        cameraGroup.setRotationY(Math.toDegrees(alpha) + 180);
         changed = false;
     }
 
@@ -76,15 +78,15 @@ public class TrackBallCameraControls {
 
         double yAngle = Math.toDegrees(Math.acos(DEFAULT_LOOK_AXIS.dotProduct(getDiff2D(target, position).normalize())));
 
-        camera.setRotationX(xAngle);
-        camera.setRotationY(yAngle);
+        cameraGroup.setRotationX(xAngle);
+        cameraGroup.setRotationY(yAngle);
     }
 
     public void resetCamera() {
         alpha = Math.PI;
         theta = Math.toRadians(90 - initialCameraPosition.angle(0,0,1));
-        camera.setRotationX(Math.toDegrees(-theta));
-        camera.setRotationY(Math.toDegrees(alpha) + 180);
+        cameraGroup.setRotationX(Math.toDegrees(-theta));
+        cameraGroup.setRotationY(Math.toDegrees(alpha) + 180);
         setCameraPosition(Point3DUtils.copy(initialCameraPosition));
         target = new Point3D(0,0,0);
     }
@@ -94,12 +96,12 @@ public class TrackBallCameraControls {
         setCameraPosition(new Point3D(target.getX(), target.getY(), target.getZ() + z));
         alpha = Math.PI;
         theta = Math.toRadians(90);
-        camera.setRotationX(Math.toDegrees(-theta));
-        camera.setRotationY(Math.toDegrees(alpha) + 180);
+        cameraGroup.setRotationX(Math.toDegrees(-theta));
+        cameraGroup.setRotationY(Math.toDegrees(alpha) + 180);
     }
 
     private void updatePosition() {
-        camera.setPosition(position);
+        cameraGroup.setPosition(position);
     }
 
     public void onMousePressed(MouseEvent event) {
@@ -199,8 +201,8 @@ public class TrackBallCameraControls {
         double x = Math.sin(alpha) * xyDist;
         double y = Math.cos(alpha) * xyDist;
 
-        camera.setRotationX(Math.toDegrees(-theta));
-        camera.setRotationY(Math.toDegrees(alpha) + 180);
+        cameraGroup.setRotationX(Math.toDegrees(-theta));
+        cameraGroup.setRotationY(Math.toDegrees(alpha) + 180);
         position = target.add(x,y,z);
         updatePosition();
 

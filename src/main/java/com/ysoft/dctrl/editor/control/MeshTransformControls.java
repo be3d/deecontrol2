@@ -127,7 +127,7 @@ public class MeshTransformControls {
     }
 
     public Point3D getPlaneIntersection(Point3D intersection) {
-        Point3D origin = sceneGraph.getCamera().getPosition();
+        Point3D origin = sceneGraph.getCameraGroup().getPosition();
         Point3D dir = intersection.subtract(origin);
         double dot = dir.dotProduct(new Point3D(0,0,1));
         double d = new Point3D(0,0,plane.getTranslateZ()).subtract(origin).dotProduct(new Point3D(0,0,1))/dot;
