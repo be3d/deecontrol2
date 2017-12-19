@@ -45,8 +45,6 @@ public class GCodePanelController extends LocalizableController implements Initi
     private JobCreator jobCreator;
 
     @FXML
-    AnchorPane root;
-    @FXML
     Button backToEditBtn;
     @FXML
     Button sendJobBtn;
