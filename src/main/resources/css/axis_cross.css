@@ -1,0 +1,22 @@
+.axis-cross {
+    -fx-pref-width: 100px;
+    -fx-pref-height: 100px;
+    -fx-background-color: transparent;
+}
+
+.label {
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #f5f5f5, 0.5, 1.0, 0, 0);
+}
+
+.x-label {
+    -fx-text-fill: #f9464b;
+}
+
+.y-label {
+    -fx-text-fill: #53c833;
+}
+
+.z-label {
+    -fx-text-fill: #1fc0ee;
+}

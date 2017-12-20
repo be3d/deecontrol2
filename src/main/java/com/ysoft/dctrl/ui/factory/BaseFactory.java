@@ -19,6 +19,7 @@ public class BaseFactory implements
         MenuBarFactory,
         ControlPanelFactory,
         EditorCanvasFactory,
+        AxisCrossFactory,
         RotationPanelFactory,
         MovePanelFactory,
         ScalePanelFactory,
@@ -50,8 +51,13 @@ public class BaseFactory implements
     @Override
     public AnchorPane buildEditorCanvas() {
         AnchorPane canvas = (AnchorPane) loader.load("/view/editor_canvas.fxml");
-        canvas.getChildren().addAll(buildEditPanelWrapper(), buildControlPanel(), buildNoModelPanel());
+        canvas.getChildren().addAll(buildEditPanelWrapper(), buildControlPanel(), buildNoModelPanel(), buildAxissCross());
         return canvas;
+    }
+
+    @Override
+    public AnchorPane buildAxissCross() {
+        return (AnchorPane) loader.load("/view/axis_cross.fxml");
     }
 
     @Override

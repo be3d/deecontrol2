@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+
+<?import java.net.URL?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.AxisCrossController" styleClass="axis-cross" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0" mouseTransparent="true">
+  <Label fx:id="xLabel" text="X" styleClass="label, x-label"/>
+  <Label fx:id="yLabel" text="Y" styleClass="label, y-label"/>
+  <Label fx:id="zLabel" text="Z" styleClass="label, z-label"/>
+  <stylesheets>
+    <URL value="@/css/axis_cross.css" />
+    <URL value="@/css/master.css" />
+  </stylesheets>
+</AnchorPane>
