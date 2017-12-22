@@ -56,11 +56,18 @@ public class CameraGroup extends Group{
     }
 
     public void setInitialTransforms(Collection<Transform> transforms) {
-        ObservableList<Transform> t = cameras.get(CameraType.PARALLEL).getTransforms();
+        ObservableList<Transform> t = cameras.get(CameraType.PERSPECTIVE).getTransforms();
         t.clear();
         t.addAll(position);
         t.addAll(transforms);
         t.addAll(rotationY, rotationX, rotationZ);
+
+        ObservableList<Transform> tp = cameras.get(CameraType.PARALLEL).getTransforms();
+        tp.clear();
+        tp.addAll(new Translate(-550,600,0)); // thesse are half of the view
+        tp.addAll(position);
+        tp.addAll(new Rotate(-90,Rotate.X_AXIS));
+        tp.addAll(rotationY, rotationX, rotationZ);
     }
 
     public void setPosition(double x, double y, double z) {
@@ -98,14 +105,17 @@ public class CameraGroup extends Group{
 
     public void setRotationX(double rotationX) {
         this.rotationX.setAngle(rotationX);
+        System.out.println("rotX"+rotationX);
     }
 
     public void setRotationY(double rotationY) {
         this.rotationY.setAngle(rotationY);
+        System.out.println("rotY"+rotationY);
     }
 
     public void setRotationZ(double rotationZ) {
         this.rotationZ.setAngle(rotationZ);
+        System.out.println("rotZ"+rotationZ);
     }
 
     public Point3D getRotation() {

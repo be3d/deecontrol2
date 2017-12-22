@@ -100,13 +100,15 @@ public class SceneGraph {
     }
 
     private CameraGroup createCameraGroup() {
-        PerspectiveCamera per = new PerspectiveCamera(true);
+        PerspectiveCamera per = new PerspectiveCamera(false);
         per.setFarClip(10000);
 
         ParallelCamera par = new ParallelCamera();
+        par.setNearClip(0);
         par.setFarClip(10000);
 
         CameraGroup cameraGroup = new CameraGroup(per, par);
+        // only for perspective, parallel hardcoded
         cameraGroup.setInitialTransforms(new Rotate(-90, Rotate.X_AXIS));
         cameraGroup.select(CameraType.PARALLEL);
         return cameraGroup;

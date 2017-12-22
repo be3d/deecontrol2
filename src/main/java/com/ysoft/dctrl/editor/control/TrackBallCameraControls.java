@@ -50,6 +50,7 @@ public class TrackBallCameraControls {
         this.initialCameraPosition = initialPosition;
         target = new Point3D(0,0,0);
         position = new Point3D(0,0,0);
+        //position = new Point3D(-550,600,0);
         alpha = Math.PI;
         theta = Math.toRadians(90 - initialPosition.angle(0,0,1));
         previousMousePosition = new Point2D(0,0);
@@ -102,6 +103,7 @@ public class TrackBallCameraControls {
 
     private void updatePosition() {
         cameraGroup.setPosition(position);
+        System.out.println("Campos"+position);
     }
 
     public void onMousePressed(MouseEvent event) {
@@ -193,7 +195,8 @@ public class TrackBallCameraControls {
         theta += diff.getY() * ROTATE_SPEED;
         if(theta > Math.PI/2) theta = Math.PI/2;
         if(theta < -Math.PI/2) theta = -Math.PI/2;
-        double dist = target.distance(position);
+        //double dist = target.distance(position);
+        double dist = target.distance(new Point3D(-550,600,0));
 
         double z = Math.sin(theta) * dist;
         double xyDist = Math.cos(theta) * dist;
