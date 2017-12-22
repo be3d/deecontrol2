@@ -10,7 +10,6 @@
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<?import javafx.scene.control.ScrollPane?>
 
 <?import com.ysoft.dctrl.ui.controller.controlMenu.Picker?>
 <?import com.ysoft.dctrl.ui.controller.controlMenu.TextInput?>
@@ -21,72 +20,68 @@
 <?import com.ysoft.dctrl.ui.controller.controlMenu.ToggleButtonGroup?>
 
 <?import com.ysoft.dctrl.ui.controller.controlMenu.ScrollBox?>
-<AnchorPane fx:id="anchorPane" fx:controller="com.ysoft.dctrl.ui.controller.SlicerPanelController" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu">
+<AnchorPane fx:id="root" fx:controller="com.ysoft.dctrl.ui.controller.SlicerPanelController" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu">
 
   <HBox AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0"  AnchorPane.rightAnchor="0" styleClass="control-menu-section-header" alignment="CENTER_LEFT">
       <ImageView  >
         <image>
-          <Image url="@/img/control_menu/settings-full.png"></Image>
+          <Image url="@/img/control_menu/settings-full.png"/>
         </image>
       </ImageView>
 
-      <Label text="PRINT SETTINGS" styleClass="control-menu-section-header-text"></Label>
-      <Label text=" - Edited" fx:id="editedLabel" styleClass="control-menu-section-header-addtext" visible="false"></Label>
-      <Region HBox.hgrow="ALWAYS"></Region>
+    <Label text="?_slicer_print_settings" styleClass="control-menu-section-header-text"/>
+    <Label text="?_slicer_profile_edited" fx:id="editedLabel" styleClass="control-menu-section-header-addtext" visible="false"/>
+    <Region HBox.hgrow="ALWAYS"/>
       <ImageView fx:id="saveProfile"  fitHeight="14" fitWidth="14" visible="false" >
         <image>
-          <Image url="@/img/control_menu/save.png"></Image>
+          <Image url="@/img/control_menu/save.png"/>
         </image>
       </ImageView>
   </HBox>
 
   <ScrollBox fx:id="scrollBox" styleClass="scrollBox" AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-    <content>
       <VBox fx:id="panelControlsContainer" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-
-        <Picker label="Print profile" boundParamID="test" fx:id="profilePicker" />
-        <TextInput fx:id="printJobNameInput" label="Print job name" textPlaceHolder="Type this print job's name" />
-        <Picker label="Initial platform" boundParamID="test" fx:id="raftStructurePicker" />
-        <CheckBoxLabelled fx:id="supportsCheckBox" text="Print Supports" label="Model supports" />
+        <Picker label="?_slicer_print_profile" fx:id="profilePicker" />
+        <TextInput fx:id="printJobNameInput" label="?_slicer_job_name" textPlaceHolder="?_slicer_job_name_placeholder" />
+        <Picker label="?_slicer_init_platform" fx:id="raftStructurePicker" />
+        <CheckBoxLabelled fx:id="supportsCheckBox" text="?_slicer_supports_print" label="?_slicer_supports" />
 
         <VBox fx:id="advSettingsBox" visible="false" managed="false">
           <SubHeader text="LAYERS" />
-          <ToggleButtonGroup fx:id="layerHeightToggle" label="Layer height" decimals="2" unit="mm"></ToggleButtonGroup>
-          <ButtonIncrement fx:id="roofThicknessIncrement" label="Roof thickness" increment="1" min="0" unit="mm"/>
-          <ButtonIncrement fx:id="bottomThicknessIncrement" label="Bottom thickness" increment="1" min="0" unit="mm"/>
-          <SliderDiscrete fx:id="printSpeedSolidSlider" label="Print speed - Solid layers"
+          <ToggleButtonGroup fx:id="layerHeightToggle" label="?_slicer_layer_height" decimals="2" unit="mm"/>
+          <ButtonIncrement fx:id="roofThicknessIncrement" label="?_slicer_roof_thickness" increment="1" min="0" unit="mm"/>
+          <ButtonIncrement fx:id="bottomThicknessIncrement" label="?_slicer_bottom_thickness" increment="1" min="0" unit="mm"/>
+          <SliderDiscrete fx:id="printSpeedSolidSlider" label="?_slicer_speed_solid"
                           min="0.0" max="90.00" step="5" unit="mm/s" decimals="0"/>
 
           <SubHeader text="SHELL" />
-          <ButtonIncrement fx:id="shellThicknessIncrement" label="Shell thickness" increment="1" max="10" min="0" unit="mm"/>
-          <SliderDiscrete fx:id="printSpeedShellSlider" label="Print speed - Shell"
+          <ButtonIncrement fx:id="shellThicknessIncrement" label="?_slicer_shell_thickness" increment="1" max="10" min="0" unit="mm"/>
+          <SliderDiscrete fx:id="printSpeedShellSlider" label="?_slicer_speed_shell"
                           min="10.0" max="90.00" step="5" unit="mm/s" decimals="0"/>
 
           <SubHeader text="INFILL" />
-          <Picker fx:id="infillPatternPicker"  label="Infill internal pattern" />
-          <SliderDiscrete fx:id="infillDensitySlider" label="Infill density" unit="\%"
+          <Picker fx:id="infillPatternPicker"  label="?_slicer_infill_pattern" />
+          <SliderDiscrete fx:id="infillDensitySlider" label="?_slicer_infill_density" unit="\%"
                           min="0.0" max="100.0" decimals="0"/>
 
           <SubHeader text="SUPPORTS" />
-          <SliderDiscrete fx:id="supportDensitySlider" label="Support density"
+          <SliderDiscrete fx:id="supportDensitySlider" label="?_slicer_support_density"
                           min="5.0" max="50.0" step="1" unit="\%" decimals="0"/>
-          <Picker fx:id="supportPatternPicker"  label="Support internal pattern" />
-          <SliderDiscrete fx:id="supportAngleSlider" label="Support starting angle"
+          <Picker fx:id="supportPatternPicker"  label="?_slicer_support_pattern" />
+          <SliderDiscrete fx:id="supportAngleSlider" label="?_slicer_support_angle"
                           min="0.0" max="90.0" step="1" unit="°" decimals="0"/>
         </VBox>
 
-        <Label fx:id="advSettingsToggle" AnchorPane.leftAnchor="20" styleClass="control-advSettingsToggle" text="Show advanced settings..." />
+        <Label fx:id="advSettingsToggle" AnchorPane.leftAnchor="20" styleClass="control-advSettingsToggle" text="?_slicer_show_advanced_settings" />
 
         <Region prefHeight="30" />
         <ProgressBar fx:id="progress"  styleClass="control-progress" translateX="20" visible="false" />
       </VBox>
-
-    </content>
   </ScrollBox>
 
 
   <HBox styleClass="control-menu-footer-container" alignment="CENTER" AnchorPane.bottomAnchor="10"  AnchorPane.leftAnchor="10"  AnchorPane.rightAnchor="10">
-    <Button fx:id="sliceButton" styleClass="blue,control-button" disable="true" text="PREPARE FOR PRINT" />
+    <Button fx:id="sliceButton" styleClass="blue,control-button" disable="true" text="?_slicer_prepare_for_print" />
   </HBox>
 
   <stylesheets>
