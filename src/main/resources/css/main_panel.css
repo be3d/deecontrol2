@@ -54,14 +54,15 @@
 }
 
 .center-button {
-    -fx-background-image: url("../img/main_panel/center.png");
+    -fx-background-image: url("../img/main_panel/center-normal.png");
 }
+
 .center-button:disabled {
     -fx-background-image: url("../img/main_panel/center-disabled.png");
 }
 
 .left-button {
-    -fx-background-image: url("../img/main_panel/left.png");
+    -fx-background-image: url("../img/main_panel/left-normal.png");
 }
 
 .left-button:disabled {
@@ -69,7 +70,7 @@
 }
 
 .right-button {
-    -fx-background-image: url("../img/main_panel/right.png");
+    -fx-background-image: url("../img/main_panel/right-normal.png");
 }
 
 .right-button:disabled {
@@ -77,7 +78,7 @@
 }
 
 .front-button {
-    -fx-background-image: url("../img/main_panel/front.png");
+    -fx-background-image: url("../img/main_panel/front-normal.png");
 }
 
 .front-button:disabled {
@@ -85,7 +86,7 @@
 }
 
 .back-button {
-    -fx-background-image: url("../img/main_panel/back.png");
+    -fx-background-image: url("../img/main_panel/back-normal.png");
 }
 
 .back-button:disabled {
