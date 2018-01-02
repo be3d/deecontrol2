@@ -54,23 +54,42 @@
 }
 
 .center-button {
-    -fx-background-image: url("../img/main_panel/center-normal.png");
+    -fx-background-image: url("../img/main_panel/center.png");
+}
+.center-button:disabled {
+    -fx-background-image: url("../img/main_panel/center-disabled.png");
 }
 
 .left-button {
-    -fx-background-image: url("../img/main_panel/left-normal.png");
+    -fx-background-image: url("../img/main_panel/left.png");
+}
+
+.left-button:disabled {
+    -fx-background-image: url("../img/main_panel/left-disabled.png");
 }
 
 .right-button {
-    -fx-background-image: url("../img/main_panel/right-normal.png");
+    -fx-background-image: url("../img/main_panel/right.png");
+}
+
+.right-button:disabled {
+    -fx-background-image: url("../img/main_panel/right-disabled.png");
 }
 
 .front-button {
-    -fx-background-image: url("../img/main_panel/front-normal.png");
+    -fx-background-image: url("../img/main_panel/front.png");
+}
+
+.front-button:disabled {
+    -fx-background-image: url("../img/main_panel/front-disabled.png");
 }
 
 .back-button {
-    -fx-background-image: url("../img/main_panel/back-normal.png");
+    -fx-background-image: url("../img/main_panel/back.png");
+}
+
+.back-button:disabled {
+    -fx-background-image: url("../img/main_panel/back-disabled.png");
 }
 
 .reset-view-button {
