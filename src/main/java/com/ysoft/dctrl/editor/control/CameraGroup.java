@@ -1,5 +1,6 @@
 package com.ysoft.dctrl.editor.control;
 
+import com.ysoft.dctrl.math.Point3DUtils;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point3D;
 import javafx.scene.Camera;
@@ -10,6 +11,7 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,33 +22,58 @@ import java.util.List;
  */
 public class CameraGroup extends Group{
 
+    private static final CameraType DEFAULT_CAMERA_TYPE = CameraType.PARALLEL;
+
+    private static final double FOV_PERSPECTIVE = 30;
+    private static final double FOV_PARALLEL = 0.1;
+    private static final double FOV_PARALLEL_COEF =
+            (Math.tan(0.5*Math.toRadians(FOV_PERSPECTIVE))/Math.tan(0.5*Math.toRadians(FOV_PARALLEL)));
+
+    private Rotate rotationX;
+    private Rotate rotationY;
+    private Rotate rotationZ;
+    private Translate positionTransform;
+    private Translate parallelPositionTransform;
+
+    private Point3D position;
+    private Point3D target;
+
     HashMap<CameraType, Camera> cameras;
     Camera selected;
 
-    private Rotate rotationX = new Rotate(0, Rotate.X_AXIS);
-    private Rotate rotationY = new Rotate(0, Rotate.Y_AXIS);
-    private Rotate rotationZ = new Rotate(0, Rotate.Z_AXIS);
-    private Translate position = new Translate(0,0,0);
-
-    public CameraGroup(PerspectiveCamera perspectiveCamera, ParallelCamera parallelCamera){
+    public CameraGroup(){
         cameras = new HashMap<>();
 
-        if(perspectiveCamera != null){
-            cameras.put(CameraType.PERSPECTIVE, perspectiveCamera);
-            perspectiveCamera.getTransforms().addAll(position, rotationY, rotationX, rotationZ);
-        }
-        if(parallelCamera != null){
-            cameras.put(CameraType.PARALLEL, parallelCamera);
-            parallelCamera.getTransforms().addAll(position, rotationY, rotationX, rotationZ);
-        }
+        PerspectiveCamera perspectiveCamera = new PerspectiveCamera(true);
+        perspectiveCamera.setFieldOfView(30);
+        perspectiveCamera.setFarClip(10000);
+
+        PerspectiveCamera parallelCamera = new PerspectiveCamera(true);
+        parallelCamera.setFieldOfView(0.1);
+        parallelCamera.setNearClip(5000);
+        parallelCamera.setFarClip(10000000);
+
+        positionTransform = new Translate(0,0,0);
+        parallelPositionTransform = new Translate(0,0,0);
+        rotationX = new Rotate(0, Rotate.X_AXIS);
+        rotationY = new Rotate(0, Rotate.Y_AXIS);
+        rotationZ = new Rotate(0, Rotate.Z_AXIS);
+
+
+        target = new Point3D(0,0,0);
+        position = new Point3D(0,0,0);
+
+        cameras.put(CameraType.PERSPECTIVE, perspectiveCamera);
+        cameras.put(CameraType.PARALLEL, parallelCamera);
+
+        selected = cameras.get(DEFAULT_CAMERA_TYPE);
     }
 
-    public CameraGroup(PerspectiveCamera camera){ this(camera, null); }
-    public CameraGroup(ParallelCamera camera){ this(null, camera); }
-
-    public void select(CameraType cameraType){
+    public Camera select(CameraType cameraType){
         selected = cameras.get(cameraType);
+        return selected;
     }
+
     public Camera getSelected(){
         return selected;
     }
@@ -58,15 +85,14 @@ public class CameraGroup extends Group{
     public void setInitialTransforms(Collection<Transform> transforms) {
         ObservableList<Transform> t = cameras.get(CameraType.PERSPECTIVE).getTransforms();
         t.clear();
-        t.addAll(position);
+        t.addAll(positionTransform);
         t.addAll(transforms);
         t.addAll(rotationY, rotationX, rotationZ);
 
         ObservableList<Transform> tp = cameras.get(CameraType.PARALLEL).getTransforms();
         tp.clear();
-        tp.addAll(new Translate(-550,600,0)); // thesse are half of the view
-        tp.addAll(position);
-        tp.addAll(new Rotate(-90,Rotate.X_AXIS));
+        tp.addAll(parallelPositionTransform);
+        tp.addAll(transforms);
         tp.addAll(rotationY, rotationX, rotationZ);
     }
 
@@ -75,22 +101,25 @@ public class CameraGroup extends Group{
     }
 
     public void setPosition(Point3D point) {
-        position.setX(point.getX());
-        position.setY(point.getY());
-        position.setZ(point.getZ());
-    }
+        position = point;
 
+        positionTransform.setX(point.getX());
+        positionTransform.setY(point.getY());
+        positionTransform.setZ(point.getZ());
 
-    public void setPositionX(double x) {
-        position.setX(x);
-    }
+        // Parallel camera is moved away so the perspective flattens
+        double fovPer = ((PerspectiveCamera)cameras.get(CameraType.PERSPECTIVE)).getFieldOfView();
+        double fovPar = ((PerspectiveCamera)cameras.get(CameraType.PARALLEL)).getFieldOfView();
 
-    public void setPositionY(double y) {
-        position.setY(y);
-    }
+        double d1 = position.distance(target);
+        double d2 = d1*FOV_PARALLEL_COEF;
+        Point3D newPos = position.add(getLookAtVector().multiply(d2-d1));
 
-    public void setPositionZ(double z) {
-        position.setZ(z);
+        parallelPositionTransform.setX(newPos.getX());
+        parallelPositionTransform.setY(newPos.getY());
+        parallelPositionTransform.setZ(newPos.getZ());
+
+        System.out.println("Setting camera pos perspective "+point+" parallel "+ newPos);
     }
 
     public Point3D getPosition() {
@@ -120,5 +149,24 @@ public class CameraGroup extends Group{
 
     public Point3D getRotation() {
         return new Point3D(rotationX.getAngle(), rotationY.getAngle(), rotationZ.getAngle());
+    }
+
+    public Point3D getTarget() {
+        return this.target;
+    }
+
+    public void setTarget(Point3D target) {
+        this.target = target;
+    }
+
+    public Point3D getLookAtVector() {
+        Point3D normal = Point3DUtils.copy(position);
+        normal = normal.subtract(target);
+        normal = normal.normalize();
+        return normal;
+    }
+
+    public Camera getActiveCamera(){
+        return selected;
     }
 }

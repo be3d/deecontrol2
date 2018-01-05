@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.ysoft.dctrl.editor.control.CameraType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -49,6 +50,8 @@ public class MainPanelController extends LocalizableController implements Initia
 
     @FXML Button resetView;
     @FXML Button topView;
+    @FXML Button perspectiveOn;
+    @FXML Button perspectiveOff;
 
     private int disabledMap;
 
@@ -77,6 +80,8 @@ public class MainPanelController extends LocalizableController implements Initia
 
         resetView.setOnAction(event -> eventBus.publish(new Event(EventType.RESET_VIEW.name())));
         topView.setOnAction(event -> eventBus.publish(new Event(EventType.TOP_VIEW.name())));
+        perspectiveOn.setOnAction(event -> eventBus.publish(new Event(EventType.SET_CAMERA.name(), CameraType.PERSPECTIVE)));
+        perspectiveOff.setOnAction(event -> eventBus.publish(new Event(EventType.SET_CAMERA.name(), CameraType.PARALLEL)));
 
         center.setOnAction(event -> eventBus.publish(new Event(EventType.CENTER_SELECTED_MODEL.name())));
         left.setOnAction(event -> eventBus.publish(new Event(EventType.ALIGN_LEFT_SELECTED_MODEL.name())));

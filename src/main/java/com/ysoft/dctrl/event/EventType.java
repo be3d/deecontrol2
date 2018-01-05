@@ -59,6 +59,7 @@ public enum EventType {
     MODEL_LOADED,
     MODEL_CHANGED,
     RESET_VIEW,
+    SET_CAMERA,
     TOP_VIEW,
     ZOOM_IN_VIEW,
     ZOOM_OUT_VIEW,

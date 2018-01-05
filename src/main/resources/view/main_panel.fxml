@@ -28,6 +28,9 @@
     <HBox styleClass="main-panel-group">
       <Button fx:id="resetView" text="?_main_reset_view" styleClass="main-panel-button, reset-view-button" />
       <Button fx:id="topView" text="?_main_top_view" styleClass="main-panel-button, top-view-button" visible="false" managed="false"/>
+
+      <Button fx:id="perspectiveOn" text="Perspective on" styleClass="main-panel-button, top-view-button" />
+      <Button fx:id="perspectiveOff" text="perscpective off" styleClass="main-panel-button, top-view-button" />
     </HBox>
   </HBox>
 
