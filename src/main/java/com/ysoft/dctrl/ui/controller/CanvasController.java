@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.ysoft.dctrl.editor.control.CameraType;
-import com.ysoft.dctrl.editor.control.ExtendedPerspectiveCamera;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.ui.notification.ErrorNotification;
 import com.ysoft.dctrl.utils.exceptions.RunningOutOfMemoryException;

@@ -12,7 +12,6 @@ import javafx.scene.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.ysoft.dctrl.editor.control.ExtendedPerspectiveCamera;
 import com.ysoft.dctrl.editor.mesh.PrintBed;
 import com.ysoft.dctrl.editor.mesh.PrinterVolume;
 import com.ysoft.dctrl.event.Event;
