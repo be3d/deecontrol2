@@ -27,7 +27,6 @@ public class TrackBallCameraControls {
     private final CameraGroup camGroup;
 
     private final Point3D initialCameraPosition;
-    //private Point3D position;
 
     private double alpha;
     private double theta;
@@ -47,21 +46,16 @@ public class TrackBallCameraControls {
         this.camGroup = cameraGroup;
         this.initialCameraPosition = initialPosition;
 
-        //target = new Point3D(0,0,0);
-       // position = new Point3D(0,0,0);
-
         alpha = Math.PI;
         theta = Math.toRadians(90 - initialPosition.angle(0,0,1));
         previousMousePosition = new Point2D(0,0);
         currentState = State.ENABLED;
         previousState = State.ENABLED;
 
-        //setCameraPosition(new Point3D(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ()));
+        camGroup.setPosition(new Point3D(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ()));
+        camGroup.setRotationX(Math.toDegrees(-theta));
+        camGroup.setRotationY(Math.toDegrees(alpha) + 180);
 
-        setCameraPosition(new Point3D(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ()));
-
-        cameraGroup.setRotationX(Math.toDegrees(-theta));
-        cameraGroup.setRotationY(Math.toDegrees(alpha) + 180);
         changed = false;
     }
 
@@ -90,15 +84,14 @@ public class TrackBallCameraControls {
         theta = Math.toRadians(90 - initialCameraPosition.angle(0,0,1));
         camGroup.setRotationX(Math.toDegrees(-theta));
         camGroup.setRotationY(Math.toDegrees(alpha) + 180);
-        setCameraPosition(Point3DUtils.copy(initialCameraPosition));
-        //target = new Point3D(0,0,0);
+        camGroup.setPosition(Point3DUtils.copy(initialCameraPosition));
         camGroup.setTarget(new Point3D(0,0,0));
     }
 
     public void setTopView() {
         //double z = target.distance(position);
         double z = getTarget().distance(getPosition());
-        setCameraPosition(new Point3D(getTarget().getX(), getTarget().getY(), getTarget().getZ() + z));
+        camGroup.setPosition(new Point3D(getTarget().getX(), getTarget().getY(), getTarget().getZ() + z));
         alpha = Math.PI;
         theta = Math.toRadians(90);
         camGroup.setRotationX(Math.toDegrees(-theta));
@@ -167,16 +160,12 @@ public class TrackBallCameraControls {
     public void zoomCamera(double d){
         Point3D normal = camGroup.getLookAtVector().multiply(-1);
         Point3D newPosition = camGroup.getPosition().add(normal.normalize().multiply(d));
-        //Point3D diff = getDiff3D(target, newPosition);
         Point3D diff = getDiff3D(camGroup.getTarget(), newPosition);
         double diffLen = diff.magnitude();
         if(diffLen > MIN_ZOOM || diffLen < MAX_ZOOM) {
             return;
         }
-        //position = newPosition;
         camGroup.setPosition(newPosition);
-//        updatePosition();
-
     }
 
     public void panCamera(Point2D targetPosition) {
@@ -188,49 +177,32 @@ public class TrackBallCameraControls {
 
         diff = Point3DUtils.applyMatrix(diff, zRotation.multiply(xRotation));
 
-        //position = position.add(diff);
-        //target = target.add(diff);
-
         camGroup.setTarget(camGroup.getTarget().add(diff));
         camGroup.setPosition(camGroup.getPosition().add(diff));
 
-        //updatePosition();
         previousMousePosition = targetPosition;
     }
 
     public void rotateCamera(Point2D targetPosition) {
-
-        System.out.println("Theta "+Math.toDegrees(theta) + " alpha: "+ Math.toDegrees(alpha));
-
         Point2D diff = getDiff2D(targetPosition, previousMousePosition);
         alpha += diff.getX() * ROTATE_SPEED;
         theta += diff.getY() * ROTATE_SPEED;
-        //alpha += diff.getY() * ROTATE_SPEED;
 
         if(theta > Math.PI/2) theta = Math.PI/2;
         if(theta < -Math.PI/2) theta = -Math.PI/2;
         double dist = camGroup.getTarget().distance(camGroup.getPosition());
-        //double dist = target.distance(new Point3D(-550,600,0));
 
         double z = Math.sin(theta) * dist;
         double xyDist = Math.cos(theta) * dist;
 
-        double xmove = diff.getX()*1;
         double x = Math.sin(alpha) * xyDist;
         double y = Math.cos(alpha) * xyDist;
 
         camGroup.setRotationX(Math.toDegrees(-theta));
         camGroup.setRotationY(Math.toDegrees(alpha) + 180);
-        //position = target.add(x,y,z);
         camGroup.setPosition(camGroup.getTarget().add(x,y,z));
 
-        //updatePosition();
-
         previousMousePosition = targetPosition;
-    }
-
-    public void setCameraPosition(Point3D position) {
-        camGroup.setPosition(position);
     }
 
     private Point3D getTarget(){

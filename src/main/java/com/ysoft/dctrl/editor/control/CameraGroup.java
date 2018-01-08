@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class CameraGroup extends Group{
 
-    private static final CameraType DEFAULT_CAMERA_TYPE = CameraType.PARALLEL;
+    private static final CameraType DEFAULT_CAMERA_TYPE = CameraType.PERSPECTIVE;
 
     private static final double FOV_PERSPECTIVE = 30;
     private static final double FOV_PARALLEL = 0.1;
@@ -46,12 +46,13 @@ public class CameraGroup extends Group{
 
         PerspectiveCamera perspectiveCamera = new PerspectiveCamera(true);
         perspectiveCamera.setFieldOfView(30);
+        perspectiveCamera.setNearClip(5);
         perspectiveCamera.setFarClip(10000);
 
         PerspectiveCamera parallelCamera = new PerspectiveCamera(true);
         parallelCamera.setFieldOfView(0.1);
-        parallelCamera.setNearClip(5000);
-        parallelCamera.setFarClip(10000000);
+        parallelCamera.setNearClip(15000);
+        parallelCamera.setFarClip(1000000);
 
         positionTransform = new Translate(0,0,0);
         parallelPositionTransform = new Translate(0,0,0);
@@ -108,18 +109,13 @@ public class CameraGroup extends Group{
         positionTransform.setZ(point.getZ());
 
         // Parallel camera is moved away so the perspective flattens
-        double fovPer = ((PerspectiveCamera)cameras.get(CameraType.PERSPECTIVE)).getFieldOfView();
-        double fovPar = ((PerspectiveCamera)cameras.get(CameraType.PARALLEL)).getFieldOfView();
-
-        double d1 = position.distance(target);
-        double d2 = d1*FOV_PARALLEL_COEF;
-        Point3D newPos = position.add(getLookAtVector().multiply(d2-d1));
+        double d = position.distance(target);
+        double diff = d*FOV_PARALLEL_COEF - d;
+        Point3D newPos = position.add(getLookAtVector().multiply(diff));
 
         parallelPositionTransform.setX(newPos.getX());
         parallelPositionTransform.setY(newPos.getY());
         parallelPositionTransform.setZ(newPos.getZ());
-
-        System.out.println("Setting camera pos perspective "+point+" parallel "+ newPos);
     }
 
     public Point3D getPosition() {
@@ -134,17 +130,14 @@ public class CameraGroup extends Group{
 
     public void setRotationX(double rotationX) {
         this.rotationX.setAngle(rotationX);
-        System.out.println("rotX"+rotationX);
     }
 
     public void setRotationY(double rotationY) {
         this.rotationY.setAngle(rotationY);
-        System.out.println("rotY"+rotationY);
     }
 
     public void setRotationZ(double rotationZ) {
         this.rotationZ.setAngle(rotationZ);
-        System.out.println("rotZ"+rotationZ);
     }
 
     public Point3D getRotation() {
