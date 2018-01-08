@@ -37,7 +37,6 @@ import javafx.scene.transform.Translate;
 public class SceneGraph {
     private static final Point3D PRINTER_SIZE = new Point3D(150,150,150);
     private static final Point3D PRINTER_HALF_SIZE = new Point3D(75,75,75);
-    private ExtendedPerspectiveCamera camera;
     private CameraGroup cameraGroup;
 
     private final Group sceneGroup;
@@ -63,7 +62,6 @@ public class SceneGraph {
         helpGroup = new Group();
         subSceneGroup = new Group();
         sceneGroup.getChildren().addAll(subSceneGroup, helpGroup);
-        camera = createCamera();
         cameraGroup = createCameraGroup();
 
         this.subSceneGraphs = initSubSceneGraphs(subSceneGraphs);
@@ -81,7 +79,7 @@ public class SceneGraph {
 
     @PostConstruct
     public void init() {
-        helpGroup.getChildren().addAll(camera, printVolume.getNode(), createPrintBed().getNode());
+        helpGroup.getChildren().addAll(cameraGroup.getSelected(), printVolume.getNode(), createPrintBed().getNode());
         helpGroup.getChildren().addAll(createLights());
         helpGroup.setVisible(false);
         setMode(SceneMode.EDIT);
@@ -90,13 +88,6 @@ public class SceneGraph {
         eventBus.subscribe(EventType.EDIT_SCENE_VALID.name(), (e) -> printVolume.setDefaultColor());
         eventBus.subscribe(EventType.EDIT_SCENE_INVALID.name(), (e) -> printVolume.setInvalidColor());
         eventBus.subscribeOnce(EventType.MODEL_LOADED.name(), (e) -> helpGroup.setVisible(true));
-    }
-
-    private ExtendedPerspectiveCamera createCamera() {
-        ExtendedPerspectiveCamera camera = new ExtendedPerspectiveCamera(true);
-        camera.setInitialTransforms(new Rotate(-90, Rotate.X_AXIS));
-        camera.setFarClip(10000);
-        return camera;
     }
 
     private CameraGroup createCameraGroup() {
@@ -112,7 +103,7 @@ public class SceneGraph {
     private Node[] createLights() {
         b.getTransforms().add(new Translate(-250,250,10));
         f.getTransforms().add(new Translate(10000,-10000,8000));
-        c.getTransforms().add(camera.getTransforms().get(0));
+        c.getTransforms().add(cameraGroup.getSelected().getTransforms().get(0));
         return new Node[] {am, b, f, c};
     }
 
@@ -128,14 +119,6 @@ public class SceneGraph {
         this.mode = mode;
         subSceneGroup.getChildren().add(0, subSceneGraphs.get(this.mode).getSceneGroup());
         helpGroup.getChildren().add(subSceneGraphs.get(this.mode).getHelpGroup());
-    }
-
-    //public ExtendedPerspectiveCamera getCamera() {
-    //    return camera;
-    //}
-
-    public Camera getCamera() {
-        return cameraGroup.getSelected();
     }
 
     public CameraGroup getCameraGroup(){

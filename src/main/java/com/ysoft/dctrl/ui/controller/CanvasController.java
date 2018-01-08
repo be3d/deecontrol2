@@ -87,7 +87,7 @@ public class CanvasController extends LocalizableController implements Initializ
     public void initialize(URL location, ResourceBundle resources) {
         SubScene subScene = new SubScene(sceneGraph.getSceneGroup(), 10, 10, true, SceneAntialiasing.BALANCED);
         subScene.setFill(Color.WHITESMOKE);
-        subScene.setCamera(sceneGraph.getCameraGroup().getActiveCamera());
+        subScene.setCamera(sceneGraph.getCameraGroup().getSelected());
 
         sceneGraph.addHelpObject(meshTransformControls.getPlane());
 

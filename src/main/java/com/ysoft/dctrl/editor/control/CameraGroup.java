@@ -158,8 +158,4 @@ public class CameraGroup extends Group{
         normal = normal.normalize();
         return normal;
     }
-
-    public Camera getActiveCamera(){
-        return selected;
-    }
 }
