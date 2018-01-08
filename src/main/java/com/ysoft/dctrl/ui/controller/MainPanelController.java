@@ -79,7 +79,7 @@ public class MainPanelController extends LocalizableController implements Initia
         });
 
         resetView.setOnAction(event -> eventBus.publish(new Event(EventType.RESET_VIEW.name())));
-        topView.setOnAction(event -> eventBus.publish(new Event(EventType.TOP_VIEW.name())));
+        topView.setOnAction(event -> eventBus.publish(new Event(EventType.VIEW_TOP.name())));
         perspectiveOn.setOnAction(event -> {
             eventBus.publish(new Event(EventType.SET_CAMERA.name(), CameraType.PERSPECTIVE));
         });

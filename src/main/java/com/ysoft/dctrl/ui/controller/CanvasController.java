@@ -123,7 +123,10 @@ public class CanvasController extends LocalizableController implements Initializ
         keyEventPropagator.onKeyPressed(this::keyDown);
         eventBus.subscribe(EventType.ADD_MODEL.name(), this::addModel);
         eventBus.subscribe(EventType.RESET_VIEW.name(), (e) -> controls.resetCamera());
-        eventBus.subscribe(EventType.TOP_VIEW.name(), (e) -> controls.setTopView());
+        eventBus.subscribe(EventType.VIEW_LEFT.name(), (e) -> controls.setLeftView());
+        eventBus.subscribe(EventType.VIEW_RIGHT.name(), (e) -> controls.setRightView());
+        eventBus.subscribe(EventType.VIEW_BOTTOM.name(), (e) -> controls.setBottomView());
+        eventBus.subscribe(EventType.VIEW_TOP.name(), (e) -> controls.setTopView());
         eventBus.subscribe(EventType.ZOOM_IN_VIEW.name(), (e) -> controls.zoomInCamera());
         eventBus.subscribe(EventType.ZOOM_OUT_VIEW.name(), (e) -> controls.zoomOutCamera());
         eventBus.subscribe(EventType.ZOOM_OUT_VIEW.name(), (e) -> controls.zoomOutCamera());
@@ -218,6 +221,21 @@ public class CanvasController extends LocalizableController implements Initializ
                         eventBus.publish(new Event(EventType.EDIT_SELECT_NEXT.name()));
                     }
                 }
+                break;
+            case NUMPAD5:
+                eventBus.publish(new Event(EventType.RESET_VIEW.name()));
+                break;
+            case NUMPAD4:
+                eventBus.publish(new Event(EventType.VIEW_LEFT.name()));
+                break;
+            case NUMPAD6:
+                eventBus.publish(new Event(EventType.VIEW_RIGHT.name()));
+                break;
+            case NUMPAD8:
+                eventBus.publish(new Event(EventType.VIEW_TOP.name()));
+                break;
+            case NUMPAD2:
+                eventBus.publish(new Event(EventType.VIEW_BOTTOM.name()));
                 break;
         }
     }
