@@ -109,8 +109,6 @@ public class MainPanelController extends LocalizableController implements Initia
         });
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
             boolean gcodeMode = e.getData() == SceneMode.GCODE;
-            topView.setVisible(gcodeMode);
-            topView.setManaged(gcodeMode);
             add.setDisable(gcodeMode);
             center.setDisable(gcodeMode);
             left.setDisable(gcodeMode);

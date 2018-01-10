@@ -82,9 +82,9 @@
 }
 
 .perspective-on-button {
-    -fx-background-image: url("../img/main_panel/perspective.png");
+    -fx-background-image: url("../img/main_panel/perspective-normal.png");
 }
 
 .perspective-off-button {
-    -fx-background-image: url("../img/main_panel/parallel.png");
+    -fx-background-image: url("../img/main_panel/parallel-normal.png");
 }
