@@ -36,7 +36,7 @@ public abstract class AbstractEditPanelController extends LocalizableController 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         root.visibleProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue) refresh(sceneGraph.getSelected());
+            if(newValue) { refresh(sceneGraph.getSelected()); }
         });
 
         initNumberFieldListener(x, Item.X, this::onChange);
@@ -45,8 +45,8 @@ public abstract class AbstractEditPanelController extends LocalizableController 
 
         root.setOnMousePressed(Event::consume);
 
-        eventBus.subscribe(EventType.MODEL_SELECTED.name(), (e) -> refresh((SceneMesh) e.getData()));
-        eventBus.subscribe(EventType.MODEL_CHANGED.name(), (e) -> refresh((SceneMesh) e.getData()));
+        eventBus.subscribe(EventType.MODEL_SELECTED.name(), (e) -> onModelSelected((SceneMesh) e.getData()));
+        eventBus.subscribe(EventType.MODEL_CHANGED.name(), (e) -> onModelChanged((SceneMesh) e.getData()));
 
         super.initialize(location, resources);
     }
@@ -61,11 +61,20 @@ public abstract class AbstractEditPanelController extends LocalizableController 
         field.setOnChangedByMouseDrag((e) -> consumer.accept(field.getValue(), item));
     }
 
+    protected void onModelSelected(SceneMesh mesh) {
+        refresh(mesh);
+    }
+
+    protected void onModelChanged(SceneMesh mesh) {
+        refresh(mesh);
+    }
+
+
     public abstract void refresh(SceneMesh mesh);
 
     private void onChange(double newValue, Item item) {
         SceneMesh mesh = sceneGraph.getSelected();
-        if(mesh == null) return;
+        if(mesh == null) { return; }
         switch (item) {
             case X:
                 onXChange(mesh, newValue);

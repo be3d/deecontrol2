@@ -33,6 +33,9 @@
       <Button fx:id="clockZ" styleClass="rotate, rotate-clock" />
     </HBox>
   </HBox>
+  <HBox styleClass="edit-panel-group, scaleMax" HBox.Hgrow="ALWAYS">
+    <Button fx:id="reset" styleClass="transparent" text="?_edit_panel_reset" HBox.Hgrow="ALWAYS" />
+  </HBox>
 
   <stylesheets>
     <URL value="@/css/edit_panel.css" />
