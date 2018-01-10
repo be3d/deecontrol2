@@ -19,11 +19,11 @@
       <Button fx:id="ungroup" text="?_main_ungroup" styleClass="main-panel-button, ungourp-button" disable="true" />
     </HBox>
     <HBox styleClass="main-panel-group">
-      <Button fx:id="center" text="?_main_center" styleClass="main-panel-button, center-button" />
-      <Button fx:id="left" text="?_main_left" styleClass="main-panel-button, left-button" />
-      <Button fx:id="right" text="?_main_right" styleClass="main-panel-button, right-button" />
-      <Button fx:id="front" text="?_main_front" styleClass="main-panel-button, front-button" />
-      <Button fx:id="back" text="?_main_back" styleClass="main-panel-button, back-button" />
+      <Button fx:id="center" text="?_main_center" styleClass="main-panel-button, center-button" disable="true"/>
+      <Button fx:id="left" text="?_main_left" styleClass="main-panel-button, left-button" disable="true"/>
+      <Button fx:id="right" text="?_main_right" styleClass="main-panel-button, right-button" disable="true"/>
+      <Button fx:id="front" text="?_main_front" styleClass="main-panel-button, front-button" disable="true"/>
+      <Button fx:id="back" text="?_main_back" styleClass="main-panel-button, back-button" disable="true"/>
     </HBox>
     <HBox styleClass="main-panel-group">
       <Button fx:id="resetView" text="?_main_reset_view" styleClass="main-panel-button, reset-view-button" />

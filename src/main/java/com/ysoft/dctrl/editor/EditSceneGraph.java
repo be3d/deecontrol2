@@ -317,6 +317,9 @@ public class EditSceneGraph extends SubSceneGraph {
             validatePosition(m);
             m.setBoundingBoxVisible(true);
         });
+        if(sm.size()>0){
+            eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), sm.get(0)));
+        }
     }
 
     private void addToSelection(SceneMesh mesh) {

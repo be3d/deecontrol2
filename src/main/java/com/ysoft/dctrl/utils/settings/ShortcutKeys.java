@@ -11,11 +11,12 @@ import javafx.scene.input.KeyCombination;
  */
 public class ShortcutKeys {
 
-    public static final KeyCodeCombination UNDO = new KeyCodeCombination(KeyCode.Y, KeyCombination.SHORTCUT_DOWN);
-    public static final KeyCodeCombination REDO = new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN);
+    public static final KeyCodeCombination UNDO = new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN);
+    public static final KeyCodeCombination REDO = new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN);
     public static final KeyCodeCombination SELECT_ALL = new KeyCodeCombination(KeyCode.A, KeyCombination.SHORTCUT_DOWN);
     public static final KeyCodeCombination ZOOM_IN = new KeyCodeCombination(KeyCode.ADD, KeyCombination.CONTROL_DOWN);
     public static final KeyCodeCombination ZOOM_OUT = new KeyCodeCombination(KeyCode.SUBTRACT, KeyCombination.CONTROL_DOWN);
+    public static final KeyCodeCombination OPEN_FILE = new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN);
     public static final KeyCodeCombination COPY = new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN);
     public static final KeyCodeCombination PASTE = new KeyCodeCombination(KeyCode.V, KeyCombination.SHORTCUT_DOWN);
     public static final KeyCodeCombination DUPLICATE = new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN);
