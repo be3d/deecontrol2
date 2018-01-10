@@ -25,7 +25,7 @@ public class CameraGroup extends Group{
     private static final CameraType DEFAULT_CAMERA_TYPE = CameraType.PERSPECTIVE;
 
     private static final double FOV_PERSPECTIVE = 30;
-    private static final double FOV_PARALLEL = 0.1;
+    private static final double FOV_PARALLEL = 0.14;
     private static final double FOV_PARALLEL_COEF =
             (Math.tan(0.5*Math.toRadians(FOV_PERSPECTIVE))/Math.tan(0.5*Math.toRadians(FOV_PARALLEL)));
 
@@ -45,14 +45,14 @@ public class CameraGroup extends Group{
         cameras = new HashMap<>();
 
         PerspectiveCamera perspectiveCamera = new PerspectiveCamera(true);
-        perspectiveCamera.setFieldOfView(30);
+        perspectiveCamera.setFieldOfView(FOV_PERSPECTIVE);
         perspectiveCamera.setNearClip(5);
         perspectiveCamera.setFarClip(10000);
 
         PerspectiveCamera parallelCamera = new PerspectiveCamera(true);
-        parallelCamera.setFieldOfView(0.1);
-        parallelCamera.setNearClip(15000);
-        parallelCamera.setFarClip(1000000);
+        parallelCamera.setFieldOfView(FOV_PARALLEL);
+        parallelCamera.setNearClip(4000);
+        parallelCamera.setFarClip(220000);
 
         positionTransform = new Translate(0,0,0);
         parallelPositionTransform = new Translate(0,0,0);
