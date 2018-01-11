@@ -78,7 +78,7 @@ public class SceneGraph {
 
     @PostConstruct
     public void init() {
-        helpGroup.getChildren().addAll(cameraGroup.getSelected(), printVolume.getNode(), createPrintBed().getNode());
+        helpGroup.getChildren().addAll(cameraGroup, printVolume.getNode(), createPrintBed().getNode());
         helpGroup.getChildren().addAll(createLights());
         helpGroup.setVisible(false);
         setMode(SceneMode.EDIT);
