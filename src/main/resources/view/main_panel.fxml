@@ -14,7 +14,7 @@
       <Button fx:id="undo" text="?_main_undo" styleClass="main-panel-button, undo-button" disable="true" />
       <Button fx:id="redo" text="?_main_redo" styleClass="main-panel-button, redo-button" disable="true" />
     </HBox>
-    <HBox styleClass="main-panel-group">
+    <HBox styleClass="main-panel-group" visible="false" managed="false">
       <Button fx:id="group" text="?_main_group" styleClass="main-panel-button, group-button" disable="true" />
       <Button fx:id="ungroup" text="?_main_ungroup" styleClass="main-panel-button, ungourp-button" disable="true" />
     </HBox>
