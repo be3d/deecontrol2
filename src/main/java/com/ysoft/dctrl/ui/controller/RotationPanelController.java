@@ -56,6 +56,19 @@ public class RotationPanelController extends AbstractEditPanelController {
         clockZ.setOnAction((e) -> rotate(Z_AXIS, z.getValue()));
 
         reset.setOnAction((e) -> onReset());
+
+        eventBus.subscribe(EventType.MODEL_MULTISELECTION.name(), (e) -> {
+            counterX.setDisable(true);
+            clockX.setDisable(true);
+            x.setDisable(true);
+            counterY.setDisable(true);
+            clockY.setDisable(true);
+            y.setDisable(true);
+            counterZ.setDisable(true);
+            clockZ.setDisable(true);
+            z.setDisable(true);
+            reset.setDisable(true);
+        });
     }
 
     @Override
@@ -63,15 +76,16 @@ public class RotationPanelController extends AbstractEditPanelController {
 
     @Override
     public void refresh(SceneMesh mesh) {
-        if(mesh != null) {
-            boolean isGroup = mesh instanceof MeshGroup;
-            counterX.setDisable(isGroup);
-            clockX.setDisable(isGroup);
-            x.setDisable(isGroup);
-            counterY.setDisable(isGroup);
-            clockY.setDisable(isGroup);
-            y.setDisable(isGroup);
-        }
+        counterX.setDisable(false);
+        clockX.setDisable(false);
+        x.setDisable(false);
+        counterY.setDisable(false);
+        clockY.setDisable(false);
+        y.setDisable(false);
+        counterZ.setDisable(false);
+        clockZ.setDisable(false);
+        z.setDisable(false);
+        reset.setDisable(false);
 
         x.setValue(90d);
         y.setValue(90d);
