@@ -2,4 +2,10 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:id="canvas" fx:controller="com.ysoft.dctrl.ui.controller.CanvasController" styleClass=""></AnchorPane>
+<?import java.net.URL?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:id="canvas" fx:controller="com.ysoft.dctrl.ui.controller.CanvasController" styleClass="">
+  <stylesheets>
+    <URL value="@/css/master.css" />
+  </stylesheets>
+</AnchorPane>

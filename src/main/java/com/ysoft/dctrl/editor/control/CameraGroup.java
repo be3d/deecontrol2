@@ -2,6 +2,7 @@ package com.ysoft.dctrl.editor.control;
 
 import com.ysoft.dctrl.math.Point3DUtils;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.Camera;
 import javafx.scene.Group;
@@ -9,6 +10,7 @@ import javafx.scene.ParallelCamera;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
+import javafx.scene.transform.TransformChangedEvent;
 import javafx.scene.transform.Translate;
 
 import java.awt.*;
@@ -20,7 +22,7 @@ import java.util.List;
 /**
  * Created by kuhn on 12/19/2017.
  */
-public class CameraGroup extends Group{
+public class CameraGroup extends Group implements TransformableCamera {
 
     private static final CameraType DEFAULT_CAMERA_TYPE = CameraType.PERSPECTIVE;
 
@@ -118,6 +120,21 @@ public class CameraGroup extends Group{
         parallelPositionTransform.setZ(newPos.getZ());
     }
 
+    public void setPositionX(double x) {
+        position = new Point3D(x, position.getY(), position.getZ());
+        positionTransform.setX(x);
+    }
+
+    public void setPositionY(double y) {
+        position = new Point3D(position.getX(), y, position.getZ());
+        positionTransform.setY(y);
+    }
+
+    public void setPositionZ(double z) {
+        position = new Point3D(position.getX(), position.getY(), z);
+        positionTransform.setZ(z);
+    }
+
     public Point3D getPosition() {
         return new Point3D(position.getX(), position.getY(), position.getZ());
     }
@@ -157,5 +174,11 @@ public class CameraGroup extends Group{
         normal = normal.subtract(target);
         normal = normal.normalize();
         return normal;
+    }
+
+    public void setRotationChangeListener(EventHandler<TransformChangedEvent> handler) {
+        rotationX.setOnTransformChanged(handler);
+        rotationY.setOnTransformChanged(handler);
+        rotationZ.setOnTransformChanged(handler);
     }
 }

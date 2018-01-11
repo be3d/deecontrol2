@@ -45,8 +45,6 @@ public class GCodePanelController extends LocalizableController implements Initi
     private JobCreator jobCreator;
 
     @FXML
-    AnchorPane gcodePanelPane;
-    @FXML
     Button backToEditBtn;
     @FXML
     Button sendJobBtn;
@@ -253,7 +251,7 @@ public class GCodePanelController extends LocalizableController implements Initi
     }
 
     private void setVisible(boolean value){
-        gcodePanelPane.setVisible(value);
+        root.setVisible(value);
     }
 
     private void switchToOptimizedView(){

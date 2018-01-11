@@ -68,7 +68,6 @@ public class SlicerPanelController extends LocalizableController implements Init
     private final ErrorNotification slicingFailedNotification;
 
     // Layout
-    @FXML AnchorPane anchorPane;
     @FXML ScrollBox scrollBox;
     @FXML VBox panelControlsContainer;
     @FXML Label advSettingsToggle;

@@ -5,16 +5,18 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
+import javafx.scene.transform.TransformChangedEvent;
 import javafx.scene.transform.Translate;
 
 /**
  * Created by pilar on 25.3.2017.
  */
-public class ExtendedPerspectiveCamera extends PerspectiveCamera {
+public class ExtendedPerspectiveCamera extends PerspectiveCamera implements TransformableCamera {
     private Rotate rotationX = new Rotate(0, Rotate.X_AXIS);
     private Rotate rotationY = new Rotate(0, Rotate.Y_AXIS);
     private Rotate rotationZ = new Rotate(0, Rotate.Z_AXIS);
@@ -82,6 +84,10 @@ public class ExtendedPerspectiveCamera extends PerspectiveCamera {
         setRotationZ(z);
     }
 
+    public void setRotation(Point3D rotation) {
+        setRotation(rotation.getX(), rotation.getY(), rotation.getZ());
+    }
+
     public void setRotationX(double rotationX) {
         this.rotationX.setAngle(rotationX);
     }
@@ -96,5 +102,11 @@ public class ExtendedPerspectiveCamera extends PerspectiveCamera {
 
     public Point3D getRotation() {
         return new Point3D(rotationX.getAngle(), rotationY.getAngle(), rotationZ.getAngle());
+    }
+
+    public void setRotationChangeListener(EventHandler<TransformChangedEvent> handler) {
+        rotationX.setOnTransformChanged(handler);
+        rotationY.setOnTransformChanged(handler);
+        rotationZ.setOnTransformChanged(handler);
     }
 }
