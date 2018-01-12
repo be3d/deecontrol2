@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.ysoft.dctrl.editor.control.CameraGroup;
+import com.ysoft.dctrl.editor.control.TransformableCamera;
+import javafx.scene.PerspectiveCamera;
 import org.springframework.stereotype.Component;
 
 import com.ysoft.dctrl.editor.control.ExtendedPerspectiveCamera;
@@ -74,12 +77,12 @@ public class AxisCross {
         handleArrowPositions();
     }
 
-    public void setRefCamera(ExtendedPerspectiveCamera refCamera) {
+    public void setRefCamera(TransformableCamera refCamera) {
         refCamera.setRotationChangeListener((e) -> updateCamera(refCamera));
         updateCamera(refCamera);
     }
 
-    private void updateCamera(ExtendedPerspectiveCamera refCamera) {
+    private void updateCamera(TransformableCamera refCamera) {
         camera.setRotation(refCamera.getRotation());
         setCameraPosition();
         handleArrowPositions();

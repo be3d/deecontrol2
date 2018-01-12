@@ -4,9 +4,12 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.ysoft.dctrl.editor.control.CameraType;
 import com.ysoft.dctrl.ui.i18n.LocalizationService;
 import com.ysoft.dctrl.ui.notification.ErrorNotification;
 import com.ysoft.dctrl.utils.exceptions.RunningOutOfMemoryException;
+import javafx.scene.Camera;
+import javafx.scene.ParallelCamera;
 import javafx.scene.shape.TriangleMesh;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,7 +86,7 @@ public class CanvasController extends LocalizableController implements Initializ
     public void initialize(URL location, ResourceBundle resources) {
         SubScene subScene = new SubScene(sceneGraph.getSceneGroup(), 10, 10, true, SceneAntialiasing.BALANCED);
         subScene.setFill(Color.WHITESMOKE);
-        subScene.setCamera(sceneGraph.getCamera());
+        subScene.setCamera(sceneGraph.getCameraGroup().getSelected());
 
         sceneGraph.addHelpObject(meshTransformControls.getPlane());
 
@@ -96,7 +99,7 @@ public class CanvasController extends LocalizableController implements Initializ
             subScene.setHeight(newValue.doubleValue());
         });
 
-        TrackBallCameraControls controls = new TrackBallCameraControls(sceneGraph.getCamera(), new Point3D(0,-400,400));
+        TrackBallCameraControls controls = new TrackBallCameraControls(sceneGraph.getCameraGroup(), new Point3D(0,-400,400));
         
         canvas.setOnMousePressed((e) -> {
             canvas.requestFocus();
@@ -119,9 +122,18 @@ public class CanvasController extends LocalizableController implements Initializ
         keyEventPropagator.onKeyPressed(this::keyDown);
         eventBus.subscribe(EventType.ADD_MODEL.name(), this::addModel);
         eventBus.subscribe(EventType.RESET_VIEW.name(), (e) -> controls.resetCamera());
-        eventBus.subscribe(EventType.TOP_VIEW.name(), (e) -> controls.setTopView());
+        eventBus.subscribe(EventType.VIEW_LEFT.name(), (e) -> controls.setLeftView());
+        eventBus.subscribe(EventType.VIEW_RIGHT.name(), (e) -> controls.setRightView());
+        eventBus.subscribe(EventType.VIEW_BOTTOM.name(), (e) -> controls.setBottomView());
+        eventBus.subscribe(EventType.VIEW_TOP.name(), (e) -> controls.setTopView());
         eventBus.subscribe(EventType.ZOOM_IN_VIEW.name(), (e) -> controls.zoomInCamera());
         eventBus.subscribe(EventType.ZOOM_OUT_VIEW.name(), (e) -> controls.zoomOutCamera());
+        eventBus.subscribe(EventType.ZOOM_OUT_VIEW.name(), (e) -> controls.zoomOutCamera());
+        eventBus.subscribe(EventType.SET_CAMERA.name(), (e) -> {
+            Camera c = sceneGraph.getCameraGroup().select((CameraType)e.getData());
+            subScene.setCamera(c);
+        });
+
 
         addModelProgressNotification.setLabelText(getMessage("notification_inserting_objects"));
         addModelProgressNotification.addOnCloseAction(e -> importRunner.cancel());
@@ -208,6 +220,21 @@ public class CanvasController extends LocalizableController implements Initializ
                         eventBus.publish(new Event(EventType.EDIT_SELECT_NEXT.name()));
                     }
                 }
+                break;
+            case NUMPAD5:
+                eventBus.publish(new Event(EventType.RESET_VIEW.name()));
+                break;
+            case NUMPAD4:
+                eventBus.publish(new Event(EventType.VIEW_LEFT.name()));
+                break;
+            case NUMPAD6:
+                eventBus.publish(new Event(EventType.VIEW_RIGHT.name()));
+                break;
+            case NUMPAD8:
+                eventBus.publish(new Event(EventType.VIEW_TOP.name()));
+                break;
+            case NUMPAD2:
+                eventBus.publish(new Event(EventType.VIEW_BOTTOM.name()));
                 break;
         }
     }

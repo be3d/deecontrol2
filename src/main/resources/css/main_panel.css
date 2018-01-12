@@ -100,3 +100,11 @@
 .top-view-button {
     -fx-background-image: url("../img/main_panel/top-view-normal.png");
 }
+
+.perspective-on-button {
+    -fx-background-image: url("../img/main_panel/perspective-normal.png");
+}
+
+.perspective-off-button {
+    -fx-background-image: url("../img/main_panel/parallel-normal.png");
+}

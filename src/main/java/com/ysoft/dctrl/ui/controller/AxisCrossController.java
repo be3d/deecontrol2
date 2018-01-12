@@ -32,7 +32,7 @@ public class AxisCrossController extends AbstractController implements Initializ
     public AxisCrossController(AxisCross axisCross, SceneGraph sceneGraph, EventBus eventBus, DeeControlContext deeControlContext) {
         super(eventBus, deeControlContext);
         this.axisCross = axisCross;
-        axisCross.setRefCamera(sceneGraph.getCamera());
+        axisCross.setRefCamera(sceneGraph.getCameraGroup());
     }
 
     @Override

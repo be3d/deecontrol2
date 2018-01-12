@@ -16,7 +16,7 @@ import javafx.scene.transform.Translate;
 /**
  * Created by pilar on 25.3.2017.
  */
-public class ExtendedPerspectiveCamera extends PerspectiveCamera {
+public class ExtendedPerspectiveCamera extends PerspectiveCamera implements TransformableCamera {
     private Rotate rotationX = new Rotate(0, Rotate.X_AXIS);
     private Rotate rotationY = new Rotate(0, Rotate.Y_AXIS);
     private Rotate rotationZ = new Rotate(0, Rotate.Z_AXIS);
