@@ -6,10 +6,12 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.ysoft.dctrl.editor.control.CameraGroup;
+import com.ysoft.dctrl.editor.control.CameraType;
+import javafx.scene.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.ysoft.dctrl.editor.control.ExtendedPerspectiveCamera;
 import com.ysoft.dctrl.editor.mesh.PrintBed;
 import com.ysoft.dctrl.editor.mesh.PrinterVolume;
 import com.ysoft.dctrl.event.Event;
@@ -20,11 +22,6 @@ import com.ysoft.dctrl.math.Point3DUtils;
 import com.ysoft.dctrl.utils.ColorUtils;
 
 import javafx.geometry.Point3D;
-import javafx.scene.AmbientLight;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.PointLight;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.Shape3D;
@@ -39,7 +36,8 @@ import javafx.scene.transform.Translate;
 public class SceneGraph {
     private static final Point3D PRINTER_SIZE = new Point3D(150,150,150);
     private static final Point3D PRINTER_HALF_SIZE = new Point3D(75,75,75);
-    private ExtendedPerspectiveCamera camera;
+    private CameraGroup cameraGroup;
+
     private final Group sceneGroup;
     private final Group helpGroup;
     private final Group subSceneGroup;
@@ -63,7 +61,8 @@ public class SceneGraph {
         helpGroup = new Group();
         subSceneGroup = new Group();
         sceneGroup.getChildren().addAll(subSceneGroup, helpGroup);
-        camera = createCamera();
+        cameraGroup = createCameraGroup();
+
         this.subSceneGraphs = initSubSceneGraphs(subSceneGraphs);
     }
 
@@ -79,7 +78,7 @@ public class SceneGraph {
 
     @PostConstruct
     public void init() {
-        helpGroup.getChildren().addAll(camera, printVolume.getNode(), createPrintBed().getNode());
+        helpGroup.getChildren().addAll(cameraGroup, printVolume.getNode(), createPrintBed().getNode());
         helpGroup.getChildren().addAll(createLights());
         helpGroup.setVisible(false);
         setMode(SceneMode.EDIT);
@@ -90,11 +89,10 @@ public class SceneGraph {
         eventBus.subscribeOnce(EventType.MODEL_LOADED.name(), (e) -> helpGroup.setVisible(true));
     }
 
-    private ExtendedPerspectiveCamera createCamera() {
-        ExtendedPerspectiveCamera camera = new ExtendedPerspectiveCamera(true);
-        camera.setInitialTransforms(new Rotate(-90, Rotate.X_AXIS));
-        camera.setFarClip(10000);
-        return camera;
+    private CameraGroup createCameraGroup() {
+        CameraGroup cameraGroup = new CameraGroup();
+        cameraGroup.setInitialTransforms(new Rotate(-90, Rotate.X_AXIS));
+        return cameraGroup;
     }
 
     private PrintBed createPrintBed() {
@@ -104,7 +102,7 @@ public class SceneGraph {
     private Node[] createLights() {
         b.getTransforms().add(new Translate(-250,250,10));
         f.getTransforms().add(new Translate(10000,-10000,8000));
-        c.getTransforms().add(camera.getTransforms().get(0));
+        c.getTransforms().add(cameraGroup.getSelected().getTransforms().get(0));
         return new Node[] {am, b, f, c};
     }
 
@@ -122,8 +120,8 @@ public class SceneGraph {
         helpGroup.getChildren().add(subSceneGraphs.get(this.mode).getHelpGroup());
     }
 
-    public ExtendedPerspectiveCamera getCamera() {
-        return camera;
+    public CameraGroup getCameraGroup(){
+        return cameraGroup;
     }
 
     public Parent getSceneGroup() {

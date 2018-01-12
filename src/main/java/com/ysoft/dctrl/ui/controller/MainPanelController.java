@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.ysoft.dctrl.editor.mesh.SceneMesh;
+import com.ysoft.dctrl.editor.control.CameraType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -51,6 +52,8 @@ public class MainPanelController extends LocalizableController implements Initia
 
     @FXML Button resetView;
     @FXML Button topView;
+    @FXML Button perspectiveOn;
+    @FXML Button perspectiveOff;
 
     private int disabledMap;
 
@@ -78,7 +81,9 @@ public class MainPanelController extends LocalizableController implements Initia
         });
 
         resetView.setOnAction(event -> eventBus.publish(new Event(EventType.RESET_VIEW.name())));
-        topView.setOnAction(event -> eventBus.publish(new Event(EventType.TOP_VIEW.name())));
+        topView.setOnAction(event -> eventBus.publish(new Event(EventType.VIEW_TOP.name())));
+        perspectiveOn.setOnAction(event -> eventBus.publish(new Event(EventType.SET_CAMERA.name(), CameraType.PERSPECTIVE)));
+        perspectiveOff.setOnAction(event -> eventBus.publish(new Event(EventType.SET_CAMERA.name(), CameraType.PARALLEL)));
 
         center.setOnAction(event -> eventBus.publish(new Event(EventType.CENTER_SELECTED_MODEL.name())));
         left.setOnAction(event -> eventBus.publish(new Event(EventType.ALIGN_LEFT_SELECTED_MODEL.name())));
@@ -113,8 +118,6 @@ public class MainPanelController extends LocalizableController implements Initia
         });
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
             boolean gcodeMode = e.getData() == SceneMode.GCODE;
-            topView.setVisible(gcodeMode);
-            topView.setManaged(gcodeMode);
             add.setDisable(gcodeMode);
             center.setDisable(gcodeMode || getDisabledBit(SELECTION_EMPTY_BIT));
             left.setDisable(gcodeMode || getDisabledBit(SELECTION_EMPTY_BIT));
@@ -146,6 +149,14 @@ public class MainPanelController extends LocalizableController implements Initia
         eventBus.subscribe(EventType.REDO_NOT_EMPTY.name(), (e) -> {
             setDisabledBit(false, REDO_BIT);
             redo.setDisable(getDisabledBit(REDO_BIT));
+        });
+
+        eventBus.subscribe(EventType.SET_CAMERA.name(), (e) -> {
+            CameraType c = (CameraType)e.getData();
+            perspectiveOn.setVisible(c == CameraType.PARALLEL);
+            perspectiveOn.setManaged(c == CameraType.PARALLEL);
+            perspectiveOff.setVisible(c == CameraType.PERSPECTIVE);
+            perspectiveOff.setManaged(c == CameraType.PERSPECTIVE);
         });
 
         super.initialize(location, resources);
