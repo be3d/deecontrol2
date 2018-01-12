@@ -181,7 +181,9 @@ public class MenuBarController extends LocalizableController implements Initiali
     }
 
     private void onExportAs(ActionEvent event) {
-        File f = retentionFileChooser.showSaveDialog(root.getScene().getWindow(), GCODE_FILTER, JOB_FILTER);
+        File f = retentionFileChooser.showSaveDialog(root.getScene().getWindow(),
+                getMessage("dialog_export_as"), null, GCODE_FILTER, JOB_FILTER);
+
         switch (retentionFileChooser.getSelectedExtensionFilter().getExtensions().get(0)) {
             case GCODE_EXTENSION:
                 eventBus.publish(new Event(EventType.GCODE_EXPORT.name(), f.getAbsolutePath()));
