@@ -76,16 +76,18 @@ public class RotationPanelController extends AbstractEditPanelController {
 
     @Override
     public void refresh(SceneMesh mesh) {
-        counterX.setDisable(false);
-        clockX.setDisable(false);
-        x.setDisable(false);
-        counterY.setDisable(false);
-        clockY.setDisable(false);
-        y.setDisable(false);
-        counterZ.setDisable(false);
-        clockZ.setDisable(false);
-        z.setDisable(false);
-        reset.setDisable(false);
+        if(mesh != null) {
+            counterX.setDisable(false);
+            clockX.setDisable(false);
+            x.setDisable(false);
+            counterY.setDisable(false);
+            clockY.setDisable(false);
+            y.setDisable(false);
+            counterZ.setDisable(false);
+            clockZ.setDisable(false);
+            z.setDisable(false);
+            reset.setDisable(false);
+        }
 
         x.setValue(90d);
         y.setValue(90d);
