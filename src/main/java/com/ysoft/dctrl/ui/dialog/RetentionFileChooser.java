@@ -39,14 +39,11 @@ public class RetentionFileChooser {
         return f;
     }
 
-    public File showSaveDialog(Window parent, FileChooser.ExtensionFilter... filters) {
-        return showSaveDialog(parent, null, filters);
-    }
-
-    public File showSaveDialog(Window parent, String initialName, FileChooser.ExtensionFilter... filters) {
+    public File showSaveDialog(Window parent, String title, String initialName, FileChooser.ExtensionFilter... filters) {
         setFilters(filters);
         setPwd();
         if(initialName != null) { fileChooser.setInitialFileName(initialName); }
+        if(title != null) { fileChooser.setTitle(title); }
         File f = fileChooser.showSaveDialog(parent);
         if(f != null) { updatePwd(f.getParent()); }
         return f;
