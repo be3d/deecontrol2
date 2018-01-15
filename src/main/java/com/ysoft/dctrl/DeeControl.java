@@ -66,7 +66,7 @@ public class DeeControl extends Application {
 
         BaseWindow baseWindow = applicationContext.getBean(BaseWindow.class);
         baseWindow.composeWindow(primaryStage);
-        primaryStage.setTitle("DeeControl2");
+        primaryStage.setTitle("DeeControl 2");
         primaryStage.getIcons().addAll(
                 new Image(getClass().getResourceAsStream("/img/ico/icon-16.png")),
                 new Image(getClass().getResourceAsStream("/img/ico/icon-32.png")),
