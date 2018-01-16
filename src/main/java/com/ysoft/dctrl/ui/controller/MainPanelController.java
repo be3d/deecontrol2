@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.ysoft.dctrl.editor.mesh.SceneMesh;
 import com.ysoft.dctrl.editor.control.CameraType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,7 @@ public class MainPanelController extends LocalizableController implements Initia
     private static final int UNGROUP_BIT = 1;
     private static final int UNDO_BIT = 2;
     private static final int REDO_BIT = 3;
+    private static final int SELECTION_EMPTY_BIT = 4;
 
     @FXML Button add;
 
@@ -97,7 +99,16 @@ public class MainPanelController extends LocalizableController implements Initia
             setDisabledBit(!(e.getData() instanceof MeshGroup), UNGROUP_BIT);
             ungroup.setDisable(getDisabledBit(UNGROUP_BIT));
             group.setDisable(getDisabledBit(GROUP_BIT));
+
+            SceneMesh m = (SceneMesh)e.getData();
+            setDisabledBit(m == null, SELECTION_EMPTY_BIT);
+            center.setDisable(getDisabledBit(SELECTION_EMPTY_BIT));
+            left.setDisable(getDisabledBit(SELECTION_EMPTY_BIT));
+            right.setDisable(getDisabledBit(SELECTION_EMPTY_BIT));
+            front.setDisable(getDisabledBit(SELECTION_EMPTY_BIT));
+            back.setDisable(getDisabledBit(SELECTION_EMPTY_BIT));
         });
+
         eventBus.subscribe(EventType.MODEL_MULTISELECTION.name(), (e) -> {
             setDisabledBit(true, UNGROUP_BIT);
             setDisabledBit(false, GROUP_BIT);
@@ -108,11 +119,11 @@ public class MainPanelController extends LocalizableController implements Initia
         eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
             boolean gcodeMode = e.getData() == SceneMode.GCODE;
             add.setDisable(gcodeMode);
-            center.setDisable(gcodeMode);
-            left.setDisable(gcodeMode);
-            right.setDisable(gcodeMode);
-            front.setDisable(gcodeMode);
-            back.setDisable(gcodeMode);
+            center.setDisable(gcodeMode || getDisabledBit(SELECTION_EMPTY_BIT));
+            left.setDisable(gcodeMode || getDisabledBit(SELECTION_EMPTY_BIT));
+            right.setDisable(gcodeMode || getDisabledBit(SELECTION_EMPTY_BIT));
+            front.setDisable(gcodeMode || getDisabledBit(SELECTION_EMPTY_BIT));
+            back.setDisable(gcodeMode || getDisabledBit(SELECTION_EMPTY_BIT));
 
             group.setDisable(gcodeMode || getDisabledBit(GROUP_BIT));
             ungroup.setDisable(gcodeMode || getDisabledBit(UNGROUP_BIT));

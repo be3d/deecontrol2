@@ -21,15 +21,15 @@
       <MenuItem fx:id="quit" text="?_menu_bar_quit" styleClass="menu-item" />
   </Menu>
   <Menu text="?_menu_bar_edit">
-      <MenuItem fx:id="undo" text="?_menu_bar_undo" styleClass="menu-item" />
-      <MenuItem fx:id="redo" text="?_menu_bar_redo" styleClass="menu-item" />
+      <MenuItem fx:id="undo" text="?_menu_bar_undo" styleClass="menu-item" disable="true"/>
+      <MenuItem fx:id="redo" text="?_menu_bar_redo" styleClass="menu-item" disable="true"/>
       <SeparatorMenuItem />
-      <MenuItem fx:id="copy" text="?_menu_bar_copy" styleClass="menu-item" />
-      <MenuItem fx:id="paste" text="?_menu_bar_paste" styleClass="menu-item" />
-      <MenuItem fx:id="duplicate" text="?_menu_bar_duplicate" styleClass="menu-item" />
-      <MenuItem fx:id="selectAll" text="?_menu_bar_select_all" styleClass="menu-item" />
+      <MenuItem fx:id="copy" text="?_menu_bar_copy" styleClass="menu-item" disable="true" />
+      <MenuItem fx:id="paste" text="?_menu_bar_paste" styleClass="menu-item"/>
+      <MenuItem fx:id="duplicate" text="?_menu_bar_duplicate" styleClass="menu-item" disable="true"/>
+      <MenuItem fx:id="selectAll" text="?_menu_bar_select_all" styleClass="menu-item"/>
       <SeparatorMenuItem />
-      <MenuItem fx:id="delete" text="?_menu_bar_delete" styleClass="menu-item"/>
+      <MenuItem fx:id="delete" text="?_menu_bar_delete" styleClass="menu-item" disable="true"/>
   </Menu>
   <Menu text="?_menu_bar_view">
       <MenuItem fx:id="zoomIn" text="?_menu_bar_zoom_in" styleClass="menu-item" />

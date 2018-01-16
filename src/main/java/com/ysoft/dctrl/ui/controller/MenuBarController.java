@@ -47,6 +47,10 @@ public class MenuBarController extends LocalizableController implements Initiali
     private static final FileChooser.ExtensionFilter GCODE_FILTER = new FileChooser.ExtensionFilter("GCode file", GCODE_EXTENSION);
     private static final FileChooser.ExtensionFilter JOB_FILTER = new FileChooser.ExtensionFilter("3D print job", JOB_EXTENSION);
 
+    private static final int UNDO_BIT = 0;
+    private static final int REDO_BIT = 1;
+    private static final int SELECTION_EMPTY_BIT = 2;
+
     @FXML MenuItem openFile;
     @FXML MenuItem quit;
     @FXML MenuItem settings;
@@ -69,6 +73,8 @@ public class MenuBarController extends LocalizableController implements Initiali
     private final Clipboard clipboard;
     private final Stage aboutStage;
 
+    private int disabledMap;
+
     @Autowired
     public MenuBarController(LocalizationService localizationService,
                              EventBus eventBus, DeeControlContext deeControlContext,
@@ -88,6 +94,7 @@ public class MenuBarController extends LocalizableController implements Initiali
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         openFile.setOnAction(this::onOpenFile);
+        openFile.setAccelerator(ShortcutKeys.OPEN_FILE);
         settings.setOnAction(this::onSettings);
 
         quit.setOnAction(this::onQuit);
@@ -112,14 +119,61 @@ public class MenuBarController extends LocalizableController implements Initiali
         about.setOnAction(this::onAbout);
 
         undo.setOnAction(this::onUndo);
+        undo.setAccelerator(ShortcutKeys.UNDO);
         redo.setOnAction(this::onRedo);
+        redo.setAccelerator(ShortcutKeys.REDO);
 
         copy.setOnAction(this::onCopy);
         copy.setAccelerator(ShortcutKeys.COPY);
+
         paste.setOnAction(this::onPaste);
         paste.setAccelerator(ShortcutKeys.PASTE);
         duplicate.setOnAction(this::onDuplicate);
         duplicate.setAccelerator(ShortcutKeys.DUPLICATE);
+
+        eventBus.subscribe(EventType.MODEL_SELECTED.name(), (e) -> {
+            setDisabledBit(e.getData() == null, SELECTION_EMPTY_BIT);
+            copy.setDisable(e.getData() == null);
+            duplicate.setDisable(e.getData() == null);
+            delete.setDisable(e.getData() == null);
+        });
+
+        eventBus.subscribe(EventType.MODEL_MULTISELECTION.name(), (e) -> {
+            setDisabledBit(false, SELECTION_EMPTY_BIT);
+            copy.setDisable(false);
+            duplicate.setDisable(false);
+            delete.setDisable(false);
+        });
+
+        eventBus.subscribe(EventType.UNDO_EMPTY.name(), (e) -> {
+            setDisabledBit(true, UNDO_BIT);
+            undo.setDisable(true);
+        });
+        eventBus.subscribe(EventType.UNDO_NOT_EMPTY.name(), (e) -> {
+            setDisabledBit(false, UNDO_BIT);
+            undo.setDisable(false);
+        });
+        eventBus.subscribe(EventType.REDO_EMPTY.name(), (e) -> {
+            setDisabledBit(true, REDO_BIT);
+            redo.setDisable(true);
+        });
+        eventBus.subscribe(EventType.REDO_NOT_EMPTY.name(), (e) -> {
+            setDisabledBit(false, REDO_BIT);
+            redo.setDisable(false);
+        });
+
+        eventBus.subscribe(EventType.SCENE_SET_MODE.name(), (e) -> {
+            boolean isGCodeMode = e.getData() == SceneMode.GCODE;
+
+            copy.setDisable(isGCodeMode || getDisabledBit(SELECTION_EMPTY_BIT));
+            duplicate.setDisable(isGCodeMode || getDisabledBit(SELECTION_EMPTY_BIT));
+            delete.setDisable(isGCodeMode || getDisabledBit(SELECTION_EMPTY_BIT));
+            selectAll.setDisable(isGCodeMode);
+            paste.setDisable(isGCodeMode);
+
+            undo.setDisable(isGCodeMode || getDisabledBit(UNDO_BIT));
+            redo.setDisable(isGCodeMode || getDisabledBit(REDO_BIT));
+        });
 
         super.initialize(location, resources);
     }
@@ -210,5 +264,13 @@ public class MenuBarController extends LocalizableController implements Initiali
 
     private void onSelectAll(ActionEvent event){
         eventBus.publish(new Event(EventType.EDIT_SELECT_ALL.name()));
+    }
+
+    private void setDisabledBit(boolean value, int bit) {
+        disabledMap = (value) ? disabledMap | (1<<bit) : disabledMap & ~(1<<bit);
+    }
+
+    private boolean getDisabledBit(int bit) {
+        return (disabledMap & (1<<bit)) > 0;
     }
 }
