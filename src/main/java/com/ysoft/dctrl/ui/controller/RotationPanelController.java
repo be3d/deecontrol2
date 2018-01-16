@@ -31,16 +31,14 @@ public class RotationPanelController extends AbstractEditPanelController {
     private static final Point3D Y_AXIS = new Point3D(0,1,0);
     private static final Point3D Z_AXIS = new Point3D(0,0,1);
 
-    @FXML NumberField x;
-    @FXML NumberField y;
-    @FXML NumberField z;
-
     @FXML Button counterX;
     @FXML Button clockX;
     @FXML Button counterY;
     @FXML Button clockY;
     @FXML Button counterZ;
     @FXML Button clockZ;
+
+    @FXML Button reset;
 
     public RotationPanelController(EditSceneGraph sceneGraph, LocalizationService localizationService, EventBus eventBus, DeeControlContext context) {
         super(sceneGraph, localizationService, eventBus, context);
@@ -54,20 +52,41 @@ public class RotationPanelController extends AbstractEditPanelController {
         clockX.setOnAction((e) -> rotate(X_AXIS, -x.getValue()));
         counterY.setOnAction((e) -> rotate(Y_AXIS, y.getValue()));
         clockY.setOnAction((e) -> rotate(Y_AXIS, -y.getValue()));
-        counterZ.setOnAction((e) -> rotate(Z_AXIS, z.getValue()));
-        clockZ.setOnAction((e) -> rotate(Z_AXIS, -z.getValue()));
+        counterZ.setOnAction((e) -> rotate(Z_AXIS, -z.getValue()));
+        clockZ.setOnAction((e) -> rotate(Z_AXIS, z.getValue()));
+
+        reset.setOnAction((e) -> onReset());
+
+        eventBus.subscribe(EventType.MODEL_MULTISELECTION.name(), (e) -> {
+            counterX.setDisable(true);
+            clockX.setDisable(true);
+            x.setDisable(true);
+            counterY.setDisable(true);
+            clockY.setDisable(true);
+            y.setDisable(true);
+            counterZ.setDisable(true);
+            clockZ.setDisable(true);
+            z.setDisable(true);
+            reset.setDisable(true);
+        });
     }
+
+    @Override
+    protected void onModelChanged(SceneMesh mesh) {}
 
     @Override
     public void refresh(SceneMesh mesh) {
         if(mesh != null) {
-            boolean isGroup = mesh instanceof MeshGroup;
-            counterX.setDisable(isGroup);
-            clockX.setDisable(isGroup);
-            x.setDisable(isGroup);
-            counterY.setDisable(isGroup);
-            clockY.setDisable(isGroup);
-            y.setDisable(isGroup);
+            counterX.setDisable(false);
+            clockX.setDisable(false);
+            x.setDisable(false);
+            counterY.setDisable(false);
+            clockY.setDisable(false);
+            y.setDisable(false);
+            counterZ.setDisable(false);
+            clockZ.setDisable(false);
+            z.setDisable(false);
+            reset.setDisable(false);
         }
 
         x.setValue(90d);

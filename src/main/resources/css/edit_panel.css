@@ -64,11 +64,11 @@
     -fx-padding: 0;
 }
 
-.scale-panel .edit-panel-group.scaleMax {
+.edit-panel-group.scaleMax {
     -fx-padding: 0 0 0 19px;
 }
 
-.scale-panel .edit-panel-group.scaleMax Button {
+.edit-panel-group.scaleMax Button {
     -fx-pref-width: 100%;
     -fx-max-width: Infinity;
 }
