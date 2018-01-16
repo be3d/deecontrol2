@@ -317,8 +317,11 @@ public class EditSceneGraph extends SubSceneGraph {
             validatePosition(m);
             m.setBoundingBoxVisible(true);
         });
-        if(sm.size()>0){
+        if(sm.size() == 1){
             eventBus.publish(new Event(EventType.MODEL_SELECTED.name(), sm.get(0)));
+        }
+        else if(sm.size()>1){
+            eventBus.publish(new Event(EventType.MODEL_MULTISELECTION.name()));
         }
     }
 

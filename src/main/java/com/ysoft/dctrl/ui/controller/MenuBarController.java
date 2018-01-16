@@ -132,11 +132,17 @@ public class MenuBarController extends LocalizableController implements Initiali
         duplicate.setAccelerator(ShortcutKeys.DUPLICATE);
 
         eventBus.subscribe(EventType.MODEL_SELECTED.name(), (e) -> {
-            SceneMesh m = (SceneMesh)e.getData();
-            setDisabledBit(m == null, SELECTION_EMPTY_BIT);
-            copy.setDisable(m == null);
-            duplicate.setDisable(m == null);
-            delete.setDisable(m == null);
+            setDisabledBit(e.getData() == null, SELECTION_EMPTY_BIT);
+            copy.setDisable(e.getData() == null);
+            duplicate.setDisable(e.getData() == null);
+            delete.setDisable(e.getData() == null);
+        });
+
+        eventBus.subscribe(EventType.MODEL_MULTISELECTION.name(), (e) -> {
+            setDisabledBit(false, SELECTION_EMPTY_BIT);
+            copy.setDisable(false);
+            duplicate.setDisable(false);
+            delete.setDisable(false);
         });
 
         eventBus.subscribe(EventType.UNDO_EMPTY.name(), (e) -> {
