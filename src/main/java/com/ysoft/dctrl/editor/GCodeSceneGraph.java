@@ -52,8 +52,8 @@ public class GCodeSceneGraph extends SubSceneGraph {
     private enum ViewType {DETAILED, OPTIMIZED}
     private ViewType activeView = ViewType.OPTIMIZED;
     private List<GCodeMoveType> currentlyRenderedTypes = new LinkedList<>();
-    private int currentCutBottomLayerIndex = 0;
-    private int currentCutTopLayerIndex = 0;
+    private int currentCutBottomLayerIndex;
+    private int currentCutTopLayerIndex;
 
     private final String gcodeFile;
     private List<GCodeLayer> layers;
@@ -68,6 +68,8 @@ public class GCodeSceneGraph extends SubSceneGraph {
         gcodeFile = filePathResource.getPath(FilePath.SLICER_GCODE_FILE);
         layers = new LinkedList<>();
         interrupted = false;
+        currentCutBottomLayerIndex = 0;
+        currentCutTopLayerIndex = 0;
 
         eventBus.subscribe(EventType.GCODE_IMPORT_COMPLETED.name(), (e) -> layerCount = (int)e.getData());
         eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), this::onDraftRenderFinished);
@@ -95,7 +97,6 @@ public class GCodeSceneGraph extends SubSceneGraph {
                     onRenderInterrupted();
                     return;
                 }
-
                 try {
                     MemoryManager.checkMemory();
                     l.generateMeshViews();
@@ -104,7 +105,6 @@ public class GCodeSceneGraph extends SubSceneGraph {
                     return;
                 }
             }
-
             loadGCodeLayers();
         });
 
@@ -127,8 +127,6 @@ public class GCodeSceneGraph extends SubSceneGraph {
     }
 
     private void loadGCodeLayers() {
-        Group group = new Group();
-
         for(GCodeLayer l : layers) {
             if(interrupted){
                 onRenderInterrupted();
@@ -136,25 +134,14 @@ public class GCodeSceneGraph extends SubSceneGraph {
             }
             try {
                 MemoryManager.checkMemory();
-
-                DRAFT_RENDER_TYPES.forEach((t) -> {
-                    MeshView v = l.getMeshViews().get(t.name());
-                    if(v == null) { return; }
-                    group.getChildren().add(v);
-                });
+                loadGCodeLayerDraft(l);
             }
             catch (RunningOutOfMemoryException | OutOfMemoryError e) {
                 onRunningOutOfMemory(e);
                 return;
             }
         }
-        getSceneGroup().getChildren().add(group);
-
         eventBus.publish(new Event(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), layerCount));
-    }
-
-    private void loadGCodeLayer (GCodeLayer l){
-        loadGCodeLayerDraft(l);
     }
 
     public void loadGCodeLayerDraft(GCodeLayer l) {
