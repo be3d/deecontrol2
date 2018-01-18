@@ -128,7 +128,7 @@ public class GCodePanelController extends LocalizableController implements Initi
                 }));
         displaySupports.bindControlChanged(
                 ((observable, oldValue, newValue) -> {
-                    gcodeSceneGraph.showGCodeType(GCodeMoveType.SUPPORT, (boolean)newValue);
+                    gcodeSceneGraph.showGCodeTypes(Arrays.asList(GCodeMoveType.SUPPORT, GCodeMoveType.SKIRT), (boolean)newValue);
                 }));
 
         backToEditBtn.setOnAction(event -> {
