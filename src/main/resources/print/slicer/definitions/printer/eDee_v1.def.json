@@ -158,6 +158,11 @@
          "value":70
       },
       {
+         "id":"SPEED_PRINT_LAYER_0",
+         "type":"float",
+         "value":30
+      },
+      {
          "id":"SPEED_OUTER_WALL",
          "type":"float",
          "value":35,
