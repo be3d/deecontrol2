@@ -11,7 +11,7 @@
   <scene>
     <Scene fill="transparent">
         <AnchorPane fx:id="root" styleClass="about-container">
-          <Label styleClass="version" fx:id="version" AnchorPane.bottomAnchor="90" />
+          <Label styleClass="version" fx:id="version" AnchorPane.bottomAnchor="35" />
 
           <stylesheets>
             <URL value="@/css/master.css" />
