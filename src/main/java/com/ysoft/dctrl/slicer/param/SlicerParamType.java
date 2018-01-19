@@ -16,6 +16,7 @@ public enum SlicerParamType {
 
     //speed
     SPEED_PRINT,
+    SPEED_PRINT_LAYER_0,
     SPEED_OUTER_WALL,
     SPEED_INNER_WALL,
     SPEED_SOLID_LAYERS,

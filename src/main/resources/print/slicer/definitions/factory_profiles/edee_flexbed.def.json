@@ -1,0 +1,20 @@
+{
+	"id":"edeeFlexBed",
+	"name":"Flexible print bed",
+	"description":"eDee profile optimized for flexible print bed",
+	"slicerID":"CURA",
+	"printerID":"edee",
+	"printerGroup":"edee",
+	"params":[
+      {
+        "id":"RESOLUTION_LAYER_HEIGHT_0",
+        "type":"float",
+        "value":0.3
+      },
+      {
+        "id":"SPEED_PRINT_LAYER_0",
+        "type":"float",
+        "value":20
+      }
+	]
+}
