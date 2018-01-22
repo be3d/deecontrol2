@@ -150,7 +150,7 @@ public class GCodePanelController extends LocalizableController implements Initi
         safeqNotSetNotification.setTimeout(10);
 
         BooleanSupplier checkSafeQSettings = () -> {
-            if(!deeControlContext.getSettings().getSafeQSettings().isSet()) { return true; }
+            if(deeControlContext.getSettings().getSafeQSettings().isSet()) { return true; }
 
             eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), safeqNotSetNotification));
             return false;
