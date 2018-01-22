@@ -28,6 +28,8 @@ import com.ysoft.dctrl.math.BoundingBox;
 import com.ysoft.dctrl.math.Point3DUtils;
 import com.ysoft.dctrl.math.Utils;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -63,6 +65,7 @@ public class EditSceneGraph extends SubSceneGraph {
     private ModelInsertionStack modelInsertionStack;
 
     private Consumer<SceneMesh> onMeshChangeConsumer;
+    private DoubleProperty volumeOffset;
 
     public EditSceneGraph(EventBus eventBus, ModelInsertionStack modelInsertionStack) {
         super(eventBus);
@@ -70,6 +73,7 @@ public class EditSceneGraph extends SubSceneGraph {
         outOfBounds = new HashSet<>();
         currentlyFixing = null;
         this.modelInsertionStack = modelInsertionStack;
+        volumeOffset = new SimpleDoubleProperty(0);
     }
 
     @PostConstruct
@@ -94,8 +98,12 @@ public class EditSceneGraph extends SubSceneGraph {
         };
 
         eventBus.subscribe(EventType.PRINT_VOLUME_OFFSET_CHANGED.name(), (e) -> {
-            printerVolume.setPlatformOffset((double) e.getData());
-            getSceneMeshes().forEach(m -> validatePosition(m));
+            volumeOffset.set((double) e.getData());
+        });
+
+        volumeOffset.addListener((ob, o, n) -> {
+            if(printerVolume == null) { return; }
+            updatePlatformOffset(n.doubleValue());
         });
     }
 
@@ -103,6 +111,12 @@ public class EditSceneGraph extends SubSceneGraph {
     protected void setPrinterVolume(PrinterVolume printerVolume) {
         super.setPrinterVolume(printerVolume);
         addHelpObject(printerVolume.getOffsetNode());
+        updatePlatformOffset(volumeOffset.doubleValue());
+    }
+
+    private void updatePlatformOffset(double offset) {
+        printerVolume.setPlatformOffset(offset);
+        getSceneMeshes().forEach(m -> validatePosition(m));
     }
 
     public void addMesh(ModelLoadedDTO modelLoaded) {
