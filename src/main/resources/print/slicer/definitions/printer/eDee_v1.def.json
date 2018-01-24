@@ -38,7 +38,7 @@
       {
          "id":"RESOLUTION_LAYER_HEIGHT_0",
          "type":"float",
-         "value":0.15
+         "value":0.3
       },
       {
          "id":"RESOLUTION_LINE_WIDTH_0",
@@ -160,7 +160,7 @@
       {
          "id":"SPEED_PRINT_LAYER_0",
          "type":"float",
-         "value":30
+         "value":20
       },
       {
          "id":"SPEED_OUTER_WALL",
