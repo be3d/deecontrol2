@@ -137,6 +137,7 @@ public class GCodePanelController extends LocalizableController implements Initi
         });
 
         jobSendDoneNotification.setLabelText(getMessage("notification_file_transfer_success"));
+        jobSendDoneNotification.setTimeout(0);
         jobSendProgressNotification.setLabelText(getMessage("notification_file_transfer_in_progress"));
         jobSendFailedNotification.setLabelText(getMessage("notification_print_job_send_fail"));
 
@@ -149,11 +150,10 @@ public class GCodePanelController extends LocalizableController implements Initi
         safeqNotSetNotification.setTimeout(10);
 
         BooleanSupplier checkSafeQSettings = () -> {
-            if(!deeControlContext.getSettings().getSafeQSettings().isSet()) {
-                eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), safeqNotSetNotification));
-                return false;
-            }
-            return true;
+            if(deeControlContext.getSettings().getSafeQSettings().isSet()) { return true; }
+
+            eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), safeqNotSetNotification));
+            return false;
         };
 
         sendJobBtn.setOnAction(event -> {
@@ -184,13 +184,14 @@ public class GCodePanelController extends LocalizableController implements Initi
                 startGCodeLoading();
                 show();
             } else {
+                jobSendDoneNotification.hide();
                 hide();
             }
         });
 
-        eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), this::onGCRenderFinished);
-        eventBus.subscribe(EventType.GCODE_RENDER_OUTTA_MEMORY.name(), this::onNotEnoughMemory);
-        eventBus.subscribe(EventType.GCODE_RENDER_CANCEL.name(), this::onGCRenderCancelled);
+        eventBus.subscribe(EventType.GCODE_DRAFT_RENDER_FINISHED.name(), e -> onGCRenderFinished());
+        eventBus.subscribe(EventType.GCODE_RENDER_OUTTA_MEMORY.name(), e -> onNotEnoughMemory());
+        eventBus.subscribe(EventType.GCODE_RENDER_CANCEL.name(), e -> onGCRenderCancelled());
 
         super.initialize(location, resources);
 
@@ -208,30 +209,26 @@ public class GCodePanelController extends LocalizableController implements Initi
         gcodeSceneGraph.loadGCode();
     }
 
-    private void onNotEnoughMemory(){
+    private void onNotEnoughMemory() {
         gCodeRenderingNotification.hide();
         eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), gCodeRenderingFailed));
     }
 
-    private void onNotEnoughMemory(Event e){
-        onNotEnoughMemory();
-    }
-
-    private void onGCRenderFinished(Event e){
+    private void onGCRenderFinished() {
         gCodeRenderingNotification.hide(1000);
 
         optimizedViewRadio.setDisable(false);
         detailedViewRadio.setDisable(false);
     }
 
-    private void onGCRenderCancelled(Event e){
+    private void onGCRenderCancelled() {
         eventBus.publish(new Event(EventType.SHOW_NOTIFICATION.name(), gCodeRenderingCancelledNotification));
     }
 
     private void loadProjectInfo(){
         Project project = deeControlContext.getCurrentProject();
 
-        long sec = new Long(project.getPrintDuration());
+        long sec = project.getPrintDuration();
         long hr = TimeUnit.SECONDS.toHours(sec);
         long min = TimeUnit.SECONDS.toMinutes(sec) - hr*60;
 
