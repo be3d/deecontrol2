@@ -12,6 +12,11 @@
          "value":0.1
       },
       {
+         "id":"RESOLUTION_LAYER_HEIGHT_0",
+         "type":"float",
+         "value":0.15
+      },
+      {
          "id":"SHELL_TOP_LAYERS",
          "type":"float",
          "value":10.0
@@ -26,10 +31,15 @@
          "type":"float",
          "value":0.01
       },
-       {
+      {
          "id":"SPEED_PRINT",
          "type":"float",
          "value":55
+      },
+      {
+         "id":"SPEED_PRINT_LAYER_0",
+         "type":"float",
+         "value": 30
       },
       {
          "id":"SPEED_WALL",

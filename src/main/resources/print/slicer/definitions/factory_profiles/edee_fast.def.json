@@ -40,10 +40,15 @@
          "type":"float",
          "value":20
       },
-       {
+      {
          "id":"SPEED_PRINT",
          "type":"float",
          "value":85
+      },
+      {
+         "id":"SPEED_PRINT_LAYER_0",
+         "type":"float",
+         "value":30
       },
       {
          "id":"SPEED_WALL",
