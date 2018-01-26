@@ -39,8 +39,8 @@ public enum TooltipDefinition {
     ),
     INFILL_PATTERN(
             "slicer_infill_pattern", "slicer_infill_pattern_tooltip",
-            new String[]{"img/tooltip/infill-pattern-grid.png", "img/tooltip/infill-pattern-lines.png"},
-            new String[]{"slicer_infill_pattern_tooltip_grid", "slicer_infill_pattern_tooltip_lines"}
+            new String[]{"img/tooltip/infill-pattern-grid.png", "img/tooltip/infill-pattern-lines.png", "img/tooltip/infill-pattern-cubic.png"},
+            new String[]{"slicer_infill_pattern_tooltip_grid", "slicer_infill_pattern_tooltip_lines", "slicer_infill_pattern_tooltip_cubic"}
     ),
     INFILL_DENSITY(
             "slicer_infill_density", "slicer_infill_density_tooltip",
@@ -54,8 +54,8 @@ public enum TooltipDefinition {
     ),
     SUPPORT_PATTERN(
             "slicer_support_pattern", "slicer_support_pattern_tooltip",
-            new String[]{"img/tooltip/support_pattern_lines.png", "img/tooltip/support_pattern_grid.png"},
-            new String[]{"slicer_support_pattern_tooltip_lines", "slicer_support_pattern_tooltip_grid"}
+            new String[]{"img/tooltip/support-pattern-lines.png", "img/tooltip/support-pattern-grid.png", "img/tooltip/support-pattern-zigzag.png"},
+            new String[]{"slicer_support_pattern_tooltip_lines", "slicer_support_pattern_tooltip_grid", "slicer_support_pattern_tooltip_zigzag"}
     ),
     SUPPORT_ANGLE(
             "slicer_support_angle", "slicer_support_angle_tooltip",
