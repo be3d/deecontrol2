@@ -226,6 +226,16 @@ public class MeshGroup extends AbstractControllable implements SceneMesh {
         return cloned;
     }
 
+    @Override
+    public void setSelected(boolean selected) {
+
+    }
+
+    @Override
+    public void setInvalid(boolean valid) {
+
+    }
+
     private void onChange() {
         cloneCounter = 0;
         onChangeListeners.forEach(c -> c.accept(this));

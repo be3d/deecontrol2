@@ -19,6 +19,9 @@ public interface SceneMesh extends Controllable, DrawableMesh {
     SceneMesh clone();
     SceneMesh clone(Point3D offset);
 
+    void setSelected(boolean selected);
+    void setInvalid(boolean valid);
+
     void addOnMeshChangeListener(Consumer<SceneMesh> consumer);
     void removeOnMeshChangeListener(Consumer<SceneMesh> consumer);
 }
