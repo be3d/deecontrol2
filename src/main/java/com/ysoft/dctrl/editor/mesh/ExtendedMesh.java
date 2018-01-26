@@ -11,7 +11,9 @@ import com.ysoft.dctrl.utils.ColorUtils;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Material;
+import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
@@ -22,6 +24,27 @@ import javafx.scene.transform.Translate;
  * Created by pilar on 4.4.2017.
  */
 public class ExtendedMesh extends AbstractControllable implements SceneMesh {
+    private static PhongMaterial MATERIAL = new PhongMaterial(Color.web("#cccccc"));
+    private static PhongMaterial SELECTED_MATERIAL = new PhongMaterial(Color.web("#4dc824"));
+    private static PhongMaterial INVALID_MATERIAL = new PhongMaterial(Color.web("#ff9999"));
+    private static PhongMaterial INVALID_SELECTED_MATERIAL = new PhongMaterial(Color.web("#ff0000"));
+
+    static {
+        MATERIAL.setSpecularColor(Color.web("#333333"));
+        MATERIAL.setSpecularPower(10);
+
+        SELECTED_MATERIAL.setSpecularColor(Color.web("#333333"));
+        SELECTED_MATERIAL.setSpecularPower(10);
+
+        INVALID_MATERIAL.setSpecularColor(Color.web("#333333"));
+        INVALID_MATERIAL.setSpecularPower(10);
+
+        INVALID_SELECTED_MATERIAL.setSpecularColor(Color.web("#333333"));
+        INVALID_SELECTED_MATERIAL.setSpecularPower(10);
+    }
+
+    private static PhongMaterial[] MATERIAL_LIST = new PhongMaterial[] {MATERIAL, SELECTED_MATERIAL, INVALID_MATERIAL, INVALID_SELECTED_MATERIAL};
+
     private static int NEXT_ID = 0;
     private static final double PI_2 = 360;
 
@@ -44,6 +67,9 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
     private MeshView view;
     private Group node;
     private MeshGroup group;
+
+    private boolean invalid;
+    private boolean selected;
 
     private List<Consumer<SceneMesh>> onRotationChange;
     private List<Consumer<SceneMesh>> onScaleChange;
@@ -180,6 +206,11 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         view.setMaterial(material);
     }
 
+    private void setMaterial() {
+        int mode = (selected ? 1 : 0) + (invalid ? 2 : 0);
+        setMaterial(MATERIAL_LIST[mode]);
+    }
+
     @Override
     public Material getMaterial() { return view.getMaterial(); }
 
@@ -277,5 +308,17 @@ public class ExtendedMesh extends AbstractControllable implements SceneMesh {
         SceneMesh cloned = clone();
         cloned.setPosition(cloned.getPosition().add(offset.multiply(++cloneCounter)));
         return cloned;
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        setMaterial();
+    }
+
+    @Override
+    public void setInvalid(boolean invalid) {
+        this.invalid = invalid;
+        setMaterial();
     }
 }
