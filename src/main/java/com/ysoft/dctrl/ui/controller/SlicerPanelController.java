@@ -71,7 +71,8 @@ public class SlicerPanelController extends LocalizableController implements Init
     @FXML ScrollBox scrollBox;
     @FXML VBox panelControlsContainer;
     @FXML Label advSettingsToggle;
-    @FXML VBox advSettingsBox;
+    @FXML VBox advSettingsContainer;
+    @FXML VBox supportsContainer;
 
     // Components
     @FXML Picker profilePicker;
@@ -164,6 +165,8 @@ public class SlicerPanelController extends LocalizableController implements Init
                 .bindParamChanged()
                 .bindControlChanged((observable, oldValue, newValue) -> {
                     slicerParams.updateParam(SlicerParamType.SUPPORT_ENABLED.name(), newValue);
+                    supportsContainer.setVisible((boolean)newValue);
+                    supportsContainer.setManaged((boolean)newValue);
                     this.setEdited(oldValue != newValue);
                 });
 
@@ -279,13 +282,13 @@ public class SlicerPanelController extends LocalizableController implements Init
         });
 
         advSettingsToggle.setOnMouseClicked(event -> {
-            if (advSettingsBox.isVisible()){
-                advSettingsBox.setManaged(false);
-                advSettingsBox.setVisible(false);
+            if (advSettingsContainer.isVisible()){
+                advSettingsContainer.setManaged(false);
+                advSettingsContainer.setVisible(false);
                 advSettingsToggle.setText(getMessage("slicer_show_advanced_settings"));
             } else {
-                advSettingsBox.setManaged(true);
-                advSettingsBox.setVisible(true);
+                advSettingsContainer.setManaged(true);
+                advSettingsContainer.setVisible(true);
                 advSettingsToggle.setText(getMessage("slicer_hide_advanced_settings"));
             }
         });

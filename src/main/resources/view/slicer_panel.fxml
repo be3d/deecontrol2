@@ -46,7 +46,7 @@
         <Picker label="?_slicer_init_platform" fx:id="raftStructurePicker" />
         <CheckBoxLabelled fx:id="supportsCheckBox" text="?_slicer_supports_print" label="?_slicer_supports" />
 
-        <VBox fx:id="advSettingsBox" visible="false" managed="false">
+        <VBox fx:id="advSettingsContainer" visible="false" managed="false">
           <SubHeader text="LAYERS" />
           <ToggleButtonGroup fx:id="layerHeightToggle" label="?_slicer_layer_height" decimals="2" unit="mm"/>
           <ButtonIncrement fx:id="roofThicknessIncrement" label="?_slicer_roof_thickness" increment="1" min="0" unit="mm"/>
@@ -64,12 +64,15 @@
           <SliderDiscrete fx:id="infillDensitySlider" label="?_slicer_infill_density" unit="\%"
                           min="0.0" max="100.0" decimals="0"/>
 
-          <SubHeader text="SUPPORTS" />
-          <SliderDiscrete fx:id="supportDensitySlider" label="?_slicer_support_density"
-                          min="5.0" max="50.0" step="1" unit="\%" decimals="0"/>
-          <Picker fx:id="supportPatternPicker"  label="?_slicer_support_pattern" />
-          <SliderDiscrete fx:id="supportAngleSlider" label="?_slicer_support_angle"
-                          min="0.0" max="90.0" step="1" unit="°" decimals="0"/>
+          <VBox fx:id="supportsContainer">
+            <SubHeader text="SUPPORTS" />
+            <SliderDiscrete fx:id="supportDensitySlider" label="?_slicer_support_density"
+                            min="5.0" max="50.0" step="1" unit="\%" decimals="0"/>
+            <Picker fx:id="supportPatternPicker"  label="?_slicer_support_pattern" />
+            <SliderDiscrete fx:id="supportAngleSlider" label="?_slicer_support_angle"
+                            min="0.0" max="90.0" step="1" unit="°" decimals="0"/>
+          </VBox>
+
         </VBox>
 
         <Label fx:id="advSettingsToggle" AnchorPane.leftAnchor="20" styleClass="control-advSettingsToggle" text="?_slicer_show_advanced_settings" />
