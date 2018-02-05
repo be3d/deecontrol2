@@ -22,6 +22,8 @@ public class CuraParamMap extends EnumMap<SlicerParamType, String>{
         put(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER,"machine_nozzle_size");
         put(SlicerParamType.START_GCODE,"machine_start_gcode");
         put(SlicerParamType.END_GCODE,"machine_end_gcode");
+        put(SlicerParamType.START_GCODE_PRINT_TEMPERATURE_PREPEND, "material_print_temp_prepend");
+        put(SlicerParamType.START_GCODE_BED_TEMPERATURE_PREPEND, "material_bed_temp_prepend");
 
         put(SlicerParamType.SPEED_OUTER_WALL,"speed_wall_0");
         put(SlicerParamType.SPEED_INNER_WALL,"speed_wall_x");

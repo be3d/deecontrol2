@@ -367,6 +367,16 @@
             "default":"grid"
       },
       {
+         "id":"START_GCODE_PRINT_TEMPERATURE_PREPEND",
+         "type":"bool",
+         "value":false
+      },
+      {
+         "id":"START_GCODE_BED_TEMPERATURE_PREPEND",
+         "type":"bool",
+         "value":false
+      },
+      {
          "id":"START_GCODE",
          "type":"string",
          "value":";D3D:START:START\nT0\nM104 S{MATERIAL_PRINT_TEMPERATURE}\nG21\nG90\nM107\nT0\nG28\nG29\nM109 T0 S{MATERIAL_PRINT_TEMPERATURE}\nG0 F3000\nM107\nT0\nG92 E0\nG0 X0 Y149 Z0.1 F3600\nG1 Y49 E6.5 F1200\nG0 Z1\nG92 E0"
