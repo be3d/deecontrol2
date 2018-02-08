@@ -28,24 +28,22 @@ import java.util.Map;
 @Component
 public class SlicerParams {
     private final Logger logger = LogManager.getLogger(SlicerParams.class);
+
     protected final EventBus eventBus;
     protected final DeeControlContext deeControlContext;
+
     protected final PrinterResource printerResource;
-    protected final Cura slicer;
     protected final SlicerParamRelations paramRelations;
 
-
     protected Map<String, SlicerParam> slicerParameters;
-    protected boolean isEdited = false;
 
     @Autowired
     public SlicerParams(EventBus eventBus, DeeControlContext deeControlContext,
-                        PrinterResource printerResource, Cura slicer,
-                        SlicerParamRelations paramRelations) throws IOException {
+                        PrinterResource printerResource,
+                        SlicerParamRelations paramRelations)  {
 
         this.eventBus = eventBus;
         this.deeControlContext = deeControlContext;
-        this.slicer = slicer;
         this.printerResource = printerResource;
         this.paramRelations = paramRelations;
 
@@ -53,26 +51,25 @@ public class SlicerParams {
     }
 
     @PostConstruct
-    private void initParams(){
-
+    private void init(){
         try{
-            this.printerResource.setPrinter("edee");
+            printerResource.setPrinter("edee");
         }catch(Exception e){
             logger.warn("Printer EDEE could not be set.");
         }
 
-        this.slicerParameters = this.loadParams();
-        this.paramRelations.init(this.slicerParameters);
-        this.paramRelations.handleAll();
+        slicerParameters = loadParams();
+        paramRelations.init(slicerParameters);
+        paramRelations.handleAll();
     }
 
     public Map<String, SlicerParam> loadParams(){
-        Printer selectedPrinter = this.printerResource.getPrinter();
+        Printer selectedPrinter = printerResource.getPrinter();
         if (selectedPrinter != null){
-            List<SlicerParam> params = this.slicer.filterSupportedParams(selectedPrinter.getAllParams());
+
+            List<SlicerParam> params = selectedPrinter.getAllParams();
             Map<String, SlicerParam> slicerParameters = new HashMap<>();
 
-            // todo reconsider not using Map but list
             for (SlicerParam p: params){
                 slicerParameters.put(p.getId(), p);
             }
@@ -84,10 +81,6 @@ public class SlicerParams {
         }
     }
 
-    public void printerChanged(Event event){
-        this.slicerParameters = loadParams();
-    }
-
     public void updateParam(String paramID, Object value){
         slicerParameters.get(paramID).setValue(value);
         paramRelations.handle(paramID);
@@ -97,27 +90,34 @@ public class SlicerParams {
     public void updateParams(List<SlicerParam> params){
         if (params != null){
             for (SlicerParam p : params){
-                this.updateParam(p.getId(), p.getValue());
+                updateParam(p.getId(), p.getValue());
+            }
+        }
+    }
+
+    public void updateProfileDefaults(List<SlicerParam> params){
+        if (params != null){
+            for (SlicerParam p : params){
+                slicerParameters.get(p.getId()).setProfileDefault(p.getValue());
             }
         }
     }
 
     public Map<String, SlicerParam> getAllParams(){
-        return this.slicerParameters;
+        return slicerParameters;
     }
 
-    /**
-     *
-     * @param name ID of the parameter <- (SlicerParamType)
-     * @return
-     */
     public SlicerParam get(String name){
-        return this.slicerParameters.get(name);
+        return slicerParameters.get(name);
     }
 
     public void resetToDefault(){
-        for (SlicerParam p : this.slicerParameters.values()){
+        for (SlicerParam p : slicerParameters.values()){
             p.resetToDefault();
         }
+    }
+
+    public void printerChanged(Event event){
+        this.slicerParameters = loadParams();
     }
 }

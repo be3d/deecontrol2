@@ -2,6 +2,7 @@
 <?import javafx.scene.layout.*?>
 
 
+<?import javafx.scene.shape.Line?>
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu-component-container" >
     <HBox fx:id="labelWrapper" styleClass="control-label-wrapper">
         <Label fx:id="label" styleClass="control-label"></Label>
@@ -10,7 +11,12 @@
     <HBox spacing="0"  alignment="TOP_LEFT">
     <children>
         <Region styleClass="left-control-hpadding"></Region>
-        <StackPane>
+        <StackPane style="-fx-background-color:transparent;" alignment="CENTER">
+            <VBox style="-fx-padding: 0 0 0 53px; -fx-min-height: 30px; -fx-background-color: transparent" StackPane.alignment="CENTER_LEFT" >
+                <Line startX="0" startY="0" endX="0" endY="10"  style="-fx-stroke: #5b5b5b"></Line>
+                <Region VBox.vgrow="ALWAYS"></Region>
+                <Line startX="0" startY="15" endX="0" endY="25"  style="-fx-stroke: #5b5b5b"></Line>
+            </VBox>
             <ProgressBar fx:id="progress" styleClass="control-slider-progress"></ProgressBar>
             <Slider fx:id="slider"
                     showTickMarks="false"  majorTickUnit="0.05" showTickLabels="false" minorTickCount="0" styleClass="control-slider" snapToTicks="true"

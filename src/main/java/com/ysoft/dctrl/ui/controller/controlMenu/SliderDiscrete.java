@@ -1,6 +1,7 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
 import com.ysoft.dctrl.slicer.param.SlicerParam;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -32,25 +33,32 @@ public class SliderDiscrete extends BaseSlider {
         updateView();
     }
 
+    @Override
     public SliderDiscrete load(SlicerParam param){
         return (SliderDiscrete)super.load(param);
     }
 
+    @Override
     public SliderDiscrete bindParamChanged(){
         return (SliderDiscrete)super.bindParamChanged();
     }
 
-    public SliderDiscrete bindParamChanged(javafx.beans.value.ChangeListener handler){
+    @Override
+    public SliderDiscrete bindParamChanged(ChangeListener handler){
         return (SliderDiscrete)super.bindParamChanged(handler);
     }
 
-    public void bindControlChanged(javafx.beans.value.ChangeListener handler){
+    @Override
+    public void bindControlChanged(ChangeListener handler){
         super.bindControlChanged(handler);
     }
 
+    @Override
     public void updateView(){
         valueLabel.setText(super.getDecimalFormat(decimals).format(this.value) + (unit != null ? " " + unit : ""));
         progress.setProgress((this.value - this.getMin()) / (this.getMax() - this.getMin()));
         slider.setValue(this.value);
+
+        System.out.println("updating view" + profileDefault+"pro"+profileDefault);
     }
 }

@@ -145,7 +145,7 @@ public class SlicerPanelController extends LocalizableController implements Init
 
         profilePicker.setItems(obList);
         profilePicker.bindControlChanged((observable, oldValue, newValue) -> {
-            profileResource.applyProfile(newValue);
+            profileResource.applyProfile((Profile)newValue);
             this.setEdited(oldValue == newValue);
         });
         profilePicker.selectItem(obList.get(0));

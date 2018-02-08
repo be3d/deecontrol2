@@ -84,20 +84,10 @@ public class ProfileResource extends AbstractConfigResource {
 
     public Profile[] get(){return null;}
 
-    /**
-     * Cast profile object from Presenter to (Profile) and delegate
-     * @param profile
-     */
-    public void applyProfile(Object profile){
-        if (profile instanceof Profile){
-            this.applyProfile((Profile)profile);
-        }
-    }
-
     public void applyProfile(Profile profile){
-        // update printer, slicer, params
         this.slicerParams.resetToDefault();
         this.slicerParams.updateParams(profile.params);
+        this.slicerParams.updateProfileDefaults(profile.params);
         this.selectedProfile = profile;
     }
 
