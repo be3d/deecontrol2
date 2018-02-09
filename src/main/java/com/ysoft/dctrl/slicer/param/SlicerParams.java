@@ -100,6 +100,10 @@ public class SlicerParams {
             for (SlicerParam p : params){
                 slicerParameters.get(p.getId()).setProfileDefault(p.getValue());
             }
+        } else {
+            for (SlicerParam p : slicerParameters.values()){
+                p.setProfileDefault(p.getDefaultValue());
+            }
         }
     }
 

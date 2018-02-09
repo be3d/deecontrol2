@@ -321,11 +321,6 @@
          "value":true
       },
       {
-         "id":"SUPPORT_INTERFACE_THICKNESS",
-         "type":"float",
-         "value":0.85
-      },
-      {
          "id":"SUPPORT_INTERFACE_RESOLUTION",
          "type":"float",
          "value":0.1

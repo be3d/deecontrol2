@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by kuhn on 4/19/2017.
@@ -61,16 +62,14 @@ public class ProfileResource extends AbstractConfigResource {
             List<Profile> factoryProfiles = super.loadFromResource(FilePath.RESOURCE_PROFILE_DIR, Profile.class);
             profiles.addAll(factoryProfiles);
         } catch (IOException e) {
-            System.err.println("Unable to read profiles from resources");
-            e.printStackTrace();
+            logger.warn("Unable to read profiles from resources", e);
         }
 
         try {
             List<Profile> userProfiles = super.loadFromFolder(FilePath.PROFILE_DIR, Profile.class);
             profiles.addAll(userProfiles);
         } catch (IOException e) {
-            System.err.println("Unable to read profiles from user folder");
-            e.printStackTrace();
+            logger.warn("Unable to read profiles from user folder", e);
         }
 
         return profiles;
@@ -85,41 +84,12 @@ public class ProfileResource extends AbstractConfigResource {
     public Profile[] get(){return null;}
 
     public void applyProfile(Profile profile){
-        this.slicerParams.resetToDefault();
-        this.slicerParams.updateParams(profile.params);
-        this.slicerParams.updateProfileDefaults(profile.params);
-        this.selectedProfile = profile;
+        slicerParams.resetToDefault();
+        slicerParams.updateParams(profile.params);
+        slicerParams.updateProfileDefaults(profile.params);
+        selectedProfile = profile;
     }
 
-    public void applyProfile(String profileID){
-        for (Profile p : profiles){
-            if(p.getId().equals(profileID)) {
-                this.applyProfile(p);
-                return;
-            }
-        }
-        logger.warn("Profile {} could not be set ", profileID);
-    }
-
-
-
-    public void resetToDefault(){}
-
-    /**
-     * Saves the currently selected profile
-     */
-    public void saveProfile(){
-        if (this.selectedProfile == null){
-            logger.debug("No profile selected.");
-        }
-        this.saveProfile(this.selectedProfile);
-    }
-
-    /**
-     * Saves a new profile
-     * @param name of the profile
-     * @return
-     */
     public Profile saveNewProfile(String name){
 
         ArrayList<SlicerParam> slicerParamsCopy = new ArrayList<>();
@@ -128,7 +98,7 @@ public class ProfileResource extends AbstractConfigResource {
         }
 
         Profile profile = new Profile(
-                java.util.UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
                 name, "",
                 slicerController.selectedSlicerID,
                 printerResource.getPrinter().printerFamily,
@@ -136,20 +106,18 @@ public class ProfileResource extends AbstractConfigResource {
                 slicerParamsCopy
         );
 
-        this.saveProfile(profile);
+        writeProfileFile(profile);
+        profiles.add(profile);
+
         return profile;
     }
 
-    /**
-     * Dumps the profile into file
-     * @param profile
-     */
-    private void saveProfile(Profile profile){
+    private void writeProfileFile(Profile profile){
         try {
             deeControlContext.getObjectMapper().writeValue(
                     new File(profileFolder + File.separator + profile.getId() + PROFILE_EXTENSION), profile);
         } catch(IOException e){
-            e.printStackTrace();
+            logger.error("Profile save failed.", e);
         }
     }
 

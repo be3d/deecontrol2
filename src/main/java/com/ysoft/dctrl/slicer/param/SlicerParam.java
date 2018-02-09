@@ -26,7 +26,7 @@ import java.util.Map;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SlicerParam implements Cloneable {
+public class SlicerParam {
     @Autowired EventBus eventBus;
     protected final Logger logger = LogManager.getLogger(SlicerParam.class);
 
@@ -110,8 +110,9 @@ public class SlicerParam implements Cloneable {
     }
 
     public SlicerParam(SlicerParam original){
-        this.id = original.id;
-        this.value = original.value;
+        id = original.id;
+        value = original.value;
+        type = original.type;
     }
 
     public void setValue(Object value){
@@ -181,6 +182,10 @@ public class SlicerParam implements Cloneable {
         this.step = step;
     }
 
+    public String getType() { return this.type; }
+
+    public void setType(String type) { this.type = type; }
+
     public SimpleDoubleProperty getDoubleProperty(){
         return (SimpleDoubleProperty) valueProperty;
     }
@@ -200,14 +205,18 @@ public class SlicerParam implements Cloneable {
     public Property getValueProperty() { return valueProperty; }
 
     public void setValueProperty(Object value) {
-        this.valueProperty.setValue(value);
+        valueProperty.setValue(value);
     }
 
     public Property getProfileDefaultProperty() { return profileDefaultProperty; }
 
-    public void setProfileDefault(Object value) { profileDefaultProperty.setValue(value); }
+    public void setProfileDefault(Object value) {
+        if(profileDefaultProperty != null) { profileDefaultProperty.setValue(value); }
+    }
 
-    public Object getProfileDefault() { return profileDefaultProperty.getValue(); }
+    public Object getProfileDefault() {
+        return (profileDefaultProperty != null ? profileDefaultProperty.getValue() : null);
+    }
 
     public void resetToDefault(){
         if (this.defaultValue != null){

@@ -1,5 +1,7 @@
 package com.ysoft.dctrl.slicer.param;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -19,11 +21,14 @@ import com.ysoft.dctrl.event.EventType;
  */
 @Component
 public class SlicerParamRelations {
+    private final Logger logger = LogManager.getLogger(SlicerParamRelations.class);
     private final EventBus eventBus;
-    public Map<SlicerParamType, Runnable> map = new HashMap<>();
+
+    private Map<SlicerParamType, Runnable> map;
 
     public SlicerParamRelations(EventBus eventBus) {
         this.eventBus = eventBus;
+        map = new HashMap<>();
     }
 
     public void init(Map<String,SlicerParam> params){
@@ -52,7 +57,12 @@ public class SlicerParamRelations {
     }
 
     public void handle(String paramID) {
-        handle(SlicerParamType.valueOf(paramID));
+        try{
+            handle(SlicerParamType.valueOf(paramID));
+        }
+        catch (IllegalArgumentException e){
+            logger.warn("Slicer parameter {} not found", paramID, e);
+        }
     }
 
     public void handle(SlicerParamType slicerParamType) {

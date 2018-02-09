@@ -24,6 +24,7 @@ import java.util.List;
  */
 
 public abstract class AbstractConfigResource {
+    protected final Logger logger = LogManager.getLogger(AbstractConfigResource.class);
     protected final DeeControlContext deeControlContext;
     protected final EventBus eventBus;
     private final FilePathResource filePathResource;
@@ -53,7 +54,12 @@ public abstract class AbstractConfigResource {
 
         for(File f : files) {
             try(InputStream is = new FileInputStream(f)) {
-                res.add(deeControlContext.getObjectMapper().readValue(is, type));
+                try {
+                    res.add(deeControlContext.getObjectMapper().readValue(is, type));
+                }
+                catch (JsonMappingException e){
+                    logger.error("Profile definition(s) corrupted",e);
+                }
             }
         }
 

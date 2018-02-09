@@ -140,15 +140,15 @@ public class SlicerPanelController extends LocalizableController implements Init
                     eventBus.publish(new Event(EventType.SLICER_PANEL_SCROLLED.name()));
                 });
 
-        List<Profile> list = profileResource.getProfiles();
-        ObservableList obList = FXCollections.observableList(list);
-
-        profilePicker.setItems(obList);
+        ObservableList profiles = FXCollections.observableList(profileResource.getProfiles());
+        profilePicker.setItems(profiles);
         profilePicker.bindControlChanged((observable, oldValue, newValue) -> {
-            profileResource.applyProfile((Profile)newValue);
-            this.setEdited(oldValue == newValue);
+            if(newValue != null){
+                profileResource.applyProfile((Profile)newValue);
+                this.setEdited(oldValue == newValue);
+            }
         });
-        profilePicker.selectItem(obList.get(0));
+        profilePicker.selectItem(profiles.get(0));
 
         raftStructurePicker
                 .load(slicerParams.get(SlicerParamType.SUPPORT_BUILDPLATE_TYPE.name()))
@@ -372,9 +372,7 @@ public class SlicerPanelController extends LocalizableController implements Init
         Profile savedProfile = profileResource.saveNewProfile(name);
         ObservableList profiles = FXCollections.observableList(profileResource.getProfiles());
         profilePicker.setItems(profiles);
-        profilePicker.addItem(savedProfile);
         profilePicker.selectItem(savedProfile);
-        profileResource.applyProfile(savedProfile);
 
         setEdited(false);
     }

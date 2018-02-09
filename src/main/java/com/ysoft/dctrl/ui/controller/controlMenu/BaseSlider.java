@@ -3,18 +3,19 @@ package com.ysoft.dctrl.ui.controller.controlMenu;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
 
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.VBox;
 
 /**
  * Created by kuhn on 5/19/2017.
  */
 public class BaseSlider extends BaseTooltipControl implements SlicerParamBindable {
 
-    @FXML   private Slider slider;
-    @FXML   private ProgressBar progress;
+    @FXML   protected Slider slider;
+    @FXML   protected ProgressBar progress;
+    @FXML   protected VBox defaultMarkBox;
 
     protected String unit;
     protected double value;
@@ -53,11 +54,9 @@ public class BaseSlider extends BaseTooltipControl implements SlicerParamBindabl
         );
         boundParam.getProfileDefaultProperty().addListener(
                 (obs, o, n) -> {
-                    System.out.println("changing default" + boundParam.getId() + "|" + boundParam.getValue());
                     setProfileDefault((Double)n);
                 }
         );
-
         return this;
     }
 

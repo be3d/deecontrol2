@@ -1,6 +1,7 @@
 package com.ysoft.dctrl.ui.controller.controlMenu;
 
 import com.ysoft.dctrl.slicer.param.SlicerParam;
+import javafx.beans.value.ChangeListener;
 
 /**
  * Created by kuhn on 6/28/2017.
@@ -11,7 +12,7 @@ public interface SlicerParamBindable<T extends SlicerParamBindable<T>> {
 
     T load(SlicerParam param);
     T bindParamChanged();
-    T bindParamChanged(javafx.beans.value.ChangeListener listener);
-    void bindControlChanged(javafx.beans.value.ChangeListener listener);
+    T bindParamChanged(ChangeListener listener);
+    void bindControlChanged(ChangeListener listener);
 
 }
