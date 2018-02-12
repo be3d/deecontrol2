@@ -282,15 +282,10 @@ public class SlicerPanelController extends LocalizableController implements Init
         });
 
         advSettingsToggle.setOnMouseClicked(event -> {
-            if (advSettingsContainer.isVisible()){
-                advSettingsContainer.setManaged(false);
-                advSettingsContainer.setVisible(false);
-                advSettingsToggle.setText(getMessage("slicer_show_advanced_settings"));
-            } else {
-                advSettingsContainer.setManaged(true);
-                advSettingsContainer.setVisible(true);
-                advSettingsToggle.setText(getMessage("slicer_hide_advanced_settings"));
-            }
+            boolean visible = advSettingsContainer.isVisible();
+            advSettingsContainer.setManaged(!visible);
+            advSettingsContainer.setVisible(!visible);
+            advSettingsToggle.setText(getMessage(visible ? "slicer_show_advanced_settings" : "slicer_hide_advanced_settings"));
         });
 
         eventBus.subscribe(EventType.SCENE_EXPORT_PROGRESS.name(), this::onSceneExportProgress);
