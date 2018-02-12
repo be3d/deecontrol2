@@ -58,7 +58,7 @@ public abstract class AbstractConfigResource {
                     res.add(deeControlContext.getObjectMapper().readValue(is, type));
                 }
                 catch (JsonMappingException e){
-                    logger.error("Profile definition(s) corrupted",e);
+                    logger.error("Profile definition(s) corrupted ({})", f.getAbsolutePath(), e);
                 }
             }
         }

@@ -82,9 +82,14 @@ public class SlicerParams {
     }
 
     public void updateParam(String paramID, Object value){
-        slicerParameters.get(paramID).setValue(value);
-        paramRelations.handle(paramID);
-        eventBus.publish(new Event(EventType.SLICER_PARAM_CHANGED.name(), slicerParameters.get(paramID)));
+        SlicerParam p = slicerParameters.get(paramID);
+        if(p != null){
+            p.setValue(value);
+            paramRelations.handle(paramID);
+            eventBus.publish(new Event(EventType.SLICER_PARAM_CHANGED.name(), slicerParameters.get(paramID)));
+        } else {
+            logger.warn("Slicer ParamID {} not found while trying to update its value", paramID);
+        }
     }
 
     public void updateParams(List<SlicerParam> params){
@@ -97,8 +102,13 @@ public class SlicerParams {
 
     public void updateProfileDefaults(List<SlicerParam> params){
         if (params != null){
-            for (SlicerParam p : params){
-                slicerParameters.get(p.getId()).setProfileDefault(p.getValue());
+            for (SlicerParam newParam : params){
+                SlicerParam p = slicerParameters.get(newParam.getId());
+                if(p != null) {
+                    p.setProfileDefault(p.getValue());
+                } else {
+                    logger.warn("Slicer ParamID {} not found while trying to update its profile default value", newParam.getId());
+                }
             }
         } else {
             for (SlicerParam p : slicerParameters.values()){
