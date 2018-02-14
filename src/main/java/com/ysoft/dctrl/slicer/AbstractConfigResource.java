@@ -24,9 +24,10 @@ import java.util.List;
  */
 
 public abstract class AbstractConfigResource {
-    protected final Logger logger = LogManager.getLogger(AbstractConfigResource.class);
     protected final DeeControlContext deeControlContext;
     protected final EventBus eventBus;
+
+    private final Logger logger = LogManager.getLogger(AbstractConfigResource.class);
     private final FilePathResource filePathResource;
 
     public AbstractConfigResource(EventBus eventBus, DeeControlContext deeControlContext, FilePathResource filePathResource) {

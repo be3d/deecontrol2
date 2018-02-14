@@ -53,9 +53,7 @@ public class BaseSlider extends BaseTooltipControl implements SlicerParamBindabl
                 (obs, o, n) -> setValue((Double)n)
         );
         boundParam.getProfileDefaultProperty().addListener(
-                (obs, o, n) -> {
-                    setProfileDefault((Double)n);
-                }
+                (obs, o, n) -> setProfileDefault((Double)n)
         );
         return this;
     }

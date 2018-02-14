@@ -3,6 +3,7 @@ package com.ysoft.dctrl.ui.controller.controlMenu;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
@@ -12,9 +13,7 @@ import javafx.scene.control.Slider;
  */
 public class SliderDiscrete extends BaseSlider {
 
-    @FXML    Slider slider;
     @FXML    Label valueLabel;
-    @FXML    ProgressBar progress;
 
     private static double DEFAULT_MARK_OFFSET = 7;
     private static double DEFAULT_MARK_TRACK_PADDING = 16;
@@ -24,7 +23,7 @@ public class SliderDiscrete extends BaseSlider {
 
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (getStep() instanceof Double){
-                value = new Double((Math.round(newValue.doubleValue() / getStep()) * getStep()));
+                value = Math.round(newValue.doubleValue() / getStep()) * getStep();
             }
             else{
                 value = (double)newValue;
@@ -64,6 +63,6 @@ public class SliderDiscrete extends BaseSlider {
         double defaultMarkOffset = DEFAULT_MARK_OFFSET
                 + (slider.getWidth()-DEFAULT_MARK_TRACK_PADDING)*(profileDefault - getMin()) / (getMax() - getMin());
 
-        defaultMarkBox.setStyle("-fx-padding: 0 0 0 " + defaultMarkOffset + "px");
+        defaultMarkBox.setPadding(new Insets(0,0,0,defaultMarkOffset));
     }
 }
