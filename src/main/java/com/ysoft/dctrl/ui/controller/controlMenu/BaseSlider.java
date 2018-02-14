@@ -70,7 +70,7 @@ public class BaseSlider extends BaseTooltipControl implements SlicerParamBindabl
 
     public void updateView(){
         slider.setValue(value);
-    };
+    }
 
     public void setMin(Double value){
         slider.setMin(value);

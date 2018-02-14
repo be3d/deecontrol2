@@ -7,7 +7,6 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 
-import com.ysoft.dctrl.slicer.AbstractConfigResource;
 import javafx.beans.property.*;
 
 import org.apache.logging.log4j.LogManager;
