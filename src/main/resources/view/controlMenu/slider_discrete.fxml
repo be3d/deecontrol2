@@ -2,24 +2,26 @@
 <?import javafx.scene.layout.*?>
 
 
+<?import javafx.scene.shape.Line?>
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" styleClass="control-menu-component-container" >
     <HBox fx:id="labelWrapper" styleClass="control-label-wrapper">
-        <Label fx:id="label" styleClass="control-label"></Label>
-        <Button fx:id="tooltipBtn"  visible="false" text="" styleClass="control-menu-tooltipBtn"></Button>
+        <Label fx:id="label" styleClass="control-label" />
+        <Button fx:id="tooltipBtn"  visible="false" text="" styleClass="control-menu-tooltipBtn" />
     </HBox>
     <HBox spacing="0"  alignment="TOP_LEFT">
     <children>
-        <Region styleClass="left-control-hpadding"></Region>
+        <Region styleClass="left-control-hpadding" />
         <StackPane>
-            <ProgressBar fx:id="progress" styleClass="control-slider-progress"></ProgressBar>
+            <VBox fx:id="defaultMarkBox" StackPane.alignment="CENTER_LEFT" >
+                <Line startX="0" startY="0" endX="0" endY="30" styleClass="control-slider-defaultMarkBox-line" />
+            </VBox>
+            <ProgressBar fx:id="progress" styleClass="control-slider-progress" />
             <Slider fx:id="slider"
-                    showTickMarks="false"  majorTickUnit="0.05" showTickLabels="false" minorTickCount="0" styleClass="control-slider" snapToTicks="true"
-                    max="0.2" min="0.1" value="0.15"></Slider>
-
+                    showTickMarks="false"  majorTickUnit="0.05" showTickLabels="false" minorTickCount="0"
+                    styleClass="control-slider" snapToTicks="true" max="0.2" min="0.1" value="0.15" />
         </StackPane>
-
-        <Region HBox.hgrow="ALWAYS" ></Region>
-        <Label fx:id="valueLabel" text="0.15" styleClass="control-value"></Label>
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="valueLabel" text="" styleClass="control-value" />
     </children>
     </HBox>
 </fx:root>

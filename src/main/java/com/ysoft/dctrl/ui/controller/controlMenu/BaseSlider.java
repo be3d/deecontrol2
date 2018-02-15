@@ -3,26 +3,73 @@ package com.ysoft.dctrl.ui.controller.controlMenu;
 import com.ysoft.dctrl.slicer.param.SlicerParam;
 
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.VBox;
 
 /**
  * Created by kuhn on 5/19/2017.
  */
 public class BaseSlider extends BaseTooltipControl implements SlicerParamBindable {
 
-    @FXML   private Slider slider;
-    @FXML   private ProgressBar progress;
+    @FXML   protected Slider slider;
+    @FXML   protected ProgressBar progress;
+    @FXML   protected VBox defaultMarkBox;
 
-    protected String unit = "";
+    protected String unit;
     protected double value;
-    protected int decimals = 2;
+    protected double profileDefault;
+    protected int decimals;
 
     public BaseSlider(String fxmlResource) {
-        super();
-        super.init(fxmlResource);
+        init(fxmlResource);
+
+        unit = "";
+        decimals = 2;
+        value = 0;
+        profileDefault = 0;
+    }
+
+    public BaseSlider load(SlicerParam param){
+        boundParam = param;
+        try{
+            setMax(new Double(param.getMax().toString()));
+            setMin(new Double(param.getMin().toString()));
+            setStep(new Double(param.getStep().toString()));
+            setValue(new Double(param.getValue().toString()));
+            setProfileDefault(new Double(param.getProfileDefault().toString()));
+
+            updateView();
+
+        } catch(Exception e){
+            logger.warn("Error loading {}", param.getId(), e);
+        }
+        return this;
+    }
+
+    public BaseSlider bindParamChanged(){
+        boundParam.getDoubleProperty().addListener(
+                (obs, o, n) -> setValue((Double)n)
+        );
+        boundParam.getProfileDefaultProperty().addListener(
+                (obs, o, n) -> setProfileDefault((Double)n)
+        );
+        return this;
+    }
+
+    public BaseSlider bindParamChanged(ChangeListener listener){
+        bindParamChanged();
+        boundParam.getDoubleProperty().addListener(listener);
+        return this;
+    }
+
+    public void bindControlChanged(ChangeListener listener){
+        slider.valueProperty().addListener(listener);
+    }
+
+    public void updateView(){
+        slider.setValue(value);
     }
 
     public void setMin(Double value){
@@ -51,61 +98,11 @@ public class BaseSlider extends BaseTooltipControl implements SlicerParamBindabl
 
     public void setDecimals(int value){ decimals = value; }
     public int getDecimals(){ return decimals; }
-    /**
-     * Initialize the controller from the Slicer param object
-     *
-     * @param param
-     * @return
-     */
-    public BaseSlider load(SlicerParam param){
 
-        // todo perform the type conversion directly in param object
-        this.boundParam = param;
-        try{
-            this.setMax(new Double(param.getMax().toString()));
-            this.setMin(new Double(param.getMin().toString()));
-            this.setStep(new Double(param.getStep().toString()));
-            this.setValue(new Double(param.getValue().toString()));
-            this.updateView();
+    public double getProfileDefault() { return this.profileDefault; }
 
-        }catch(Exception e){
-            logger.warn("Error loading {}", param.getId(), e);
-        }
-        return this;
+    public void setProfileDefault(double profileDefault) {
+        this.profileDefault = profileDefault;
+        updateView();
     }
-
-    /**
-     * Default handle for slicerParam change with no further processing
-     * @return
-     */
-    public BaseSlider bindParamChanged(){
-        boundParam.getDoubleProperty().addListener(
-                (observable, oldValue, newValue) -> this.setValue((Double)newValue)
-        );
-        return this;
-    }
-
-    /**
-     * Custom handle for slicerParam change, e.g. when the control displays different value
-     * @param listener
-     * @return
-     */
-    public BaseSlider bindParamChanged(ChangeListener listener){
-        bindParamChanged();
-        boundParam.getDoubleProperty().addListener(listener);
-        return this;
-    }
-
-    /**
-     * Custom handle for UI Control change -> usually just throw an event
-     * @param listener
-     */
-    public void bindControlChanged(ChangeListener listener){
-        slider.valueProperty().addListener(listener);
-    }
-
-    public void updateView(){
-        slider.setValue(value);
-    };
-
 }

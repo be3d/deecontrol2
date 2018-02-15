@@ -120,6 +120,11 @@
     -fx-background-color: #bfbfbf;
 }
 
+.control-slider-defaultMarkBox-line {
+    -fx-stroke: #909090;
+    -fx-stroke-dash-array: 5 20 5 10;
+}
+
 .control-toggle-group {
     -fx-pref-width: 244px;
     -fx-min-width: 244px;

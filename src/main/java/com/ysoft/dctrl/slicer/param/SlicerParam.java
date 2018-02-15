@@ -7,7 +7,6 @@ import com.ysoft.dctrl.event.Event;
 import com.ysoft.dctrl.event.EventBus;
 import com.ysoft.dctrl.event.EventType;
 
-import com.ysoft.dctrl.slicer.AbstractConfigResource;
 import javafx.beans.property.*;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +25,7 @@ import java.util.Map;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SlicerParam implements Cloneable {
+public class SlicerParam {
     @Autowired EventBus eventBus;
     protected final Logger logger = LogManager.getLogger(SlicerParam.class);
 
@@ -37,8 +36,10 @@ public class SlicerParam implements Cloneable {
     private Double max;
     private Object step;
     private Property valueProperty;
+    private Property profileDefaultProperty;
     private LinkedHashMap<String, String> options;
     private Object defaultValue;
+
 
     private enum ValueType {
         FLOAT("float"),
@@ -80,32 +81,37 @@ public class SlicerParam implements Cloneable {
                     if (this.value instanceof String)
                         this.value = new Double((String)this.value);
 
-                    this.valueProperty = new SimpleDoubleProperty((Double) this.value);
+                    valueProperty = new SimpleDoubleProperty((Double) this.value);
+                    profileDefaultProperty = new SimpleDoubleProperty((Double) this.value);
                     break;
                 }
 
                 case STRING:
-                    this.valueProperty = new SimpleStringProperty((String) this.value);
+                    valueProperty = new SimpleStringProperty((String) this.value);
+                    profileDefaultProperty = new SimpleStringProperty((String) this.value);
                     break;
 
                 case ENUM:
-                    this.valueProperty = new SimpleStringProperty((String) this.value);
+                    valueProperty = new SimpleStringProperty((String) this.value);
+                    profileDefaultProperty = new SimpleStringProperty((String) this.value);
                     break;
 
                 case INT:
-                    this.valueProperty = new SimpleIntegerProperty((int) this.value);
+                    valueProperty = new SimpleIntegerProperty((int) this.value);
+                    profileDefaultProperty = new SimpleIntegerProperty((int) this.value);
                     break;
 
                 case BOOL:
-                    this.valueProperty = new SimpleBooleanProperty((boolean) this.value);
-
+                    valueProperty = new SimpleBooleanProperty((boolean) this.value);
+                    profileDefaultProperty = new SimpleBooleanProperty((boolean) this.value);
             }
         }
     }
 
     public SlicerParam(SlicerParam original){
-        this.id = original.id;
-        this.value = original.value;
+        id = original.id;
+        value = original.value;
+        type = original.type;
     }
 
     public void setValue(Object value){
@@ -175,24 +181,40 @@ public class SlicerParam implements Cloneable {
         this.step = step;
     }
 
+    public String getType() { return this.type; }
+
+    public void setType(String type) { this.type = type; }
+
     public SimpleDoubleProperty getDoubleProperty(){
-        return (SimpleDoubleProperty) this.valueProperty;
+        return (SimpleDoubleProperty) valueProperty;
     }
 
     public SimpleIntegerProperty getIntegerProperty(){
-        return (SimpleIntegerProperty) this.valueProperty;
+        return (SimpleIntegerProperty) valueProperty;
     }
 
     public SimpleStringProperty getStringProperty(){
-        return (SimpleStringProperty) this.valueProperty;
+        return (SimpleStringProperty) valueProperty;
     }
 
     public SimpleBooleanProperty getBooleanProperty(){
-        return (SimpleBooleanProperty) this.valueProperty;
+        return (SimpleBooleanProperty) valueProperty;
     }
 
+    public Property getValueProperty() { return valueProperty; }
+
     public void setValueProperty(Object value) {
-        this.valueProperty.setValue(value);
+        valueProperty.setValue(value);
+    }
+
+    public Property getProfileDefaultProperty() { return profileDefaultProperty; }
+
+    public void setProfileDefault(Object value) {
+        if(profileDefaultProperty != null) { profileDefaultProperty.setValue(value); }
+    }
+
+    public Object getProfileDefault() {
+        return (profileDefaultProperty != null ? profileDefaultProperty.getValue() : null);
     }
 
     public void resetToDefault(){

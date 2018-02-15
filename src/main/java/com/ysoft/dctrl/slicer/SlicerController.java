@@ -60,7 +60,9 @@ public class SlicerController {
     }
 
     private void startSlice(String stlPath) {
-        runner = new SlicerRunner(eventBus, currentSlicer, slicerParams.getAllParams(), stlPath);
+        runner = new SlicerRunner(
+                eventBus, currentSlicer, currentSlicer.filterSupportedParams(slicerParams.getAllParams()), stlPath
+        );
 
         runner.setOnSucceeded((e) -> {
             logger.trace("Slicing succeeded");
