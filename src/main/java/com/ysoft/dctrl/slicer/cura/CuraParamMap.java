@@ -22,14 +22,15 @@ public class CuraParamMap extends EnumMap<SlicerParamType, String>{
         put(SlicerParamType.MACHINE_E0_NOZZLE_DIAMETER,"machine_nozzle_size");
         put(SlicerParamType.START_GCODE,"machine_start_gcode");
         put(SlicerParamType.END_GCODE,"machine_end_gcode");
+        put(SlicerParamType.START_GCODE_PRINT_TEMPERATURE_PREPEND, "material_print_temp_prepend");
+        put(SlicerParamType.START_GCODE_BED_TEMPERATURE_PREPEND, "material_bed_temp_prepend");
 
-        put(SlicerParamType.SPEED_PRINT,"speed_print");
-        put(SlicerParamType.SPEED_PRINT_LAYER_0,"speed_print_layer_0");
         put(SlicerParamType.SPEED_OUTER_WALL,"speed_wall_0");
         put(SlicerParamType.SPEED_INNER_WALL,"speed_wall_x");
-        put(SlicerParamType.SPEED_WALL,"speed_wall");
         put(SlicerParamType.SPEED_SOLID_LAYERS,"speed_topbottom");
-        put(SlicerParamType.SPEED_SUPPORT,"speed_support");
+        put(SlicerParamType.SPEED_INFILL,"speed_infill");
+        put(SlicerParamType.SPEED_SUPPORT,"speed_support_infill");
+        put(SlicerParamType.SPEED_PRINT_LAYER_0,"speed_print_layer_0");
         put(SlicerParamType.SPEED_ACCELERATION_CONTROL_ENABLED,"acceleration_enabled");
         put(SlicerParamType.SPEED_ACCELERATION_OUTER_WALL,"acceleration_wall_0");
         put(SlicerParamType.SPEED_JERK_CONTROL_ENABLED,"jerk_enabled");
@@ -51,7 +52,8 @@ public class CuraParamMap extends EnumMap<SlicerParamType, String>{
         put(SlicerParamType.INFILL_OVERLAP_MAX,"");
         put(SlicerParamType.INFILL_LAYER_THICKNESS,"infill_sparse_thickness");
         put(SlicerParamType.INFILL_PATTERN,"infill_pattern");
-        put(SlicerParamType.INFILL_DENSITY,"infill_sparse_density");
+        put(SlicerParamType.INFILL_DENSITY,"");
+        put(SlicerParamType.INFILL_LINE_DISTANCE,"infill_line_distance");
 
         put(SlicerParamType.MATERIAL_PRINT_TEMPERATURE_DEFAULT,"default_material_print_temperature");
         put(SlicerParamType.MATERIAL_PRINT_TEMPERATURE,"material_print_temperature");
@@ -73,7 +75,8 @@ public class CuraParamMap extends EnumMap<SlicerParamType, String>{
         put(SlicerParamType.SUPPORT_PLACEMENT,"support_type");
         put(SlicerParamType.SUPPORT_BUILDPLATE_TYPE,"adhesion_type");
         put(SlicerParamType.SUPPORT_BUILDPLATE_BRIM_LINES,"brim_line_count");
-        put(SlicerParamType.SUPPORT_DENSITY,"support_infill_rate");
+        put(SlicerParamType.SUPPORT_DENSITY,"");
+        put(SlicerParamType.SUPPORT_LINE_DISTANCE,"support_line_distance");
         put(SlicerParamType.SUPPORT_PATTERN,"support_pattern");
         put(SlicerParamType.SUPPORT_ANGLE,"support_angle");
         put(SlicerParamType.SUPPORT_CONNECT_ZIGZAGS,"support_connect_zigzags");
@@ -87,7 +90,7 @@ public class CuraParamMap extends EnumMap<SlicerParamType, String>{
         put(SlicerParamType.SUPPORT_BOTTOM_ENABLE,"support_bottom_enable");
         put(SlicerParamType.SUPPORT_BOTTOM_THICKNESS,"support_bottom_height");
         put(SlicerParamType.SUPPORT_INTERFACE_RESOLUTION,"support_interface_skip_height");
-        put(SlicerParamType.SUPPORT_INTERFACE_DENSITY,"support_interface_density");
+        put(SlicerParamType.SUPPORT_INTERFACE_DENSITY,"");
         put(SlicerParamType.SUPPORT_INTERFACE_ROOF_LINE_DISTANCE,"support_roof_line_distance");
         put(SlicerParamType.SUPPORT_INTERFACE_BOTTOM_LINE_DISTANCE,"support_bottom_line_distance");
         put(SlicerParamType.SUPPORT_TOWER_DIAMETER,"support_tower_diameter");

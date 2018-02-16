@@ -153,7 +153,7 @@
          "value":45
       },
       {
-         "id":"SPEED_PRINT",
+         "id":"SPEED_INFILL",
          "type":"float",
          "value":70
       },
@@ -174,11 +174,6 @@
          "id":"SPEED_INNER_WALL",
          "type":"float",
          "value":70
-      },
-      {
-         "id":"SPEED_WALL",
-         "type":"float",
-         "value":60
       },
       {
          "id":"SPEED_SOLID_LAYERS",
@@ -365,6 +360,16 @@
                "cubic": "Cubic"
             },
             "default":"grid"
+      },
+      {
+         "id":"START_GCODE_PRINT_TEMPERATURE_PREPEND",
+         "type":"bool",
+         "value":false
+      },
+      {
+         "id":"START_GCODE_BED_TEMPERATURE_PREPEND",
+         "type":"bool",
+         "value":false
       },
       {
          "id":"START_GCODE",

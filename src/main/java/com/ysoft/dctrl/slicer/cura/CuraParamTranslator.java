@@ -32,7 +32,7 @@ public class CuraParamTranslator {
     public Map<String, Object> generateParams(SlicerParamType type, Object value){
         Map<String, Object> params = new HashMap<>();
         String s = curaParamMap.get(type);
-        if (s != null){
+        if (!s.isEmpty()){
             params.put(s, value);
         }
 
@@ -64,7 +64,7 @@ public class CuraParamTranslator {
             double hyperbolicComponent = (nzlD * 100 / x) - nzlD;
             double linearComponent = (a + max) - a * (0.01 * x);
             return new HashMap<String, Object>(){{
-                put("infill_line_distance", hyperbolicComponent + linearComponent);
+                put(curaParamMap.get(SlicerParamType.INFILL_LINE_DISTANCE), hyperbolicComponent + linearComponent);
             }};
         });
         dictionary.put(SlicerParamType.SUPPORT_DENSITY, x -> {
@@ -74,7 +74,7 @@ public class CuraParamTranslator {
             double hyperbolicComponent = (nzlD * 100 / x) - nzlD;
             double linearComponent = (a + max) - a * (0.01 * x);
             return new HashMap<String, Object>(){{
-                put("support_line_distance", hyperbolicComponent + linearComponent);
+                put(curaParamMap.get(SlicerParamType.SUPPORT_LINE_DISTANCE), hyperbolicComponent + linearComponent);
             }};
         });
         dictionary.put(SlicerParamType.INFILL_OVERLAP_MIN, x -> {

@@ -32,7 +32,7 @@
          "value":0.01
       },
       {
-         "id":"SPEED_PRINT",
+         "id":"SPEED_INFILL",
          "type":"float",
          "value":55
       },
@@ -40,11 +40,6 @@
          "id":"SPEED_PRINT_LAYER_0",
          "type":"float",
          "value": 30
-      },
-      {
-         "id":"SPEED_WALL",
-         "type":"float",
-         "value":25
       },
       {
          "id":"SPEED_INNER_WALL",
