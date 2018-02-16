@@ -1,0 +1,49 @@
+DeeControl 2 v.[VERSION]
+
+Slicing GUI based on CuraEngine
+
+Copyright (C) 2018 Y Soft Corporation, a.s.
+
+based on
+
+--------------------------------------------------------------------------
+Jackson Core v2.8.7
+Copyright 2017 FasterXML, LLC
+The Apache Software License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.txt)
+--------------------------------------------------------------------------
+Log4j v2.8.2
+Copyright 2017 The Apache Software Foundation
+The Apache Software License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.txt)
+--------------------------------------------------------------------------
+Spring Framework v4.3.7.RELEASE
+Copyright 2017 Pivotal Software, Inc.
+The Apache Software License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.txt)
+--------------------------------------------------------------------------
+Hamcrest Core v1.3
+Copyright 2012 hamcrest.org
+New BSD License (http://www.opensource.org/licenses/bsd-license.php)
+--------------------------------------------------------------------------
+JUnit v4.11
+Copyright 2012 JUnit
+Common Public License Version 1.0 (http://www.opensource.org/licenses/cpl1.0.txt)
+--------------------------------------------------------------------------
+Apache Commons Logging v1.2
+Copyright 2014 The Apache Software Foundation
+The Apache Software License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.txt)
+--------------------------------------------------------------------------
+CuraEngine v2.7
+Copyright 2017 Ultimaker
+The GNU Affero General Public License https://www.gnu.org/licenses/agpl.txt
+--------------------------------------------------------------------------
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+You can download the source code for the program at [LINK]
+
+Y Soft Corporation, a.s.
+https://www.ysoft.com/
+info@ysoft.com
