@@ -1,4 +1,4 @@
-DeeControl 2 v.[VERSION]
+DeeControl 2
 
 Slicing GUI based on CuraEngine
 
@@ -42,7 +42,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>
 
-You can download the source code for the program at [LINK]
+You can download the source code for the program at https://github.com/be3d/deecontrol2
 
 Y Soft Corporation, a.s.
 https://www.ysoft.com/

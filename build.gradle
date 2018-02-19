@@ -41,18 +41,29 @@ artifacts {
     }
 }
 
-buildDependents {
+buildDependents {}
+
+task composeDist(dependsOn: buildDependents) {
     doLast {
+        copy {
+            from tarTree("build/distributions/${rootProject.name}-${version}.tar")
+            into "build/dist"
+        }
+
         copy {
             from "."
             include "bin/"
-            into "build/libs"
+            into "build/dist/${rootProject.name}-${version}"
         }
     }
 }
 
-task dist(dependsOn: buildDependents, type: Zip) {
-
+task createPortable(dependsOn: composeDist, type: Zip) {
+    from "build/dist/${rootProject.name}-${version}/"
+    include "*"
+    include "*/*"
+    archiveName "${rootProject.name}-${version}-portable.zip"
+    destinationDir(file("build/distributions/"))
 }
 
 configurations.archives.artifacts.with { archives ->
