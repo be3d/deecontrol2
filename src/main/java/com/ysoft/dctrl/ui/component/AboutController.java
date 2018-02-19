@@ -1,8 +1,17 @@
 package com.ysoft.dctrl.ui.component;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -14,18 +23,27 @@ import com.ysoft.dctrl.utils.DeeControlContext;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 @Controller
 public class AboutController extends LocalizableController implements Initializable {
+    private static final Logger logger = LogManager.getLogger(AboutController.class);
+
+    private static final String NOTICE_URL = "https://github.com/be3d/deecontrol2/raw/master/NOTICE.txt";
+
     @FXML
     private Stage stage;
 
     @FXML
     private Label version;
+
+    @FXML
+    private Hyperlink notice;
 
     @Autowired
     public AboutController(LocalizationService localizationService, EventBus eventBus, DeeControlContext deeControlContext) {
@@ -45,6 +63,14 @@ public class AboutController extends LocalizableController implements Initializa
 
         stage.focusedProperty().addListener((ob, o, n) -> {
             if(!n) { stage.hide(); }
+        });
+
+        notice.setOnAction((event) -> {
+            try {
+                Desktop.getDesktop().browse(new URI(NOTICE_URL));
+            } catch (IOException | URISyntaxException e) {
+                logger.warn("Wrong notice URL", e);
+            }
         });
     }
 

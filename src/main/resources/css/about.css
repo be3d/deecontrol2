@@ -10,7 +10,17 @@
     -fx-font-weight: 700;
     -fx-font-size: 14;
     -fx-text-fill: #535353;
-    -fx-alignment: center;
-    -fx-pref-width: 436;
+    -fx-pref-width: -1;
     -fx-max-width: Infinity;
+}
+
+.open-source {
+    -fx-font-weight: 700;
+    -fx-font-size: 14;
+    -fx-text-fill: #535353;
+    -fx-pref-width: -1;
+    -fx-max-width: Infinity;
+    -fx-border-width: 0px;
+    -fx-padding: 0;
+    -fx-underline: true;
 }

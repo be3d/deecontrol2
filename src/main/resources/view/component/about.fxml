@@ -11,7 +11,8 @@
   <scene>
     <Scene fill="transparent">
         <AnchorPane fx:id="root" styleClass="about-container">
-          <Label styleClass="version" fx:id="version" AnchorPane.bottomAnchor="35" />
+          <Label styleClass="version" fx:id="version" AnchorPane.bottomAnchor="35" AnchorPane.rightAnchor="25" />
+          <Hyperlink styleClass="open-source" fx:id="notice" text="Powered by open-source" AnchorPane.bottomAnchor="35" AnchorPane.leftAnchor="25" />
 
           <stylesheets>
             <URL value="@/css/master.css" />
